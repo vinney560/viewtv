@@ -1,0 +1,23 @@
+<!-- templates/channels.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ViewTV Channels</title>
+  <style>
+    body { background: #111; color: white; font-family: sans-serif; padding: 20px; }
+    .channel { margin: 10px 0; padding: 10px; background: #222; border-left: 4px solid #00ff88; }
+    a { color: #00ff88; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>📺 Available Channels</h2>
+  {% for ch in channels %}
+    <div class="channel">
+      {{ loop.index }}. {{ ch.name }}
+      <a href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}"> ▶ Watch</a>
+    </div>
+  {% else %}
+    <p>No channels found.</p>
+  {% endfor %}
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Select Country - IPTV</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #58a6ff;
+      font-size: 2.2rem;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #58a6ff55;
+    }
+
+    .country-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .country-btn {
+      background: #161b22;
+      border: 2px solid #00ff88;
+      border-radius: 12px;
+      padding: 14px 20px;
+      text-align: center;
+      color: #00ff88;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px #00ff8855;
+    }
+
+    .country-btn:hover {
+      background: #00ff88;
+      color: #0d1117;
+      box-shadow: 0 0 14px #00ff88;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌍 Choose a Country</h1>
+  <div class="country-list">
+    <a href="/channels/ke" class="country-btn">Kenya</a>
+    <a href="/channels/tz" class="country-btn">Tanzania</a>
+    <a href="/channels/us" class="country-btn">USA</a>
+    <a href="/channels/gb" class="country-btn">UK</a>
+    <a href="/channels/ca" class="country-btn">Canada</a>
+    <a href="/channels/ng" class="country-btn">Nigeria</a>
+    <a href="/channels/za" class="country-btn">South Africa</a>
+    <a href="/channels/in" class="country-btn">India</a>
+  </div>
+</body>
+</html>

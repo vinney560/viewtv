@@ -1,23 +1,150 @@
 <!-- templates/channels.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ViewTV Channels</title>
   <style>
-    body { background: #111; color: white; font-family: sans-serif; padding: 20px; }
-    .channel { margin: 10px 0; padding: 10px; background: #222; border-left: 4px solid #00ff88; }
-    a { color: #00ff88; text-decoration: none; font-weight: bold; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Inter', sans-serif;
+      padding: 30px 20px;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 40px;
+      color: #58a6ff;
+      text-shadow: 0 0 10px #58a6ff44;
+    }
+
+    .channel-list {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .channel {
+      background: #161b22;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgb(0 255 136 / 0.15);
+      padding: 20px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+      overflow: hidden;
+    }
+
+    .channel:hover,
+    .channel:focus {
+      background: #238636;
+      box-shadow: 0 8px 20px rgb(0 255 136 / 0.5);
+      color: white;
+      outline: none;
+    }
+
+    .channel:focus {
+      outline: 3px solid #00ff88;
+      outline-offset: 3px;
+    }
+
+    .channel-number {
+      font-weight: 600;
+      color: #39d353;
+      margin-right: 12px;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+
+    .channel-name {
+      flex-grow: 1;
+      font-weight: 600;
+      font-size: 1.1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .watch-link {
+      background: #00ff88;
+      color: #0d1117;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: background 0.3s ease, color 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .watch-link:hover {
+      background: #00cc6a;
+      color: #d0f0e6;
+      box-shadow: 0 0 10px #00ff88;
+    }
+
+    .watch-link::before {
+      content: "▶";
+      font-size: 1.2rem;
+    }
+
+    p.no-channels {
+      font-style: italic;
+      color: #8b949e;
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 640px) {
+      .channel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .channel-name {
+        white-space: normal;
+      }
+
+      .watch-link {
+        width: 90%;
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
   <h2>📺 Available Channels</h2>
-  {% for ch in channels %}
-    <div class="channel">
-      {{ loop.index }}. {{ ch.name }}
-      <a href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}"> ▶ Watch</a>
-    </div>
-  {% else %}
-    <p>No channels found.</p>
-  {% endfor %}
+  <div class="channel-list">
+    {% for ch in channels %}
+      <div class="channel" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.Tv }}">
+        <div class="channel-number">{{ loop.index }}.</div>
+        <div class="channel-name" title="{{ ch.Tv }}">{{ ch.Tv }}</div>
+        <a class="watch-link" href="{{ url_for('watch') }}?name={{ ch.Tv }}&url={{ ch.Tv_url }}">Watch</a>
+      </div>
+    {% else %}
+      <p class="no-channels">No channels found.</p>
+    {% endfor %}
+  </div>
 </body>
 </html>

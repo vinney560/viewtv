@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Advanced HLS Player</title>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
@@ -617,7 +617,7 @@
       let isQualityMenuOpen = false;
       let isSettingsMenuOpen = false;
       let isShortcutsHelpOpen = false;
-      let streamURL = "{{ stream_url|safe }}";
+      let streamURL ="{{ stream_url }}";
 
       // Initialize player
       initPlayer();

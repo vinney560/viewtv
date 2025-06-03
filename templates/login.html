@@ -1,36 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white">
-  <section class="container mx-auto px-6 py-20">
-    <div class="bg-cyan-600 p-8 rounded-2xl shadow-xl max-w-md mx-auto">
-      <h4 class="font-extrabold text-3xl text-center mb-6">Login</h4>
-      <form action="/login" method="POST" class="space-y-4">
-        <div>
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <input class="bg-gray-600 font-bold w-full rounded-xl px-4 py-2 text-white" type="tel" placeholder="07xxxxxxx OR 01xxxxxxxx" name="mobile" required pattern="[0][0-9]{9}">
+<body class="bg-gradient-to-tr from-cyan-900 via-cyan-800 to-cyan-900 text-white font-sans min-h-screen flex items-center justify-center px-4">
+
+  <section class="bg-cyan-700 bg-opacity-90 backdrop-blur-md rounded-3xl shadow-2xl max-w-md w-full p-10">
+    <h4 class="text-4xl font-extrabold text-center mb-8 tracking-tight drop-shadow-md">Login</h4>
+    <form action="/login" method="POST" class="space-y-6">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div>
+        <label for="email" class="block text-cyan-100 font-semibold mb-2">Email Address</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          placeholder="you@example.com"
+          class="w-full rounded-2xl bg-cyan-900 bg-opacity-50 placeholder-cyan-300 text-white font-semibold px-5 py-3 focus:outline-none focus:ring-4 focus:ring-cyan-400 transition"
+        />
+      </div>
+
+      <div>
+        <label for="password" class="block text-cyan-100 font-semibold mb-2">Password</label>
+        <div class="relative">
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            minlength="4"
+            placeholder="Enter your password"
+            class="w-full rounded-2xl bg-cyan-900 bg-opacity-50 placeholder-cyan-300 text-white font-semibold px-5 py-3 pr-14 focus:outline-none focus:ring-4 focus:ring-cyan-400 transition"
+          />
+          <button
+            type="button"
+            aria-label="Toggle password visibility"
+            onclick="togglePassword()"
+            class="absolute top-1/2 right-4 -translate-y-1/2 text-cyan-400 hover:text-cyan-200 transition"
+          >
+            <svg
+              id="eyeIcon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+          </button>
         </div>
-        <div>
-          <div class="relative">
-            <input id="password" class="bg-gray-600 font-bold w-full rounded-xl px-4 py-2 text-white pr-12" type="password" placeholder="Password" name="password" required minlength="4">
-            <button type="button" onclick="togglePassword()" class="absolute top-1/2 right-3 -translate-y-1/2">
-              <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-        <button type="submit" class="w-full bg-green-800 text-white py-2 rounded-xl mt-4 hover:bg-black transition">
-          Login
-        </button>
-      </form>
-    </div>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-3xl py-3 font-extrabold tracking-wide hover:from-cyan-600 hover:to-cyan-700 transition shadow-lg"
+      >
+        Login
+      </button>
+      <p>Don't have an account? <a href='/register'><span class='text-blue-700'>Sign Up</span></a></p>
+    </form>
   </section>
 
   <script>
@@ -46,5 +90,6 @@
            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
     }
   </script>
+
 </body>
 </html>

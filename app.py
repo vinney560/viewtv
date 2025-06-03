@@ -1,6 +1,6 @@
-from flask import Flask, session, abort, render_template, request, flash, url_for, redirect
-from flask_login import login_user, logout_user, LoginManager, login_required, UserMixin, current_user
-from werkzeug.security import generate_password_hash,  check_password_hash
+from flask import Flask, session, abort, render_template, request, flash, url_for, redirect, jsonify
+from flask_login import login_user, logout_user as flask_logout_user, LoginManager, login_required, UserMixin, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_wtf.csrf import CSRFProtect, CSRFError
@@ -12,9 +12,12 @@ from sqlalchemy.exc import OperationalError, IntegrityError
 from sqlalchemy.orm import joinedload
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-#from flask_mail import Mail, Message
+# from flask_mail import Mail, Message    # Uncomment if you enable email sending
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
+from datetime import datetime, timedelta   # Added for nairobi_time
+import requests
+
 load_dotenv()
 
 #===================================================
@@ -26,7 +29,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///viewtv.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 
 app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
-app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT"))
+app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT")) if os.getenv("MAIL_PORT") else None
 app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == 'True'
 app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
@@ -37,51 +40,54 @@ jwt = JWTManager(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-CORS(app) 
+CORS(app)
 csrf = CSRFProtect()
 csrf.init_app(app)
 limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"])
 
+#mail = Mail(app)
+
 #====================================================
 
 def nairobi_time():
-    return datetime.utcnow() + timedelta(hours=3)# Converts GMT to Kenyan Local Time
+    return datetime.utcnow() + timedelta(hours=3)  # Converts GMT to Kenyan Local Time
 
 #----------------------------------------------------
 
 class User(db.Model, UserMixin):
-     id = db.Column(db.Integer, primary_key=True)
-     name = db.Column(db.String(255), nullable=True)# full name for refference in emailing
-     email = db.Column(db.String(255), unique=True, nullable=False)# For day to day communication & Notice
-     password = db.Column(db.String(32), nullable=False)# 4-8 x-sters long
-     role = db.Column(db.String(20), default='basic', nullable=True)# Basic, Premium,VIP, Admin
-     status = db.Column(db.String(25), nullable=True)# Active, Paid, Deactivated, Blacklisted, Locked
-     failed_login_attempts = db.Column(db.Integer, nullable=True)# 5-wrong password-locks account
-     email_verified = db.Column(db.Boolean, nullable=True)# Confirms if email is valid & owned by User
-     agreed = db.Column(db.Boolean, nullable=True)# Agreement to Terms & Conditions of the Services 
-     created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
-     
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=True)  # full name for reference in emailing
+    email = db.Column(db.String(255), unique=True, nullable=False)  # For day-to-day communication & Notice
+    password = db.Column(db.String(128), nullable=False)  # Increased length to hold hash
+    role = db.Column(db.String(20), default='basic', nullable=True)  # Basic, Premium, VIP, Admin
+    status = db.Column(db.String(25), nullable=True)  # Active, Paid, Deactivated, Blacklisted, Locked
+    failed_login_attempts = db.Column(db.Integer, nullable=True, default=0)  # 5 wrong password-locks account
+    email_verified = db.Column(db.Boolean, nullable=True, default=False)  # Confirms if email is valid & owned by User
+    agreed = db.Column(db.Boolean, nullable=True, default=False)  # Agreement to Terms & Conditions of the Services
+    created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
+
 class Channel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     Tv = db.Column(db.String(1255), nullable=True)
+    Tv_url = db.Column(db.String(1000), nullable=True)
+    country = db.Column(db.String(1255), nullable=True)
     created_at = db.Column(db.DateTime, default=nairobi_time)
-    category = db.Column(db.String(1000), nullable=True)
-
+    
 class AdminCode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(500), default="479admin479", nullable=True)
-    
+
     def __repr__(self):
-        return f"<AdminCode {self.secret}>"
+        return f"<AdminCode {self.code}>"
 
 with app.app_context():
-     db.create_all()
+    db.create_all()
 
 #====================================================
 
-@login_manager.user_loader  
-def load_user(user_id):  
-    return User.query.get(int(user_id))  
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 def admin_required(f):
     @wraps(f)
@@ -94,27 +100,25 @@ def admin_required(f):
 def is_admin():
     return session.get('role') == 'admin'
 
-def logout_user():
+def logout_current_user():
     session.clear()
+    flask_logout_user()
     return redirect(url_for("home"))
 
 @app.route('/is_authenticated')
 def is_authenticated():
-    user_id = current_user.id
-    if user_id in session:
-        return jsonify({'authenticated': True})
-    return jsonify({'authenticated': False})
-    
+    return jsonify({'authenticated': current_user.is_authenticated})
+
 @app.before_request
 def make_session_permanent():
-    session.permanent = True        
+    session.permanent = True
 
 @app.before_request
 def auto_logout_user():
     if current_user.is_authenticated:
         user = User.query.filter_by(id=current_user.id).first()
         if user and user.role != current_user.role:
-            logout_user()
+            logout_current_user()
             flash("Role has changed. Please log in again.", "error")
             return redirect(url_for('login'))
 
@@ -147,17 +151,17 @@ def send_verification_email(user):
 
 @app.route('/verify_registration/<token>')
 def verify_registration(token):
-    email = verify_email_token(token)
-    if not email:
+    email_addr = verify_email_token(token)
+    if not email_addr:
         flash('Invalid or expired verification link.', 'error')
         return redirect(url_for('login'))
 
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email_addr).first()
     if not user:
         flash('User not found.', 'error')
         return redirect(url_for('login'))
 
-    user.email_verified=True
+    user.email_verified = True
     db.session.commit()
     login_user(user)
     flash('Email verified! Welcome to T-Give Nexus.', 'success')
@@ -170,17 +174,17 @@ def create_reset_token(user):
 def verify_reset_token(token, expiration=3600):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     try:
-        email = serializer.loads(token, salt='password-reset-salt', max_age=expiration)
+        email_addr = serializer.loads(token, salt='password-reset-salt', max_age=expiration)
     except Exception:
         return None
-    return email
+    return email_addr
 
 @app.route('/forgot_password', methods=['GET', 'POST'])
 @limiter.limit("5 per minute")
 def forgot_password():
     if request.method == 'POST':
-        email = request.form.get('email')
-        user = User.query.filter_by(email=email).first()
+        email_addr = request.form.get('email')
+        user = User.query.filter_by(email=email_addr).first()
         if user:
             send_reset_email(user)
             flash('Password reset email sent!', 'success')
@@ -205,12 +209,12 @@ def send_reset_email(user):
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    email = verify_reset_token(token)
-    if not email:
+    email_addr = verify_reset_token(token)
+    if not email_addr:
         flash('Invalid or expired token.', 'error')
         return redirect(url_for('forgot_password'))
 
-    user = User.query.filter_by(email=email).first()
+    user = User.query.filter_by(email=email_addr).first()
     if not user:
         flash('User not found.', 'error')
         return redirect(url_for('forgot_password'))
@@ -239,61 +243,77 @@ def home():
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == 'POST':
-        name=request.form["name"]
-        email=request.form['email']
-        password=request.form['password']
-        confirm_password=request.form['confirm_password']
-        code_input=request.form['code']
-    
-        if not name or not password or not confirm_password or not email:
-            flash('All fields are required')
+        name = request.form["name"]
+        email_addr = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        code_input = request.form.get('code')
+
+        if not name or not password or not confirm_password or not email_addr:
+            flash('All fields are required', "error")
             return render_template("register.html")
-        if not (email.endswith('@gmail.com') or email.endswith('@yahoo.com')):
-            flash('Invalid email')
-            return render_template('register.html', name=name, email=email, password=password, confirm_password=confirm_password)
+
+        if not (email_addr.endswith('@gmail.com') or email_addr.endswith('@yahoo.com')):
+            flash('Invalid email', "error")
+            return render_template('register.html',
+                                   name=name, email=email_addr,
+                                   password=password, confirm_password=confirm_password)
+
         if password != confirm_password:
-            flash("Passwords don't match")
-            return render_template('register.html', name=name, email=email, password=password, confirm_password=confirm_password)
+            flash("Passwords don't match", "error")
+            return render_template('register.html',
+                                   name=name, email=email_addr,
+                                   password=password, confirm_password=confirm_password)
+
         secret_code = AdminCode.query.first()
         if not secret_code:
-            new_code=AdminCode(code="479admin479")
+            new_code = AdminCode(code="479admin479")
             db.session.add(new_code)
             db.session.commit()
-            secret_code=AdminCode.query.first()
-        if secret_code and  code_input == secret_code.code:
+            secret_code = AdminCode.query.first()
+
+        if secret_code and code_input == secret_code.code:
             role = 'admin'
         else:
             role = 'basic'
-        status = 'active'       
+
+        status = 'active'
         hashed_password = generate_password_hash(password)
-        new_user = User(name=name, password=hashed_password, email=email, role=role, status=status, agreed=True)
+        new_user = User(name=name, password=hashed_password,
+                        email=email_addr, role=role,
+                        status=status, agreed=True)
         db.session.add(new_user)
         db.session.commit()
-        
-        send_verification_email(new_user)
-        
+
+        # Uncomment the next line if you have Flask-Mail configured
+        # send_verification_email(new_user)
+
         return redirect(url_for('home'))
-    return render_template("register.html")        
+
+    return render_template("register.html")
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
-        if session.get['role'] == 'admin':
+        # Use session.get('role') instead of session.get['role']
+        role = session.get('role') or current_user.role
+        if role == 'admin':
             return redirect(url_for('admin_mode'))
-        elif session.get['role'] == 'VIP':
+        elif role == 'VIP':
             return redirect(url_for('vip_mode'))
         else:
             return redirect(url_for('basic_mode'))
-            
+
     if request.method == "POST":
-        email=request.form['email']
-        password=request.form['password']
-        
-        if not password or not email:
-            flash('All fields are required')
+        email_addr = request.form['email']
+        password = request.form['password']
+
+        if not password or not email_addr:
+            flash('All fields are required', "error")
             return render_template('login.html')
-        user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):       
+
+        user = User.query.filter_by(email=email_addr).first()
+        if user and check_password_hash(user.password, password):
             session['role'] = user.role
             session['active'] = user.status
             login_user(user)
@@ -304,28 +324,35 @@ def login():
             elif user.role == 'admin':
                 return redirect(url_for('admin_mode'))
             else:
-                return redirect(url_for('basic_mode'))   
-        flash('Invalid Credentials')
+                return redirect(url_for('basic_mode'))
+
+        flash('Invalid Credentials', "error")
         return redirect(url_for('login'))
-    return render_template('login.html')        
+
+    return render_template('login.html')
+
 #====================================================
 @app.route('/vip_mode')
 def vip_mode():
-    pass
+    # You can add logic or render a template for VIP users
+    return render_template('vip.html')
+
 @app.route('/basic_mode')
 def basic_mode():
     return redirect(url_for('channels'))
+
 @app.route('/admin_mode')
 def admin_mode():
-    pass
+    # You can add logic or render a template for Admin users
+    return render_template('admin.html')
 
-import requests
-
-def fetch_channels_from_m3u(url):
+# Fetch & Save by Country
+def fetch_and_save_country_channels(country_code):
+    url = f"https://iptv-org.github.io/iptv/countries/{country_code}.m3u"
     try:
         response = requests.get(url)
         lines = response.text.strip().splitlines()
-        channels = []
+        new_count = 0
 
         for i in range(len(lines)):
             if lines[i].startswith("#EXTINF"):
@@ -333,28 +360,35 @@ def fetch_channels_from_m3u(url):
                 if i + 1 < len(lines):
                     link = lines[i + 1].strip()
                     if link.endswith(".m3u8"):
-                        channels.append({"name": name, "url": link})
-        return channels
+                        # Avoid duplicates
+                        exists = Channel.query.filter_by(Tv=name, Tv_url=link).first()
+                        if not exists:
+                            db.session.add(Channel(Tv=name, Tv_url=link, country=country_code))
+                            new_count += 1
+
+        db.session.commit()
+        print(f"[INFO] Added {new_count} new channels from {country_code}")
     except Exception as e:
-        print(f"[ERROR] Failed to fetch M3U: {e}")
-        return []
+        print(f"[ERROR] Failed to fetch from {url}: {e}")
 
-@app.route('/channels')
-#@login_required
-def channels():
-    # Source: Kenyan channels
-    m3u_url = "https://iptv-org.github.io/iptv/countries/ke.m3u"
-    channel_list = fetch_channels_from_m3u(m3u_url)
-    return render_template("channels.html", channels=channel_list)
+@app.route('/countries')
+def countries():
+    return render_template('countries.html')
 
-from urllib.parse import unquote
+# Route to load channels by country
+@app.route("/channels/<country>")
+def channels_by_country(country):
+    fetch_and_save_country_channels(country.lower())
+    results = Channel.query.filter_by(country=country.lower()).all()
+    return render_template("channels.html", channels=results, country=country.upper())
 
-@app.route('/watch')
-#@login_required
+# Watch a selected channel
+@app.route("/watch")
 def watch():
     name = request.args.get("name")
     url = request.args.get("url")
     return render_template("Vplayer.html", name=name, stream_url=url)
+
 #====================================================
 @app.context_processor
 def inject_csrf_token():
@@ -375,14 +409,15 @@ def forbidden_error(error):
 @csrf.exempt
 def internal_error(error):
     app.logger.error(f'Internal Server Error: {error}', exc_info=True)
-    flash('Request cannot be completed', 'error'), 500
-    return redirect(request.referrer or url_for('home'))
+    flash('Request cannot be completed', 'error')
+    return redirect(request.referrer or url_for('home')), 500
 
 @app.errorhandler(CSRFError)
 @csrf.exempt
 def handle_csrf_error(e):
-    flash("csrf missing", "error"), 400
-    return redirect(request.referrer or url_for('home'))
+    flash("CSRF token missing or invalid", "error")
+    return redirect(request.referrer or url_for('home')), 400
+
 #====================================================
 if __name__ == '__main__':
-    app.rum(host='0.0.0.0', port=47947, debug=True)    
+    app.run(host='0.0.0.0', port=47947, debug=True)

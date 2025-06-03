@@ -95,10 +95,36 @@
       box-shadow: 0 6px 15px rgba(33,161,241,0.7);
     }
 
-    /* Channel list styles - integrated with the current design */
+    /* UPDATED Channel list styles - scrollable with nice scrollbar */
     .channels {
       margin-top: 10px;
+      max-height: 360px;   /* limits height */
+      overflow-y: auto;    /* adds vertical scrollbar if needed */
+      padding-right: 8px;  /* prevent content behind scrollbar */
+      border-radius: 12px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
     }
+    /* Scrollbar styles for WebKit browsers */
+    .channels::-webkit-scrollbar {
+      width: 8px;
+    }
+    .channels::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .channels::-webkit-scrollbar-thumb {
+      background-color: #00ff88;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+    /* Firefox scrollbar */
+    @-moz-document url-prefix() {
+      .channels {
+        scrollbar-width: thin;
+        scrollbar-color: #00ff88 transparent;
+      }
+    }
+
     .channel {
       background: rgba(50, 90, 130, 0.3);
       padding: 12px 15px;
@@ -194,7 +220,7 @@
   </main>
 
   <footer>
-    &copy; 2025 WatchFlix. All rights reserved.
+    &copy; 2025 View Tv. All rights reserved.
   </footer>
 </body>
 </html>

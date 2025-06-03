@@ -10,3 +10,4 @@ itsdangerous>=2.0
 python-dotenv>=1.0
 requests>=2.25
 gunicorn==23.0.0
+Flask-Mail==0.9.1

@@ -1,0 +1,388 @@
+from flask import Flask, session, abort, render_template, request, flash, url_for, redirect
+from flask_login import login_user, logout_user, LoginManager, login_required, UserMixin, current_user
+from werkzeug.security import generate_password_hash,  check_password_hash
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from flask_wtf.csrf import CSRFProtect, CSRFError
+from functools import wraps
+import os
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import event, Index, text, create_engine
+from sqlalchemy.exc import OperationalError, IntegrityError
+from sqlalchemy.orm import joinedload
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+#from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
+from dotenv import load_dotenv
+load_dotenv()
+
+#===================================================
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = "12345QWER"
+app.config["JWT_SECRET_KEY"] = "4321REWQ"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///viewtv.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+
+app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
+app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT"))
+app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == 'True'
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
+
+db = SQLAlchemy(app)
+jwt = JWTManager(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+CORS(app) 
+csrf = CSRFProtect()
+csrf.init_app(app)
+limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"])
+
+#====================================================
+
+def nairobi_time():
+    return datetime.utcnow() + timedelta(hours=3)# Converts GMT to Kenyan Local Time
+
+#----------------------------------------------------
+
+class User(db.Model, UserMixin):
+     id = db.Column(db.Integer, primary_key=True)
+     name = db.Column(db.String(255), nullable=True)# full name for refference in emailing
+     email = db.Column(db.String(255), unique=True, nullable=False)# For day to day communication & Notice
+     password = db.Column(db.String(32), nullable=False)# 4-8 x-sters long
+     role = db.Column(db.String(20), default='basic', nullable=True)# Basic, Premium,VIP, Admin
+     status = db.Column(db.String(25), nullable=True)# Active, Paid, Deactivated, Blacklisted, Locked
+     failed_login_attempts = db.Column(db.Integer, nullable=True)# 5-wrong password-locks account
+     email_verified = db.Column(db.Boolean, nullable=True)# Confirms if email is valid & owned by User
+     agreed = db.Column(db.Boolean, nullable=True)# Agreement to Terms & Conditions of the Services 
+     created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
+     
+class Channel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    Tv = db.Column(db.String(1255), nullable=True)
+    created_at = db.Column(db.DateTime, default=nairobi_time)
+    category = db.Column(db.String(1000), nullable=True)
+
+class AdminCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(500), default="479admin479", nullable=True)
+    
+    def __repr__(self):
+        return f"<AdminCode {self.secret}>"
+
+with app.app_context():
+     db.create_all()
+
+#====================================================
+
+@login_manager.user_loader  
+def load_user(user_id):  
+    return User.query.get(int(user_id))  
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role not in ['admin', 'superadmin']:
+            return abort(403)
+        return f(*args, **kwargs)
+    return decorated_function
+
+def is_admin():
+    return session.get('role') == 'admin'
+
+def logout_user():
+    session.clear()
+    return redirect(url_for("home"))
+
+@app.route('/is_authenticated')
+def is_authenticated():
+    user_id = current_user.id
+    if user_id in session:
+        return jsonify({'authenticated': True})
+    return jsonify({'authenticated': False})
+    
+@app.before_request
+def make_session_permanent():
+    session.permanent = True        
+
+@app.before_request
+def auto_logout_user():
+    if current_user.is_authenticated:
+        user = User.query.filter_by(id=current_user.id).first()
+        if user and user.role != current_user.role:
+            logout_user()
+            flash("Role has changed. Please log in again.", "error")
+            return redirect(url_for('login'))
+
+def generate_email_token(user):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(user.email, salt='email-verification')
+
+def verify_email_token(token, expiration=300):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token, salt='email-verification', max_age=expiration)
+    except Exception:
+        return None
+    return email
+
+def send_verification_email(user):
+    token = generate_email_token(user)
+    verify_link = url_for('verify_registration', token=token, _external=True)
+
+    msg = Message(
+        subject="Verify your T-Give Nexus account",
+        recipients=[user.email]
+    )
+    msg.html = render_template('verify_email_template.html', verify_link=verify_link)
+
+    try:
+        mail.send(msg)
+    except Exception as e:
+        print(f"Failed to send verification email: {e}")
+
+@app.route('/verify_registration/<token>')
+def verify_registration(token):
+    email = verify_email_token(token)
+    if not email:
+        flash('Invalid or expired verification link.', 'error')
+        return redirect(url_for('login'))
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash('User not found.', 'error')
+        return redirect(url_for('login'))
+
+    user.email_verified=True
+    db.session.commit()
+    login_user(user)
+    flash('Email verified! Welcome to T-Give Nexus.', 'success')
+    return redirect(url_for('welcome'))
+
+def create_reset_token(user):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(user.email, salt='password-reset-salt')
+
+def verify_reset_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token, salt='password-reset-salt', max_age=expiration)
+    except Exception:
+        return None
+    return email
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            send_reset_email(user)
+            flash('Password reset email sent!', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Email not found.', 'error')
+            return redirect(url_for('login'))
+
+    return render_template('forgot_password.html')
+
+def send_reset_email(user):
+    token = create_reset_token(user)
+    reset_link = url_for('reset_password', token=token, _external=True)
+
+    msg = Message(
+        subject="Password Reset Request",
+        sender=("View Tv", "vinneyjoy1@gmail.com"),
+        recipients=[user.email],
+    )
+    msg.html = render_template('forgot_password_email.html', reset_link=reset_link)
+    mail.send(msg)
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    email = verify_reset_token(token)
+    if not email:
+        flash('Invalid or expired token.', 'error')
+        return redirect(url_for('forgot_password'))
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash('User not found.', 'error')
+        return redirect(url_for('forgot_password'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('password')
+        hashed_password = generate_password_hash(new_password)
+        user.password = hashed_password
+        db.session.commit()
+        flash('Your password has been updated.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('reset_password.html')
+
+#====================================================
+
+@app.route("/welcome")
+@login_required
+def welcome():
+    return render_template("welcome.html")
+
+@app.route("/home")
+def home():
+    return render_template('index.html')
+
+@app.route("/register", methods=["POST", "GET"])
+def register():
+    if request.method == 'POST':
+        name=request.form["name"]
+        email=request.form['email']
+        password=request.form['password']
+        confirm_password=request.form['confirm_password']
+        code_input=request.form['code']
+    
+        if not name or not password or not confirm_password or not email:
+            flash('All fields are required')
+            return render_template("register.html")
+        if not (email.endswith('@gmail.com') or email.endswith('@yahoo.com')):
+            flash('Invalid email')
+            return render_template('register.html', name=name, email=email, password=password, confirm_password=confirm_password)
+        if password != confirm_password:
+            flash("Passwords don't match")
+            return render_template('register.html', name=name, email=email, password=password, confirm_password=confirm_password)
+        secret_code = AdminCode.query.first()
+        if not secret_code:
+            new_code=AdminCode(code="479admin479")
+            db.session.add(new_code)
+            db.session.commit()
+            secret_code=AdminCode.query.first()
+        if secret_code and  code_input == secret_code.code:
+            role = 'admin'
+        else:
+            role = 'basic'
+        status = 'active'       
+        hashed_password = generate_password_hash(password)
+        new_user = User(name=name, password=hashed_password, email=email, role=role, status=status, agreed=True)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        send_verification_email(new_user)
+        
+        return redirect(url_for('home'))
+    return render_template("register.html")        
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    if current_user.is_authenticated:
+        if session.get['role'] == 'admin':
+            return redirect(url_for('admin_mode'))
+        elif session.get['role'] == 'VIP':
+            return redirect(url_for('vip_mode'))
+        else:
+            return redirect(url_for('basic_mode'))
+            
+    if request.method == "POST":
+        email=request.form['email']
+        password=request.form['password']
+        
+        if not password or not email:
+            flash('All fields are required')
+            return render_template('login.html')
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):       
+            session['role'] = user.role
+            session['active'] = user.status
+            login_user(user)
+            flash("♻ Welcome back!", "success")
+
+            if user.role == 'VIP':
+                return redirect(url_for('vip_mode'))
+            elif user.role == 'admin':
+                return redirect(url_for('admin_mode'))
+            else:
+                return redirect(url_for('basic_mode'))   
+        flash('Invalid Credentials')
+        return redirect(url_for('login'))
+    return render_template('login.html')        
+#====================================================
+@app.route('/vip_mode')
+def vip_mode():
+    pass
+@app.route('/basic_mode')
+def basic_mode():
+    return redirect(url_for('channels'))
+@app.route('/admin_mode')
+def admin_mode():
+    pass
+
+import requests
+
+def fetch_channels_from_m3u(url):
+    try:
+        response = requests.get(url)
+        lines = response.text.strip().splitlines()
+        channels = []
+
+        for i in range(len(lines)):
+            if lines[i].startswith("#EXTINF"):
+                name = lines[i].split(",")[-1].strip()
+                if i + 1 < len(lines):
+                    link = lines[i + 1].strip()
+                    if link.endswith(".m3u8"):
+                        channels.append({"name": name, "url": link})
+        return channels
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch M3U: {e}")
+        return []
+
+@app.route('/channels')
+#@login_required
+def channels():
+    # Source: Kenyan channels
+    m3u_url = "https://iptv-org.github.io/iptv/countries/ke.m3u"
+    channel_list = fetch_channels_from_m3u(m3u_url)
+    return render_template("channels.html", channels=channel_list)
+
+from urllib.parse import unquote
+
+@app.route('/watch')
+#@login_required
+def watch():
+    name = request.args.get("name")
+    url = request.args.get("url")
+    return render_template("Vplayer.html", name=name, stream_url=url)
+#====================================================
+@app.context_processor
+def inject_csrf_token():
+    from flask_wtf.csrf import generate_csrf
+    return dict(csrf_token=generate_csrf)
+
+@app.errorhandler(404)
+@csrf.exempt
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(403)
+@csrf.exempt
+def forbidden_error(error):
+    return render_template('403.html'), 403
+
+@app.errorhandler(500)
+@csrf.exempt
+def internal_error(error):
+    app.logger.error(f'Internal Server Error: {error}', exc_info=True)
+    flash('Request cannot be completed', 'error'), 500
+    return redirect(request.referrer or url_for('home'))
+
+@app.errorhandler(CSRFError)
+@csrf.exempt
+def handle_csrf_error(e):
+    flash("csrf missing", "error"), 400
+    return redirect(request.referrer or url_for('home'))
+#====================================================
+if __name__ == '__main__':
+    app.rum(host='0.0.0.0', port=47947, debug=True)    

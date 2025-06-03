@@ -45,7 +45,7 @@ csrf = CSRFProtect()
 csrf.init_app(app)
 limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"])
 
-#mail = Mail(app)
+mail = Mail(app)
 
 #====================================================
 
@@ -285,8 +285,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        # Uncomment the next line if you have Flask-Mail configured
-        # send_verification_email(new_user)
+        send_verification_email(new_user)
 
         return redirect(url_for('home'))
 
@@ -295,7 +294,6 @@ def register():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
-        # Use session.get('role') instead of session.get['role']
         role = session.get('role') or current_user.role
         if role == 'admin':
             return redirect(url_for('admin_mode'))

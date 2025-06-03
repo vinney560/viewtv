@@ -12,7 +12,7 @@ from sqlalchemy.exc import OperationalError, IntegrityError
 from sqlalchemy.orm import joinedload
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-# from flask_mail import Mail, Message    # Uncomment if you enable email sending
+from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 from datetime import datetime, timedelta   # Added for nairobi_time

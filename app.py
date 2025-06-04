@@ -369,9 +369,34 @@ def fetch_and_save_country_channels(country_code):
     except Exception as e:
         print(f"[ERROR] Failed to fetch from {url}: {e}")
 
-@app.route('/countries')
+@app.route("/countries")
 def countries():
-    return render_template('countries.html')
+    try:
+        response = requests.get("https://iptv-org.github.io/api/countries.json")
+        response.raise_for_status()
+        countries = response.json()
+        return render_template("countries.html", countries=countries)
+    except Exception as e:
+        return f"Error fetching countries: {e}"
+
+@app.route("/country/<country_code>")
+def fetch_country_channels(country_code):
+    url = f"https://iptv-org.github.io/iptv/countries/{country_code.lower()}.m3u"
+    try:
+        response = requests.get(url)
+        lines = response.text.splitlines()
+
+        channels = []
+        name = None
+        for line in lines:
+            if line.startswith("#EXTINF:-1"):
+                name = line.split(",")[-1].strip()
+            elif line.startswith("http"):
+                channels.append({"name": name, "url": line})
+
+        return render_template("channels.html", channels=channels, country=country_code.upper())
+    except Exception as e:
+        return f"Error fetching channels: {e}"
 
 # Route to load channels by country
 @app.route("/channels/<country>")

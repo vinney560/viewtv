@@ -336,8 +336,9 @@ def vip_mode():
     return render_template('vip.html')
 
 @app.route('/basic_mode')
+@login_required
 def basic_mode():
-    return redirect(url_for('channels'))
+    return redirect(url_for('countries'))
 
 @app.route('/admin_mode')
 def admin_mode():
@@ -370,6 +371,7 @@ def fetch_and_save_country_channels(country_code):
         print(f"[ERROR] Failed to fetch from {url}: {e}")
 
 @app.route("/countries")
+@login_required
 def countries():
     try:
         response = requests.get("https://iptv-org.github.io/api/countries.json")
@@ -380,6 +382,7 @@ def countries():
         return f"Error fetching countries: {e}"
 
 @app.route("/country/<country_code>")
+@login_required
 def fetch_country_channels(country_code):
     url = f"https://iptv-org.github.io/iptv/countries/{country_code.lower()}.m3u"
     try:
@@ -400,6 +403,7 @@ def fetch_country_channels(country_code):
 
 # Route to load channels by country
 @app.route("/channels/<country>")
+@login_required
 def channels_by_country(country):
     fetch_and_save_country_channels(country.lower())
     results = Channel.query.filter_by(country=country.lower()).all()
@@ -407,6 +411,7 @@ def channels_by_country(country):
 
 # Watch a selected channel
 @app.route("/watch")
+@login_required
 def watch():
     name = request.args.get("name")
     url = request.args.get("url")

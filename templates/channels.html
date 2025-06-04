@@ -137,10 +137,10 @@
   <h2>📺 Available Channels</h2>
   <div class="channel-list">
     {% for ch in channels %}
-      <div class="channel" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.Tv }}">
+      <div class="channel" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.name }}">
         <div class="channel-number">{{ loop.index }}.</div>
-        <div class="channel-name" title="{{ ch.Tv }}">{{ ch.Tv }}</div>
-        <a class="watch-link" href="{{ url_for('watch') }}?name={{ ch.Tv }}&url={{ ch.Tv_url }}">Watch</a>
+        <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
+        <a class="watch-link" href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}">Watch</a>
       </div>
     {% else %}
       <p class="no-channels">No channels found.</p>

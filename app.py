@@ -448,6 +448,19 @@ def channels_by_country(country):
     results = Channel.query.filter_by(country=country.lower()).all()
     return render_template("channels.html", channels=results, country=country.upper())
 
+@app.route('/test-channels')
+def test_channels():
+    url = "https://iptv-org.github.io/iptv/countries/ke.m3u"
+    response = requests.get(url)
+    channels = []
+    lines = response.text.splitlines()
+    for i in range(len(lines)):
+        if lines[i].startswith("#EXTINF"):
+            name = lines[i].split(",")[-1]
+            stream_url = lines[i + 1]
+            channels.append({"name": name, "url": stream_url})
+    return render_template("channels.html", channels=channels)
+
 # Watch a selected channel
 @app.route("/watch")
 @login_required

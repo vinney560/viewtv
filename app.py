@@ -96,7 +96,6 @@ class AdminCode(db.Model):
         return f"<AdminCode {self.code}>"
 
 with app.app_context():
-    db.drop_all()
     db.create_all()
 
 #====================================================

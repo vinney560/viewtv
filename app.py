@@ -467,7 +467,7 @@ def test_channels():
 def watch():
     name = request.args.get("name")
     url = request.args.get("url")
-    return render_template("Vplayer.html", name=name, stream_url=url)
+    return render_template("Bplayer.html", name=name, stream_url=url)
 
 #====================================================
 @app.context_processor

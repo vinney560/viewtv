@@ -65,6 +65,21 @@ class User(db.Model, UserMixin):
     email_verified = db.Column(db.Boolean, nullable=True, default=False)  # Confirms if email is valid & owned by User
     agreed = db.Column(db.Boolean, nullable=True, default=False)  # Agreement to Terms & Conditions of the Services
     created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
+    last_failed_login = db.Column(db.DateTime, nullable=True)
+
+    def is_locked(self):
+        if self.failed_login_attempts < 5:
+            return False
+        if not self.last_failed_login:
+            return False
+        unlock_time = self.last_failed_login + timedelta(minutes=5)
+        if datetime.utcnow() > unlock_time:
+            # Reset if the time has passed
+            self.failed_login_attempts = 0
+            self.last_failed_login = None
+            db.session.commit()
+            return False
+        return True    
 
 class Channel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -81,6 +96,7 @@ class AdminCode(db.Model):
         return f"<AdminCode {self.code}>"
 
 with app.app_context():
+    db.drop_all()
     db.create_all()
 
 #====================================================
@@ -311,18 +327,42 @@ def login():
             return render_template('login.html')
 
         user = User.query.filter_by(email=email_addr).first()
-        if user and check_password_hash(user.password, password):
-            session['role'] = user.role
-            session['active'] = user.status
-            login_user(user)
-            flash("♻ Welcome back!", "success")
 
-            if user.role == 'VIP':
-                return redirect(url_for('vip_mode'))
-            elif user.role == 'admin':
-                return redirect(url_for('admin_mode'))
+        if user:
+            # Auto-unlock after 5 minutes
+            if user.failed_login_attempts >= 5:
+                if user.last_failed_login and datetime.utcnow() - user.last_failed_login < timedelta(minutes=5):
+                    remaining = 5 - (datetime.utcnow() - user.last_failed_login).seconds // 60
+                    flash(f"Account locked. Try again in {remaining} minutes.", "error")
+                    return redirect(url_for('login'))
+                else:
+                    user.failed_login_attempts = 0
+                    db.session.commit()
+
+            if not user.email_verified:
+                flash("Please verify your email before logging in.", "warning")
+                return redirect(url_for('login'))
+
+            if check_password_hash(user.password, password):
+                user.failed_login_attempts = 0  # Reset on success
+                db.session.commit()
+
+                session['role'] = user.role
+                session['active'] = user.status
+                login_user(user)
+                flash("♻ Welcome back!", "success")
+
+                if user.role == 'VIP':
+                    return redirect(url_for('vip_mode'))
+                elif user.role == 'admin':
+                    return redirect(url_for('admin_mode'))
+                else:
+                    return redirect(url_for('basic_mode'))
             else:
-                return redirect(url_for('basic_mode'))
+                # Increase failed attempt count
+                user.failed_login_attempts += 1
+                user.last_failed_login = datetime.utcnow()
+                db.session.commit()
 
         flash('Invalid Credentials', "error")
         return redirect(url_for('login'))

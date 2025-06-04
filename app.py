@@ -454,10 +454,10 @@ def test_channels():
             channels.append({"name": name, "url": stream_url})
     return render_template("channels.html", channels=channels)
 
-@app.route("/group/<group_code>")
+@app.route("/category/<category_id>")
 @login_required
-def fetch_group_channels(group_code):
-    url = f"https://iptv-org.github.io/iptv/groups/{group_code.lower()}.m3u"
+def fetch_category_channels(category_id):
+    url = f"https://iptv-org.github.io/iptv/categories/{category_id}.m3u"
     try:
         response = requests.get(url)
         lines = response.text.strip().splitlines()
@@ -471,21 +471,20 @@ def fetch_group_channels(group_code):
                 if name:
                     channels.append({"name": name, "url": line})
 
-        return render_template("channels.html", channels=channels, country=group_code.upper())
+        return render_template("channels.html", channels=channels, category=category_id.capitalize())
     except Exception as e:
-        return f"Error fetching group channels: {e}"
+        return f"Error fetching category channels: {e}"
 
-@app.route("/groups")
+@app.route("/categories")
 @login_required
-def show_groups():
+def show_categories():
     try:
-        response = requests.get("https://iptv-org.github.io/api/groups.json")
+        response = requests.get("https://iptv-org.github.io/api/categories.json")
         response.raise_for_status()
-        groups = response.json()
-        return render_template("groups.html", groups=groups)
+        categories = response.json()
+        return render_template("categories.html", categories=categories)
     except Exception as e:
-        return f"Error fetching groups: {e}"
-
+        return f"Failed to load categories: {e}"
 
 # Watch a selected channel
 @app.route("/watch")

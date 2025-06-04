@@ -58,9 +58,9 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=True)  # full name for reference in emailing
     email = db.Column(db.String(255), unique=True, nullable=False)  # For day-to-day communication & Notice
-    password = db.Column(db.String(128), nullable=False)  # Increased length to hold hash
-    role = db.Column(db.String(20), default='basic', nullable=True)  # Basic, Premium, VIP, Admin
-    status = db.Column(db.String(25), nullable=True)  # Active, Paid, Deactivated, Blacklisted, Locked
+    password = db.Column(db.String(255), nullable=False)  # Increased length to hold hash
+    role = db.Column(db.String(50), default='basic', nullable=True)  # Basic, Premium, VIP, Admin
+    status = db.Column(db.String(50), nullable=True)  # Active, Paid, Deactivated, Blacklisted, Locked
     failed_login_attempts = db.Column(db.Integer, nullable=True, default=0)  # 5 wrong password-locks account
     email_verified = db.Column(db.Boolean, nullable=True, default=False)  # Confirms if email is valid & owned by User
     agreed = db.Column(db.Boolean, nullable=True, default=False)  # Agreement to Terms & Conditions of the Services
@@ -236,7 +236,7 @@ def reset_password(token):
 def welcome():
     return render_template("welcome.html")
 
-@app.route("/home")
+@app.route("/")
 def home():
     return render_template('index.html')
 
@@ -438,13 +438,13 @@ def forbidden_error(error):
 def internal_error(error):
     app.logger.error(f'Internal Server Error: {error}', exc_info=True)
     flash('Request cannot be completed', 'error')
-    return redirect(request.referrer or url_for('home')), 500
+    return redirect(request.referrer or url_for('/')), 500
 
 @app.errorhandler(CSRFError)
 @csrf.exempt
 def handle_csrf_error(e):
     flash("CSRF token missing or invalid", "error")
-    return redirect(request.referrer or url_for('home')), 400
+    return redirect(request.referrer or url_for('/')), 400
 
 #====================================================
 if __name__ == '__main__':

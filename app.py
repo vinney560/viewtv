@@ -454,6 +454,39 @@ def test_channels():
             channels.append({"name": name, "url": stream_url})
     return render_template("channels.html", channels=channels)
 
+@app.route("/group/<group_code>")
+@login_required
+def fetch_group_channels(group_code):
+    url = f"https://iptv-org.github.io/iptv/groups/{group_code.lower()}.m3u"
+    try:
+        response = requests.get(url)
+        lines = response.text.strip().splitlines()
+
+        channels = []
+        name = None
+        for line in lines:
+            if line.startswith("#EXTINF"):
+                name = line.split(",")[-1].strip()
+            elif line.startswith("http"):
+                if name:
+                    channels.append({"name": name, "url": line})
+
+        return render_template("channels.html", channels=channels, country=group_code.upper())
+    except Exception as e:
+        return f"Error fetching group channels: {e}"
+
+@app.route("/groups")
+@login_required
+def show_groups():
+    try:
+        response = requests.get("https://iptv-org.github.io/api/groups.json")
+        response.raise_for_status()
+        groups = response.json()
+        return render_template("groups.html", groups=groups)
+    except Exception as e:
+        return f"Error fetching groups: {e}"
+
+
 # Watch a selected channel
 @app.route("/watch")
 @login_required

@@ -1,32 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>{{ name }}</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-</head>
-<body style="background: #000; color: #fff; text-align: center; padding: 20px;">
-  <h2>Now Playing: {{ name }}</h2>
-  <video id="video" controls autoplay width="100%" style="max-width: 800px; border-radius: 12px;"></video>
-
-  <script>
-    const video = document.getElementById('video');
-    const streamUrl = "{{ stream_url }}";
-
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(streamUrl);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, function () {
-        video.play();
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = streamUrl;
-      video.addEventListener('loadedmetadata', function () {
-        video.play();
-      });
-    } else {
-      alert("This browser doesn't support playing .m3u8 streams.");
+  <meta charset="UTF-8">
+  <title>{{ name }} - Streaming</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      color: #fff;
     }
-  </script>
+
+    .player-container {
+      width: 90%;
+      max-width: 900px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #111;
+      padding: 10px;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      outline: none;
+      background-color: #000;
+    }
+
+    .video-title {
+      text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      color: #00e1ff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player-container">
+    <div class="video-title">{{ name }}</div>
+    <video controls autoplay>
+      <source src="{{ stream_url }}" type="application/x-mpegURL">
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
+
 </body>
 </html>

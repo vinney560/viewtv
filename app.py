@@ -434,19 +434,12 @@ def fetch_country_channels(country_code):
             if line.startswith("#EXTINF:-1"):
                 name = line.split(",")[-1].strip()
             elif line.startswith("http"):
-                channels.append({"name": name, "url": line})
+                if name:
+                    channels.append({"name": name, "url": line})
 
         return render_template("channels.html", channels=channels, country=country_code.upper())
     except Exception as e:
         return f"Error fetching channels: {e}"
-
-# Route to load channels by country
-@app.route("/channels/<country>")
-@login_required
-def channels_by_country(country):
-    fetch_and_save_country_channels(country.lower())
-    results = Channel.query.filter_by(country=country.lower()).all()
-    return render_template("channels.html", channels=results, country=country.upper())
 
 @app.route('/test-channels')
 def test_channels():

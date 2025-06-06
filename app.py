@@ -29,6 +29,7 @@ app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///default.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 
 # Persistent session lifetime
 app.permanent_session_lifetime = timedelta(days=7)
@@ -124,6 +125,14 @@ def logout_current_user():
     session.clear()
     flask_logout_user()
     return redirect(url_for("home"))
+
+@app.route('/favicon.ico')
+def favicon():
+    return redirect(url_for('uploaded_file', filename='favicon.ico'))
+    
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)    
 
 @app.route('/is_authenticated')
 def is_authenticated():
@@ -255,10 +264,6 @@ def reset_password(token):
 @login_required
 def welcome():
     return render_template("welcome.html")
-
-@app.route("/")
-def home():
-    return render_template('index.html')
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -566,6 +571,11 @@ def watch():
     name = request.args.get("name")
     url = request.args.get("url")
     return render_template("Nplayer.html", name=name, stream_url=url)
+
+
+@app.route("/")
+def home():
+    return render_template('index.html', channels=CUSTOM_CHANNELS)
 
 #====================================================
 @app.context_processor

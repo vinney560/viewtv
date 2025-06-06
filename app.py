@@ -491,39 +491,39 @@ def categories():
 CUSTOM_CHANNELS = {
     "citizen": {
         "name": "Citizen TV Kenya",
-        "url": "https://citizen.digital/tv/citizen-tv-live-15"  # or actual HLS .m3u8 if you find one
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCIYwGveQCm1cYzjvLjCttSA"
     },
     "ntv": {
         "name": "NTV Kenya",
-        "url": "https://ntvkenya.co.ke/live/"  # YouTube embed or HLS if available
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCmWut2qZrY62rgrkzGtSmvw"
     },
     "ktn": {
-        "name": "KTN TV Kenya",
-        "url": "https://www.youtube.com/watch?v=m0VVi0jbRRw"
+        "name": "KTN News",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UC6Vj6pZLKOA4z1X1W9WDZqA"
     },
     "ramogi": {
-        "name": "Ramogi TV",
-        "url": "https://citizen.digital/tv/ramogi-tv-live-19"
+        "name": "Ramogi TV (Placeholder)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCIYwGveQCm1cYzjvLjCttSA"
     },
     "inooro": {
-        "name": "Inooro TV",
-        "url": "https://citizen.digital/tv/inooro-tv-14"
+        "name": "Inooro TV (Placeholder)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCIYwGveQCm1cYzjvLjCttSA"
     },
     "jimjam": {
-        "name": "JimJam TV",
-        "url": "http://185.188.188.235/live/jimjam/playlist.m3u8"
+        "name": "JimJam (Unavailable - placeholder)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCp0hYYBW6IMayGgR-WeoCvQ"
     },
     "akili_kids": {
-        "name": "Akili Kids TV",
-        "url": "http://free.fullspeed.tv/iptv-query?streaming-ip=https://www.dailymotion.com/video/x7tfayd"
+        "name": "Akili Kids",
+        "url": "https://www.dailymotion.com/embed/video/x7tfayd"
     },
     "babytv": {
-        "name": "Baby TV",
-        "url": "http://181.78.211.244:8000/play/a01s/index.m3u8"
+        "name": "Baby TV (Unavailable - placeholder)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCp0hYYBW6IMayGgR-WeoCvQ"
     },
     "nickelodeon": {
-        "name": "Nickelodeon TV",
-        "url": "https://www.youtube.com/watch?v=cdhCss37nag"
+        "name": "Nickelodeon",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCp0hYYBW6IMayGgR-WeoCvQ"
     }
 }
 

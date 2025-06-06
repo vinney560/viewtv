@@ -126,7 +126,7 @@
     const streamUrl = "{{ stream_url }}";
     const video = document.getElementById('video');
     const playerArea = document.getElementById('player-area');
-
+ 
     function createIframe(url) {
       const iframe = document.createElement("iframe");
       iframe.src = url;
@@ -144,7 +144,11 @@
         : streamUrl.replace("watch?v=", "embed/") + "?autoplay=1";
       playerArea.innerHTML = '';
       playerArea.appendChild(createIframe(embedUrl));
-    } else if (streamUrl.includes("dailymotion.com")) {
+    } else if (
+      streamUrl.includes("dailymotion.com") ||
+      streamUrl.includes("kenyalivetv.co.ke")
+    ) {
+      // For Dailymotion and KenyaLiveTV (iframe sources)
       playerArea.innerHTML = '';
       playerArea.appendChild(createIframe(streamUrl));
     } else if (streamUrl.endsWith(".m3u8")) {

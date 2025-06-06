@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>View Tv Channel categories</title>
+  <title>View Tv Channel Categories</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -15,10 +15,49 @@
 
     h1 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       font-size: 2em;
       color: #00e1ff;
       letter-spacing: 1px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 20px;
+      text-decoration: none;
+      color: #58a6ff;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .back-btn:hover {
+      color: #00e1ff;
+    }
+
+    .back-btn svg {
+      margin-right: 6px;
+      stroke: currentColor;
+      width: 20px;
+      height: 20px;
+    }
+
+    .search-container {
+      max-width: 400px;
+      margin: 0 auto 30px auto;
+      text-align: center;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1em;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #fff;
     }
 
     .group-grid {
@@ -62,31 +101,55 @@
         font-size: 0.9em;
         padding: 15px;
       }
+
+      .search-container input {
+        font-size: 0.95em;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>📺 View Tv Channel categories</h1>
-  <a href="/dashboard" 
-     class="fixed top-4 left-4 flex items-center text-blue-400 hover:text-blue-300 transition duration-200 z-50">
-    <svg xmlns="http://www.w3.org/2000/svg" 
-         fill="none" 
-         viewBox="0 0 24 24" 
-         stroke-width="2" 
-         stroke="currentColor" 
-         class="w-3 h-3 mr-1">
+  <!-- Back Button -->
+  <a href="/dashboard" class="back-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
-    <span class="text-base font-medium">Back</span>
+    Back
   </a>
-  <div class="group-grid">
+
+  <!-- Page Title -->
+  <h1>📺 View TV Channel Categories</h1>
+
+  <!-- Search Bar -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search categories...">
+  </div>
+
+  <!-- Category Grid -->
+  <div class="group-grid" id="categoryGrid">
     {% for category in categories %}
       <div class="group-card">
-        <a href="{{ url_for('fetch_category_channels', category_id=category.id) }}">{{ category.name }}</a>
+        <a href="{{ url_for('fetch_category_channels', category_id=category.id) }}">
+          {{ category.name }}
+        </a>
       </div>
     {% endfor %}
   </div>
+
+  <!-- Live Search Script -->
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.group-card');
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    });
+  </script>
 
 </body>
 </html>

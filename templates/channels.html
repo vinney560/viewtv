@@ -6,100 +6,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ViewTV Channels</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
     body {
-      background: #0d1117;
-      color: #c9d1d9;
-      font-family: 'Inter', sans-serif;
-      padding: 30px 20px;
+      background: #0a0f1c;
+      color: #e0e8ff;
+      font-family: 'Orbitron', sans-serif;
       margin: 0;
-      min-height: 100vh;
+      padding: 30px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
 
     h2 {
-      font-weight: 700;
-      font-size: 2rem;
+      font-size: 2.2rem;
+      color: #6f9dff;
+      text-shadow: 0 0 12px #6f9dff99;
       margin-bottom: 40px;
-      color: #58a6ff;
-      text-shadow: 0 0 10px #58a6ff44;
     }
 
     .channel-list {
       width: 100%;
-      max-width: 600px;
+      max-width: 650px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
     }
 
     .channel {
-      background: #161b22;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgb(0 255 136 / 0.15);
-      padding: 20px 25px;
+      background: #111827;
+      border-radius: 14px;
+      padding: 20px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-      cursor: default;
-      overflow: hidden;
+      box-shadow: 0 0 12px #1f293799;
+      transition: all 0.3s ease;
+      position: relative;
     }
 
-    .channel:hover,
-    .channel:focus {
-      background: #238636;
-      box-shadow: 0 8px 20px rgb(0 255 136 / 0.5);
-      color: white;
-      outline: none;
-    }
-
-    .channel:focus {
-      outline: 3px solid #00ff88;
-      outline-offset: 3px;
+    .channel:hover {
+      background: linear-gradient(135deg, #202c44, #1e1b2b);
+      box-shadow: 0 0 20px #6f9dffcc, 0 0 8px #da44ff88;
+      transform: translateY(-2px);
     }
 
     .channel-number {
-      font-weight: 600;
-      color: #39d353;
-      margin-right: 12px;
-      flex-shrink: 0;
+      font-weight: bold;
+      color: #00ffe7;
+      margin-right: 10px;
       font-size: 1.1rem;
+      flex-shrink: 0;
     }
 
     .channel-name {
       flex-grow: 1;
-      font-weight: 600;
       font-size: 1.1rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      min-width: 0;
     }
 
     .watch-link {
-      background: #00ff88;
-      color: #0d1117;
-      font-weight: 600;
-      padding: 8px 18px;
+      background: linear-gradient(90deg, #00ffe7, #8f00ff);
+      color: #0a0f1c;
+      font-weight: bold;
+      padding: 9px 18px;
       border-radius: 9999px;
       text-decoration: none;
-      transition: background 0.3s ease, color 0.3s ease;
+      transition: 0.3s ease;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      user-select: none;
-      flex-shrink: 0;
-      white-space: nowrap;
+      gap: 8px;
+      box-shadow: 0 0 10px #00ffe799;
     }
 
     .watch-link:hover {
-      background: #00cc6a;
-      color: #d0f0e6;
-      box-shadow: 0 0 10px #00ff88;
+      box-shadow: 0 0 16px #00ffe7, 0 0 12px #8f00ff;
+      transform: scale(1.05);
+      color: white;
     }
 
     .watch-link::before {
@@ -109,10 +96,44 @@
 
     p.no-channels {
       font-style: italic;
-      color: #8b949e;
-      font-size: 1rem;
+      color: #9ca3af;
       text-align: center;
       margin-top: 60px;
+    }
+
+    /* Back button and search */
+    .top-controls {
+      width: 100%;
+      max-width: 650px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .top-controls a {
+      color: #6f9dff;
+      transition: color 0.3s;
+    }
+
+    .top-controls a:hover {
+      color: #00ffe7;
+    }
+
+    #search {
+      flex-grow: 1;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #1a2233;
+      color: #e0e8ff;
+      border: 1px solid #333c52;
+      outline: none;
+      transition: border 0.3s ease;
+    }
+
+    #search:focus {
+      border-color: #6f9dff;
+      box-shadow: 0 0 8px #6f9dff88;
     }
 
     @media (max-width: 640px) {
@@ -122,31 +143,29 @@
         gap: 10px;
       }
 
-      .channel-name {
-        white-space: normal;
+      .watch-link {
+        width: 100%;
+        justify-content: center;
       }
 
-      .watch-link {
-        width: 90%;
-        justify-content: center;
+      .top-controls {
+        flex-direction: column;
+        align-items: stretch;
       }
     }
   </style>
 </head>
 <body>
-  <h2>📺 Available Channels</h2>
+  <h2>🌐 Available Channels</h2>
 
-  <!-- Back Button + Search -->
-  <div style="width: 100%; max-width: 600px; display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
-    <!-- Back Button -->
-    <a href="javascript:history.back()" title="Go Back" style="color: #58a6ff; text-decoration: none;">
+  <div class="top-controls">
+    <a href="javascript:history.back()" title="Go Back">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
         <path d="M19 12H5M12 19l-7-7 7-7" />
       </svg>
     </a>
 
-    <!-- Search Bar -->
-    <input type="text" id="search" placeholder="Search channels..." style="flex-grow: 1; padding: 10px 14px; border-radius: 8px; background: #161b22; color: #c9d1d9; border: 1px solid #30363d; outline: none;" />
+    <input type="text" id="search" placeholder="Search channels..." />
   </div>
 
   <div class="channel-list">

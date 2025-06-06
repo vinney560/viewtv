@@ -5,36 +5,37 @@
   <title>{{ channel_name }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- hls.js for HLS streaming -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
-    html, body {
+    /* Reset & base styles */
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
       height: 100%;
+      width: 100%;
+      overflow-x: hidden;
       background-color: #000;
       color: #fff;
       font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
     }
 
     .container {
       width: 100%;
       max-width: 900px;
-      padding: 0 10px;
-      margin-top: 20px;
-      box-sizing: border-box;
+      margin: 0 auto;
+      padding: 20px 10px;
     }
 
     /* Back button */
     .back-btn {
       margin-bottom: 12px;
     }
+
     .back-btn a {
       color: #58a6ff;
       font-weight: bold;
@@ -44,6 +45,7 @@
       user-select: none;
       transition: color 0.3s ease;
     }
+
     .back-btn a:hover {
       color: #00e1ff;
     }
@@ -54,21 +56,18 @@
       border-radius: 8px;
       padding: 8px 12px;
       margin-bottom: 16px;
-      max-width: 900px;     /* limit max width */
       overflow-x: auto;
       white-space: nowrap;
       scrollbar-width: thin;
       scrollbar-color: #00e1ff #111;
     }
 
-    /* Webkit scrollbar for Chrome, Edge, Safari */
     .channel-list::-webkit-scrollbar {
       height: 6px;
     }
 
     .channel-list::-webkit-scrollbar-track {
       background: #111;
-      border-radius: 8px;
     }
 
     .channel-list::-webkit-scrollbar-thumb {
@@ -86,11 +85,13 @@
       font-weight: normal;
       transition: background-color 0.3s, color 0.3s;
     }
+
     .channel-list a.active {
       color: #00e1ff;
       background-color: #003344;
       font-weight: bold;
     }
+
     .channel-list a:hover:not(.active) {
       background-color: #222;
       color: #58a6ff;
@@ -114,8 +115,6 @@
       max-height: 75vh;
       border-radius: 8px;
       background-color: #000;
-      outline: none;
-      box-sizing: border-box;
     }
   </style>
 </head>
@@ -149,7 +148,7 @@
     const streamUrl = "{{ stream_url }}";
     const video = document.getElementById('video');
     const playerArea = document.getElementById('player-area');
- 
+
     function createIframe(url) {
       const iframe = document.createElement("iframe");
       iframe.src = url;
@@ -171,7 +170,6 @@
       streamUrl.includes("dailymotion.com") ||
       streamUrl.includes("kenyalivetv.co.ke")
     ) {
-      // For Dailymotion and KenyaLiveTV (iframe sources)
       playerArea.innerHTML = '';
       playerArea.appendChild(createIframe(streamUrl));
     } else if (streamUrl.endsWith(".m3u8")) {

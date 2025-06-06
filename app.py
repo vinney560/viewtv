@@ -29,7 +29,12 @@ app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///default.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
-app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
+UPLOAD_FOLDER = os.path.join(app.root_path, 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Create the upload folder if it doesn't exist
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 # Persistent session lifetime
 app.permanent_session_lifetime = timedelta(days=7)

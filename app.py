@@ -583,7 +583,7 @@ CUSTOM_CHANNELS = {
     "redbull_tv": {
         "name": "Redbull TV (Sports/Extreme)",
         "url": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_1660.m3u8"
-    }
+    },
     "redbull_tv": {
         "name": "Red Bull TV",
         "url": "https://www.redbull.com/int-en/tv/live"

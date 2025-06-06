@@ -526,39 +526,35 @@ def categories():
 CUSTOM_CHANNELS = {
     "citizen": {
         "name": "Citizen TV Kenya",
-        "url": "https://kenyalivetv.co.ke/embed/citizen-tv-live?autoplay=1&mute=1"
+        "url": "https://www.youtube.com/channel/UChBQgieUidXV1CmDxSdRm3g/live"
+    },
+    "ktn": {
+        "name": "KTN News Kenya",
+        "url": "https://www.youtube.com/user/standardgroupkenya/live"
+    },
+    "k24": {
+        "name": "K24 TV Kenya",
+        "url": "https://www.youtube.com/K24TV/streams"
     },
     "ntv": {
         "name": "NTV Kenya",
-        "url": "https://kenyalivetv.co.ke/embed/ntv-kenya-live?autoplay=1&mute=1"
+        "url": "https://ntvkenya.co.ke/live/"
     },
-    "ktn": {
-        "name": "KTN News",
-        "url": "https://kenyalivetv.co.ke/embed/ktn-news-live?autoplay=1&mute=1"
-    },
-    "ramogi": {
-        "name": "Ramogi TV",
-        "url": "https://kenyalivetv.co.ke/embed/ramogi-tv-live?autoplay=1&mute=1"
-    },
-    "inooro": {
-        "name": "Inooro TV",
-        "url": "https://kenyalivetv.co.ke/embed/inooro-tv-live?autoplay=1&mute=1"
+    "nickelodeon": {
+        "name": "Nickelodeon (Pluto TV)",
+        "url": "https://pluto.tv/us/live-tv/5ca673e0d0bd6c2689c94ce3"
     },
     "akili_kids": {
         "name": "Akili Kids",
-        "url": "https://www.dailymotion.com/embed/video/x7tfayd?autoplay=1&mute=1"
+        "url": "https://www.youtube.com/channel/UCHBIm_ITwYy_FG9iIfIZxGQ"
     },
     "babytv": {
         "name": "Baby TV",
-        "url": "https://www.dailymotion.com/embed/video/x7ts94x?autoplay=1&mute=1"
+        "url": "https://www.youtube.com/user/BabyTVChannel"
     },
     "jimjam": {
         "name": "JimJam",
-        "url": "https://www.dailymotion.com/embed/video/x7ts86z?autoplay=1&mute=1"
-    },
-    "nickelodeon": {
-        "name": "Nickelodeon",
-        "url": "https://www.dailymotion.com/embed/video/x7ts8sn?autoplay=1&mute=1"
+        "url": "https://www.youtube.com/user/JimJamTVChannel"
     },
     "fifa_plus": {
         "name": "FIFA+",
@@ -566,7 +562,7 @@ CUSTOM_CHANNELS = {
     },
     "talksport": {
         "name": "talkSPORT",
-        "url": "https://www.talksport.com/embed"
+        "url": "https://talksport.com/boxing/3261089/fabio-wardley-vs-justis-huni-live-commentary-stream-date-start-time-undercard-tv-channel/"
     },
     "espn_plus": {
         "name": "ESPN+",
@@ -574,27 +570,15 @@ CUSTOM_CHANNELS = {
     },
     "nbc_sports": {
         "name": "NBC Sports",
-        "url": "https://www.nbcsports.com/live"
+        "url": "https://www.nbcsports.com/watch"
     },
     "dazn": {
         "name": "DAZN",
         "url": "https://www.dazn.com/en-US/live"
     },
     "redbull_tv": {
-        "name": "Redbull TV (Sports/Extreme)",
-        "url": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_1660.m3u8"
-    },
-    "redbull_tv": {
         "name": "Red Bull TV",
         "url": "https://www.redbull.com/int-en/tv/live"
-    },
-    "nbc_sports": {
-        "name": "NBC Sports",
-        "url": "https://www.nbcsports.com/watch"
-    },
-    "espn": {
-        "name": "ESPN",
-        "url": "https://www.espn.com/watch/"
     },
     "sky_sports": {
         "name": "Sky Sports",
@@ -603,7 +587,7 @@ CUSTOM_CHANNELS = {
     "bein_sports": {
         "name": "beIN SPORTS",
         "url": "https://www.beinsports.com/en/"
-    }    
+    }
 }
 #-------------------‐--------------------------------
 

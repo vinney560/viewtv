@@ -530,20 +530,16 @@ CUSTOM_CHANNELS = {
 @app.route("/channel/<key>")
 @login_required
 def play_channel(key):
-    """
-    Dynamic route to play a specific custom channel.
-    'key' must match one of the keys in CUSTOM_CHANNELS.
-    """
     channel = CUSTOM_CHANNELS.get(key)
     if not channel:
-        # If someone requests /channel/unknown, show a 404
         abort(404)
-
-    # Pass the channel name and URL to the template
+    
     return render_template(
         "player.html",
         channel_name=channel["name"],
-        stream_url=channel["url"]
+        stream_url=channel["url"],
+        channels=CUSTOM_CHANNELS,    # Pass all channels here
+        current_key=key              # Pass current key for highlighting selected channel
     )
 
 @app.route("/custom-list")

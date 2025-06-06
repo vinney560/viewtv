@@ -1,4 +1,3 @@
-<!-- templates/player.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,7 @@
   <title>{{ channel_name }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Include hls.js so that .m3u8 works in modern browsers -->
+  <!-- hls.js for HLS streaming -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <style>
@@ -31,7 +30,7 @@
       font-size: 1.2em;
       color: #00e1ff;
     }
-    video {
+    video, iframe {
       width: 100%;
       height: auto;
       max-height: 80vh;
@@ -44,37 +43,64 @@
 <body>
   <div class="player-container">
     <div class="video-title">{{ channel_name }}</div>
-    <video id="video" controls autoplay playsinline></video>
+    <div id="player-area">
+      <video id="video" controls autoplay playsinline></video>
+    </div>
   </div>
 
   <script>
-    const video = document.getElementById('video');
     const streamUrl = "{{ stream_url }}";
+    const video = document.getElementById('video');
+    const playerArea = document.getElementById('player-area');
 
-    // If it's a YouTube URL, embed in an <iframe> instead:
-    if (streamUrl.includes("youtube.com")) {
+    function createIframe(url) {
       const iframe = document.createElement("iframe");
-      iframe.src = streamUrl.replace("watch?v=", "embed/") + "?autoplay=1&mute=0";
+      iframe.src = url;
       iframe.allow = "autoplay; fullscreen";
-      iframe.style = "width:100%; height:80vh; border:none;";
-      document.querySelector(".player-container").replaceChild(iframe, video);
-    } else {
-      // HLS.js for .m3u8 files
+      iframe.allowFullscreen = true;
+      iframe.style.width = "100%";
+      iframe.style.height = "80vh";
+      iframe.style.border = "none";
+      return iframe;
+    }
+
+    // Handle YouTube
+    if (streamUrl.includes("youtube.com")) {
+      const embedUrl = streamUrl.includes("embed")
+        ? streamUrl
+        : streamUrl.replace("watch?v=", "embed/") + "?autoplay=1";
+      playerArea.innerHTML = '';
+      playerArea.appendChild(createIframe(embedUrl));
+    }
+
+    // Handle Dailymotion
+    else if (streamUrl.includes("dailymotion.com")) {
+      playerArea.innerHTML = '';
+      playerArea.appendChild(createIframe(streamUrl));
+    }
+
+    // Handle .m3u8 streams with hls.js
+    else if (streamUrl.endsWith(".m3u8")) {
       if (Hls.isSupported()) {
         const hls = new Hls();
         hls.loadSource(streamUrl);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
           video.play();
         });
       } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
         video.src = streamUrl;
-        video.addEventListener("loadedmetadata", function () {
+        video.addEventListener("loadedmetadata", () => {
           video.play();
         });
       } else {
-        alert("Sorry, your browser doesn’t support HLS playback.");
+        playerArea.innerHTML = "<p>Sorry, your browser doesn’t support HLS playback.</p>";
       }
+    }
+
+    // Fallback: Try to play it anyway
+    else {
+      video.src = streamUrl;
     }
   </script>
 </body>

@@ -560,26 +560,25 @@ CUSTOM_CHANNELS = {
         "name": "Nickelodeon",
         "url": "https://www.dailymotion.com/embed/video/x7ts8sn?autoplay=1&mute=1"
     },
-
-    "one_sports_fhd": {
-        "name": "One Sports (Philippines, FHD)",
-        "url": "https://qp-pldt-live-grp-05-prod.akamaized.net/out/u/onesports_qp.m3u8"
+    "fifa_plus": {
+        "name": "FIFA+",
+        "url": "https://www.fifa.com/fifa-plus/live"
     },
-    "one_sports_plus": {
-        "name": "One Sports+ (Philippines, HD)",
-        "url": "https://qp-pldt-live-grp-03-prod.akamaized.net/out/u/onesportsplushd_qp_6.m3u8"
+    "talksport": {
+        "name": "talkSPORT",
+        "url": "https://www.talksport.com/embed"
     },
-    "awapa_sports_tv": {
-        "name": "Awapa Sports TV (1080p)",
-        "url": "https://mgv-awapa.akamaized.net/hls/live/2104282/MGV_CHANNEL15/master.m3u8"
+    "espn_plus": {
+        "name": "ESPN+",
+        "url": "https://plus.espn.com/live"
     },
-    "b1b_box": {
-        "name": "B1B Box (720p)",
-        "url": "https://e105-ts.cdn.bg/b1b/fls/b1btv.stream/playlist.m3u8"
+    "nbc_sports": {
+        "name": "NBC Sports",
+        "url": "https://www.nbcsports.com/live"
     },
-    "ars_primer": {
-        "name": "Arena Sport 1 (from GitHub list)",
-        "url": "https://play-prod1.live.anvato.net/server/play/ktvutestctg/master.m3u8"
+    "dazn": {
+        "name": "DAZN",
+        "url": "https://www.dazn.com/en-US/live"
     },
     "redbull_tv": {
         "name": "Redbull TV (Sports/Extreme)",

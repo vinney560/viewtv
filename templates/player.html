@@ -5,8 +5,6 @@
   <title>{{ channel_name }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
   <style>
     /* Reset & base styles */
     * {
@@ -172,6 +170,26 @@
       return iframe;
     }
 
+    function initHls() {
+      // Load hls.js lazily
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+      script.onload = () => {
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(streamUrl);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = streamUrl;
+          video.addEventListener("loadedmetadata", () => video.play());
+        } else {
+          playerArea.innerHTML = "<p>Sorry, your browser doesn’t support HLS playback.</p>";
+        }
+      };
+      document.head.appendChild(script);
+    }
+
     if (streamUrl.includes("youtube.com")) {
       const embedUrl = streamUrl.includes("embed")
         ? streamUrl
@@ -185,21 +203,8 @@
       playerArea.innerHTML = '';
       playerArea.appendChild(createIframe(streamUrl));
     } else if (streamUrl.endsWith(".m3u8")) {
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(streamUrl);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play();
-        });
-      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = streamUrl;
-        video.addEventListener("loadedmetadata", () => {
-          video.play();
-        });
-      } else {
-        playerArea.innerHTML = "<p>Sorry, your browser doesn’t support HLS playback.</p>";
-      }
+      // Lazy load hls.js only now
+      initHls();
     } else {
       video.src = streamUrl;
     }

@@ -3,9 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WatchFlix - Welcome</title>
+  <!-- Primary Meta Tags -->
+  <meta name="title" content="View Tv - Stream closely all the World's Channels on the comfort of you home" />
+  <meta name="description" content="Stream your favorite movies, news and TV shows anytime, anywhere. Sign in or register to watch instantly with no distractions or clutter." />
+  <meta name="keywords" content="TV shows, streaming, online TV, View Tv, watch shows online, online streaming, live tv" />
+  <meta name="author" content="View Tv" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://viewtv.onrender.com" />
+  <meta property="og:title" content="View Tv - Stream Your Favorite Movies, Shows and many more" />
+  <meta property="og:description" content="Stream your favorite movies and TV shows anytime, anywhere. Sign in or register to watch instantly with no distractions or clutter." />
+  <meta property="og:image" content="https://viewtv.onrender.com/uploads/og-image.jpg" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://viewtv.onrender.com" />
+  <meta property="twitter:title" content="View Tv - Stream Your Favorite Movies and Shows" />
+  <meta property="twitter:description" content="Stream your favorite movies and TV shows anytime, anywhere. Sign in or register to watch instantly with no distractions or clutter." />
+  <meta property="twitter:image" content="https://viewtv.onrender.com/uploads/og-image.jpg" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://viewtv.onrender.com" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}" />  
+  <title>View Tv - Welcome</title>
   <style>
-    /* Basic reset */
     * {
       margin: 0; padding: 0;
       box-sizing: border-box;
@@ -218,7 +241,6 @@
   </style>
 </head>
 <body>
-  <link rel="icon" type="image/x-icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}">
 
   <header>
     <a href="/login">Login</a>

@@ -84,12 +84,19 @@
 <body>
 
   <!-- Back Button -->
-  <a href="javascript:history.back()" class="back-button" title="Go Back" aria-label="Back">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M15 18l-6-6 6-6"/>
-    </svg>
-    Back
-  </a>
+<a href="javascript:void(0)" 
+   onclick="tryClose()"
+   class="fixed top-4 left-4 flex items-center text-blue-400 hover:text-blue-300 transition duration-200 z-50">
+  <svg xmlns="http://www.w3.org/2000/svg" 
+       fill="none" 
+       viewBox="0 0 24 24" 
+       stroke-width="2" 
+       stroke="currentColor" 
+       class="w-6 h-6 mr-1">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+  </svg>
+  <span class="text-base font-medium">Back</span>
+</a>
 
   <div class="player-container">
     <div class="video-title">{{ name }}</div>
@@ -98,6 +105,15 @@
       Your browser does not support the video tag.
     </video>
   </div>
-
+  <script>
+    function tryClose() {
+      window.close();
+      setTimeout(() => {
+        if (!window.closed) {
+          history.back();
+        }
+      }, 200);
+    }
+  </script>
 </body>
 </html>

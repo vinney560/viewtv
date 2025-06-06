@@ -522,73 +522,8 @@ def categories():
 
 #====================================================
 
-# 1) Map each “key” to its display name and .m3u8 URL:
-CUSTOM_CHANNELS = {
-    "citizen": {
-        "name": "Citizen TV Kenya",
-        "url": "https://www.youtube.com/channel/UChBQgieUidXV1CmDxSdRm3g/live"
-    },
-    "ktn": {
-        "name": "KTN News Kenya",
-        "url": "https://www.youtube.com/user/standardgroupkenya/live"
-    },
-    "k24": {
-        "name": "K24 TV Kenya",
-        "url": "https://www.youtube.com/K24TV/streams"
-    },
-    "ntv": {
-        "name": "NTV Kenya",
-        "url": "https://ntvkenya.co.ke/live/"
-    },
-    "nickelodeon": {
-        "name": "Nickelodeon (Pluto TV)",
-        "url": "https://pluto.tv/us/live-tv/5ca673e0d0bd6c2689c94ce3"
-    },
-    "akili_kids": {
-        "name": "Akili Kids",
-        "url": "https://www.youtube.com/channel/UCHBIm_ITwYy_FG9iIfIZxGQ"
-    },
-    "babytv": {
-        "name": "Baby TV",
-        "url": "https://www.youtube.com/user/BabyTVChannel"
-    },
-    "jimjam": {
-        "name": "JimJam",
-        "url": "https://www.youtube.com/user/JimJamTVChannel"
-    },
-    "fifa_plus": {
-        "name": "FIFA+",
-        "url": "https://www.fifa.com/fifa-plus/live"
-    },
-    "talksport": {
-        "name": "talkSPORT",
-        "url": "https://talksport.com/boxing/3261089/fabio-wardley-vs-justis-huni-live-commentary-stream-date-start-time-undercard-tv-channel/"
-    },
-    "espn_plus": {
-        "name": "ESPN+",
-        "url": "https://plus.espn.com/live"
-    },
-    "nbc_sports": {
-        "name": "NBC Sports",
-        "url": "https://www.nbcsports.com/watch"
-    },
-    "dazn": {
-        "name": "DAZN",
-        "url": "https://www.dazn.com/en-US/live"
-    },
-    "redbull_tv": {
-        "name": "Red Bull TV",
-        "url": "https://www.redbull.com/int-en/tv/live"
-    },
-    "sky_sports": {
-        "name": "Sky Sports",
-        "url": "https://www.skysports.com/watch"
-    },
-    "bein_sports": {
-        "name": "beIN SPORTS",
-        "url": "https://www.beinsports.com/en/"
-    }
-}
+from channels import CUSTOM_CHANNELS 
+
 #-------------------‐--------------------------------
 
 @app.route("/channel/<key>")

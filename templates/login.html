@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,8 +8,30 @@
 </head>
 <body class="bg-gradient-to-tr from-cyan-900 via-cyan-800 to-cyan-900 text-white font-sans min-h-screen flex items-center justify-center px-4">
 
-  <section class="bg-cyan-700 bg-opacity-90 backdrop-blur-md rounded-3xl shadow-2xl max-w-md w-full p-10">
+  <section class="bg-cyan-700 bg-opacity-90 backdrop-blur-md rounded-3xl shadow-2xl max-w-md w-full p-10 relative">
     <h4 class="text-4xl font-extrabold text-center mb-8 tracking-tight drop-shadow-md">Login</h4>
+
+    <!-- Flash Message -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-message" class="mb-4 transition-opacity duration-500 ease-in-out">
+          {% for category, message in messages %}
+            <div class="rounded-xl px-4 py-3 text-sm font-semibold shadow-md
+              {% if category == 'success' %}
+                bg-green-600 text-white
+              {% elif category == 'error' %}
+                bg-red-600 text-white
+              {% else %}
+                bg-cyan-600 text-white
+              {% endif %}
+            ">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
     <form action="/login" method="POST" class="space-y-6">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div>
@@ -89,6 +111,15 @@
         : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
     }
+
+    // Auto-hide flash message
+    setTimeout(() => {
+      const flash = document.getElementById("flash-message");
+      if (flash) {
+        flash.classList.add("opacity-0");
+        setTimeout(() => flash.remove(), 500); // Fade out then remove
+      }
+    }, 3500);
   </script>
 
 </body>

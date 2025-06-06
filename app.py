@@ -491,39 +491,39 @@ def categories():
 CUSTOM_CHANNELS = {
     "citizen": {
         "name": "Citizen TV Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCIYwGveQCm1cYzjvLjCttSA"
+        "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&autoplay=1"
     },
     "ntv": {
         "name": "NTV Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCmWut2qZrY62rgrkzGtSmvw"
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCVQze7kpZNZqBLvY9vI1qPA&autoplay=1"
     },
     "ktn": {
         "name": "KTN News",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UC6Vj6pZLKOA4z1X1W9WDZqA"
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&autoplay=1"
     },
     "ramogi": {
-        "name": "Ramogi TV (Placeholder)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCIYwGveQCm1cYzjvLjCttSA"
+        "name": "Ramogi TV",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCU4L5Xp7jq6NbpQqW6aM5KQ&autoplay=1"
     },
     "inooro": {
-        "name": "Inooro TV (Placeholder)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCIYwGveQCm1cYzjvLjCttSA"
-    },
-    "jimjam": {
-        "name": "JimJam (Unavailable - placeholder)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCp0hYYBW6IMayGgR-WeoCvQ"
+        "name": "Inooro TV",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCOnp8sxTQZyNQGkzU8LmZMQ&autoplay=1"
     },
     "akili_kids": {
         "name": "Akili Kids",
-        "url": "https://www.dailymotion.com/embed/video/x7tfayd"
+        "url": "https://www.dailymotion.com/embed/video/x7tcqmp?autoplay=1"
     },
     "babytv": {
-        "name": "Baby TV (Unavailable - placeholder)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCp0hYYBW6IMayGgR-WeoCvQ"
+        "name": "Baby TV",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCFQ8dG8Tx76FbX9vLjIOXMg&autoplay=1"
+    },
+    "jimjam": {
+        "name": "JimJam",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCo8bcnLyZH8tBIH9V1mLgqQ&autoplay=1"
     },
     "nickelodeon": {
         "name": "Nickelodeon",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCp0hYYBW6IMayGgR-WeoCvQ"
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCMYtONm441rBogWK_xPH9HA&autoplay=1"
     }
 }
 

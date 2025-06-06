@@ -491,39 +491,39 @@ def categories():
 CUSTOM_CHANNELS = {
     "citizen": {
         "name": "Citizen TV Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&autoplay=1"
+        "url": "https://kenyalivetv.co.ke/embed/citizen-tv-live?autoplay=1&mute=1"
     },
     "ntv": {
         "name": "NTV Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCVQze7kpZNZqBLvY9vI1qPA&autoplay=1"
+        "url": "https://kenyalivetv.co.ke/embed/ntv-kenya-live?autoplay=1&mute=1"
     },
     "ktn": {
         "name": "KTN News",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&autoplay=1"
+        "url": "https://kenyalivetv.co.ke/embed/ktn-news-live?autoplay=1&mute=1"
     },
     "ramogi": {
         "name": "Ramogi TV",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCU4L5Xp7jq6NbpQqW6aM5KQ&autoplay=1"
+        "url": "https://kenyalivetv.co.ke/embed/ramogi-tv-live?autoplay=1&mute=1"
     },
     "inooro": {
         "name": "Inooro TV",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCOnp8sxTQZyNQGkzU8LmZMQ&autoplay=1"
+        "url": "https://kenyalivetv.co.ke/embed/inooro-tv-live?autoplay=1&mute=1"
     },
     "akili_kids": {
         "name": "Akili Kids",
-        "url": "https://www.dailymotion.com/embed/video/x7tcqmp?autoplay=1"
+        "url": "https://www.dailymotion.com/embed/video/x7tfayd?autoplay=1&mute=1"
     },
     "babytv": {
         "name": "Baby TV",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCFQ8dG8Tx76FbX9vLjIOXMg&autoplay=1"
+        "url": "https://www.dailymotion.com/embed/video/x7ts94x?autoplay=1&mute=1"
     },
     "jimjam": {
         "name": "JimJam",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCo8bcnLyZH8tBIH9V1mLgqQ&autoplay=1"
+        "url": "https://www.dailymotion.com/embed/video/x7ts86z?autoplay=1&mute=1"
     },
     "nickelodeon": {
         "name": "Nickelodeon",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCMYtONm441rBogWK_xPH9HA&autoplay=1"
+        "url": "https://www.dailymotion.com/embed/video/x7ts8sn?autoplay=1&mute=1"
     }
 }
 

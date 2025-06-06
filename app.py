@@ -23,11 +23,15 @@ load_dotenv()
 #===================================================
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "12345QWER"
-app.config["JWT_SECRET_KEY"] = "4321REWQ"
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+
+# Secure and fallback-safe config
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///default.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+
+# Persistent session lifetime
+app.permanent_session_lifetime = timedelta(days=7)
 
 app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
 app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT")) if os.getenv("MAIL_PORT") else None

@@ -32,6 +32,19 @@
       {% endif %}
     {% endwith %}
 
+    <a href="javascript:history.back()" 
+      class="fixed top-4 left-4 flex items-center text-blue-400 hover:text-blue-300 transition duration-200 z-50">
+      <svg xmlns="http://www.w3.org/2000/svg" 
+           fill="none" 
+           viewBox="0 0 24 24" 
+           stroke-width="2" 
+           stroke="currentColor" 
+           class="w-6 h-6 mr-1">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span class="text-base font-medium">Back</span>
+    </a>
+
     <form action="/login" method="POST" class="space-y-6">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div>

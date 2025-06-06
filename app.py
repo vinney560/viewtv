@@ -584,6 +584,26 @@ CUSTOM_CHANNELS = {
         "name": "Redbull TV (Sports/Extreme)",
         "url": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_1660.m3u8"
     }
+    "redbull_tv": {
+        "name": "Red Bull TV",
+        "url": "https://www.redbull.com/int-en/tv/live"
+    },
+    "nbc_sports": {
+        "name": "NBC Sports",
+        "url": "https://www.nbcsports.com/watch"
+    },
+    "espn": {
+        "name": "ESPN",
+        "url": "https://www.espn.com/watch/"
+    },
+    "sky_sports": {
+        "name": "Sky Sports",
+        "url": "https://www.skysports.com/watch"
+    },
+    "bein_sports": {
+        "name": "beIN SPORTS",
+        "url": "https://www.beinsports.com/en/"
+    }    
 }
 #-------------------‐--------------------------------
 

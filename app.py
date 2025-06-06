@@ -126,11 +126,6 @@ def admin_required(f):
 def is_admin():
     return session.get('role') == 'admin'
 
-def logout_current_user():
-    session.clear()
-    flask_logout_user()
-    return redirect(url_for("home"))
-
 @app.route('/favicon.ico')
 def favicon():
     return redirect(url_for('uploaded_file', filename='favicon.ico'))
@@ -155,6 +150,8 @@ def auto_logout_user():
             logout_current_user()
             flash("Role has changed. Please log in again.", "error")
             return redirect(url_for('login'))
+
+#-----‐-‐-‐-‐--‐‐-‐‐-‐-‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐‐---
 
 def generate_email_token(user):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -200,6 +197,8 @@ def verify_registration(token):
     login_user(user)
     flash('Email verified! Welcome to T-Give Nexus.', 'success')
     return redirect(url_for('welcome'))
+
+#------‐-‐-‐-‐-‐-‐-‐-‐-‐-‐‐-‐‐-‐‐-‐--‐-‐-‐-‐‐‐----‐-‐
 
 def create_reset_token(user):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -269,6 +268,13 @@ def reset_password(token):
 @login_required
 def welcome():
     return render_template("welcome.html")
+#----------------------------------------------------
+def logout_current_user():
+    session.clear()
+    flask_logout_user()
+    return redirect(url_for("home"))
+
+#===================================================
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
@@ -320,6 +326,8 @@ def register():
         return redirect(url_for('home'))
 
     return render_template("register.html")
+
+#---‐‐‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐--‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐--‐-‐
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -384,22 +392,26 @@ def login():
     return render_template('login.html')
 
 #====================================================
+
 @app.route('/vip_mode')
 def vip_mode():
-    # You can add logic or render a template for VIP users
     return render_template('vip.html')
 
 @app.route('/basic_mode')
 @login_required
 def basic_mode():
-    return render_template('browse.html')
+    return render_template('dashboard.html')
 
 @app.route('/admin_mode')
+@login_required 
+@admin_required
 def admin_mode():
-    # You can add logic or render a template for Admin users
     return render_template('admin.html')
 
+#====================================================
+
 # Fetch & Save by Country
+@app.route('/save_channels')
 def fetch_and_save_country_channels(country_code):
     url = f"https://iptv-org.github.io/iptv/countries/{country_code}.m3u"
     try:
@@ -424,6 +436,8 @@ def fetch_and_save_country_channels(country_code):
     except Exception as e:
         print(f"[ERROR] Failed to fetch from {url}: {e}")
 
+#====================================================
+
 @app.route("/countries")
 @login_required
 def countries():
@@ -434,7 +448,7 @@ def countries():
         return render_template("countries.html", countries=countries)
     except Exception as e:
         return f"Error fetching countries: {e}"
-
+#----------------------------------------‐-----------
 @app.route("/country/<country_code>")
 @login_required
 def fetch_country_channels(country_code):
@@ -456,6 +470,8 @@ def fetch_country_channels(country_code):
     except Exception as e:
         return f"Error fetching channels: {e}"
 
+#===================================================
+
 @app.route('/test-channels')
 def test_channels():
     url = "https://iptv-org.github.io/iptv/countries/ke.m3u"
@@ -468,6 +484,8 @@ def test_channels():
             stream_url = lines[i + 1]
             channels.append({"name": name, "url": stream_url})
     return render_template("channels.html", channels=channels)
+
+#====================================================
 
 @app.route("/category/<category_id>")
 @login_required
@@ -500,6 +518,7 @@ def categories():
         return render_template("categories.html", categories=categories)
     except Exception as e:
         return f"Failed to load categories: {e}"
+
 #====================================================
 
 # 1) Map each “key” to its display name and .m3u8 URL:
@@ -542,6 +561,8 @@ CUSTOM_CHANNELS = {
     }
 }
 
+#-------------------‐--------------------------------
+
 @app.route("/channel/<key>")
 @login_required
 def play_channel(key):
@@ -556,20 +577,19 @@ def play_channel(key):
         channels=CUSTOM_CHANNELS,    # Pass all channels here
         current_key=key              # Pass current key for highlighting selected channel
     )
-
+#====================================================
 @app.route("/custom-list")
 @login_required
 def custom_list():
-    # Pass the keys and names to a template so you can show them as clickable links
     return render_template("custom_list.html", channels=CUSTOM_CHANNELS)
-
+#-‐-‐-‐-‐-‐-‐-‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐--‐-‐
 @app.route("/more-channels")
 @login_required
 def more_channels():
     return render_template("more_channels.html")
 
 #====================================================
-# Watch a selected channel
+
 @app.route("/watch")
 @login_required
 def watch():
@@ -577,12 +597,24 @@ def watch():
     url = request.args.get("url")
     return render_template("Nplayer.html", name=name, stream_url=url)
 
-
+#====================================================
+@app.route('/bowse')
+def browse():
+    return render_template('browse.html')
+#‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-
 @app.route("/")
 def home():
     return render_template('index.html', channels=CUSTOM_CHANNELS)
-
+#---‐-‐-‐-‐-‐-‐-‐-‐-‐-‐---‐--‐‐--‐-‐-‐-‐------‐‐-‐-‐-
+@app.route('/about')
+def about():
+    pass
+#‐-‐-‐-‐-‐-‐‐-‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐   
+@app.route('/services') 
+def services():
+    pass
 #====================================================
+
 @app.context_processor
 def inject_csrf_token():
     from flask_wtf.csrf import generate_csrf
@@ -603,13 +635,13 @@ def forbidden_error(error):
 def internal_error(error):
     app.logger.error(f'Internal Server Error: {error}', exc_info=True)
     flash('Request cannot be completed', 'error')
-    return redirect(request.referrer or url_for('/')), 500
+    return redirect(request.referrer or url_for('home')), 500
 
 @app.errorhandler(CSRFError)
 @csrf.exempt
 def handle_csrf_error(e):
     flash("CSRF token missing or invalid", "error")
-    return redirect(request.referrer or url_for('/')), 400
+    return redirect(request.referrer or url_for('home')), 400
 
 #====================================================
 if __name__ == '__main__':

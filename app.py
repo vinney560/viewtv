@@ -560,81 +560,30 @@ CUSTOM_CHANNELS = {
         "name": "Nickelodeon",
         "url": "https://www.dailymotion.com/embed/video/x7ts8sn?autoplay=1&mute=1"
     },
-    "supersport_1": {
-        "name": "SuperSport 1",
-        "url": "http://supersport-live.com/supersport1.m3u8"
+
+    "one_sports_fhd": {
+        "name": "One Sports (Philippines, FHD)",
+        "url": "https://qp-pldt-live-grp-05-prod.akamaized.net/out/u/onesports_qp.m3u8"
     },
-    "supersport_2": {
-        "name": "SuperSport 2",
-        "url": "http://supersport-live.com/supersport2.m3u8"
+    "one_sports_plus": {
+        "name": "One Sports+ (Philippines, HD)",
+        "url": "https://qp-pldt-live-grp-03-prod.akamaized.net/out/u/onesportsplushd_qp_6.m3u8"
     },
-    "supersport_3": {
-        "name": "SuperSport 3",
-        "url": "http://supersport-live.com/supersport3.m3u8"
+    "awapa_sports_tv": {
+        "name": "Awapa Sports TV (1080p)",
+        "url": "https://mgv-awapa.akamaized.net/hls/live/2104282/MGV_CHANNEL15/master.m3u8"
     },
-    "supersport_4": {
-        "name": "SuperSport 4",
-        "url": "http://supersport-live.com/supersport4.m3u8"
+    "b1b_box": {
+        "name": "B1B Box (720p)",
+        "url": "https://e105-ts.cdn.bg/b1b/fls/b1btv.stream/playlist.m3u8"
     },
-    "supersport_5": {
-        "name": "SuperSport 5",
-        "url": "http://supersport-live.com/supersport5.m3u8"
+    "ars_primer": {
+        "name": "Arena Sport 1 (from GitHub list)",
+        "url": "https://play-prod1.live.anvato.net/server/play/ktvutestctg/master.m3u8"
     },
-    "espn": {
-        "name": "ESPN",
-        "url": "http://streaming.totalsportek.com/espn.m3u8"
-    },
-    "espn_2": {
-        "name": "ESPN 2",
-        "url": "http://streaming.totalsportek.com/espn2.m3u8"
-    },
-    "sky_sports_main_event": {
-        "name": "Sky Sports Main Event",
-        "url": "http://sky-sports-live-streams.com/sky-sports-main-event.m3u8"
-    },
-    "sky_sports_premier_league": {
-        "name": "Sky Sports Premier League",
-        "url": "http://sky-sports-live-streams.com/sky-sports-premier-league.m3u8"
-    },
-    "bein_sports_1": {
-        "name": "beIN Sports 1",
-        "url": "http://beinsports-streams.com/bein-sports-1.m3u8"
-    },
-    "bein_sports_2": {
-        "name": "beIN Sports 2",
-        "url": "http://beinsports-streams.com/bein-sports-2.m3u8"
-    },
-    "nbc_sports": {
-        "name": "NBC Sports",
-        "url": "http://nbcsports-streams.com/nbc-sports.m3u8"
-    },
-    "fox_sports_1": {
-        "name": "Fox Sports 1",
-        "url": "http://foxsports-streams.com/fox-sports-1.m3u8"
-    },
-    "fox_sports_2": {
-        "name": "Fox Sports 2",
-        "url": "http://foxsports-streams.com/fox-sports-2.m3u8"
-    },
-    "bt_sport_1": {
-        "name": "BT Sport 1",
-        "url": "http://btsport-streams.com/bt-sport-1.m3u8"
-    },
-    "bt_sport_2": {
-        "name": "BT Sport 2",
-        "url": "http://btsport-streams.com/bt-sport-2.m3u8"
-    },
-    "eurosport_1": {
-        "name": "Eurosport 1",
-        "url": "http://eurosport-streams.com/eurosport-1.m3u8"
-    },
-    "eurosport_2": {
-        "name": "Eurosport 2",
-        "url": "http://eurosport-streams.com/eurosport-2.m3u8"
-    },
-    "canal_plus_sport": {
-        "name": "Canal+ Sport",
-        "url": "http://canalplus-sport-streams.com/canalplus-sport.m3u8"
+    "redbull_tv": {
+        "name": "Redbull TV (Sports/Extreme)",
+        "url": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_1660.m3u8"
     }
 }
 #-------------------‐--------------------------------

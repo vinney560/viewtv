@@ -400,7 +400,8 @@ def vip_mode():
 @app.route('/basic_mode')
 @login_required
 def basic_mode():
-    return render_template('dashboard.html')
+    user = current_user.id
+    return render_template('dashboard.html', user=user)
 
 @app.route('/admin_mode')
 @login_required 

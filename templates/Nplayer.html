@@ -8,71 +8,85 @@
     html, body {
       height: 100%;
       margin: 0;
-      background-color: #000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f0f0f, #1c1c1c);
+      color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      color: #fff;
-      padding: 20px 0;
+      padding: 20px;
     }
 
     .back-button {
       align-self: flex-start;
+      margin-bottom: 20px;
       margin-left: 5%;
-      margin-bottom: 15px;
-      color: #58a6ff;
+      color: #00b7ff;
       text-decoration: none;
-      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 18px;
+      font-size: 17px;
+      transition: color 0.3s ease;
+    }
+
+    .back-button:hover {
+      color: #00e0ff;
     }
 
     .back-button svg {
-      width: 24px;
-      height: 24px;
-      fill: none;
+      width: 22px;
+      height: 22px;
+      margin-right: 6px;
       stroke: currentColor;
+      fill: none;
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
     .player-container {
-      width: 90%;
-      max-width: 900px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-      border-radius: 12px;
-      overflow: hidden;
-      background-color: #111;
-      padding: 10px;
+      width: 100%;
+      max-width: 960px;
+      background: #121212;
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
+    }
+
+    .video-title {
+      text-align: center;
+      font-size: 1.3em;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #00e1ff;
     }
 
     video {
       width: 100%;
       height: auto;
-      border-radius: 8px;
-      outline: none;
+      max-height: 80vh;
+      border-radius: 10px;
       background-color: #000;
+      outline: none;
     }
 
-    .video-title {
-      text-align: center;
-      font-size: 1.2em;
-      margin-bottom: 10px;
-      color: #00e1ff;
+    @media (max-width: 600px) {
+      .video-title {
+        font-size: 1em;
+      }
+
+      .back-button {
+        font-size: 15px;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- Back Button -->
-  <a href="javascript:history.back()" class="back-button" title="Go Back" aria-label="Go Back">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" >
-      <path d="M19 12H5M12 19l-7-7 7-7" />
+  <a href="javascript:history.back()" class="back-button" title="Go Back" aria-label="Back">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M15 18l-6-6 6-6"/>
     </svg>
     Back
   </a>
@@ -81,7 +95,7 @@
     <div class="video-title">{{ name }}</div>
     <video controls autoplay>
       <source src="{{ stream_url }}" type="application/x-mpegURL">
-      Your browser does not support HTML5 video.
+      Your browser does not support the video tag.
     </video>
   </div>
 

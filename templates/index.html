@@ -53,7 +53,7 @@
 
     main {
       max-width: 700px;
-      margin-top: 100px; /* to avoid header overlap */
+      margin-top: 100px;
       padding: 40px 20px;
       background: rgba(20, 35, 55, 0.8);
       border-radius: 12px;
@@ -95,16 +95,37 @@
       box-shadow: 0 6px 15px rgba(33,161,241,0.7);
     }
 
-    /* UPDATED Channel list styles - scrollable with nice scrollbar */
+    /* Flash message styles */
+    #flash-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 9999;
+    }
+    .flash {
+      background: #00ff88;
+      color: #001f13;
+      padding: 14px 20px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,255,136,0.4);
+      font-weight: bold;
+      transition: opacity 0.5s ease;
+    }
+    .flash.error {
+      background: #ff4c4c;
+      color: #fff;
+    }
+
+    /* Scrollable channel list */
     .channels {
       margin-top: 10px;
-      max-height: 360px;   /* limits height */
-      overflow-y: auto;    /* adds vertical scrollbar if needed */
-      padding-right: 8px;  /* prevent content behind scrollbar */
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 8px;
       border-radius: 12px;
       box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
     }
-    /* Scrollbar styles for WebKit browsers */
     .channels::-webkit-scrollbar {
       width: 8px;
     }
@@ -117,7 +138,6 @@
       border: 2px solid transparent;
       background-clip: content-box;
     }
-    /* Firefox scrollbar */
     @-moz-document url-prefix() {
       .channels {
         scrollbar-width: thin;
@@ -198,11 +218,33 @@
   </style>
 </head>
 <body>
-<link rel="icon" type="image/x-icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}">
+  <link rel="icon" type="image/x-icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}">
+
   <header>
     <a href="/login">Login</a>
     <a href="/register">Register</a>
   </header>
+
+  <!-- Flash messages block -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div id="flash-container">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      <script>
+        setTimeout(() => {
+          const flash = document.getElementById('flash-container');
+          if (flash) {
+            flash.style.transition = 'opacity 0.5s ease-out';
+            flash.style.opacity = '0';
+            setTimeout(() => flash.remove(), 500);
+          }
+        }, 4000);
+      </script>
+    {% endif %}
+  {% endwith %}
 
   <main>
     <h1>Welcome to View Tv</h1>

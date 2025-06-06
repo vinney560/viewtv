@@ -25,7 +25,7 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "12345QWER"
 app.config["JWT_SECRET_KEY"] = "4321REWQ"
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///vie33wtv.db'
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 
 app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
@@ -377,7 +377,7 @@ def vip_mode():
 @app.route('/basic_mode')
 @login_required
 def basic_mode():
-    return redirect(url_for('countries'))
+    return render_template('browse.html')
 
 @app.route('/admin_mode')
 def admin_mode():
@@ -477,7 +477,7 @@ def fetch_category_channels(category_id):
 
 @app.route("/categories")
 @login_required
-def show_categories():
+def categories():
     try:
         response = requests.get("https://iptv-org.github.io/api/categories.json")
         response.raise_for_status()
@@ -485,7 +485,79 @@ def show_categories():
         return render_template("categories.html", categories=categories)
     except Exception as e:
         return f"Failed to load categories: {e}"
+#====================================================
 
+# 1) Map each “key” to its display name and .m3u8 URL:
+CUSTOM_CHANNELS = {
+    "citizen": {
+        "name": "Citizen TV Kenya",
+        "url": "https://citizen.digital/tv/citizen-tv-live-15"  # or actual HLS .m3u8 if you find one
+    },
+    "ntv": {
+        "name": "NTV Kenya",
+        "url": "https://ntvkenya.co.ke/live/"  # YouTube embed or HLS if available
+    },
+    "ktn": {
+        "name": "KTN TV Kenya",
+        "url": "https://www.youtube.com/watch?v=m0VVi0jbRRw"
+    },
+    "ramogi": {
+        "name": "Ramogi TV",
+        "url": "https://citizen.digital/tv/ramogi-tv-live-19"
+    },
+    "inooro": {
+        "name": "Inooro TV",
+        "url": "https://citizen.digital/tv/inooro-tv-14"
+    },
+    "jimjam": {
+        "name": "JimJam TV",
+        "url": "http://185.188.188.235/live/jimjam/playlist.m3u8"
+    },
+    "akili_kids": {
+        "name": "Akili Kids TV",
+        "url": "http://free.fullspeed.tv/iptv-query?streaming-ip=https://www.dailymotion.com/video/x7tfayd"
+    },
+    "babytv": {
+        "name": "Baby TV",
+        "url": "http://181.78.211.244:8000/play/a01s/index.m3u8"
+    },
+    "nickelodeon": {
+        "name": "Nickelodeon TV",
+        "url": "https://www.youtube.com/watch?v=cdhCss37nag"
+    }
+}
+
+@app.route("/channel/<key>")
+@login_required
+def play_channel(key):
+    """
+    Dynamic route to play a specific custom channel.
+    'key' must match one of the keys in CUSTOM_CHANNELS.
+    """
+    channel = CUSTOM_CHANNELS.get(key)
+    if not channel:
+        # If someone requests /channel/unknown, show a 404
+        abort(404)
+
+    # Pass the channel name and URL to the template
+    return render_template(
+        "player.html",
+        channel_name=channel["name"],
+        stream_url=channel["url"]
+    )
+
+@app.route("/custom-list")
+@login_required
+def custom_list():
+    # Pass the keys and names to a template so you can show them as clickable links
+    return render_template("custom_list.html", channels=CUSTOM_CHANNELS)
+
+@app.route("/more-channels")
+@login_required
+def more_channels():
+    return render_template("more_channels.html")
+
+#====================================================
 # Watch a selected channel
 @app.route("/watch")
 @login_required

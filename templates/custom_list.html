@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local & Kids Channels</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { 
+      margin: 0; padding: 20px; 
+      font-family: Arial, sans-serif; 
+      background: #0d1117; color: #c9d1d9;
+    }
+    h2 { color: #58a6ff; margin-bottom: 20px; }
+    .list { max-width: 600px; margin: 0 auto; }
+    .item {
+      background: #161b22; margin-bottom: 12px; padding: 14px 20px; 
+      border-radius: 8px; transition: background 0.2s; 
+    }
+    .item:hover { background: #238636; }
+    a { text-decoration: none; color: #00ff88; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h2>Local & Kids Channels</h2>
+  <div class="list">
+    {% for key, info in channels.items() %}
+      <div class="item">
+        <a href="{{ url_for('play_channel', key=key) }}">{{ info.name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

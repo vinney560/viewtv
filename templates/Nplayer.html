@@ -4,107 +4,38 @@
   <meta charset="UTF-8">
   <title>{{ name }} - Streaming</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f0f0f, #1c1c1c);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .back-button {
-      align-self: flex-start;
-      margin-bottom: 20px;
-      margin-left: 5%;
-      color: #00b7ff;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      font-size: 17px;
-      transition: color 0.3s ease;
-    }
-
-    .back-button:hover {
-      color: #00e0ff;
-    }
-
-    .back-button svg {
-      width: 22px;
-      height: 22px;
-      margin-right: 6px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .player-container {
-      width: 100%;
-      max-width: 960px;
-      background: #121212;
-      border-radius: 14px;
-      padding: 12px;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.25);
-    }
-
-    .video-title {
-      text-align: center;
-      font-size: 1.3em;
-      margin-bottom: 10px;
-      font-weight: bold;
-      color: #00e1ff;
-    }
-
-    video {
-      width: 100%;
-      height: auto;
-      max-height: 80vh;
-      border-radius: 10px;
-      background-color: #000;
-      outline: none;
-    }
-
-    @media (max-width: 600px) {
-      .video-title {
-        font-size: 1em;
-      }
-
-      .back-button {
-        font-size: 15px;
-      }
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-br from-black to-gray-900 text-white min-h-screen flex flex-col items-center p-4">
 
-  <!-- Back Button -->
-<a href="javascript:void(0)" 
-   onclick="tryClose()"
-   class="fixed top-4 left-4 flex items-center text-blue-400 hover:text-blue-300 transition duration-200 z-50">
-  <svg xmlns="http://www.w3.org/2000/svg" 
-       fill="none" 
-       viewBox="0 0 24 24" 
-       stroke-width="2" 
-       stroke="currentColor" 
-       class="w-6 h-6 mr-1">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-  </svg>
-  <span class="text-base font-medium">Back</span>
-</a>
+  <!-- Back / Close Button -->
+  <button onclick="tryClose()" 
+    class="fixed top-4 left-4 z-50 flex items-center text-cyan-400 hover:text-cyan-300 transition">
+    <svg xmlns="http://www.w3.org/2000/svg" 
+         fill="none" 
+         viewBox="0 0 24 24" 
+         stroke-width="2" 
+         stroke="currentColor" 
+         class="w-6 h-6 mr-1">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+    <span class="font-medium text-base">Back</span>
+  </button>
 
-  <div class="player-container">
-    <div class="video-title">{{ name }}</div>
-    <video controls autoplay>
-      <source src="{{ stream_url }}" type="application/x-mpegURL">
-      Your browser does not support the video tag.
-    </video>
+  <!-- Video Player Container -->
+  <div class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
+    <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4">{{ name }}</h1>
+    <div class="aspect-video w-full">
+      <video 
+        controls 
+        autoplay 
+        class="w-full h-full object-contain rounded-lg bg-black outline-none">
+        <source src="{{ stream_url }}" type="application/x-mpegURL">
+        Your browser does not support the video tag.
+      </video>
+    </div>
   </div>
+
   <script>
     function tryClose() {
       window.close();
@@ -112,7 +43,7 @@
         if (!window.closed) {
           history.back();
         }
-      }, 200);
+      }, 300);
     }
   </script>
 </body>

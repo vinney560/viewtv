@@ -135,7 +135,7 @@
 </head>
 <body>
   <h2>📺 Available Channels</h2>
-  <!-- Back Button + Search -->
+
   <div style="width: 100%; max-width: 600px; display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
     <!-- Back Button -->
     <a href="javascript:history.back()" title="Go Back" style="color: #58a6ff; text-decoration: none;">
@@ -147,17 +147,19 @@
     <!-- Search Bar -->
     <input type="text" id="search" placeholder="Search channels..." style="flex-grow: 1; padding: 10px 14px; border-radius: 8px; background: #161b22; color: #c9d1d9; border: 1px solid #30363d; outline: none;" />
   </div>  
+
   <div class="channel-list">
     {% for ch in channels %}
       <div class="channel" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.name }}">
         <div class="channel-number">{{ loop.index }}.</div>
         <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
-        <a class="watch-link" href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}">Watch</a>
+        <a class="watch-link" href="javascript:void(0);" onclick="openPlayer('{{ url_for('play_channel', key=ch.key) }}')">Watch</a>
       </div>
     {% else %}
       <p class="no-channels">No channels found.</p>
     {% endfor %}
   </div>  
+
   <script>
     const searchInput = document.getElementById("search");
     searchInput.addEventListener("input", () => {
@@ -169,6 +171,13 @@
         channel.style.display = name.includes(query) ? "flex" : "none";
       });
     });
+
+    function openPlayer(url) {
+      const w = window.open(url, '_blank', 'width=960,height=600');
+      if (!w) {
+        alert("Popup blocked. Please allow popups for this site.");
+      }
+    }
   </script>  
 </body>
 </html>

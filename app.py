@@ -489,7 +489,7 @@ def test_channels():
 #====================================================
 
 @app.route("/category/<category_id>")
-@login_required
+@login_required 
 def fetch_category_channels(category_id):
     url = f"https://iptv-org.github.io/iptv/categories/{category_id}.m3u"
     try:
@@ -638,11 +638,41 @@ def more_channels():
 @login_required
 def watch():
     name = request.args.get("name")
-    url = request.args.get("url")
-    return render_template("Nplayer.html", name=name, stream_url=url)
+    stream_url = request.args.get("url")
+    category_id = request.args.get("category")
+    country_code = request.args.get("country")
+
+    channels = []
+    source_label = ""  # For heading below player
+
+    try:
+        if category_id:
+            url = f"https://iptv-org.github.io/iptv/categories/{category_id.lower()}.m3u"
+            source_label = category_id.capitalize()
+        elif country_code:
+            url = f"https://iptv-org.github.io/iptv/countries/{country_code.lower()}.m3u"
+            source_label = country_code.upper()
+        else:
+            url = None
+
+        if url:
+            response = requests.get(url)
+            lines = response.text.strip().splitlines()
+
+            current_name = None
+            for line in lines:
+                if line.startswith("#EXTINF"):
+                    current_name = line.split(",")[-1].strip()
+                elif line.startswith("http") and current_name:
+                    channels.append({"name": current_name, "url": line})
+
+    except Exception as e:
+        flash(f"Error fetching channels: {e}", "error")
+
+    return render_template("player.html", stream_url=stream_url, name=name, channels=channels, source_label=source_label)
 
 #====================================================
-@app.route('/bowse')
+@app.route('/browse')
 def browse():
     return render_template('browse.html')
 #‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-

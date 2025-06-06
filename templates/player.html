@@ -2,212 +2,234 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>{{ channel_name }}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ViewTV Player</title>
   <style>
-    /* Reset & base styles */
-    * {
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    body {
+      background: #0a0f1c;
+      color: #e1e8ef;
+      font-family: 'Inter', sans-serif;
+      padding: 30px 20px;
       margin: 0;
-      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #4fc3f7;
+      text-shadow: 0 0 12px #4fc3f799;
+    }
+
+    .player-container {
+      width: 100%;
+      max-width: 900px;
+      background: #121829;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    video {
+      width: 100%;
+      max-height: 500px;
+      border-radius: 12px;
+      background: black;
+      outline: none;
+    }
+
+    .current-channel-name {
+      margin-top: 16px;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: #00ff88;
+      text-align: center;
+      text-shadow: 0 0 6px #00ff88bb;
+    }
+
+    /* Scrollable channel list */
+    .channel-list {
+      width: 100%;
+      max-width: 600px;
+      max-height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-right: 8px; /* For scrollbar space */
+    }
+
+    .channel {
+      background: #121829;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .channel:hover {
+      background: #1e2a38;
+      box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+    }
+
+    .channel-number {
+      font-weight: 600;
+      color: #32cd80;
+      margin-right: 12px;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .channel-name {
+      flex-grow: 1;
+      font-weight: 600;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      color: #ffffff;
+    }
+
+    .watch-link {
+      position: relative;
+      background: #00ff88;
+      color: #0d1117;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      max-width: 100%;
       box-sizing: border-box;
     }
 
-    html, body {
+    .watch-link:hover {
+      background: #00cc6a;
+      color: #d0f0e6;
+      box-shadow: 0 0 10px #00ff88;
+    }
+
+    .watch-link::before {
+      content: "▶";
+      font-size: 1.2rem;
+    }
+
+    .watch-link::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
       height: 100%;
-      width: 100%;
-      overflow-x: hidden;
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.1) 100%
+      );
+      transform: skewX(-20deg);
+      animation: shine 2.5s infinite;
+      pointer-events: none;
     }
 
-    .container {
-      width: 100%;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px 10px;
+    @keyframes shine {
+      0% {
+        left: -75%;
+      }
+      100% {
+        left: 125%;
+      }
     }
 
-    /* Back button */
-    .back-btn {
-      margin-bottom: 12px;
-    }
-
-    .back-btn a {
-      display: inline-block;
-      color: #58a6ff;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 1em;
-      cursor: pointer;
-      user-select: none;
-      transition: color 0.3s ease;
-    }
-
-    .back-btn a svg {
-      vertical-align: middle;
-      transition: transform 0.2s ease;
-    }
-
-    .back-btn a:hover svg {
-      transform: scale(1.1);
-      stroke: #00e1ff;
-    }
-
-    /* Channel list */
-    .channel-list {
-      background-color: #111;
-      border-radius: 8px;
-      padding: 8px 12px;
-      margin-bottom: 16px;
-      overflow-x: auto;
-      white-space: nowrap;
-      scrollbar-width: thin;
-      scrollbar-color: #00e1ff #111;
-    }
-
-    .channel-list::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    .channel-list::-webkit-scrollbar-track {
-      background: #111;
-    }
-
-    .channel-list::-webkit-scrollbar-thumb {
-      background-color: #00e1ff;
-      border-radius: 8px;
-    }
-
-    .channel-list a {
-      display: inline-block;
-      padding: 8px 14px;
-      margin-right: 8px;
-      border-radius: 6px;
-      text-decoration: none;
-      color: #c9d1d9;
-      font-weight: normal;
-      transition: background-color 0.3s, color 0.3s;
-    }
-
-    .channel-list a.active {
-      color: #00e1ff;
-      background-color: #003344;
-      font-weight: bold;
-    }
-
-    .channel-list a:hover:not(.active) {
-      background-color: #222;
-      color: #58a6ff;
-    }
-
-    /* Player container */
-    .player-container {
+    p.no-channels {
+      font-style: italic;
+      color: #8b949e;
+      font-size: 1rem;
       text-align: center;
+      margin-top: 60px;
     }
 
-    .video-title {
-      margin-bottom: 12px;
-      font-size: 1.2em;
-      color: #00e1ff;
-    }
+    /* Responsive tweaks */
+    @media (max-width: 640px) {
+      .channel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
 
-    video, iframe {
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      max-height: 75vh;
-      border-radius: 8px;
-      background-color: #000;
+      .channel-name {
+        white-space: normal;
+      }
+
+      .watch-link {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Back Button with SVG (X Icon) -->
-    <div class="back-btn">
-      <a href="{{ url_for('custom_list') }}" title="Back to List">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </a>
-    </div>
 
-    <!-- Channel List -->
-    <div class="channel-list">
-      {% for key, ch in channels.items() %}
-        <a href="{{ url_for('play_channel', key=key) }}" 
-           class="{% if key == current_key %}active{% endif %}">
-          {{ ch.name }}
-        </a>
-      {% endfor %}
-    </div>
+  <div class="player-container" role="main" aria-label="Video player and channel list">
 
-    <!-- Player -->
-    <div class="player-container">
-      <div class="video-title">{{ channel_name }}</div>
-      <div id="player-area">
-        <video id="video" controls autoplay playsinline></video>
-      </div>
-    </div>
+    <!-- Video Player -->
+    {% if stream_url %}
+      <video controls autoplay playsinline>
+        <source src="{{ stream_url }}" type="application/x-mpegURL" />
+        Your browser does not support the video tag.
+      </video>
+      {% if name %}
+        <div class="current-channel-name" aria-live="polite">Now Playing: {{ name }}</div>
+      {% endif %}
+    {% else %}
+      <p class="no-channels">No stream selected.</p>
+    {% endif %}
+
   </div>
 
-  <script>
-    const streamUrl = "{{ stream_url }}";
-    const video = document.getElementById('video');
-    const playerArea = document.getElementById('player-area');
+  <!-- Scrollable Channels List -->
+  {% if channels %}
+    <h2>More Channels in {{ source_label }}</h2>
+    <div class="channel-list" role="list" tabindex="0" aria-label="List of channels">
 
-    function createIframe(url) {
-      const iframe = document.createElement("iframe");
-      iframe.src = url;
-      iframe.allow = "autoplay; fullscreen";
-      iframe.allowFullscreen = true;
-      iframe.style.width = "100%";
-      iframe.style.height = "70vh";
-      iframe.style.border = "none";
-      return iframe;
-    }
+      {% for ch in channels %}
+        <div class="channel" role="listitem" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.name }}">
+          <div class="channel-number">{{ loop.index }}.</div>
+          <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
+          <a
+            class="watch-link"
+            href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}{% if category_id %}&category={{ category_id|lower }}{% elif country_code %}&country={{ country_code|lower }}{% endif %}"
+            aria-label="Watch {{ ch.name }}"
+          >
+            Watch
+          </a>
+        </div>
+      {% endfor %}
 
-    function initHls() {
-      // Load hls.js lazily
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
-      script.onload = () => {
-        if (Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(streamUrl);
-          hls.attachMedia(video);
-          hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-          video.src = streamUrl;
-          video.addEventListener("loadedmetadata", () => video.play());
-        } else {
-          playerArea.innerHTML = "<p>Sorry, your browser doesn’t support HLS playback.</p>";
-        }
-      };
-      document.head.appendChild(script);
-    }
+    </div>
+  {% else %}
+    <p class="no-channels">No channels available.</p>
+  {% endif %}
 
-    if (streamUrl.includes("youtube.com")) {
-      const embedUrl = streamUrl.includes("embed")
-        ? streamUrl
-        : streamUrl.replace("watch?v=", "embed/") + "?autoplay=1";
-      playerArea.innerHTML = '';
-      playerArea.appendChild(createIframe(embedUrl));
-    } else if (
-      streamUrl.includes("dailymotion.com") ||
-      streamUrl.includes("kenyalivetv.co.ke")
-    ) {
-      playerArea.innerHTML = '';
-      playerArea.appendChild(createIframe(streamUrl));
-    } else if (streamUrl.endsWith(".m3u8")) {
-      // Lazy load hls.js only now
-      initHls();
-    } else {
-      video.src = streamUrl;
-    }
-  </script>
 </body>
 </html>

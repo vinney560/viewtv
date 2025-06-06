@@ -269,6 +269,7 @@ def reset_password(token):
 def welcome():
     return render_template("welcome.html")
 #----------------------------------------------------
+@app.route('/logout_current_user')
 def logout_current_user():
     session.clear()
     flask_logout_user()
@@ -400,8 +401,7 @@ def vip_mode():
 @app.route('/basic_mode')
 @login_required
 def basic_mode():
-    user = current_user.id
-    return render_template('dashboard.html', user=user)
+    return render_template('dashboard.html', user=current_user)
 
 @app.route('/admin_mode')
 @login_required 

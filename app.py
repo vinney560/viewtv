@@ -1,4 +1,4 @@
-from flask import Flask, session, abort, render_template, request, flash, url_for, redirect, jsonify
+from flask import Flask, session, abort, render_template, request, flash, url_for, redirect, jsonify, send_from_directory
 from flask_login import login_user, logout_user as flask_logout_user, LoginManager, login_required, UserMixin, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_cors import CORS

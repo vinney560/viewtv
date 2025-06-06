@@ -11,7 +11,7 @@
       background: #0a0f1c;
       color: #e1e8ef;
       font-family: 'Inter', sans-serif;
-      padding: 30px 20px;
+      padding: 4vw 3vw;
       margin: 0;
       min-height: 100vh;
       display: flex;
@@ -21,10 +21,11 @@
 
     h2 {
       font-weight: 700;
-      font-size: 2rem;
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
       margin-bottom: 20px;
       color: #4fc3f7;
       text-shadow: 0 0 12px #4fc3f799;
+      text-align: center;
     }
 
     .player-container {
@@ -33,7 +34,7 @@
       background: #121829;
       border-radius: 12px;
       box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
-      padding: 20px;
+      padding: 5vw 4vw;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -42,7 +43,7 @@
 
     video {
       width: 100%;
-      max-height: 500px;
+      max-height: 60vh;
       border-radius: 12px;
       background: black;
       outline: none;
@@ -51,13 +52,12 @@
     .current-channel-name {
       margin-top: 16px;
       font-weight: 600;
-      font-size: 1.25rem;
+      font-size: clamp(1rem, 2vw, 1.5rem);
       color: #00ff88;
       text-align: center;
       text-shadow: 0 0 6px #00ff88bb;
     }
 
-    /* Scrollable channel list */
     .channel-list {
       width: 100%;
       max-width: 600px;
@@ -66,7 +66,7 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      padding-right: 8px; /* For scrollbar space */
+      padding-right: 8px;
     }
 
     .channel {
@@ -80,6 +80,7 @@
       transition: background 0.3s ease, box-shadow 0.3s ease;
       overflow: hidden;
       cursor: pointer;
+      flex-wrap: wrap;
     }
 
     .channel:hover {
@@ -153,12 +154,8 @@
     }
 
     @keyframes shine {
-      0% {
-        left: -75%;
-      }
-      100% {
-        left: 125%;
-      }
+      0% { left: -75%; }
+      100% { left: 125%; }
     }
 
     p.no-channels {
@@ -169,8 +166,8 @@
       margin-top: 60px;
     }
 
-    /* Responsive tweaks */
-    @media (max-width: 640px) {
+    /* Responsive */
+    @media (max-width: 768px) {
       .channel {
         flex-direction: column;
         align-items: flex-start;
@@ -179,11 +176,33 @@
 
       .channel-name {
         white-space: normal;
+        text-align: left;
+        width: 100%;
       }
 
       .watch-link {
         width: 100%;
         justify-content: center;
+      }
+
+      .player-container {
+        padding: 6vw 4vw;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .channel-number,
+      .channel-name,
+      .watch-link {
+        font-size: 0.95rem;
+      }
+
+      video {
+        max-height: 45vh;
       }
     }
   </style>
@@ -191,8 +210,6 @@
 <body>
 
   <div class="player-container" role="main" aria-label="Video player and channel list">
-
-    <!-- Video Player -->
     {% if stream_url %}
       <video controls autoplay playsinline>
         <source src="{{ stream_url }}" type="application/x-mpegURL" />
@@ -204,14 +221,11 @@
     {% else %}
       <p class="no-channels">No stream selected.</p>
     {% endif %}
-
   </div>
 
-  <!-- Scrollable Channels List -->
   {% if channels %}
     <h2>More Channels in {{ source_label }}</h2>
     <div class="channel-list" role="list" tabindex="0" aria-label="List of channels">
-
       {% for ch in channels %}
         <div class="channel" role="listitem" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.name }}">
           <div class="channel-number">{{ loop.index }}.</div>
@@ -225,7 +239,6 @@
           </a>
         </div>
       {% endfor %}
-
     </div>
   {% else %}
     <p class="no-channels">No channels available.</p>

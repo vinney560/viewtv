@@ -99,7 +99,7 @@
     .video-wrapper {
       position: relative;
       width: 100%;
-      height: 100%;
+      height: 80vh;
     }
   </style>
 </head>
@@ -118,13 +118,10 @@
   <div class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
     <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4">{{ name }}</h1>
 
-    <div class="aspect-video w-full mb-4 video-wrapper">
-      <!-- HLS Player -->
+    <!-- Enlarged Video Container -->
+    <div class="w-full h-[80vh] mb-4 video-wrapper">
       <video id="video" controls autoplay class="w-full h-full object-contain rounded-lg bg-black outline-none" playsinline></video>
-      
-      <!-- iFrame fallback -->
       <iframe id="iframe" src="" class="w-full h-full rounded-lg hidden border-2 border-cyan-600" allowfullscreen></iframe>
-
       <div id="bufferSpinner">Buffering...</div>
     </div>
 
@@ -142,7 +139,7 @@
       <div class="channel">
         <div class="channel-number">{{ loop.index }}.</div>
         <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
-        <a class="watch-link" href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}">▶ Watch</a>
+        <a class="watch-link" href="{{ url_for('play_channel', key=key) }}?name={{ ch.name }}&url={{ ch.url }}">▶ Watch</a>
       </div>
     {% else %}
       <p class="text-gray-400 italic text-center">No channels available.</p>
@@ -207,7 +204,6 @@
       video.classList.remove("hidden");
       iframe.classList.add("hidden");
     } else {
-      // Fallback to iframe
       video.classList.add("hidden");
       qualityContainer.classList.add("hidden");
       iframe.src = streamURL;

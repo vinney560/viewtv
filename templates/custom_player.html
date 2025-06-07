@@ -22,6 +22,7 @@
       display: none;
       pointer-events: none;
       user-select: none;
+      z-index: 999;
     }
   </style>
 </head>
@@ -37,7 +38,7 @@
   </button>
 
   <!-- Video Player Section -->
-  <section class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
+  <section class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20 relative">
     <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4 truncate">{{ name }}</h1>
 
     <!-- Enlarged Video Container -->
@@ -63,7 +64,13 @@
           <span class="font-semibold text-[#32cd80] flex-shrink-0">{{ loop.index }}.</span>
           <span class="font-semibold text-white truncate" title="{{ ch.name }}">{{ ch.name }}</span>
         </div>
-        <a href="{{ url_for('play_channel', key=ch.key) }}" class="bg-[#00ff88] text-[#0d1117] font-semibold py-2 px-5 rounded-xl no-underline transition-colors duration-300 hover:bg-[#00cc6a] hover:text-[#d0f0e6] hover:shadow-[0_0_10px_#00ff88] whitespace-nowrap select-none">▶ Watch</a>
+        <button
+          class="bg-[#00ff88] text-[#0d1117] font-semibold py-2 px-5 rounded-xl transition-colors duration-300 hover:bg-[#00cc6a] hover:text-[#d0f0e6] hover:shadow-[0_0_10px_#00ff88] whitespace-nowrap select-none"
+          onclick="switchChannel('{{ ch.key }}')"
+          type="button"
+        >
+          ▶ Watch
+        </button>
       </div>
     {% else %}
       <p class="text-gray-400 italic text-center select-none">No channels available.</p>
@@ -71,7 +78,6 @@
   </section>
 
   <script>
-    const streamURL = "{{ stream_url }}";
     const video = document.getElementById("video");
     const iframe = document.getElementById("iframe");
     const qualitySelect = document.getElementById("qualitySelect");
@@ -89,49 +95,91 @@
       return url && url.toLowerCase().includes(".m3u8");
     }
 
-    if (isM3U8(streamURL) && Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(streamURL);
-      hls.attachMedia(video);
-      video.classList.remove("hidden");
-      iframe.classList.add("hidden");
+    // Initialize player on page load
+    function initializePlayer(streamURL) {
+      if (isM3U8(streamURL) && Hls.isSupported()) {
+        if (window.hls) {
+          window.hls.destroy();
+          window.hls = null;
+        }
+        const hls = new Hls();
+        window.hls = hls;
+        hls.loadSource(streamURL);
+        hls.attachMedia(video);
+        video.classList.remove("hidden");
+        iframe.classList.add("hidden");
 
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        const levels = hls.levels;
-
-        // Add Auto option
+        // Clear and add auto option
+        qualitySelect.innerHTML = '';
         const autoOption = document.createElement("option");
         autoOption.value = -1;
         autoOption.text = "Auto";
         autoOption.selected = true;
         qualitySelect.appendChild(autoOption);
 
-        levels.forEach((level, index) => {
-          const option = document.createElement("option");
-          option.value = index;
-          option.text = `${level.height}p`;
-          qualitySelect.appendChild(option);
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          hls.levels.forEach((level, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.text = `${level.height}p`;
+            qualitySelect.appendChild(option);
+          });
         });
 
-        qualitySelect.addEventListener("change", function () {
+        qualitySelect.onchange = function () {
           const selected = parseInt(this.value);
-          hls.currentLevel = selected;
-        });
-      });
+          window.hls.currentLevel = selected;
+        };
 
-      hls.on(Hls.Events.BUFFER_STALLED, () => bufferSpinner.style.display = "block");
-      hls.on(Hls.Events.BUFFER_APPENDED, () => bufferSpinner.style.display = "none");
-      hls.on(Hls.Events.BUFFER_EOS, () => bufferSpinner.style.display = "none");
+        hls.on(Hls.Events.BUFFER_STALLED, () => bufferSpinner.style.display = "block");
+        hls.on(Hls.Events.BUFFER_APPENDED, () => bufferSpinner.style.display = "none");
+        hls.on(Hls.Events.BUFFER_EOS, () => bufferSpinner.style.display = "none");
 
-    } else if (isM3U8(streamURL) && video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = streamURL;
-      video.classList.remove("hidden");
-      iframe.classList.add("hidden");
-    } else {
-      video.classList.add("hidden");
-      qualityContainer.classList.add("hidden");
-      iframe.src = streamURL;
-      iframe.classList.remove("hidden");
+      } else if (isM3U8(streamURL) && video.canPlayType("application/vnd.apple.mpegurl")) {
+        if (window.hls) {
+          window.hls.destroy();
+          window.hls = null;
+        }
+        video.src = streamURL;
+        video.classList.remove("hidden");
+        iframe.classList.add("hidden");
+        qualityContainer.classList.remove("hidden");
+
+      } else {
+        if (window.hls) {
+          window.hls.destroy();
+          window.hls = null;
+        }
+        video.classList.add("hidden");
+        qualityContainer.classList.add("hidden");
+        iframe.src = streamURL;
+        iframe.classList.remove("hidden");
+      }
+    }
+
+    // Initial load with the current stream URL from the server
+    initializePlayer("{{ stream_url }}");
+
+    // Switch channel without reload
+    async function switchChannel(key) {
+      bufferSpinner.style.display = "block";
+
+      try {
+        const response = await fetch(`/api/channel_stream_url?key=${encodeURIComponent(key)}`);
+        if (!response.ok) throw new Error("Channel not found");
+
+        const data = await response.json();
+        const newStreamURL = data.stream_url;
+        const newName = data.name || "Streaming";
+
+        document.querySelector("h1").textContent = newName;
+
+        initializePlayer(newStreamURL);
+      } catch (error) {
+        alert("Error switching channel: " + error.message);
+      } finally {
+        setTimeout(() => { bufferSpinner.style.display = "none"; }, 1000);
+      }
     }
   </script>
 </body>

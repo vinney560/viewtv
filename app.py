@@ -545,6 +545,19 @@ def play_channel(key):
         channels=channels,       # Now a list of dicts with name, url, key
         current_key=key          # Pass current key for highlighting
     )
+
+@app.route("/api/channel_stream_url")
+@login_required
+def channel_stream_url():
+    key = request.args.get("key")
+    channel = CUSTOM_CHANNELS.get(key)
+    if not channel:
+        return jsonify({"error": "Channel not found"}), 404
+    return jsonify({
+        "stream_url": channel["url"],
+        "name": channel["name"]
+    })    
+    
 #====================================================
 @app.route("/custom-list")
 @login_required

@@ -534,7 +534,7 @@ def play_channel(key):
         abort(404)
     
     return render_template(
-        "player.html",
+        "Nplayer.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
         channels=CUSTOM_CHANNELS,    # Pass all channels here
@@ -555,8 +555,7 @@ def more_channels():
 
 @app.route("/watch")
 @login_required
-def watch():
-    name = request.args.get("name")
+def watch():"    name = request.args.get("name")
     stream_url = request.args.get("url")
     category_id = request.args.get("category")
     country_code = request.args.get("country")
@@ -588,7 +587,7 @@ def watch():
     except Exception as e:
         flash(f"Error fetching channels: {e}", "error")
 
-    return render_template("Nplayer.html", stream_url=stream_url, name=name, channels=channels, source_label=source_label)
+    return render_template("player.html", stream_url=stream_url, name=name, channels=channels, source_label=source_label)
 
 #====================================================
 @app.route('/browse')

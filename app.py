@@ -532,13 +532,18 @@ def play_channel(key):
     channel = CUSTOM_CHANNELS.get(key)
     if not channel:
         abort(404)
-    
+
+    channels = [
+        {"key": k, "name": v["name"], "url": v["url"]}
+        for k, v in CUSTOM_CHANNELS.items()
+    ]
+
     return render_template(
         "custom_player.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
-        channels=CUSTOM_CHANNELS,    # Pass all channels here
-        current_key=key              # Pass current key for highlighting selected channel
+        channels=channels,       # Now a list of dicts with name, url, key
+        current_key=key          # Pass current key for highlighting
     )
 #====================================================
 @app.route("/custom-list")

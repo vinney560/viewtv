@@ -82,7 +82,6 @@
       font-weight: 600;
     }
 
-    /* Buffering spinner style */
     #bufferSpinner {
       position: absolute;
       top: 50%;
@@ -97,7 +96,6 @@
       text-shadow: 0 0 8px #00ff88;
     }
 
-    /* Video container to position spinner */
     .video-wrapper {
       position: relative;
       width: 100%;
@@ -109,14 +107,8 @@
 <body class="bg-gradient-to-br from-black to-gray-900 text-white min-h-screen flex flex-col items-center p-4">
 
   <!-- Back Button -->
-  <button onclick="tryClose()" 
-    class="fixed top-4 left-4 z-50 flex items-center text-cyan-400 hover:text-cyan-300 transition">
-    <svg xmlns="http://www.w3.org/2000/svg" 
-         fill="none" 
-         viewBox="0 0 24 24" 
-         stroke-width="2" 
-         stroke="currentColor" 
-         class="w-3 h-3 mr-1">
+  <button onclick="tryClose()" class="fixed top-4 left-4 z-50 flex items-center text-cyan-400 hover:text-cyan-300 transition">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3 mr-1">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
     <span class="font-medium text-base">Back</span>
@@ -125,14 +117,19 @@
   <!-- Video Player Section -->
   <div class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
     <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4">{{ name }}</h1>
-    
+
     <div class="aspect-video w-full mb-4 video-wrapper">
+      <!-- HLS Player -->
       <video id="video" controls autoplay class="w-full h-full object-contain rounded-lg bg-black outline-none" playsinline></video>
+      
+      <!-- iFrame fallback -->
+      <iframe id="iframe" src="" class="w-full h-full rounded-lg hidden border-2 border-cyan-600" allowfullscreen></iframe>
+
       <div id="bufferSpinner">Buffering...</div>
     </div>
 
     <!-- Quality Selector -->
-    <div class="flex justify-center items-center space-x-3">
+    <div id="qualityContainer" class="flex justify-center items-center space-x-3">
       <label for="qualitySelect" class="text-cyan-400 font-semibold">Quality:</label>
       <select id="qualitySelect"></select>
     </div>
@@ -153,29 +150,35 @@
   </div>
 
   <script>
-    const video = document.getElementById('video');
-    const qualitySelect = document.getElementById('qualitySelect');
-    const bufferSpinner = document.getElementById('bufferSpinner');
     const streamURL = "{{ stream_url }}";
+    const video = document.getElementById("video");
+    const iframe = document.getElementById("iframe");
+    const qualitySelect = document.getElementById("qualitySelect");
+    const qualityContainer = document.getElementById("qualityContainer");
+    const bufferSpinner = document.getElementById("bufferSpinner");
 
     function tryClose() {
       window.close();
       setTimeout(() => {
-        if (!window.closed) {
-          history.back();
-        }
+        if (!window.closed) history.back();
       }, 300);
     }
 
-    if (Hls.isSupported()) {
+    function isM3U8(url) {
+      return url && url.toLowerCase().includes(".m3u8");
+    }
+
+    if (isM3U8(streamURL) && Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(streamURL);
       hls.attachMedia(video);
+      video.classList.remove("hidden");
+      iframe.classList.add("hidden");
 
       hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         const levels = hls.levels;
 
-        // Add "Auto" option
+        // Add Auto
         const autoOption = document.createElement("option");
         autoOption.value = -1;
         autoOption.text = "Auto";
@@ -190,43 +193,26 @@
         });
 
         qualitySelect.addEventListener("change", function () {
-          const selectedQuality = parseInt(this.value);
-          hls.currentLevel = selectedQuality;
+          const selected = parseInt(this.value);
+          hls.currentLevel = selected;
         });
       });
 
-      // Buffering spinner controls
-      hls.on(Hls.Events.BUFFER_STALLED, () => {
-        bufferSpinner.style.display = 'block';
-      });
-      hls.on(Hls.Events.BUFFER_APPENDED, () => {
-        bufferSpinner.style.display = 'none';
-      });
-      hls.on(Hls.Events.BUFFER_EOS, () => {
-        bufferSpinner.style.display = 'none';
-      });
+      hls.on(Hls.Events.BUFFER_STALLED, () => bufferSpinner.style.display = "block");
+      hls.on(Hls.Events.BUFFER_APPENDED, () => bufferSpinner.style.display = "none");
+      hls.on(Hls.Events.BUFFER_EOS, () => bufferSpinner.style.display = "none");
 
-      // Log quality switches
-      hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
-        const level = hls.levels[data.level];
-        console.log(`Switched to quality: ${level.height}p`);
-      });
-
-      // Periodically log buffered amount
-      setInterval(() => {
-        if (video.buffered.length) {
-          const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-          const duration = video.duration;
-          console.log(`Buffered: ${bufferedEnd.toFixed(2)} / ${duration.toFixed(2)}`);
-        }
-      }, 3000);
-
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    } else if (isM3U8(streamURL) && video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = streamURL;
+      video.classList.remove("hidden");
+      iframe.classList.add("hidden");
     } else {
-      alert("Your browser does not support HLS playback.");
+      // Fallback to iframe
+      video.classList.add("hidden");
+      qualityContainer.classList.add("hidden");
+      iframe.src = streamURL;
+      iframe.classList.remove("hidden");
     }
   </script>
-
 </body>
 </html>

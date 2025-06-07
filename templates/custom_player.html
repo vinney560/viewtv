@@ -139,7 +139,7 @@
       <div class="channel">
         <div class="channel-number">{{ loop.index }}.</div>
         <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
-        <a class="watch-link" href="{{ url_for('play_channel', key=key) }}">▶ Watch</a>
+        <a class="watch-link" href="{{ url_for('play_channel') }}?name={{ ch.name }}&url={{ ch.url }}">▶ Watch</a>
       </div>
     {% else %}
       <p class="text-gray-400 italic text-center">No channels available.</p>

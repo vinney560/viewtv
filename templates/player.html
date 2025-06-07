@@ -2,38 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>{{ name }} - Streaming</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ViewTV Player</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
     body {
+      background: #0a0f1c;
+      color: #e1e8ef;
       font-family: 'Inter', sans-serif;
+      padding: 4vw 3vw;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .channel-scroll-container {
-      max-height: 400px;
-      overflow-y: auto;
+    h2 {
+      font-weight: 700;
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+      margin-bottom: 20px;
+      color: #4fc3f7;
+      text-shadow: 0 0 12px #4fc3f799;
+      text-align: center;
+    }
+
+    .player-container {
       width: 100%;
-      max-width: 48rem;
-      margin-top: 2rem;
-      padding: 1rem;
-      border-radius: 1rem;
-      background: #0a0f1c;
-      box-shadow: 0 0 12px rgba(0, 255, 136, 0.1);
+      max-width: 900px;
+      background: #121829;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
+      padding: 5vw 4vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    video {
+      width: 100%;
+      max-height: 60vh;
+      border-radius: 12px;
+      background: black;
+      outline: none;
+    }
+
+    .current-channel-name {
+      margin-top: 16px;
+      font-weight: 600;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      color: #00ff88;
+      text-align: center;
+      text-shadow: 0 0 6px #00ff88bb;
+    }
+
+    .channel-list {
+      width: 100%;
+      max-width: 600px;
+      max-height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-right: 8px;
     }
 
     .channel {
       background: #121829;
       border-radius: 12px;
       box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
-      padding: 16px 20px;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: all 0.3s ease;
-      margin-bottom: 1rem;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+      cursor: pointer;
+      flex-wrap: wrap;
     }
 
     .channel:hover {
@@ -44,20 +91,24 @@
     .channel-number {
       font-weight: 600;
       color: #32cd80;
-      margin-right: 10px;
+      margin-right: 12px;
       flex-shrink: 0;
+      font-size: 1rem;
     }
 
     .channel-name {
       flex-grow: 1;
       font-weight: 600;
+      font-size: 1rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      min-width: 0;
       color: #ffffff;
     }
 
     .watch-link {
+      position: relative;
       background: #00ff88;
       color: #0d1117;
       font-weight: 600;
@@ -65,6 +116,12 @@
       border-radius: 10px;
       text-decoration: none;
       transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .watch-link:hover {
@@ -73,160 +130,126 @@
       box-shadow: 0 0 10px #00ff88;
     }
 
-    select#qualitySelect {
-      background: #1f2937;
-      border: 1px solid #00ff88;
-      color: #00ff88;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 600;
+    .watch-link::before {
+      content: "▶";
+      font-size: 1.2rem;
     }
 
-    /* Buffering spinner style */
-    #bufferSpinner {
+    .watch-link::after {
+      content: "";
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #00ff88;
-      font-size: 1.25rem;
-      font-weight: bold;
-      display: none;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.1) 100%
+      );
+      transform: skewX(-20deg);
+      animation: shine 2.5s infinite;
       pointer-events: none;
-      user-select: none;
-      text-shadow: 0 0 8px #00ff88;
     }
 
-    /* Video container to position spinner */
-    .video-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
+    @keyframes shine {
+      0% { left: -75%; }
+      100% { left: 125%; }
+    }
+
+    p.no-channels {
+      font-style: italic;
+      color: #8b949e;
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .channel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .channel-name {
+        white-space: normal;
+        text-align: left;
+        width: 100%;
+      }
+
+      .watch-link {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .player-container {
+        padding: 6vw 4vw;
+      }
+    }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; color: #00ff88; background: transparent; border: 2px solid #00ff88; padding: 8px 14px;  border-radius: 8px; text-decoration: none; font-weight: 600;  margin-bottom: 24px; transition: all 0.3s ease; align-self: flex-start; }
+    .back-btn:hover { background: #00ff88; color: #0a0f1c; box-shadow: 0 0 12px #00ff88aa; }
+    .back-btn svg { width: 20px; height: 20px; stroke: currentColor; }
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .channel-number,
+      .channel-name,
+      .watch-link {
+        font-size: 0.95rem;
+      }
+
+      video {
+        max-height: 45vh;
+      }
     }
   </style>
 </head>
-
-<body class="bg-gradient-to-br from-black to-gray-900 text-white min-h-screen flex flex-col items-center p-4">
-
-  <!-- Back Button -->
-  <button onclick="tryClose()" 
-    class="fixed top-4 left-4 z-50 flex items-center text-cyan-400 hover:text-cyan-300 transition">
-    <svg xmlns="http://www.w3.org/2000/svg" 
-         fill="none" 
-         viewBox="0 0 24 24" 
-         stroke-width="2" 
-         stroke="currentColor" 
-         class="w-3 h-3 mr-1">
+<body>
+  <a href="javascript:history.back()" class="back-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
-    <span class="font-medium text-base">Back</span>
-  </button>
-
-  <!-- Video Player Section -->
-  <div class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
-    <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4">{{ name }}</h1>
-    
-    <div class="aspect-video w-full mb-4 video-wrapper">
-      <video id="video" controls autoplay class="w-full h-full object-contain rounded-lg bg-black outline-none" playsinline></video>
-      <div id="bufferSpinner">Buffering...</div>
-    </div>
-
-    <!-- Quality Selector -->
-    <div class="flex justify-center items-center space-x-3">
-      <label for="qualitySelect" class="text-cyan-400 font-semibold">Quality:</label>
-      <select id="qualitySelect"></select>
-    </div>
-  </div>
-
-  <!-- Scrollable Channel List -->
-  <div class="channel-scroll-container">
-    <h2 class="text-cyan-300 text-xl font-semibold mb-4">📺 More Channels</h2>
-    {% for ch in channels %}
-      <div class="channel">
-        <div class="channel-number">{{ loop.index }}.</div>
-        <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
-        <a class="watch-link" href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}">▶ Watch</a>
-      </div>
+    <span>Back</span>
+  </a>
+  <div class="player-container" role="main" aria-label="Video player and channel list">
+    {% if stream_url %}
+      <video controls autoplay playsinline>
+        <source src="{{ stream_url }}" type="application/x-mpegURL" />
+        Your browser does not support the video tag.
+      </video>
+      {% if name %}
+        <div class="current-channel-name" aria-live="polite">Now Playing: {{ name }}</div>
+      {% endif %}
     {% else %}
-      <p class="text-gray-400 italic text-center">No channels available.</p>
-    {% endfor %}
+      <p class="no-channels">No stream selected.</p>
+    {% endif %}
   </div>
 
-  <script>
-    const video = document.getElementById('video');
-    const qualitySelect = document.getElementById('qualitySelect');
-    const bufferSpinner = document.getElementById('bufferSpinner');
-    const streamURL = "{{ stream_url }}";
-
-    function tryClose() {
-      window.close();
-      setTimeout(() => {
-        if (!window.closed) {
-          history.back();
-        }
-      }, 300);
-    }
-
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(streamURL);
-      hls.attachMedia(video);
-
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        const levels = hls.levels;
-
-        // Add "Auto" option
-        const autoOption = document.createElement("option");
-        autoOption.value = -1;
-        autoOption.text = "Auto";
-        autoOption.selected = true;
-        qualitySelect.appendChild(autoOption);
-
-        levels.forEach((level, index) => {
-          const option = document.createElement("option");
-          option.value = index;
-          option.text = `${level.height}p`;
-          qualitySelect.appendChild(option);
-        });
-
-        qualitySelect.addEventListener("change", function () {
-          const selectedQuality = parseInt(this.value);
-          hls.currentLevel = selectedQuality;
-        });
-      });
-
-      // Buffering spinner controls
-      hls.on(Hls.Events.BUFFER_STALLED, () => {
-        bufferSpinner.style.display = 'block';
-      });
-      hls.on(Hls.Events.BUFFER_APPENDED, () => {
-        bufferSpinner.style.display = 'none';
-      });
-      hls.on(Hls.Events.BUFFER_EOS, () => {
-        bufferSpinner.style.display = 'none';
-      });
-
-      // Log quality switches
-      hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
-        const level = hls.levels[data.level];
-        console.log(`Switched to quality: ${level.height}p`);
-      });
-
-      // Periodically log buffered amount
-      setInterval(() => {
-        if (video.buffered.length) {
-          const bufferedEnd = video.buffered.end(video.buffered.length - 1);
-          const duration = video.duration;
-          console.log(`Buffered: ${bufferedEnd.toFixed(2)} / ${duration.toFixed(2)}`);
-        }
-      }, 3000);
-
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = streamURL;
-    } else {
-      alert("Your browser does not support HLS playback.");
-    }
-  </script>
+  {% if channels %}
+    <h2>Find More on {{ source_label }}</h2>
+    <div class="channel-list" role="list" tabindex="0" aria-label="List of channels">
+      {% for ch in channels %}
+        <div class="channel" role="listitem" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.name }}">
+          <div class="channel-number">{{ loop.index }}.</div>
+          <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
+          <a
+            class="watch-link"
+            href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}{% if category_id %}&category={{ category_id|lower }}{% elif country_code %}&country={{ country_code|lower }}{% endif %}"
+            aria-label="Watch {{ ch.name }}"
+          >
+            Watch
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="no-channels">No channels available.</p>
+  {% endif %}
 
 </body>
 </html>

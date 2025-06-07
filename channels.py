@@ -51,6 +51,7 @@ CUSTOM_CHANNELS = {
         "name": "Citizen TV Kenya",
         "url": "https://kenyalivetv.co.ke/embed/citizen-tv-live?autoplay=1&mute=1"
     },
+    },
     "citizen_extra": {
         "name": "Citizen Extra",
         "url": "https://iptvcat.org/kenya"
@@ -172,7 +173,7 @@ CUSTOM_CHANNELS = {
         "url": "https://www.squidtv.net/africa/kenya/kenya-003.html"
     },
     "ktn": {
-        "name": "KTN News Kenya",
+        "name": "KTN News",
         "url": "https://kenyalivetv.co.ke/embed/ktn-news-live?autoplay=1&mute=1"
     },
     "lolwe_tv": {

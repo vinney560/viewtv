@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -94,10 +95,7 @@
   <div class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
     <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4">{{ name }}</h1>
     <div class="aspect-video w-full">
-      <video controls autoplay class="w-full h-full object-contain rounded-lg bg-black outline-none">
-        <source src="{{ stream_url }}" type="application/x-mpegURL">
-        Your browser does not support the video tag.
-      </video>
+      <video id="videoPlayer" controls autoplay class="w-full h-full object-contain rounded-lg bg-black outline-none"></video>
     </div>
   </div>
 
@@ -123,6 +121,23 @@
           history.back();
         }
       }, 300);
+    }
+
+    // Load stream using hls.js
+    const video = document.getElementById('videoPlayer');
+    const streamUrl = "{{ stream_url }}";
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({
+        maxBufferLength: 10,  // ⚙️ Control data usage
+        maxMaxBufferLength: 30,
+      });
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = streamUrl;
+    } else {
+      video.outerHTML = "<p class='text-red-400 text-center'>⚠️ Your browser does not support HLS playback.</p>";
     }
   </script>
 </body>

@@ -135,7 +135,7 @@
   <!-- Scrollable Channel List -->
   <div class="channel-scroll-container">
     <h2 class="text-cyan-300 text-xl font-semibold mb-4">📺 Explore More</h2>
-    {% for key, info in channels.items() %}
+    {% for key, info in channels %}
       <div class="channel">
         <div class="channel-number">{{ loop.index }}.</div>
         <div class="channel-name" title="{{ ch.name }}">{{ info.name }}</div>

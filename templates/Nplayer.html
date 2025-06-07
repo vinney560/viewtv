@@ -5,8 +5,8 @@
   <title>{{ name }} - Streaming</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -72,12 +72,43 @@
       color: #d0f0e6;
       box-shadow: 0 0 10px #00ff88;
     }
+
+    select#qualitySelect {
+      background: #1f2937;
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* Buffering spinner style */
+    #bufferSpinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #00ff88;
+      font-size: 1.25rem;
+      font-weight: bold;
+      display: none;
+      pointer-events: none;
+      user-select: none;
+      text-shadow: 0 0 8px #00ff88;
+    }
+
+    /* Video container to position spinner */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
   </style>
 </head>
 
 <body class="bg-gradient-to-br from-black to-gray-900 text-white min-h-screen flex flex-col items-center p-4">
 
-  <!-- Back / Close Button -->
+  <!-- Back Button -->
   <button onclick="tryClose()" 
     class="fixed top-4 left-4 z-50 flex items-center text-cyan-400 hover:text-cyan-300 transition">
     <svg xmlns="http://www.w3.org/2000/svg" 
@@ -91,17 +122,25 @@
     <span class="font-medium text-base">Back</span>
   </button>
 
-  <!-- Video Player -->
+  <!-- Video Player Section -->
   <div class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
     <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4">{{ name }}</h1>
-    <div class="aspect-video w-full">
-      <video id="videoPlayer" controls autoplay class="w-full h-full object-contain rounded-lg bg-black outline-none"></video>
+    
+    <div class="aspect-video w-full mb-4 video-wrapper">
+      <video id="video" controls autoplay class="w-full h-full object-contain rounded-lg bg-black outline-none" playsinline></video>
+      <div id="bufferSpinner">Buffering...</div>
+    </div>
+
+    <!-- Quality Selector -->
+    <div class="flex justify-center items-center space-x-3">
+      <label for="qualitySelect" class="text-cyan-400 font-semibold">Quality:</label>
+      <select id="qualitySelect"></select>
     </div>
   </div>
 
   <!-- Scrollable Channel List -->
   <div class="channel-scroll-container">
-    <h2 class="text-cyan-300 text-xl font-semibold mb-4">📺 More Channels</h2>
+    <h2 class="text-cyan-300 text-xl font-semibold mb-4">📺 Explore More</h2>
     {% for ch in channels %}
       <div class="channel">
         <div class="channel-number">{{ loop.index }}.</div>
@@ -114,6 +153,11 @@
   </div>
 
   <script>
+    const video = document.getElementById('video');
+    const qualitySelect = document.getElementById('qualitySelect');
+    const bufferSpinner = document.getElementById('bufferSpinner');
+    const streamURL = "{{ stream_url }}";
+
     function tryClose() {
       window.close();
       setTimeout(() => {
@@ -123,22 +167,66 @@
       }, 300);
     }
 
-    // Load stream using hls.js
-    const video = document.getElementById('videoPlayer');
-    const streamUrl = "{{ stream_url }}";
-
     if (Hls.isSupported()) {
-      const hls = new Hls({
-        maxBufferLength: 10,  // ⚙️ Control data usage
-        maxMaxBufferLength: 30,
-      });
-      hls.loadSource(streamUrl);
+      const hls = new Hls();
+      hls.loadSource(streamURL);
       hls.attachMedia(video);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+        const levels = hls.levels;
+
+        // Add "Auto" option
+        const autoOption = document.createElement("option");
+        autoOption.value = -1;
+        autoOption.text = "Auto";
+        autoOption.selected = true;
+        qualitySelect.appendChild(autoOption);
+
+        levels.forEach((level, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.text = `${level.height}p`;
+          qualitySelect.appendChild(option);
+        });
+
+        qualitySelect.addEventListener("change", function () {
+          const selectedQuality = parseInt(this.value);
+          hls.currentLevel = selectedQuality;
+        });
+      });
+
+      // Buffering spinner controls
+      hls.on(Hls.Events.BUFFER_STALLED, () => {
+        bufferSpinner.style.display = 'block';
+      });
+      hls.on(Hls.Events.BUFFER_APPENDED, () => {
+        bufferSpinner.style.display = 'none';
+      });
+      hls.on(Hls.Events.BUFFER_EOS, () => {
+        bufferSpinner.style.display = 'none';
+      });
+
+      // Log quality switches
+      hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+        const level = hls.levels[data.level];
+        console.log(`Switched to quality: ${level.height}p`);
+      });
+
+      // Periodically log buffered amount
+      setInterval(() => {
+        if (video.buffered.length) {
+          const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+          const duration = video.duration;
+          console.log(`Buffered: ${bufferedEnd.toFixed(2)} / ${duration.toFixed(2)}`);
+        }
+      }, 3000);
+
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = streamUrl;
+      video.src = streamURL;
     } else {
-      video.outerHTML = "<p class='text-red-400 text-center'>⚠️ Your browser does not support HLS playback.</p>";
+      alert("Your browser does not support HLS playback.");
     }
   </script>
+
 </body>
 </html>

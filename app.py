@@ -588,7 +588,7 @@ def watch():
     except Exception as e:
         flash(f"Error fetching channels: {e}", "error")
 
-    return render_template("player.html", stream_url=stream_url, name=name, channels=channels, source_label=source_label)
+    return render_template("Nplayer.html", stream_url=stream_url, name=name, channels=channels, source_label=source_label)
 
 #====================================================
 @app.route('/browse')

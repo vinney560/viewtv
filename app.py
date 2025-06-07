@@ -555,7 +555,8 @@ def more_channels():
 
 @app.route("/watch")
 @login_required
-def watch():"    name = request.args.get("name")
+def watch():
+    name = request.args.get("name")
     stream_url = request.args.get("url")
     category_id = request.args.get("category")
     country_code = request.args.get("country")

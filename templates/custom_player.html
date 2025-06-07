@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <title>{{ name }} - Streaming</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
@@ -11,95 +11,17 @@
     body {
       font-family: 'Inter', sans-serif;
     }
-
-    .channel-scroll-container {
-      max-height: 400px;
-      overflow-y: auto;
-      width: 100%;
-      max-width: 48rem;
-      margin-top: 2rem;
-      padding: 1rem;
-      border-radius: 1rem;
-      background: #0a0f1c;
-      box-shadow: 0 0 12px rgba(0, 255, 136, 0.1);
-    }
-
-    .channel {
-      background: #121829;
-      border-radius: 12px;
-      box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.3s ease;
-      margin-bottom: 1rem;
-    }
-
-    .channel:hover {
-      background: #1e2a38;
-      box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
-    }
-
-    .channel-number {
-      font-weight: 600;
-      color: #32cd80;
-      margin-right: 10px;
-      flex-shrink: 0;
-    }
-
-    .channel-name {
-      flex-grow: 1;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #ffffff;
-    }
-
-    .watch-link {
-      background: #00ff88;
-      color: #0d1117;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .watch-link:hover {
-      background: #00cc6a;
-      color: #d0f0e6;
-      box-shadow: 0 0 10px #00ff88;
-    }
-
-    select#qualitySelect {
-      background: #1f2937;
-      border: 1px solid #00ff88;
-      color: #00ff88;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-
     #bufferSpinner {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       color: #00ff88;
-      font-size: 1.25rem;
-      font-weight: bold;
+      font-weight: 700;
+      text-shadow: 0 0 8px #00ff88;
       display: none;
       pointer-events: none;
       user-select: none;
-      text-shadow: 0 0 8px #00ff88;
-    }
-
-    .video-wrapper {
-      position: relative;
-      width: 100%;
-      height: 80vh;
     }
   </style>
 </head>
@@ -107,7 +29,7 @@
 <body class="bg-gradient-to-br from-black to-gray-900 text-white min-h-screen flex flex-col items-center p-4">
 
   <!-- Back Button -->
-  <button onclick="tryClose()" class="fixed top-4 left-4 z-50 flex items-center text-cyan-400 hover:text-cyan-300 transition">
+  <button onclick="tryClose()" class="fixed top-4 left-4 z-50 flex items-center text-cyan-400 hover:text-cyan-300 transition-colors duration-300">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3 mr-1">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
@@ -115,36 +37,38 @@
   </button>
 
   <!-- Video Player Section -->
-  <div class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
-    <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4">{{ name }}</h1>
+  <section class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20">
+    <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4 truncate">{{ name }}</h1>
 
     <!-- Enlarged Video Container -->
-    <div class="w-full h-[45vh] mb-4 video-wrapper">
-      <video id="video" controls autoplay class="w-full h-full object-contain rounded-lg bg-black outline-none" playsinline></video>
-      <iframe id="iframe" src="" class="w-full h-full rounded-lg hidden border-2 border-cyan-600" allowfullscreen></iframe>
+    <div class="relative w-full h-[45vh] mb-4 rounded-lg bg-black outline-none overflow-hidden">
+      <video id="video" controls autoplay playsinline class="w-full h-full object-contain rounded-lg bg-black outline-none"></video>
+      <iframe id="iframe" src="" allowfullscreen class="absolute inset-0 w-full h-full rounded-lg border-2 border-cyan-600 hidden"></iframe>
       <div id="bufferSpinner">Buffering...</div>
     </div>
 
     <!-- Quality Selector -->
     <div id="qualityContainer" class="flex justify-center items-center space-x-3">
-      <label for="qualitySelect" class="text-cyan-400 font-semibold">Quality:</label>
-      <select id="qualitySelect"></select>
+      <label for="qualitySelect" class="text-cyan-400 font-semibold select-none">Quality:</label>
+      <select id="qualitySelect" class="bg-gray-800 border border-cyan-500 text-cyan-400 py-1 px-3 rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-cyan-500"></select>
     </div>
-  </div>
+  </section>
 
   <!-- Scrollable Channel List -->
-  <div class="channel-scroll-container">
-    <h2 class="text-cyan-300 text-xl font-semibold mb-4">📺 Explore More</h2>
+  <section class="max-w-2xl w-full mt-8 p-4 rounded-2xl bg-[#0a0f1c] shadow-[0_0_12px_rgba(0,255,136,0.1)] max-h-[400px] overflow-y-auto">
+    <h2 class="text-cyan-300 text-xl font-semibold mb-4 select-none">📺 Explore More</h2>
     {% for ch in channels %}
-      <div class="channel">
-        <div class="channel-number">{{ loop.index }}.</div>
-        <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
-        <a class="watch-link" href="{{ url_for('play_channel', key=ch.key) }}">▶ Watch</a>
+      <div class="flex justify-between items-center bg-[#121829] rounded-xl shadow-[0_4px_14px_rgba(0,255,136,0.15)] p-4 mb-4 hover:bg-[#1e2a38] hover:shadow-[0_6px_20px_rgba(0,255,136,0.4)] transition-all duration-300">
+        <div class="flex items-center flex-grow gap-3 min-w-0">
+          <span class="font-semibold text-[#32cd80] flex-shrink-0">{{ loop.index }}.</span>
+          <span class="font-semibold text-white truncate" title="{{ ch.name }}">{{ ch.name }}</span>
+        </div>
+        <a href="{{ url_for('play_channel', key=ch.key) }}" class="bg-[#00ff88] text-[#0d1117] font-semibold py-2 px-5 rounded-xl no-underline transition-colors duration-300 hover:bg-[#00cc6a] hover:text-[#d0f0e6] hover:shadow-[0_0_10px_#00ff88] whitespace-nowrap select-none">▶ Watch</a>
       </div>
     {% else %}
-      <p class="text-gray-400 italic text-center">No channels available.</p>
+      <p class="text-gray-400 italic text-center select-none">No channels available.</p>
     {% endfor %}
-  </div>
+  </section>
 
   <script>
     const streamURL = "{{ stream_url }}";
@@ -175,7 +99,7 @@
       hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
         const levels = hls.levels;
 
-        // Add Auto
+        // Add Auto option
         const autoOption = document.createElement("option");
         autoOption.value = -1;
         autoOption.text = "Auto";

@@ -51,8 +51,7 @@ CUSTOM_CHANNELS = {
         "name": "Citizen TV Kenya",
         "url": "https://kenyalivetv.co.ke/embed/citizen-tv-live?autoplay=1&mute=1"
     },
-    },
-    "citizen_extra": {
+    "citizenExtra": {
         "name": "Citizen Extra",
         "url": "https://iptvcat.org/kenya"
     },

@@ -631,7 +631,7 @@ def channel_stream_url():
 
 @app.route('/payment')
 def payment():
-    return render_template('pay.html', user=current_user)
+    return render_template('pay.html', user=current_user)
 
 # ---------------------------------------------------------------------
 

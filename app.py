@@ -640,9 +640,8 @@ def pay():
     data=request.json
     phone=data.get('phone')
     amount=data.get('amount')
-    
-    if not phone or not amount:
-        return jsonify({"success": False, "message": "Phone or amount missing"}), 400
+    if not phone or not amount:
+        return jsonify({"success": False, "message": "Phone or amount missing"}), 400
 
     # Save pending payment linked to user
     pending = Payment(
@@ -656,11 +655,11 @@ def pay():
     db.session.commit()
 
     # M-Pesa credentials
-    consumer_key = os.getenv("MPESA_CONSUMER_KEY")
-    consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
-    business_short_code = "174379"
-    passkey = os.getenv("MPESA_PASSKEY")
-    callback_url = "https://viewtv.onrender.com/callback"
+    consumer_key=os.getenv("MPESA_CONSUMER_KEY")
+    consumer_secret=os.getenv("MPESA_CONSUMER_SECRET")
+    business_short_code="174379"
+    passkey=os.getenv("MPESA_PASSKEY")
+    callback_url="https://viewtv.onrender.com/callback"
 
     try:
         # Get access token

@@ -637,10 +637,10 @@ def payment():
 
 @app.route('/api/pay', methods=['POST'])
 def pay():
-    data = request.json
-    phone = data.get('phone')
-    amount = data.get('amount')
-
+    data=request.json
+    phone=data.get('phone')
+    amount=data.get('amount')
+    
     if not phone or not amount:
         return jsonify({"success": False, "message": "Phone or amount missing"}), 400
 

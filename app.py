@@ -631,101 +631,138 @@ def channel_stream_url():
 
 @app.route('/payment')
 def payment():
-    return render_template('pay.html', user=current_user)
+    return render_template('pay.html', user=current_user)
 
 # ---------------------------------------------------------------------
 
 @app.route('/api/pay', methods=['POST'])
 def pay():
-    data = request.json
-    phone = data.get('phone')
-    amount = data.get('amount')
+    data = request.json
+    phone = data.get('phone')
+    amount = data.get('amount')
 
-    if not phone or not amount:
-        return jsonify({"success": False, "message": "Phone or amount missing"}), 400
+    if not phone or not amount:
+        return jsonify({"success": False, "message": "Phone or amount missing"}), 400
 
-    # Secure environment vars
-    consumer_key = os.getenv("MPESA_CONSUMER_KEY")
-    consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
-    business_short_code = "174379"
-    passkey = os.getenv("MPESA_PASSKEY")
-    callback_url = "https://viewtv.onrender.com/callback"
+    # Save pending payment linked to user
+    pending = Payment(
+        user_id=current_user.id,
+        phone=phone,
+        amount=amount,
+        status="Pending",
+        timestamp=datetime.utcnow()
+    )
+    db.session.add(pending)
+    db.session.commit()
 
-    try:
-        # Get access token
-        auth_response = requests.get(
-            "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
-            auth=(consumer_key, consumer_secret)
-        )
-        auth_response.raise_for_status()
-        access_token = auth_response.json().get("access_token")
-    except Exception as e:
-        return jsonify({"success": False, "message": f"Token error: {str(e)}"}), 500
+    # M-Pesa credentials
+    consumer_key = os.getenv("MPESA_CONSUMER_KEY")
+    consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
+    business_short_code = "174379"
+    passkey = os.getenv("MPESA_PASSKEY")
+    callback_url = "https://viewtv.onrender.com/callback"
 
-    # STK Push payload
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-    password = base64.b64encode((business_short_code + passkey + timestamp).encode()).decode()
+    try:
+        # Get access token
+        auth_response = requests.get(
+            "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
+            auth=(consumer_key, consumer_secret)
+        )
+        auth_response.raise_for_status()
+        access_token = auth_response.json().get("access_token")
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Token error: {str(e)}"}), 500
 
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json"
-    }
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    password = base64.b64encode((business_short_code + passkey + timestamp).encode()).decode()
 
-    payload = {
-        "BusinessShortCode": business_short_code,
-        "Password": password,
-        "Timestamp": timestamp,
-        "TransactionType": "CustomerPayBillOnline",
-        "Amount": amount,
-        "PartyA": phone,
-        "PartyB": business_short_code,
-        "PhoneNumber": phone,
-        "CallBackURL": callback_url,
-        "AccountReference": "Ref001",
-        "TransactionDesc": "Test Payment"
-    }
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
 
-    try:
-        response = requests.post(
-            "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
-            json=payload,
-            headers=headers
-        )
-        response.raise_for_status()
-        return jsonify({"success": True})
-    except Exception as e:
-        return jsonify({"success": False, "message": f"Push error: {str(e)}"}), 500
+    payload = {
+        "BusinessShortCode": business_short_code,
+        "Password": password,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": amount,
+        "PartyA": phone,
+        "PartyB": business_short_code,
+        "PhoneNumber": phone,
+        "CallBackURL": callback_url,
+        "AccountReference": "Ref001",
+        "TransactionDesc": "VIP Subscription"
+    }
+
+    try:
+        response = requests.post(
+            "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+            json=payload,
+            headers=headers
+        )
+        response.raise_for_status()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Push error: {str(e)}"}), 500
 
 
 # ---------------------------------------------------------------------
 
 @app.route('/callback', methods=['POST'])
 def callback():
-    data = request.get_json()
-    print("Callback Data Received:", data)
+    data = request.get_json()
+    print("Callback Data Received:", data)
 
-    try:
-        result_code = data['Body']['stkCallback']['ResultCode']
-        result_desc = data['Body']['stkCallback']['ResultDesc']
+    try:
+        callback_data = data['Body']['stkCallback']
+        result_code = callback_data['ResultCode']
+        result_desc = callback_data['ResultDesc']
 
-        if result_code == 0:
-            # ✅ Payment Successful
-            print("Payment Success:", result_desc)
-            # You can update DB here if needed
+        if result_code == 0:
+            metadata = callback_data['CallbackMetadata']['Item']
+            phone_number = None
+            receipt = None
 
-            # Cannot use flash/redirect directly — callbacks are API-only
-            return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
+            for item in metadata:
+                if item['Name'] == 'PhoneNumber':
+                    phone_number = str(item['Value'])
+                elif item['Name'] == 'MpesaReceiptNumber':
+                    receipt = item['Value']
 
-        else:
-            # ❌ Payment Failed
-            print("Payment Failed:", result_desc)
-            return jsonify({"ResultCode": 0, "ResultDesc": "Received but failed"})
+            # Find matching payment
+            payment = Payment.query.filter_by(phone=phone_number, status="Pending").order_by(Payment.timestamp.desc()).first()
 
-    except Exception as e:
-        print("Callback error:", str(e))
-        return jsonify({"ResultCode": 1, "ResultDesc": "Error processing callback"})
+            if payment:
+                payment.status = "Success"
+                payment.mpesa_receipt = receipt
+                db.session.commit()
+
+                # Upgrade user to VIP
+                user = User.query.get(payment.user_id)
+                if user:
+                    user.role = "VIP"
+                    db.session.commit()
+
+            print("✅ Payment verified. VIP status granted.")
+
+            return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
+
+        else:
+            print("❌ Payment Failed:", result_desc)
+            return jsonify({"ResultCode": 0, "ResultDesc": "Failed transaction"})
+
+    except Exception as e:
+        print("Callback error:", str(e))
+        return jsonify({"ResultCode": 1, "ResultDesc": "Error processing callback"})
 
 
+
+@app.route('/vip-confirm')
+def vip_confirm():
+    flash("🎉 PAYMENT SUCCESSFUL. You are now a VIP. Please log in again.", "success")
+    logout_user()
+    return redirect(url_for('login'))
 
 #====================================================
 #               >>>>GENERAL ENDPOINTS<<<<

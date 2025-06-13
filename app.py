@@ -394,14 +394,14 @@ def admin_mode():
 #====================================================
 #                >>>>VIP MODE<<<<
 #====================================================
-def vip_mode_required():
+def vip_required():
     if not current_user.is_authenticated or current_user.role not in ['VIP', 'admin']:
         flash('This is a paid feature, please visit the pay page.', 'error')
         return redirect(url_for('home'))
 #--------------------------------------------------
 @app.route('/vip_mode')
 @login_required
-@vip_mode_required
+@vip_required
 def vip_mode():
     return render_template('dashboard.html', user=current_user)
 #--------------------------------------------------
@@ -433,7 +433,7 @@ def fetch_and_save_country_channels(country_code):
 #-------------------------------------------------
 @app.route("/countries")
 @login_required
-#@vip_mode_required
+#@vip_required
 def countries():
     try:
         response = requests.get("https://iptv-org.github.io/api/countries.json")
@@ -445,7 +445,7 @@ def countries():
 #----------------------------------------‐-----------
 @app.route("/country/<country_code>")
 @login_required
-#@vip_mode_required
+#@vip_required
 def fetch_country_channels(country_code):
     url = f"https://iptv-org.github.io/iptv/countries/{country_code.lower()}.m3u"
     try:
@@ -467,7 +467,7 @@ def fetch_country_channels(country_code):
 #-----------------------------------------------
 @app.route("/category/<category_id>")
 @login_required 
-#@vip_mode_required
+#@vip_required
 def fetch_category_channels(category_id):
     url = f"https://iptv-org.github.io/iptv/categories/{category_id}.m3u"
     try:
@@ -489,7 +489,7 @@ def fetch_category_channels(category_id):
 #---------------------------------------------------
 @app.route("/categories")
 @login_required
-#@vip_mode_required
+#@vip_required
 def categories():
     try:
         response = requests.get("https://iptv-org.github.io/api/categories.json")
@@ -501,7 +501,7 @@ def categories():
 #----------------------------------------------------
 @app.route("/more-channels")
 @login_required
-#@vip_mode_required
+#@vip_required
 def more_channels():
     return render_template("more_channels.html")
 #--------------------------------------------------
@@ -584,7 +584,7 @@ def custom_list():
 #-‐-‐-‐-‐-‐-‐-‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐--‐-‐
 @app.route("/channel/<key>")
 @login_required
-#@vip_mode_required
+#@vip_required
 def play_channel(key):
     channel = CUSTOM_CHANNELS.get(key)
     if not channel:
@@ -605,7 +605,7 @@ def play_channel(key):
 #-------------------‐--------------------------------
 @app.route("/api/channel_stream_url")
 @login_required
-#@vip_mode_required
+#@vip_required
 def channel_stream_url():
     key = request.args.get("key")
     channel = CUSTOM_CHANNELS.get(key)

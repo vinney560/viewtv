@@ -634,7 +634,6 @@ def payment():
     return render_template('pay.html', user=current_user)
 
 # ---------------------------------------------------------------------
-
 @app.route('/api/pay', methods=['POST'])
 def pay():
     data = request.json
@@ -644,7 +643,13 @@ def pay():
     if not phone or not amount:
         return jsonify({"success": False, "message": "Phone or amount missing"}), 400
 
-    # Save pending payment linked to user
+    # Convert phone to Safaricom format: 2547XXXXXXX
+    if phone.startswith("0"):
+        phone = "254" + phone[1:]
+    elif phone.startswith("+"):
+        phone = phone.replace("+", "")
+
+    # Save pending payment
     pending = Payment(
         user_id=current_user.id,
         phone=phone,
@@ -658,16 +663,16 @@ def pay():
     # M-Pesa credentials
     consumer_key = os.getenv("MPESA_CONSUMER_KEY")
     consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
-    business_short_code = "174379"
+    business_short_code = "174379"  # Use your actual shortcode
     passkey = os.getenv("MPESA_PASSKEY")
     callback_url = "https://viewtv.onrender.com/callback"
 
     try:
-        # Get access token
         auth_response = requests.get(
             "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
             auth=(consumer_key, consumer_secret)
         )
+        print("Token response:", auth_response.text)
         auth_response.raise_for_status()
         access_token = auth_response.json().get("access_token")
     except Exception as e:
@@ -701,17 +706,17 @@ def pay():
             json=payload,
             headers=headers
         )
+        print("STK Push response:", response.text)
         response.raise_for_status()
         return jsonify({"success": True})
     except Exception as e:
         return jsonify({"success": False, "message": f"Push error: {str(e)}"}), 500
 
 # ---------------------------------------------------------------------
-
 @app.route('/callback', methods=['POST'])
 def callback():
     data = request.get_json()
-    print("Callback Data Received:", data)
+    print("📥 Callback Received:", data)
 
     try:
         callback_data = data['Body']['stkCallback']
@@ -729,7 +734,6 @@ def callback():
                 elif item['Name'] == 'MpesaReceiptNumber':
                     receipt = item['Value']
 
-            # Find matching payment
             payment = Payment.query.filter_by(phone=phone_number, status="Pending").order_by(Payment.timestamp.desc()).first()
 
             if payment:
@@ -737,30 +741,29 @@ def callback():
                 payment.mpesa_receipt = receipt
                 db.session.commit()
 
-                # Upgrade user to VIP
                 user = User.query.get(payment.user_id)
                 if user:
                     user.role = "VIP"
                     db.session.commit()
 
-            print("✅ Payment verified. VIP status granted.")
-
+            print("✅ Payment verified and VIP access granted.")
             return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
 
         else:
-            print("❌ Payment Failed:", result_desc)
+            print("❌ Payment failed:", result_desc)
             return jsonify({"ResultCode": 0, "ResultDesc": "Failed transaction"})
 
     except Exception as e:
-        print("Callback error:", str(e))
+        print("Callback processing error:", str(e))
         return jsonify({"ResultCode": 1, "ResultDesc": "Error processing callback"})
 
+# ---------------------------------------------------------------------
 @app.route('/vip-confirm')
 def vip_confirm():
     flash("🎉 PAYMENT SUCCESSFUL. You are now a VIP. Please log in again.", "success")
     logout_user()
     return redirect(url_for('login'))
-
+    
 #====================================================
 #               >>>>GENERAL ENDPOINTS<<<<
 #====================================================

@@ -25,7 +25,8 @@
     {% endwith %}
 
     <form id="paymentForm" method="POST" class="space-y-4">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <!-- CSRF Token Hidden for fallback -->
+        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
 
         <!-- Phone input -->
         <label class="block font-semibold text-gray-300">Phone Number</label>
@@ -67,6 +68,7 @@ document.getElementById("paymentForm").addEventListener("submit", async function
 
     const phoneInput = document.getElementById("phone");
     const amountInput = document.getElementById("amount");
+    const csrfToken = document.getElementById("csrf_token").value;
     const payBtn = document.getElementById("payBtn");
     const processing = document.getElementById("processing");
 
@@ -84,20 +86,25 @@ document.getElementById("paymentForm").addEventListener("submit", async function
     payBtn.innerText = "Processing...";
     processing.classList.remove("hidden");
 
-    const res = await fetch("/api/pay", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ phone: fullPhone, amount: amount })
-    });
+    try {
+        const res = await fetch("/api/pay", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ phone: fullPhone, amount: amount })
+        });
 
-    const result = await res.json();
+        const result = await res.json();
 
-    if (result.success) {
-        alert("✅ STK Push sent! Check your phone to complete payment.");
-    } else {
-        alert("❌ Error: " + result.message);
+        if (result.success) {
+            alert("✅ STK Push sent! Check your phone to complete payment.");
+        } else {
+            alert("❌ Error: " + result.message);
+        }
+    } catch (err) {
+        alert("❌ Network or server error.");
     }
 
     payBtn.disabled = false;

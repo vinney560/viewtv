@@ -623,28 +623,36 @@ def channel_stream_url():
 def payment():
     return render_template('pay.html', user=current_user)
 
-#----------------------------------------------------
+# ---------------------------------------------------------------------
 
 @app.route('/api/pay', methods=['POST'])
 def pay():
     data = request.json
-    phone = data['phone']
-    amount = data['amount']
+    phone = data.get('phone')
+    amount = data.get('amount')
 
-    # M-Pesa credentials (stored securely)
+    if not phone or not amount:
+        return jsonify({"success": False, "message": "Phone or amount missing"}), 400
+
+    # Secure environment vars
     consumer_key = os.getenv("MPESA_CONSUMER_KEY")
     consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
     business_short_code = "174379"
     passkey = os.getenv("MPESA_PASSKEY")
     callback_url = "https://viewtv.onrender.com/callback"
 
-    # Generate access token
-    auth_response = requests.get(
-        "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
-        auth=(consumer_key, consumer_secret)
-    )
-    access_token = auth_response.json().get("access_token")
+    try:
+        # Get access token
+        auth_response = requests.get(
+            "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
+            auth=(consumer_key, consumer_secret)
+        )
+        auth_response.raise_for_status()
+        access_token = auth_response.json().get("access_token")
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Token error: {str(e)}"}), 500
 
+    # STK Push payload
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     password = base64.b64encode((business_short_code + passkey + timestamp).encode()).decode()
 
@@ -667,30 +675,47 @@ def pay():
         "TransactionDesc": "Test Payment"
     }
 
-    response = requests.post("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", json=payload, headers=headers)
-    
-    if response.status_code == 200:
+    try:
+        response = requests.post(
+            "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+            json=payload,
+            headers=headers
+        )
+        response.raise_for_status()
         return jsonify({"success": True})
-    else:
-        return jsonify({"success": False, "message": response.text})
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Push error: {str(e)}"}), 500
 
-#------------------------------------------------
+
+# ---------------------------------------------------------------------
 
 @app.route('/callback', methods=['POST'])
 def callback():
-    data = request.json
-    result_code = data['Body']['stkCallback']['ResultCode']
-    
-    if result_code == 0:
-        # Success: update DB, notify user
-        flash('PAYMENT SUCCESS. LOGIN TO VIP MODE', 'success')
-        logout_user(current_user)
-        return redirect(url_for('login'))
+    data = request.get_json()
+    print("Callback Data Received:", data)
 
-    else:
-        print("Payment Failed:", data['Body']['stkCallback']['ResultDesc'])
-    
-    return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
+    try:
+        result_code = data['Body']['stkCallback']['ResultCode']
+        result_desc = data['Body']['stkCallback']['ResultDesc']
+
+        if result_code == 0:
+            # ✅ Payment Successful
+            print("Payment Success:", result_desc)
+            # You can update DB here if needed
+
+            # Cannot use flash/redirect directly — callbacks are API-only
+            return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
+
+        else:
+            # ❌ Payment Failed
+            print("Payment Failed:", result_desc)
+            return jsonify({"ResultCode": 0, "ResultDesc": "Received but failed"})
+
+    except Exception as e:
+        print("Callback error:", str(e))
+        return jsonify({"ResultCode": 1, "ResultDesc": "Error processing callback"})
+
+
 
 #====================================================
 #               >>>>GENERAL ENDPOINTS<<<<

@@ -3,135 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <title>VIP Payment</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            background: linear-gradient(to right, #111, #1e1e1e);
-            color: #fff;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-        }
-        .container {
-            background: #222;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 0 20px rgba(0,255,0,0.2);
-            width: 100%;
-            max-width: 400px;
-        }
-        h2 {
-            text-align: center;
-            color: #0f0;
-            margin-bottom: 1rem;
-        }
-        label {
-            display: block;
-            margin-top: 1rem;
-            font-weight: bold;
-        }
-        .phone-prefix {
-            display: flex;
-            align-items: center;
-            background: #333;
-            border: 1px solid #444;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .phone-prefix span {
-            padding: 0.7rem 0.9rem;
-            background: #0f0;
-            color: #000;
-            font-weight: bold;
-        }
-        .phone-prefix input {
-            flex: 1;
-            padding: 0.7rem;
-            border: none;
-            outline: none;
-            background: #111;
-            color: #fff;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 0.7rem;
-            background: #111;
-            color: #fff;
-            border: 1px solid #444;
-            border-radius: 8px;
-            margin-top: 0.5rem;
-        }
-        button {
-            margin-top: 1.5rem;
-            width: 100%;
-            padding: 0.8rem;
-            background: #0f0;
-            color: #000;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        button:hover {
-            background: #0c0;
-        }
-        .message {
-            text-align: center;
-            margin-bottom: 1rem;
-            padding: 0.7rem;
-            border-radius: 8px;
-        }
-        .success { background: #063; color: #bff; }
-        .error { background: #600; color: #fbb; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gradient-to-r from-black via-gray-900 to-black min-h-screen flex items-center justify-center p-4">
 
-<div class="container">
-    <h2>Become a VIP</h2>
+<div class="bg-gray-800 text-white shadow-2xl rounded-2xl p-6 w-full max-w-md">
+    <h2 class="text-2xl font-bold text-green-400 text-center mb-4">Become a VIP</h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="message {{ category }}">{{ message }}</div>
+                <div class="mb-4 p-3 rounded-lg text-center font-semibold
+                            {% if category == 'success' %} bg-green-700 text-white
+                            {% elif category == 'error' %} bg-red-700 text-white
+                            {% else %} bg-blue-600 text-white {% endif %}">
+                    {{ message }}
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 
-    <form id="paymentForm" method="POST">
-        {{ csrf_token() }}
+    <form id="paymentForm" method="POST" class="space-y-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <label for="phone">Phone Number</label>
-        <div class="phone-prefix">
-            <span>+254</span>
-            <input type="text" id="phone" name="phone" pattern="[17][0-9]{8}" maxlength="9" required placeholder="712345678">
+        <!-- Phone input -->
+        <label class="block font-semibold text-gray-300">Phone Number</label>
+        <div class="flex rounded-lg overflow-hidden shadow-sm border border-gray-700 bg-gray-900">
+            <span class="bg-green-400 text-black px-4 py-2 font-bold flex items-center">+254</span>
+            <input type="text" id="phone" name="phone"
+                   class="w-full px-4 py-2 bg-gray-900 text-white placeholder-gray-400 focus:outline-none"
+                   pattern="[17][0-9]{8}" maxlength="9" required placeholder="712345678">
         </div>
 
-        <label for="amount">Amount (KES)</label>
-        <input type="number" id="amount" name="amount" min="1" value="10" required>
+        <!-- Amount -->
+        <label class="block font-semibold text-gray-300">Amount (KES)</label>
+        <input type="number" id="amount" name="amount" min="1" value="10" required
+               class="w-full px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 shadow-sm focus:outline-none placeholder-gray-400">
 
-        <button type="submit">Pay Now</button>
+        <!-- Submit button -->
+        <button id="payBtn" type="submit"
+                class="w-full py-2 px-4 bg-green-500 hover:bg-green-600 text-black font-bold rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            Pay Now
+        </button>
     </form>
+
+    <!-- Spinner and status -->
+    <div id="processing" class="text-center text-sm mt-4 text-green-300 hidden">
+        <svg class="animate-spin h-5 w-5 mx-auto mb-2 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+             viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10"
+                    stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        Processing your request...
+    </div>
 </div>
 
 <script>
-document.getElementById("paymentForm").addEventListener("submit", async function(e) {
+document.getElementById("paymentForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const phoneInput = document.getElementById("phone");
     const amountInput = document.getElementById("amount");
+    const payBtn = document.getElementById("payBtn");
+    const processing = document.getElementById("processing");
+
     const phone = phoneInput.value.trim();
     const amount = amountInput.value.trim();
 
     if (!/^[17][0-9]{8}$/.test(phone)) {
-        alert("Enter a valid Safaricom number (starting with 7 or 1, 9 digits).");
+        alert("Enter a valid number starting with 7 or 1 (9 digits total).");
         return;
     }
 
     const fullPhone = "254" + phone;
+
+    payBtn.disabled = true;
+    payBtn.innerText = "Processing...";
+    processing.classList.remove("hidden");
 
     const res = await fetch("/api/pay", {
         method: "POST",
@@ -144,10 +95,14 @@ document.getElementById("paymentForm").addEventListener("submit", async function
     const result = await res.json();
 
     if (result.success) {
-        alert("STK Push sent. Check your phone.");
+        alert("✅ STK Push sent! Check your phone to complete payment.");
     } else {
-        alert("Error: " + result.message);
+        alert("❌ Error: " + result.message);
     }
+
+    payBtn.disabled = false;
+    payBtn.innerText = "Pay Now";
+    processing.classList.add("hidden");
 });
 </script>
 

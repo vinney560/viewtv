@@ -401,7 +401,6 @@ def vip_required():
 #--------------------------------------------------
 @app.route('/vip_mode')
 @login_required
-@vip_required
 def vip_mode():
     return render_template('dashboard.html', user=current_user)
 #--------------------------------------------------

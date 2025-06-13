@@ -585,7 +585,7 @@ def custom_list():
 @app.route("/channel/<key>")
 @login_required
 #@vip_mode_required
-def play_channel(key):z
+def play_channel(key):
     channel = CUSTOM_CHANNELS.get(key)
     if not channel:
         abort(404)
@@ -698,7 +698,11 @@ def callback():
 #====================================================
 @app.route("/")
 def home():
-    return render_template('index.html', channels=CUSTOM_CHANNELS)
+    channels = [
+        { "name": v["name"] }
+        for v in CUSTOM_CHANNELS.items()
+    ]
+    return render_template('index.html', channels=channels)
 #---‐-‐-‐-‐-‐-‐-‐-‐-‐-‐---‐--‐‐--‐-‐-‐-‐------‐‐-‐-‐-
 @app.route('/about')
 def about():

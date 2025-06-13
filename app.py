@@ -107,6 +107,16 @@ class AdminCode(db.Model):
     def __repr__(self):
         return f"<AdminCode {self.code}>"
 
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))  # Assuming 'user' table
+    phone = db.Column(db.String(20), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(50), default="Pending")  # "Pending", "Success", "Failed"
+    mpesa_receipt = db.Column(db.String(100))  # Optional: store M-Pesa receipt
+    
+
 with app.app_context():
     db.create_all()
 

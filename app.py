@@ -17,6 +17,7 @@ from itsdangerous import URLSafeTimedSerializer
 from dotenv import load_dotenv
 from datetime import datetime, timedelta   # Added for nairobi_time
 import requests
+import base64
 
 load_dotenv()
 
@@ -114,7 +115,7 @@ with app.app_context():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
+#--------------------------------------------------
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -122,26 +123,26 @@ def admin_required(f):
             return abort(403)
         return f(*args, **kwargs)
     return decorated_function
-
+#--------------------------------------------------
 def is_admin():
     return session.get('role') == 'admin'
-
+#--------------------------------------------------
 @app.route('/favicon.ico')
 def favicon():
     return redirect(url_for('uploaded_file', filename='favicon.ico'))
-    
+#--------------------------------------------------    
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)    
-
+#--------------------------------------------------
 @app.route('/is_authenticated')
 def is_authenticated():
     return jsonify({'authenticated': current_user.is_authenticated})
-
+#---------------------------------------------------
 @app.before_request
 def make_session_permanent():
     session.permanent = True
-
+#---------------------------------------------------
 @app.before_request
 def auto_logout_user():
     if current_user.is_authenticated:
@@ -150,13 +151,11 @@ def auto_logout_user():
             logout_current_user()
             flash("Role has changed. Please log in again.", "error")
             return redirect(url_for('login'))
-
 #-----‐-‐-‐-‐--‐‐-‐‐-‐-‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐‐---
-
 def generate_email_token(user):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     return serializer.dumps(user.email, salt='email-verification')
-
+#-------------------------------------------------
 def verify_email_token(token, expiration=300):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     try:
@@ -164,7 +163,7 @@ def verify_email_token(token, expiration=300):
     except Exception:
         return None
     return email
-
+#--------------------------------------------------
 def send_verification_email(user):
     token = generate_email_token(user)
     verify_link = url_for('verify_registration', token=token, _external=True)
@@ -179,7 +178,7 @@ def send_verification_email(user):
         mail.send(msg)
     except Exception as e:
         print(f"Failed to send verification email: {e}")
-
+#---------------------------------------------------
 @app.route('/verify_registration/<token>')
 def verify_registration(token):
     email_addr = verify_email_token(token)
@@ -197,13 +196,11 @@ def verify_registration(token):
     login_user(user)
     flash('Email verified! Welcome to T-Give Nexus.', 'success')
     return redirect(url_for('welcome'))
-
 #------‐-‐-‐-‐-‐-‐-‐-‐-‐-‐‐-‐‐-‐‐-‐--‐-‐-‐-‐‐‐----‐-‐
-
 def create_reset_token(user):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     return serializer.dumps(user.email, salt='password-reset-salt')
-
+#--------------------------------------------------
 def verify_reset_token(token, expiration=3600):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     try:
@@ -211,7 +208,7 @@ def verify_reset_token(token, expiration=3600):
     except Exception:
         return None
     return email_addr
-
+#-----------------------------------------------
 @app.route('/forgot_password', methods=['GET', 'POST'])
 @limiter.limit("5 per minute")
 def forgot_password():
@@ -227,7 +224,7 @@ def forgot_password():
             return redirect(url_for('login'))
 
     return render_template('forgot_password.html')
-
+#--------------------------------------------------
 def send_reset_email(user):
     token = create_reset_token(user)
     reset_link = url_for('reset_password', token=token, _external=True)
@@ -239,7 +236,7 @@ def send_reset_email(user):
     )
     msg.html = render_template('forgot_password_email.html', reset_link=reset_link)
     mail.send(msg)
-
+#----------------------------------------------------
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     email_addr = verify_reset_token(token)
@@ -262,19 +259,8 @@ def reset_password(token):
 
     return render_template('reset_password.html')
 
-#====================================================
-
-@app.route("/welcome")
-@login_required
-def welcome():
-    return render_template("welcome.html")
-#----------------------------------------------------
-@app.route('/logout_current_user')
-def logout_current_user():
-    session.clear()
-    flask_logout_user()
-    return redirect(url_for("home"))
-
+#===================================================
+#            >>>>ACCESS GRANTERS<<<<
 #===================================================
 
 @app.route("/register", methods=["POST", "GET"])
@@ -365,7 +351,10 @@ def login():
             if not user.email_verified:
                 flash("Please verify your email before logging in.", "warning")
                 return redirect(url_for('login'))
-
+            if user.status == "active":
+                flash('Account logged in somewhere else. Try Again.', 'error')
+                logout_user(user)
+                return redirect(url_for('login'))
             if check_password_hash(user.password, password):
                 user.failed_login_attempts = 0  # Reset on success
                 db.session.commit()
@@ -393,16 +382,7 @@ def login():
     return render_template('login.html')
 
 #====================================================
-
-@app.route('/vip_mode')
-def vip_mode():
-    return render_template('vip.html')
-
-@app.route('/basic_mode')
-@login_required
-def basic_mode():
-    return render_template('dashboard.html', user=current_user)
-
+    
 @app.route('/admin_mode')
 @login_required 
 @admin_required
@@ -410,7 +390,21 @@ def admin_mode():
     return render_template('admin.html')
 
 #====================================================
-
+#          >>>>ROLE BASED ACTIONS<<<<
+#====================================================
+#                >>>>VIP MODE<<<<
+#====================================================
+def vip_mode_required():
+    if not current_user.is_authenticated or current_user.role not in ['VIP', 'admin']:
+        flash('This is a paid feature, please visit the pay page.', 'error')
+        return redirect(url_for('home'))
+#--------------------------------------------------
+@app.route('/vip_mode')
+@login_required
+@vip_mode_required
+def vip_mode():
+    return render_template('dashboard.html', user=current_user)
+#--------------------------------------------------
 # Fetch & Save by Country
 @app.route('/save_channels')
 def fetch_and_save_country_channels(country_code):
@@ -436,11 +430,10 @@ def fetch_and_save_country_channels(country_code):
         print(f"[INFO] Added {new_count} new channels from {country_code}")
     except Exception as e:
         print(f"[ERROR] Failed to fetch from {url}: {e}")
-
-#====================================================
-
+#-------------------------------------------------
 @app.route("/countries")
 @login_required
+#@vip_mode_required
 def countries():
     try:
         response = requests.get("https://iptv-org.github.io/api/countries.json")
@@ -452,6 +445,7 @@ def countries():
 #----------------------------------------‐-----------
 @app.route("/country/<country_code>")
 @login_required
+#@vip_mode_required
 def fetch_country_channels(country_code):
     url = f"https://iptv-org.github.io/iptv/countries/{country_code.lower()}.m3u"
     try:
@@ -470,26 +464,10 @@ def fetch_country_channels(country_code):
         return render_template("channels.html", channels=channels, country=country_code.upper())
     except Exception as e:
         return f"Error fetching channels: {e}"
-
-#===================================================
-
-@app.route('/test-channels')
-def test_channels():
-    url = "https://iptv-org.github.io/iptv/countries/ke.m3u"
-    response = requests.get(url)
-    channels = []
-    lines = response.text.splitlines()
-    for i in range(len(lines)):
-        if lines[i].startswith("#EXTINF"):
-            name = lines[i].split(",")[-1]
-            stream_url = lines[i + 1]
-            channels.append({"name": name, "url": stream_url})
-    return render_template("channels.html", channels=channels)
-
-#====================================================
-
+#-----------------------------------------------
 @app.route("/category/<category_id>")
 @login_required 
+#@vip_mode_required
 def fetch_category_channels(category_id):
     url = f"https://iptv-org.github.io/iptv/categories/{category_id}.m3u"
     try:
@@ -508,9 +486,10 @@ def fetch_category_channels(category_id):
         return render_template("channels.html", channels=channels, category=category_id.capitalize())
     except Exception as e:
         return f"Error fetching category channels: {e}"
-
+#---------------------------------------------------
 @app.route("/categories")
 @login_required
+#@vip_mode_required
 def categories():
     try:
         response = requests.get("https://iptv-org.github.io/api/categories.json")
@@ -519,60 +498,16 @@ def categories():
         return render_template("categories.html", categories=categories)
     except Exception as e:
         return f"Failed to load categories: {e}"
-
-#====================================================
-
-from channels import CUSTOM_CHANNELS 
-
-#-------------------‐--------------------------------
-
-@app.route("/channel/<key>")
-@login_required
-def play_channel(key):
-    channel = CUSTOM_CHANNELS.get(key)
-    if not channel:
-        abort(404)
-
-    channels = [
-        {"key": k, "name": v["name"], "url": v["url"]}
-        for k, v in CUSTOM_CHANNELS.items()
-    ]
-
-    return render_template(
-        "custom_player.html",
-        channel_name=channel["name"],
-        stream_url=channel["url"],
-        channels=channels,       # Now a list of dicts with name, url, key
-        current_key=key          # Pass current key for highlighting
-    )
-
-@app.route("/api/channel_stream_url")
-@login_required
-def channel_stream_url():
-    key = request.args.get("key")
-    channel = CUSTOM_CHANNELS.get(key)
-    if not channel:
-        return jsonify({"error": "Channel not found"}), 404
-    return jsonify({
-        "stream_url": channel["url"],
-        "name": channel["name"]
-    })    
-    
-#====================================================
-@app.route("/custom-list")
-@login_required
-def custom_list():
-    return render_template("custom_list.html", channels=CUSTOM_CHANNELS)
-#-‐-‐-‐-‐-‐-‐-‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐--‐-‐
+#----------------------------------------------------
 @app.route("/more-channels")
 @login_required
+#@vip_mode_required
 def more_channels():
     return render_template("more_channels.html")
-
-#====================================================
-
+#--------------------------------------------------
 @app.route("/watch")
 @login_required
+#@vip_mode_required
 def watch():
     
     name = request.args.get("name")
@@ -581,7 +516,7 @@ def watch():
     country_code = request.args.get("country")
 
     channels = []
-    source_label = ""  # For heading below player
+    source_label = ""  # For heading in player
 
     try:
         if category_id:
@@ -608,12 +543,159 @@ def watch():
         flash(f"Error fetching channels: {e}", "error")
 
     return render_template("player.html", stream_url=stream_url, name=name, channels=channels, source_label=source_label)
-
-#====================================================
+#----------------------------------------------------
 @app.route('/browse')
 def browse():
     return render_template('browse.html')
-#‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-
+#====================================================
+#          >>>>TEST FOR PLAYERS' UI/UX<<<<
+#====================================================
+
+@app.route('/test_channels')
+def test_channels():
+    url = "https://iptv-org.github.io/iptv/countries/ke.m3u"
+    response = requests.get(url)
+    channels = []
+    lines = response.text.splitlines()
+    for i in range(len(lines)):
+        if lines[i].startswith("#EXTINF"):
+            name = lines[i].split(",")[-1]
+            stream_url = lines[i + 1]
+            channels.append({"name": name, "url": stream_url})
+    return render_template("channels.html", channels=channels)
+
+#====================================================
+#             >>>>BASIC MODE<<<<
+#====================================================
+from channels import CUSTOM_CHANNELS 
+
+#basic_mode Home page 
+@app.route('/basic_mode')
+def basic_mode():
+    return render_template('basic_page.html', user=current_user)
+
+#with open('channels.json', 'r') as file:
+#    custom_channels = json.load(file)
+
+@app.route("/custom-list")
+@login_required
+def custom_list():
+    return render_template("custom_list.html", channels=CUSTOM_CHANNELS)
+#-‐-‐-‐-‐-‐-‐-‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐--‐-‐
+@app.route("/channel/<key>")
+@login_required
+#@vip_mode_required
+def play_channel(key):z
+    channel = CUSTOM_CHANNELS.get(key)
+    if not channel:
+        abort(404)
+
+    channels = [
+        {"key": k, "name": v["name"], "url": v["url"]}
+        for k, v in CUSTOM_CHANNELS.items()
+    ]
+
+    return render_template(
+        "custom_player.html",
+        channel_name=channel["name"],
+        stream_url=channel["url"],
+        channels=channels,       # Now a list of dicts with name, url, key
+        current_key=key          # Pass current key for highlighting
+    )
+#-------------------‐--------------------------------
+@app.route("/api/channel_stream_url")
+@login_required
+#@vip_mode_required
+def channel_stream_url():
+    key = request.args.get("key")
+    channel = CUSTOM_CHANNELS.get(key)
+    if not channel:
+        return jsonify({"error": "Channel not found"}), 404
+    return jsonify({
+        "stream_url": channel["url"],
+        "name": channel["name"]
+    })
+
+#====================================================
+#            >>>>PAYMENT FEATURE<<<<
+#====================================================
+
+@app.route('/payment')
+def payment():
+    return render_template('pay.html', user=current_user)
+
+#----------------------------------------------------
+
+@app.route('/api/pay', methods=['POST'])
+def pay():
+    data = request.json
+    phone = data['phone']
+    amount = data['amount']
+
+    # M-Pesa credentials (stored securely)
+    consumer_key = os.getenv("MPESA_CONSUMER_KEY")
+    consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
+    business_short_code = "174379"
+    passkey = os.getenv("MPESA_PASSKEY")
+    callback_url = "https://viewtv.onrender.com/callback"
+
+    # Generate access token
+    auth_response = requests.get(
+        "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
+        auth=(consumer_key, consumer_secret)
+    )
+    access_token = auth_response.json().get("access_token")
+
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    password = base64.b64encode((business_short_code + passkey + timestamp).encode()).decode()
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "BusinessShortCode": business_short_code,
+        "Password": password,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": amount,
+        "PartyA": phone,
+        "PartyB": business_short_code,
+        "PhoneNumber": phone,
+        "CallBackURL": callback_url,
+        "AccountReference": "Ref001",
+        "TransactionDesc": "Test Payment"
+    }
+
+    response = requests.post("https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest", json=payload, headers=headers)
+    
+    if response.status_code == 200:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False, "message": response.text})
+
+#------------------------------------------------
+
+@app.route('/callback', methods=['POST'])
+def callback():
+    data = request.json
+    result_code = data['Body']['stkCallback']['ResultCode']
+    
+    if result_code == 0:
+        # Success: update DB, notify user
+        flash('PAYMENT SUCCESS. LOGIN TO VIP MODE', 'success')
+        logout_user(current_user)
+        return redirect(url_for('login'))
+
+    else:
+        print("Payment Failed:", data['Body']['stkCallback']['ResultDesc'])
+    
+    return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
+
+#====================================================
+#               >>>>GENERAL ENDPOINTS<<<<
+#====================================================
 @app.route("/")
 def home():
     return render_template('index.html', channels=CUSTOM_CHANNELS)
@@ -621,12 +703,22 @@ def home():
 @app.route('/about')
 def about():
     pass
+#---------------------------------------------------
+@app.route("/welcome")
+@login_required
+def welcome():
+    return render_template("welcome.html")
+#----------------------------------------------------
+@app.route('/logout_current_user')
+def logout_current_user():
+    session.clear()
+    flask_logout_user()
+    return redirect(url_for("home"))
 #‐-‐-‐-‐-‐-‐‐-‐‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐-‐   
 @app.route('/services') 
 def services():
     pass
-#====================================================
-
+#===================================================
 @app.context_processor
 def inject_csrf_token():
     from flask_wtf.csrf import generate_csrf
@@ -657,4 +749,4 @@ def handle_csrf_error(e):
 
 #====================================================
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=47947, debug=True)
+    app.run(host='0.0.0.0', port=47947, debug=False)

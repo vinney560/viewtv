@@ -703,6 +703,10 @@ def home():
 @app.route('/about')
 def about():
     pass
+#---‐-‐-‐-‐-‐-‐-‐-‐-‐-‐---‐--‐‐--‐-‐-‐-‐------‐‐-‐-‐-
+@app.route('/copyright')
+def copyright():
+    pass
 #---------------------------------------------------
 @app.route("/welcome")
 @login_required

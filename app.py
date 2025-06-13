@@ -661,10 +661,10 @@ def pay():
     db.session.commit()
 
     # M-Pesa credentials
-    consumer_key = os.getenv("MPESA_CONSUMER_KEY")
-    consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
+    MPESA_CONSUMER_KEY=A7oycBDOVoAldtmR4owlG68aEHVEmavWBFJPI7gxyFweus0O_
+    MPESA_CONSUMER_SECRET=3iQWqcNXxG74Qz2wGyvoGlkWm1K2svEWLcFNXmzkrB2sDwtbsPcRluOPWrIB0G3e_
+    MPESA_PASSKEY=bfb279f9aa9bdbcf15e97dd71a467cd2b99dd8b5c8b7ef3c1e3157e1b7de6f86
     business_short_code = "174379"  # Use your actual shortcode
-    passkey = os.getenv("MPESA_PASSKEY")
     callback_url = "https://viewtv.onrender.com/callback"
 
     try:

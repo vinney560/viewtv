@@ -697,10 +697,7 @@ def callback():
 #====================================================
 @app.route("/")
 def home():
-    channels = [
-        { "name": v["name"] }
-        for v in CUSTOM_CHANNELS.items()
-    ]
+    channels = CUSTOM_CHANNELS
     return render_template('index.html', channels=channels)
 #---‐-‐-‐-‐-‐-‐-‐-‐-‐-‐---‐--‐‐--‐-‐-‐-‐------‐‐-‐-‐-
 @app.route('/about')

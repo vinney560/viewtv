@@ -1,0 +1,39 @@
+<div x-data="{ phone: '', amount: '', loading: false, success: false, error: '' }" class="max-w-md mx-auto p-6 bg-white rounded-xl shadow-md space-y-4">
+  <h2 class="text-xl font-bold">Pay with M-Pesa</h2>
+  <input x-model="phone" type="text" placeholder="Enter phone number" class="w-full border p-2 rounded" />
+  <input x-model="amount" type="number" placeholder="Enter amount" class="w-full border p-2 rounded" />
+  
+  <button @click="makePayment" :disabled="loading" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+    <span x-show="!loading">Pay</span>
+    <span x-show="loading">Processing...</span>
+  </button>
+
+  <div x-show="success" class="text-green-600">Payment successful!</div>
+  <div x-text="error" class="text-red-600"></div>
+
+  <script>
+    function makePayment() {
+      this.loading = true;
+      this.success = false;
+      this.error = '';
+
+      fetch('/api/pay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: this.phone, amount: this.amount })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          this.success = true;
+        } else {
+          this.error = data.message || "Payment failed.";
+        }
+      })
+      .catch(() => {
+        this.error = "Something went wrong.";
+      })
+      .finally(() => this.loading = false);
+    }
+  </script>
+</div>

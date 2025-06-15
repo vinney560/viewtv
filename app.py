@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta   # Added for nairobi_time
 import requests
 import base64
-from request.auth import HTTPBasicAuth 
+from requests.auth import HTTPBasicAuth 
 
 load_dotenv()
 

@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta   # Added for nairobi_time
 import requests
 import base64
+from request.auth import HTTPBasicAuth 
 
 load_dotenv()
 
@@ -360,10 +361,6 @@ def login():
 
             if not user.email_verified:
                 flash("Please verify your email before logging in.", "warning")
-                return redirect(url_for('login'))
-            if user.status == "active":
-                flash('Account logged in somewhere else. Try Again.', 'error')
-                logout_user(user)
                 return redirect(url_for('login'))
             if check_password_hash(user.password, password):
                 user.failed_login_attempts = 0  # Reset on success

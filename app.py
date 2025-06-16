@@ -636,7 +636,7 @@ def payment():
 def pay():
     data = request.json
     phone = data.get('phone')
-    amount = data.get('amount')
+    amount = int(data.get('amount'))
 
     if not phone or not amount:
         return jsonify({"success": False, "message": "Phone or amount missing"}), 400

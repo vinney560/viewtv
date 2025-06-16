@@ -365,6 +365,7 @@ def login():
             if check_password_hash(user.password, password):
                 user.failed_login_attempts = 0  # Reset on success
                 db.session.commit()
+                session.clear()
 
                 session['role'] = user.role
                 session['active'] = user.status

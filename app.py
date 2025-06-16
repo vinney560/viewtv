@@ -760,7 +760,7 @@ def callback():
 @app.route('/vip-confirm')
 def vip_confirm():
     flash("🎉 PAYMENT SUCCESSFUL. You are now a VIP. Please log in again.", "success")
-    logout_user()
+    logout_user(current_user)
     return redirect(url_for('login'))
     
 #====================================================

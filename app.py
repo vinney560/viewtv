@@ -677,7 +677,7 @@ def pay():
     except Exception as e:
         return jsonify({"success": False, "message": f"Token error: {str(e)}"}), 500
 
-    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    timestamp = (datetime.now() + timedelta(hours=3)).strftime('%Y%m%d%H%M%S')
     password = base64.b64encode((business_short_code + passkey + timestamp).encode()).decode()
 
     headers = {

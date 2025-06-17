@@ -798,9 +798,9 @@ def logout_current_user():
 def services():
     pass
 #-------------------------------------
-@app.roite('/manifest.json')
+@app.route('/manifest.json')
 def manifest():
-    return send_from_directory('/manifest.json')
+    return send_from_directory('manifest.json')
 #===================================================
 @app.context_processor
 def inject_csrf_token():

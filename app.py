@@ -292,7 +292,11 @@ def register():
             return render_template('register.html',
                                    name=name, email=email_addr,
                                    password=password, confirm_password=confirm_password)
-
+        existing_email = User.query.filter_by(email=email_addr).first()
+        if existing_email:
+            flash('Email Already exist')
+            return render_template('register.html', email=email_addr, name=name, password=password, confirm_password=confirm_password)
+            
         if password != confirm_password:
             flash("Passwords don't match", "error")
             return render_template('register.html',
@@ -793,6 +797,10 @@ def logout_current_user():
 @app.route('/services') 
 def services():
     pass
+#-------------------------------------
+@app.roite('/manifest.json')
+def manifest():
+    return send_from_directory('/manifest.json')
 #===================================================
 @app.context_processor
 def inject_csrf_token():

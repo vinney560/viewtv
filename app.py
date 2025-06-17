@@ -800,7 +800,7 @@ def services():
 #-------------------------------------
 @app.route('/manifest.json')
 def manifest():
-    return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
+    return send_from_directory('manifest.json', mimetype='application/manifest+json')
 #===================================================
 @app.context_processor
 def inject_csrf_token():

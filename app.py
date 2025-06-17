@@ -294,7 +294,7 @@ def register():
                                    password=password, confirm_password=confirm_password)
         existing_email = User.query.filter_by(email=email_addr).first()
         if existing_email:
-            flash('Email Already exist')
+            flash('Email Already exist', 'error')
             return render_template('register.html', email=email_addr, name=name, password=password, confirm_password=confirm_password)
             
         if password != confirm_password:

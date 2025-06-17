@@ -798,7 +798,7 @@ def logout_current_user():
 def services():
     pass
 #-------------------------------------
-@app.route('/manifest.json')
+@app.route('/manifest')
 def manifest():
     return send_from_directory('manifest.json')
 #===================================================

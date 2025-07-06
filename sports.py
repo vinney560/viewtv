@@ -168,7 +168,7 @@ CANAL = {
     "canal_2": {
         "tvg-country": "PL",
         "tvg-logo": "",
-        "Canal+ Sport",
+        "name": "Canal+ Sport",
         "url": "http: //178.219.128.68: 64889/CANASPORHD"
     },
     "canal_3": {

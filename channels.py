@@ -9,7 +9,7 @@ CUSTOM_CHANNELS = {
     },
     "ntv-kenya": {
         "name": "NTV Live Kenya",
-        "url": "https://www.youtube.com/embed/p4BWnK2xeHwy"
+        "url": "https://www.youtube.com/embed/p4BWnK2xeHw?autoplay=1&controls=1&modestbranding=1&rel=0&showinfo=0"
     },
     "k24-tv": {
         "name": "K24 TV",

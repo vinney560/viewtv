@@ -683,6 +683,7 @@ from channels import CUSTOM_CHANNELS
 #basic_mode Home page 
 @app.route('/home_1')
 def home_1():
+    channels=CUSTOM_CHANNELS
     return render_template('home_1.html', user=current_user, channels=channels)
 
 #with open('channels.json', 'r') as file:
@@ -713,6 +714,9 @@ def play_channel(key):
         channels=channels,       # Now a list of dicts with name, url, key
         current_key=key          # Pass current key for highlighting
     )
+@app.route(/get_plus)
+def get_plus():
+    return render_template("plus.html")
 #-------------------------------------------------
 @app.route("/api/channel_stream_url")
 @login_required

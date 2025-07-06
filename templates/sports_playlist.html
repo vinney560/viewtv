@@ -44,7 +44,7 @@
           {% for ch in channels %}
           <div class="bg-gray-800 rounded-xl p-4 flex items-center justify-between shadow-md channel-card">
             <div class="flex items-center space-x-3">
-              <img src="{{ ch.logo or '/uploads/default_tv_logo' }}" alt="{{ ch.name }}" class="h-12 w-12 rounded bg-gray-700 object-contain" onerror="this.src='https://via.placeholder.com/48x48?text=No+Logo'">
+              <img src="{{ ch.logo or '/uploads/default_tv_icon' }}" alt="{{ ch.name }}" class="h-12 w-12 rounded bg-gray-700 object-contain" onerror="this.src='https://via.placeholder.com/48x48?text=No+Logo'">
               <div>
                 <p class="font-semibold channel-name">{{ ch.name }}</p>
                 <p class="text-xs text-gray-400">{{ ch.country }}</p>

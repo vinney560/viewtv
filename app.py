@@ -916,7 +916,10 @@ def services():
 @app.route('/manifest.json')
 def manifest():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'manifest.json', mimetype='application/manifest+json')
-
+#--------------------------------
+@app.route("/account")
+def account():
+    pass
 #================================
 
 @app.context_processor

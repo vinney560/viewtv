@@ -1,19 +1,19 @@
 CUSTOM_CHANNELS = {
     "citizen-tv": {
         "name": "Citizen TV Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=0&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3"
+        "url": "https://citizentv.co.ke/live"
     },
     "ktn-news": {
         "name": "KTN News Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3"
+        "url": "https://www.ktnnews.com/live"
     },
     "ntv-kenya": {
-        "name": "NTV Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCfY4WfXqkz0A9xDNJchpOAQ&controls=0&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3"
+        "name": "NTV Kenya (Backup Stream)",
+        "url": "https://kenyalivetv.co.ke/embed/ntv-live"
     },
     "k24-tv": {
         "name": "K24 TV",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCq6cQZAlKbhMXgk4W7yNH6A&controls=0&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3"
+        "url": "https://k24tv.co.ke/live"
     },
     "tv47-kenya": {
         "name": "TV47 Kenya",
@@ -45,7 +45,7 @@ CUSTOM_CHANNELS = {
     },
     "kbc": {
         "name": "Kenya Broadcasting Corporation (KBC)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCpl2xr6WWfxa2v2X6tqRmIw&controls=0&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3"
+        "url": "https://kbc.co.ke/live-streaming/"
     },
     "kenya-news-agency": {
         "name": "Kenya News Agency",
@@ -58,9 +58,5 @@ CUSTOM_CHANNELS = {
     "ktn-home": {
         "name": "KTN Home",
         "url": "https://www.youtube.com/embed/live_stream?channel=UCyo9yshD7ERrIr1kFJ38ufQ&controls=0&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3"
-    },
-    "capital-tv-kenya": {
-        "name": "Capital TV Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCkBqL-cGRcSLO-9h8k6dHHA&controls=0&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3"
     }
 }

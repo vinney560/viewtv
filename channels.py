@@ -65,17 +65,14 @@ CUSTOM_CHANNELS = {
     },
     "inooro-tv": {
         "name": "Inooro TV (Kikuyu)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UC6fq5FyZHeNJ0zJfgrg74_g&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
-        "note": "✅ likely works (has occasional live/Kiing’ombe content)"
+        "url": "https://www.youtube.com/embed/live_stream?channel=UC6fq5FyZHeNJ0zJfgrg74_g&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
     },
     "africa-uncensored": {
         "name": "Africa Uncensored",
-        "url": "https://www.youtube.com/embed/streams?channel=UCAZcentoUyFsjZEd_BrmEIA&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
-        "note": "✅ works (investigative video uploads, no live)"
+        "url": "https://www.youtube.com/embed/streams?channel=UCAZcentoUyFsjZEd_BrmEIA&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
     },
     "ktn-home-show": {
         "name": "KTN Home (Entertainment)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCT9hYJzzQY_VaZx3PMeFPJQ&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
-        "note": "⚠️ may go live occasionally (mostly uploads)"
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCT9hYJzzQY_VaZx3PMeFPJQ&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
     }
 }

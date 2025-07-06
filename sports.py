@@ -851,7 +851,7 @@ SPORT = {
 T_SPORT = {
     "t_sport_1": {
         "tvg-country": "TH",
-        "tvg-log"o: "",
+        "tvg-logo": "",
         "name": "T Sports 7",
         "url": "https: //cdn6.goprimetime.info/feed/eI5rczhSQpWBcgOtqRLNWw/chtsport/index.m3u8"
     },

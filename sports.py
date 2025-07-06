@@ -350,6 +350,8 @@ FIFA = {
         "tvg-logo": "",
         "name":  "FIFA+",
         "url":  "https: //www.fifa.com/fifa-plus/live"
+    }
+}
 FUTBOL = {
     "futbol_1": {
         "tvg-country": "US",

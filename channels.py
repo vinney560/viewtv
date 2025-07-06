@@ -65,7 +65,7 @@ CUSTOM_CHANNELS = {
     },
     "inooro-tv": {
         "name": "Inooro TV (Kikuyu)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UC6fq5FyZHeNJ0zJfgrg74_g&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
+        "url": "https://www.youtube.com/embed/P3VPIjl_pl0?autoplay=1&controls=1&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
     },
     "africa-uncensored": {
         "name": "Africa Uncensored",

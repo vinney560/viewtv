@@ -886,12 +886,6 @@ TIGO = {
         "url": "https: //acceso.radiosportstv.online: 3795/stream/play.m3u8"
     },
     "tigo_2": {
-        "tvg-country": "GT",
-        "tvg-logo": "",
-        "name": "Tigo Sports (Guatemala)"
-        "url": "https: //cnm-tsl.otteravision.com/cnm/tsl/tsl.m3u8"
-    },
-    "tigo_3": {
         "tvg-country": "SV",
         "tvg-logo": "",
         "name": "Tigo Sports TV El Salvador",

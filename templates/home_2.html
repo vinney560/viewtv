@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home 2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow-hover:hover {
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="h-full min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex flex-col items-center p-4">
+
+  <!-- Header -->
+  <header class="w-full max-w-6xl flex items-center justify-between p-4 bg-gray-800 bg-opacity-90 rounded-2xl shadow-md">
+    <!-- Dashboard SVG -->
+    <a href="{{ url_for('dashboard') }}" class="glow-hover p-2 rounded-full hover:bg-cyan-600 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18"/>
+      </svg>
+    </a>
+
+    <!-- Right Section -->
+    <div class="flex items-center space-x-4">
+      <!-- Plus Button with Text -->
+      <a href="{{ url_for('get_plus') }}" class="glow-hover flex items-center space-x-1 px-3 py-2 rounded-xl bg-gray-700 hover:bg-cyan-600 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span class="text-sm font-medium text-cyan-200">Plus</span>
+      </a>
+
+      <!-- Account Button -->
+      <a href="{{ url_for('account') }}" class="flex items-center space-x-2 glow-hover px-3 py-2 rounded-xl bg-gray-700 hover:bg-cyan-600 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5.121 17.804A9 9 0 1119.88 6.197 9 9 0 015.12 17.804zM12 12a4 4 0 100-8 4 4 0 000 8z" />
+        </svg>
+        <span class="text-sm font-medium text-cyan-200">Account</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="w-full max-w-2xl mt-10 flex flex-col items-center space-y-6 px-4">
+
+    <!-- Exclusive Sports -->
+    <a href="{{ url_for('sports_playlist') }}" class="w-full py-5 flex items-center justify-center space-x-3 text-xl md:text-2xl font-bold rounded-xl bg-cyan-500 text-gray-900 glow-hover transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 8c1.657 0 3 1.343 3 3s-1.343 3-3 3m0 0c-1.657 0-3-1.343-3-3s1.343-3 3-3m0 0V4m0 10v6m-4-3h8" />
+      </svg>
+      <span>Exclusive Sports</span>
+    </a>
+
+    <!-- Category & Country Buttons -->
+    <div class="flex w-full space-x-4">
+      <!-- Category -->
+      <a href="{{ url_for('categories') }}" class="w-1/2 py-4 flex items-center justify-center space-x-2 bg-gray-700 text-cyan-300 font-semibold rounded-xl glow-hover transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+        </svg>
+        <span>Category</span>
+      </a>
+
+      <!-- Country -->
+      <a href="{{ url_for('countries') }}" class="w-1/2 py-4 flex items-center justify-center space-x-2 bg-gray-700 text-cyan-300 font-semibold rounded-xl glow-hover transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+        <span>Country</span>
+      </a>
+    </div>
+
+    <!-- View TV Playlist -->
+    <a href="{{ url_for('plus_playlist') }}" class="w-full py-5 flex items-center justify-center space-x-3 text-xl md:text-2xl font-bold rounded-xl bg-cyan-500 text-gray-900 glow-hover transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
+      </svg>
+      <span>View TV Playlist</span>
+    </a>
+
+  </main>
+
+</body>
+</html>

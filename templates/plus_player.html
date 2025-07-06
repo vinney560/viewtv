@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="en" class="bg-black text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Player | View Tv</title>
+  <script src="https://cdn.tailwindcss.com"></script>  <!-- hls.js for HLS playback -->  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>  <!-- dash.js for DASH playback -->  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>  <!-- video.js CSS & JS -->  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background-color: #000;
+      color: white;
+    }
+    #player-container {
+      position: relative;
+      width: 100%;
+      max-width: 1600px;
+      aspect-ratio: 16 / 9;
+      margin: auto;
+      background: black;
+      border-radius: 0.5rem;
+    }
+    #player, #iframe-player {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+      background: black;
+    }
+    .hidden {
+      display: none;
+    }
+    @media (max-width: 640px) {
+      #player-container {
+        aspect-ratio: 4 / 3;
+      }
+    }
+  </style></head>
+<body class="flex flex-col min-h-screen bg-black text-white">  <header class="flex items-center justify-between px-4 py-4 border-b border-gray-700 text-base sm:text-lg md:text-xl">
+    <a href="javascript:history.back()" class="text-cyan-400 hover:text-white flex items-center space-x-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      <span>Back</span>
+    </a>
+    <h1 class="font-bold text-cyan-400">Now Streaming</h1>
+    <div class="w-6"></div>
+  </header>  <main class="flex-grow flex flex-col items-center justify-center p-4">
+    <div id="player-container">
+      <video
+        id="player"
+        class="video-js vjs-default-skin"
+        controls
+        preload="auto"
+        muted
+        playsinline
+        webkit-playsinline
+      ></video>
+      <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+    </div>
+    <p id="error-message" class="mt-4 text-red-500 hidden text-sm sm:text-base"></p>
+  </main>  <footer class="text-center text-gray-500 text-sm py-4">
+    &copy; <span id="year"></span> View Tv. All rights reserved.
+  </footer>  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function getExtension(url) {
+      const path = url.split('?')[0].split('#')[0];
+      const extMatch = path.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv)$/i);
+      return extMatch ? extMatch[1].toLowerCase() : '';
+    }
+
+    (function() {
+      const streamUrl = getQueryParam('url');
+      const token = getQueryParam('token');
+      if (!streamUrl) {
+        showError("No stream URL provided");
+        return;
+      }
+
+      const urlWithToken = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
+      const ext = getExtension(urlWithToken);
+
+      const player = document.getElementById('player');
+      const iframe = document.getElementById('iframe-player');
+      const errorMsg = document.getElementById('error-message');
+
+      function showError(msg) {
+        errorMsg.textContent = msg;
+        errorMsg.classList.remove('hidden');
+      }
+
+      errorMsg.classList.add('hidden');
+      player.style.display = 'none';
+      iframe.style.display = 'none';
+
+      if (ext === 'm3u8') {
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(urlWithToken);
+          hls.attachMedia(player);
+          hls.on(Hls.Events.ERROR, function(event, data) {
+            showError("Playback error: " + data.details);
+          });
+          player.style.display = 'block';
+          player.muted = false;
+          player.play();
+        } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+          player.src = urlWithToken;
+          player.style.display = 'block';
+          player.play();
+        } else {
+          showError("HLS not supported on this browser");
+        }
+      } else if (ext === 'mpd') {
+        try {
+          const dashPlayer = dashjs.MediaPlayer().create();
+          dashPlayer.initialize(player, urlWithToken, true);
+          player.style.display = 'block';
+        } catch(e) {
+          showError("DASH playback error: " + e.message);
+        }
+      } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
+        player.src = urlWithToken;
+        player.style.display = 'block';
+        player.play().catch(() => {});
+      } else {
+        iframe.src = urlWithToken;
+        iframe.style.display = 'block';
+      }
+    })();
+  </script></body>
+</html>

@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="PK" tvg-logo="" group-title="Sport",PTV Sports
+http://121.91.61.106:8000/play/a00l/index.m3u8?checkedby:iptvcat.com

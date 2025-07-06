@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="CR" tvg-logo="" group-title="Sport",Tigo Sports (Costa Rica)
+https://acceso.radiosportstv.online:3795/stream/play.m3u8?checkedby:iptvcat.com

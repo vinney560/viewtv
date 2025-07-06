@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local & Kids Channels</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { 
+      margin: 0; padding: 20px; 
+      font-family: Arial, sans-serif; 
+      background: #0d1117; color: #c9d1d9;
+    }
+    h2 { 
+      color: #58a6ff; 
+      margin-bottom: 20px; 
+      padding-top: 40px; /* to avoid back btn overlap on small screens */
+      text-align: center;
+    }
+    .list { max-width: 600px; margin: 0 auto; }
+    .item {
+      background: #161b22; 
+      margin-bottom: 12px; 
+      padding: 14px 20px; 
+      border-radius: 8px; 
+      transition: background 0.2s; 
+    }
+    .item:hover { background: #238636; }
+    a.channel-link { 
+      text-decoration: none; 
+      color: #00ff88; 
+      font-weight: 600; 
+    }
+
+    /* Back Button Styling */
+    .back-btn {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      color: #58a6ff;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      z-index: 100;
+      transition: color 0.2s;
+    }
+    .back-btn:hover {
+      color: #8ae9ff;
+    }
+    .back-btn svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Compact Back Button -->
+  <a href="/basic_mode" class="back-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+    <span>Back</span>
+  </a>
+
+  <h2>Local, Sports & Kids Channels</h2>
+  <div class="list">
+    {% for key, info in channels.items() %}{{ loop.index }}
+      <div class="item">
+        <a class="channel-link" href="{{ url_for('play_channel', key=key) }}">{{ info.name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="PL" tvg-logo="" group-title="Sport",Canal+ Sport (1080p)
+http://178.219.128.68:64888/CANASPORHD?checkedby:iptvcat.com

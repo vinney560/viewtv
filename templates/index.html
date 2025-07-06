@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="title" content="View Tv - Stream closely all the World's Channels on the comfort of your home" />
+  <meta name="description" content="Stream your favorite movies, news and TV shows anytime, anywhere. Sign in or register to watch instantly with no distractions or clutter." />
+  <meta name="keywords" content="TV shows, streaming, online TV, View Tv, watch shows online, online streaming, live tv" />
+  <meta name="author" content="View Tv" />
+  <meta name="robots" content="index, follow" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://viewtv.onrender.com" />
+  <meta property="og:title" content="View Tv - Stream Your Favorite Movies, Shows and more" />
+  <meta property="og:description" content="Sign in or register to start streaming your favorite movies and TV shows instantly." />
+  <meta property="og:image" content="https://viewtv.onrender.com/uploads/og-image.jpg" />
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://viewtv.onrender.com" />
+  <meta property="twitter:title" content="View Tv - Stream Your Favorite Movies and Shows" />
+  <meta property="twitter:description" content="Watch everything, anytime. Start streaming in seconds." />
+  <meta property="twitter:image" content="https://viewtv.onrender.com/uploads/og-image.jpg" />
+  <link rel="canonical" href="https://viewtv.onrender.com" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <title>View Tv - Welcome</title>
+
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col min-h-screen items-center justify-start text-gray-100 bg-gradient-to-br from-gray-900 to-black p-5">
+
+  <!-- Header -->
+  <header class="w-full sticky top-0 bg-opacity-90 bg-gray-900 flex justify-end p-4 space-x-4 z-30 shadow-md">
+    <a href="/login" class="text-cyan-400 font-semibold px-4 py-2 rounded-full border border-transparent transition hover:bg-cyan-400 hover:text-gray-900 glow-hover">Login</a>
+    <a href="/register" class="text-cyan-400 font-semibold px-4 py-2 rounded-full border border-transparent transition hover:bg-cyan-400 hover:text-gray-900 glow-hover">Register</a>
+  </header>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div id="flash-container" class="fixed top-20 right-5 space-y-2 z-40 max-w-xs">
+        {% for category, message in messages %}
+          <div class="px-4 py-2 rounded-lg font-bold shadow-lg {{ 'bg-red-500 text-white' if category == 'error' else 'bg-green-400 text-gray-900' }} transition-opacity duration-500">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+      <script>
+        setTimeout(() => {
+          const flash = document.getElementById('flash-container');
+          if (flash) {
+            flash.style.opacity = '0';
+            setTimeout(() => flash.remove(), 600);
+          }
+        }, 4000);
+      </script>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Main Content -->
+  <main class="w-full max-w-4xl mt-20 bg-gray-800 bg-opacity-80 p-8 rounded-3xl shadow-2xl text-center">
+    <h1 class="text-5xl font-extrabold text-cyan-400 mb-6 tracking-wide select-none">Welcome to View Tv</h1>
+    <p class="text-xl text-gray-300 mb-8 max-w-xl mx-auto select-none">Enjoy unlimited streaming of top TV channels and shows — no ads, no clutter. Start watching instantly.</p>
+    <button onclick="location.href='/login'" class="glow-hover bg-cyan-400 text-gray-900 font-bold py-4 px-10 rounded-full shadow-lg transition transform hover:scale-105">Get Started</button>
+
+    <section class="channels mt-12 max-h-[38rem] overflow-y-auto space-y-5 px-3">
+      <h2 class="text-3xl font-semibold text-cyan-400 mb-6 select-none">Available TV Channels</h2>
+
+      {% for ch in channels %}
+        <div
+          class="channel flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-700 bg-opacity-50 p-6 rounded-xl border-l-4 border-cyan-400 glow-hover transition-colors duration-300 hover:bg-gray-600"
+        >
+          <div class="flex items-center text-gray-200 font-semibold text-lg mb-3 sm:mb-0">
+            <span class="mr-3 text-2xl select-none">📺</span>{{ ch.name }}
+          </div>
+
+          {% if ch.stream_url %}
+            <a href="{{ url_for('player', channel_name=ch.name) }}"
+              class="btn glow-hover font-semibold py-2 px-6 rounded-full border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900 transition"
+              >Watch Now</a>
+          {% else %}
+            <span class="italic text-gray-500 select-none">Stream not available</span>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto py-6 text-gray-500 text-sm text-center select-none">
+    &copy; {{ current_year }} View Tv. All rights reserved.
+  </footer>
+
+</body>
+</html>

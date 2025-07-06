@@ -1,0 +1,14 @@
+Flask>=2.0
+Flask-Login>=0.6
+Flask-SQLAlchemy>=2.5
+Flask-JWT-Extended>=4.0
+Flask-WTF>=1.0
+Flask-Cors>=3.0
+Flask-Limiter>=2.0
+Werkzeug>=2.0
+itsdangerous>=2.0
+python-dotenv>=1.0
+requests>=2.25
+gunicorn==23.0.0
+Flask-Mail==0.9.1
+psycopg2-binary>=2.9

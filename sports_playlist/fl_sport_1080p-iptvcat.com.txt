@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="GY" tvg-logo="" group-title="Sport",FL Sport (1080p)
+https://tvsw5-hls.secdn.net/tvsw5-chorigin/play/prod-8ce1fcb47fa7474d84640eb766f0ef38/playlist.m3u8?checkedby:iptvcat.com

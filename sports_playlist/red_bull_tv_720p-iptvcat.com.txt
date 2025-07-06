@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="UN" tvg-logo="" group-title="Sport",Red Bull TV (720p)
+https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8?denmstv.m3u8&checkedby:iptvcat.com

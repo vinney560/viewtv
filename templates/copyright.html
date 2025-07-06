@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Copyright | View Tv</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex justify-center items-start p-6 text-white">
+  <div class="w-full max-w-6xl flex flex-col md:flex-row gap-6">
+    <div
+      class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-xl w-full md:w-1/3 border border-white/20 text-gray-300 text-sm leading-relaxed"
+    >
+      <p>
+        We source our Channels and Stream URLs from third-party sources. None of our content is illegal or contains adult content.
+        Categorizing is done to ensure our streams can be viewed by all ages. If interested in knowing where we source our Stream URLs,
+        <a href="{{ url_for('developer') }}" class="underline text-cyan-400 hover:text-cyan-600 glow-hover">visit our Developer Page.</a>
+      </p>
+    </div>
+  </div>
+</body>
+
+</html>

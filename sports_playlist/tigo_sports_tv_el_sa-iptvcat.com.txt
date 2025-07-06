@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="SV" tvg-logo="" group-title="Sport",Tigo Sports TV El Salvador (720p) [Geo-blocked]
+https://channel03.tigosports.com.sv/out/v1/31f36d52d558475ca18799d8ca5e4b40/index.m3u8?checkedby:iptvcat.com

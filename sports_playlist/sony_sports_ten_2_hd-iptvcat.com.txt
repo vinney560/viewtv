@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="IN" tvg-logo="" group-title="Sport",Sony Sports TEN 2 HD (1080p)
+https://dai.google.com/linear/hls/event/V9h-iyOxRiGp41ppQScDSQ/master.m3u8?checkedby:iptvcat.com

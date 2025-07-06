@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="MN" tvg-logo="" group-title="Sport",MNB Sport (1080p)
+https://live.mnb.mn/hls/mnb_sport.stream.m3u8?checkedby:iptvcat.com

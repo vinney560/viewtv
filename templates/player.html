@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ViewTV Player</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    body {
+      background: #0a0f1c;
+      color: #e1e8ef;
+      font-family: 'Inter', sans-serif;
+      padding: 4vw 3vw;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+      margin-bottom: 20px;
+      color: #4fc3f7;
+      text-shadow: 0 0 12px #4fc3f799;
+      text-align: center;
+    }
+
+    .player-container {
+      width: 100%;
+      max-width: 900px;
+      background: #121829;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
+      padding: 5vw 4vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    video {
+      width: 100%;
+      max-height: 60vh;
+      border-radius: 12px;
+      background: black;
+      outline: none;
+    }
+
+    .current-channel-name {
+      margin-top: 16px;
+      font-weight: 600;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      color: #00ff88;
+      text-align: center;
+      text-shadow: 0 0 6px #00ff88bb;
+    }
+
+    .channel-list {
+      width: 100%;
+      max-width: 600px;
+      max-height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-right: 8px;
+    }
+
+    .channel {
+      background: #121829;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+      cursor: pointer;
+      flex-wrap: wrap;
+    }
+
+    .channel:hover {
+      background: #1e2a38;
+      box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+    }
+
+    .channel-number {
+      font-weight: 600;
+      color: #32cd80;
+      margin-right: 12px;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .channel-name {
+      flex-grow: 1;
+      font-weight: 600;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      color: #ffffff;
+    }
+
+    .watch-link {
+      position: relative;
+      background: #00ff88;
+      color: #0d1117;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .watch-link:hover {
+      background: #00cc6a;
+      color: #d0f0e6;
+      box-shadow: 0 0 10px #00ff88;
+    }
+
+    .watch-link::before {
+      content: "▶";
+      font-size: 1.2rem;
+    }
+
+    .watch-link::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.1) 100%
+      );
+      transform: skewX(-20deg);
+      animation: shine 2.5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { left: -75%; }
+      100% { left: 125%; }
+    }
+
+    p.no-channels {
+      font-style: italic;
+      color: #8b949e;
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .channel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .channel-name {
+        white-space: normal;
+        text-align: left;
+        width: 100%;
+      }
+
+      .watch-link {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .player-container {
+        padding: 6vw 4vw;
+      }
+    }
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; color: #00ff88; background: transparent; border: 2px solid #00ff88; padding: 8px 14px;  border-radius: 8px; text-decoration: none; font-weight: 600;  margin-bottom: 24px; transition: all 0.3s ease; align-self: flex-start; }
+    .back-btn:hover { background: #00ff88; color: #0a0f1c; box-shadow: 0 0 12px #00ff88aa; }
+    .back-btn svg { width: 20px; height: 20px; stroke: currentColor; }
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .channel-number,
+      .channel-name,
+      .watch-link {
+        font-size: 0.95rem;
+      }
+
+      video {
+        max-height: 45vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="javascript:history.back()" class="back-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+    <span>Back</span>
+  </a>
+  <div class="player-container" role="main" aria-label="Video player and channel list">
+    {% if stream_url %}
+      <video controls autoplay playsinline>
+        <source src="{{ stream_url }}" type="application/x-mpegURL" />
+        Your browser does not support the video tag.
+      </video>
+      {% if name %}
+        <div class="current-channel-name" aria-live="polite">Now Playing: {{ name }}</div>
+      {% endif %}
+    {% else %}
+      <p class="no-channels">No stream selected.</p>
+    {% endif %}
+  </div>
+
+  {% if channels %}
+    <h2>Find More on {{ source_label }}</h2>
+    <div class="channel-list" role="list" tabindex="0" aria-label="List of channels">
+      {% for ch in channels %}
+        <div class="channel" role="listitem" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.name }}">
+          <div class="channel-number">{{ loop.index }}.</div>
+          <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
+          <a
+            class="watch-link"
+            href="{{ url_for('watch') }}?name={{ ch.name }}&url={{ ch.url }}{% if category_id %}&category={{ category_id|lower }}{% elif country_code %}&country={{ country_code|lower }}{% endif %}"
+            aria-label="Watch {{ ch.name }}"
+          >
+            Watch
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="no-channels">No channels available.</p>
+  {% endif %}
+
+</body>
+</html>

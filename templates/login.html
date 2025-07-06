@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-tr from-cyan-900 via-cyan-800 to-cyan-900 text-white font-sans min-h-screen flex items-center justify-center px-4">
+
+  <section class="bg-cyan-700 bg-opacity-90 backdrop-blur-md rounded-3xl shadow-2xl max-w-md w-full p-10 relative">
+    <h4 class="text-4xl font-extrabold text-center mb-8 tracking-tight drop-shadow-md">Login</h4>
+
+    <!-- Flash Message -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-message" class="mb-4 transition-opacity duration-500 ease-in-out">
+          {% for category, message in messages %}
+            <div class="rounded-xl px-4 py-3 text-sm font-semibold shadow-md
+              {% if category == 'success' %}
+                bg-green-600 text-white
+              {% elif category == 'error' %}
+                bg-red-600 text-white
+              {% else %}
+                bg-cyan-600 text-white
+              {% endif %}
+            ">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <a href="javascript:history.back()" 
+      class="fixed top-4 left-4 flex items-center text-blue-400 hover:text-blue-300 transition duration-200 z-50">
+      <svg xmlns="http://www.w3.org/2000/svg" 
+           fill="none" 
+           viewBox="0 0 24 24" 
+           stroke-width="2" 
+           stroke="currentColor" 
+           class="w-6 h-6 mr-1">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+      <span class="text-base font-medium">Back</span>
+    </a>
+
+    <form action="/login" method="POST" class="space-y-6">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div>
+        <label for="email" class="block text-cyan-100 font-semibold mb-2">Email Address</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          placeholder="you@example.com"
+          value="{{ email }}"
+          class="w-full rounded-2xl bg-cyan-900 bg-opacity-50 placeholder-cyan-300 text-white font-semibold px-5 py-3 focus:outline-none focus:ring-4 focus:ring-cyan-400 transition"
+        />
+      </div>
+
+      <div>
+        <label for="password" class="block text-cyan-100 font-semibold mb-2">Password</label>
+        <div class="relative">
+          <input
+            id="password"
+            name="password"
+            type="password" 
+            required
+            minlength="4"
+            placeholder="Enter your password"
+            value="{{ password }}"
+            class="w-full rounded-2xl bg-cyan-900 bg-opacity-50 placeholder-cyan-300 text-white font-semibold px-5 py-3 pr-14 focus:outline-none focus:ring-4 focus:ring-cyan-400 transition"
+          />
+          <button
+            type="button"
+            aria-label="Toggle password visibility"
+            onclick="togglePassword()"
+            class="absolute top-1/2 right-4 -translate-y-1/2 text-cyan-400 hover:text-cyan-200 transition"
+          >
+            <svg
+              id="eyeIcon"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-3xl py-3 font-extrabold tracking-wide hover:from-cyan-600 hover:to-cyan-700 transition shadow-lg"
+      >
+        Login
+      </button>
+      <p>Don't have an account? <a href='/register'><span class='text-blue-700'>Sign Up</span></a></p>
+    </form>
+  </section>
+
+  <script>
+    function togglePassword() {
+      const password = document.getElementById("password");
+      const eyeIcon = document.getElementById("eyeIcon");
+      const isHidden = password.type === "password";
+
+      password.type = isHidden ? "text" : "password";
+      eyeIcon.innerHTML = isHidden
+        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.965 9.965 0 012.181-3.316M6.8 6.8A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.106 5.154M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />`
+        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+    }
+
+    // Auto-hide flash message
+    setTimeout(() => {
+      const flash = document.getElementById("flash-message");
+      if (flash) {
+        flash.classList.add("opacity-0");
+        setTimeout(() => flash.remove(), 500); // Fade out then remove
+      }
+    }, 3500);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="FR" tvg-logo="" group-title="Sport",Sport En France (360p)
+https://sp1564435593.mytvchain.info/live/sp1564435593_360/index.m3u8?checkedby:iptvcat.com

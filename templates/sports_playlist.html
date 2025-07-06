@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Playlist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .channel-card { display: block; }
+    .hidden-card { display: none; }
+    .hidden-section { display: none; }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between px-4 py-6">
+    <a href="javascript:history.back()" class="text-cyan-400 hover:text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </a>
+    <h1 class="text-3xl font-bold text-cyan-400 text-center flex-grow">Exclusive Sports</h1>
+    <div class="w-6"></div> <!-- Placeholder -->
+  </header>
+
+  <!-- Filters -->
+  <div class="px-4 mb-6 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+    <input id="searchInput" type="text" placeholder="Search channels..." class="flex-1 p-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+    <select id="groupFilter" class="p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+      <option value="">All Groups</option>
+      {% for label in channels_by_group.keys() %}
+      <option value="{{ label }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Channel Sections -->
+  <main class="flex-grow overflow-y-auto px-4 space-y-12 pb-28">
+    {% for group, channels in channels_by_group.items() %}
+      <section class="channel-section" data-group="{{ group }}">
+        <h2 class="text-2xl font-semibold text-cyan-300 mb-4 border-l-4 border-cyan-400 pl-3">{{ group }}</h2>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {% for ch in channels %}
+          <div class="bg-gray-800 rounded-xl p-4 flex items-center justify-between shadow-md channel-card">
+            <div class="flex items-center space-x-3">
+              <img src="{{ ch.logo or '/uploads/default_tv_logo' }}" alt="{{ ch.name }}" class="h-12 w-12 rounded bg-gray-700 object-contain" onerror="this.src='https://via.placeholder.com/48x48?text=No+Logo'">
+              <div>
+                <p class="font-semibold channel-name">{{ ch.name }}</p>
+                <p class="text-xs text-gray-400">{{ ch.country }}</p>
+              </div>
+            </div>
+            <a href="{{ url_for('player') }}?url={{ ch.url | urlencode }}{% if ch.token %}&token={{ ch.token | urlencode }}{% endif %}" target="_blank" class="bg-cyan-500 hover:bg-cyan-600 text-white px-3 py-1 rounded-full text-sm font-medium">▶ Play</a>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% else %}
+      <p class="text-center text-gray-500">No channels found.</p>
+    {% endfor %}
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 text-white flex justify-around items-center h-16 z-50">
+    <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center text-xs hover:text-cyan-400">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>
+      </svg>
+      Dashboard
+    </a>
+    <a href="{{ url_for('get_plus') }}" class="flex flex-col items-center text-xs hover:text-cyan-400">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M12 4v16m8-8H4"/>
+      </svg>
+      Plus
+    </a>
+    <a href="{{ url_for('account') }}" class="flex flex-col items-center text-xs hover:text-cyan-400">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M5.121 17.804A9 9 0 1118.88 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Account
+    </a>
+  </nav>
+
+  <!-- Footer -->
+  <footer class="w-full text-center text-gray-500 text-sm py-4">
+    &copy; {{ current_year }} View Tv. All rights reserved.
+  </footer>
+
+  <!-- Live Filter Script -->
+  <script>
+    const input = document.getElementById('searchInput');
+    const groupFilter = document.getElementById('groupFilter');
+
+    input.addEventListener('input', filter);
+    groupFilter.addEventListener('change', filter);
+
+    function filter() {
+      const term = input.value.toLowerCase();
+      const selectedGroup = groupFilter.value;
+      document.querySelectorAll('.channel-section').forEach(section => {
+        const group = section.dataset.group;
+        let visible = false;
+
+        section.querySelectorAll('.channel-card').forEach(card => {
+          const name = card.querySelector('.channel-name').textContent.toLowerCase();
+          const match = name.includes(term) && (selectedGroup === '' || selectedGroup === group);
+          card.style.display = match ? 'flex' : 'none';
+          if (match) visible = true;
+        });
+
+        section.style.display = visible ? 'block' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ full: null }">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Channels</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <div class="container mx-auto p-6" x-show="!full">
+    <h1 class="text-3xl font-bold text-center mb-8">📺 Live Channels</h1>
+
+    <!-- Navigation -->
+    <div class="grid grid-cols-3 gap-4 mb-6 text-center">
+      <a href="#kids" class="bg-green-200 p-3 rounded hover:bg-green-300 transition">🧒 Kids</a>
+      <a href="#movies" class="bg-blue-200 p-3 rounded hover:bg-blue-300 transition">🎬 Movies</a>
+      <a href="#pluto" class="bg-purple-200 p-3 rounded hover:bg-purple-300 transition">📽️ Pluto TV</a>
+    </div>
+
+    <!-- Kids -->
+    <section id="kids" class="mb-12">
+      <h2 class="text-xl font-semibold mb-4">RedBull Tv</h2>
+      <div class="relative group">
+        <iframe src="https://www.livehdtv.com/embed/red-bull-tv/" class="w-full h-80 rounded shadow"></iframe>
+        <button @click="full = 'kids'" class="absolute top-2 right-2 bg-white/70 p-2 rounded shadow hover:bg-white transition">
+          <!-- Fullscreen SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-18h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Movies -->
+    <section id="movies" class="mb-12">
+      <h2 class="text-xl font-semibold mb-4">FilmOn - Movies</h2>
+      <div class="relative group">
+        <iframe src="https://www.filmon.com/embed/channel/film-on-free-movies" class="w-full h-80 rounded shadow"></iframe>
+        <button @click="full = 'movies'" class="absolute top-2 right-2 bg-white/70 p-2 rounded shadow hover:bg-white transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-18h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3" />
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Pluto -->
+    <section id="pluto" class="mb-12">
+      <h2 class="text-xl font-semibold mb-4">Pluto TV</h2>
+      <div class="relative group">
+        <iframe src="https://pluto.tv/embed/live-tv/movies" class="w-full h-80 rounded shadow"></iframe>
+        <button @click="full = 'pluto'" class="absolute top-2 right-2 bg-white/70 p-2 rounded shadow hover:bg-white transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H5a2 2 0 00-2 2v3m0 8v3a2 2 0 002 2h3m8-18h3a2 2 0 012 2v3m0 8v3a2 2 0 01-2 2h-3" />
+          </svg>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Fullscreen Overlay -->
+  <div x-show="full" class="fixed inset-0 bg-black z-50 flex items-center justify-center">
+    <!-- Exit button -->
+    <button @click="full = null" class="absolute top-4 right-4 bg-white p-2 rounded-full shadow">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Fullscreen iframe -->
+    <template x-if="full === 'kids'">
+      <iframe src="https://pbskids.org/video/" class="w-full h-full"></iframe>
+    </template>
+    <template x-if="full === 'movies'">
+      <iframe src="https://www.filmon.com/embed/channel/film-on-free-movies" class="w-full h-full"></iframe>
+    </template>
+    <template x-if="full === 'pluto'">
+      <iframe src="https://pluto.tv/embed/live-tv/movies" class="w-full h-full"></iframe>
+    </template>
+  </div>
+
+</body>
+</html>

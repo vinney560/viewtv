@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VIP Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-black via-gray-900 to-black min-h-screen flex items-center justify-center p-4">
+
+<div class="bg-gray-800 text-white shadow-2xl rounded-2xl p-6 w-full max-w-md">
+    <h2 class="text-2xl font-bold text-green-400 text-center mb-4">Become a VIP</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="mb-4 p-3 rounded-lg text-center font-semibold
+                            {% if category == 'success' %} bg-green-700 text-white
+                            {% elif category == 'error' %} bg-red-700 text-white
+                            {% else %} bg-blue-600 text-white {% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form id="paymentForm" method="POST" class="space-y-4">
+        <!-- CSRF Token Hidden for fallback -->
+        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
+
+        <!-- Phone input -->
+        <label class="block font-semibold text-gray-300">Phone Number</label>
+        <div class="flex rounded-lg overflow-hidden shadow-sm border border-gray-700 bg-gray-900">
+            <span class="bg-green-400 text-black px-4 py-2 font-bold flex items-center">+254</span>
+            <input type="text" id="phone" name="phone"
+                   class="w-full px-4 py-2 bg-gray-900 text-white placeholder-gray-400 focus:outline-none"
+                   pattern="[17][0-9]{8}" maxlength="9" required placeholder="712345678">
+        </div>
+
+        <!-- Amount -->
+        <label class="block font-semibold text-gray-300">Amount (KES)</label>
+        <input type="number" id="amount" name="amount" min="1" value="10" required
+               class="w-full px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 shadow-sm focus:outline-none placeholder-gray-400">
+
+        <!-- Submit button -->
+        <button id="payBtn" type="submit"
+                class="w-full py-2 px-4 bg-green-500 hover:bg-green-600 text-black font-bold rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+            Pay Now
+        </button>
+    </form>
+
+    <!-- Spinner and status -->
+    <div id="processing" class="text-center text-sm mt-4 text-green-300 hidden">
+        <svg class="animate-spin h-5 w-5 mx-auto mb-2 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+             viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10"
+                    stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        Processing your request...
+    </div>
+</div>
+
+<script>
+document.getElementById("paymentForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const phoneInput = document.getElementById("phone");
+    const amountInput = document.getElementById("amount");
+    const csrfToken = document.getElementById("csrf_token").value;
+    const payBtn = document.getElementById("payBtn");
+    const processing = document.getElementById("processing");
+
+    const phone = phoneInput.value.trim();
+    const amount = amountInput.value.trim();
+
+    if (!/^[17][0-9]{8}$/.test(phone)) {
+        alert("Enter a valid number starting with 7 or 1 (9 digits total).");
+        return;
+    }
+
+    const fullPhone = "254" + phone;
+
+    payBtn.disabled = true;
+    payBtn.innerText = "Processing...";
+    processing.classList.remove("hidden");
+
+    try {
+        const res = await fetch("/api/pay", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ phone: fullPhone, amount: amount })
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+            alert("✅ STK Push sent! Check your phone to complete payment.");
+        } else {
+            alert("❌ Error: " + result.message);
+        }
+    } catch (err) {
+        alert("❌ Network or server error.");
+    }
+
+    payBtn.disabled = false;
+    payBtn.innerText = "Pay Now";
+    processing.classList.add("hidden");
+});
+</script>
+
+</body>
+</html>

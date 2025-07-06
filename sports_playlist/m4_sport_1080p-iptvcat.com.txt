@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="HU" tvg-logo="" group-title="Sport",M4 Sport (1080p)
+http://194.76.186.33:8000/play/a02c/index.m3u8?checkedby:iptvcat.com

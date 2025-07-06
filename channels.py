@@ -13,7 +13,7 @@ CUSTOM_CHANNELS = {
     },
     "k24-tv": {
         "name": "K24 TV",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCq6cQZAlKbhMXgk4W7yNH6A&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
+        "url": "https://www.youtube.com/embed/_lB9oSok1FM?controls=1&modestbranding=1&rel=0&fs=1&disablekb=0&iv_load_policy=3"
     },
     "tv47-kenya": {
         "name": "TV47 Kenya",

@@ -83,7 +83,7 @@
           </div>
 
           {% if ch.url %}
-            <a href="{{ url_for('player', channel_name=ch.name, key=key) }}"
+            <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank"
               class="btn glow-hover font-semibold py-2 px-6 rounded-full border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900 transition"
               >Watch Now</a>
           {% else %}

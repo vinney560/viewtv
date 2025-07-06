@@ -793,7 +793,7 @@ SPORT = {
         "name": "Sport 3",
         "url": "http: //cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/659e598ab9adc4000843c574/master.m3u8?appName: web&appVersion: unknown&clientTime: 0&deviceDNT: 0&deviceId: bc8293f2-4b91-11ef-8a44-83c5e90e038f&deviceMake: Chrome&deviceModel: web&deviceType: web&deviceVersion: unknown&includeExtendedEvents: false&sid: a10e7bc2-27d2-4246-858e-3b550009b794&serverSideAds: false"
     },
-    "sport_4": -{
+    "sport_4": {
         "tvg-country": "AT",
         "tvg-logo": "https: //upload.wikimedia.org/wikipedia/en/a/ad/Logo_of_French_sports_television_channel_Sport_en_France.png",
         "name": "Sport 4",

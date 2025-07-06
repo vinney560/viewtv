@@ -62,5 +62,20 @@ CUSTOM_CHANNELS = {
     "capital-tv-kenya": {
         "name": "Capital TV Kenya",
         "url": "https://www.youtube.com/embed/live_stream?channel=UCkBqL-cGRcSLO-9h8k6dHHA&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
+    },
+    "inooro-tv": {
+        "name": "Inooro TV (Kikuyu)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UC6fq5FyZHeNJ0zJfgrg74_g&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+        "note": "✅ likely works (has occasional live/Kiing’ombe content)"
+    },
+    "africa-uncensored": {
+        "name": "Africa Uncensored",
+        "url": "https://www.youtube.com/embed/streams?channel=UCAZcentoUyFsjZEd_BrmEIA&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+        "note": "✅ works (investigative video uploads, no live)"
+    },
+    "ktn-home-show": {
+        "name": "KTN Home (Entertainment)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCT9hYJzzQY_VaZx3PMeFPJQ&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+        "note": "⚠️ may go live occasionally (mostly uploads)"
     }
 }

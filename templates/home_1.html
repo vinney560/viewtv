@@ -64,7 +64,7 @@
             {% for key, info in channels.items() %}
             <div class="bg-gray-800 rounded-xl p-3 shadow hover:shadow-cyan-500/50 transition flex gap-4 items-center h-28 sm:h-32">
                 <div class="w-24 h-full bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 text-sm select-none">
-                    {{ loop.index }}
+                    <img src="{{ url_for('uploaded_file', filename='default_tv_icon.png') }}" alt="TV Icon" class="w-24 h-16 rounded" />
                 </div>
                 <div class="flex flex-col justify-between flex-1">
                     <div>

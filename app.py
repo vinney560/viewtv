@@ -714,7 +714,7 @@ def play_channel(key):
         channels=channels,       # Now a list of dicts with name, url, key
         current_key=key          # Pass current key for highlighting
     )
-@app.route(/get_plus)
+@app.route("/get_plus")
 def get_plus():
     return render_template("plus.html")
 #-------------------------------------------------

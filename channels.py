@@ -1,286 +1,66 @@
 CUSTOM_CHANNELS = {
-    "3stones_tv": {
-        "name": "3 Stones TV",
-        "url": "https://www.squidtv.net/africa/kenya/kenya-003.html"
-    },
-    "abc_news": {
-        "name": "ABC News Live",
-        "url": "https://abcnews.go.com/Live"
-    },
-    "akili_kids": {
-        "name": "Akili Kids",
-        "url": "https://www.youtube.com/channel/UCHBIm_ITwYy_FG9iIfIZxGQ"
-    },
-    "al_jazeera": {
-        "name": "Al Jazeera English",
-        "url": "https://www.aljazeera.com/live"
-    },
-    "azam_tv": {
-        "name": "Azam TV",
-        "url": "https://azamtv.co.tz/"
-    },
-    "bein_sports": {
-        "name": "beIN SPORTS",
-        "url": "https://www.beinsports.com/en/"
-    },
-    "baby_tv": {
-        "name": "Baby TV",
-        "url": "https://www.youtube.com/user/BabyTVChannel"
-    },
-    "babyfirst": {
-        "name": "BabyFirst TV",
-        "url": "https://www.babyfirsttv.com/watch-live/"
-    },
-    "bloomberg": {
-        "name": "Bloomberg TV",
-        "url": "https://www.bloomberg.com/live/us"
-    },
-    "bunge_tv": {
-        "name": "Bunge TV",
-        "url": "https://www.parliament.go.ke/the-national-assembly/live"
-    },
-    "cartoon_network": {
-        "name": "Cartoon Network",
-        "url": "https://www.cartoonnetwork.com/video/index.html"
-    },
-    "cbs_news": {
-        "name": "CBS News",
-        "url": "https://www.cbsnews.com/live/"
-    },
-    "citizen": {
+    "citizen-tv": {
         "name": "Citizen TV Kenya",
-        "url": "https://kenyalivetv.co.ke/embed/citizen-tv-live?autoplay=1&mute=1"
+        "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g"
     },
-    "citizenExtra": {
-        "name": "Citizen Extra",
-        "url": "https://iptvcat.org/kenya"
+    "ktn-news": {
+        "name": "KTN News Kenya",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg"
     },
-    "clergy_tv": {
-        "name": "Clergy TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "cnn_international": {
-        "name": "CNN International",
-        "url": "https://www.freeintertv.com/view/id-200/1-1-0-6"
-    },
-    "dazn": {
-        "name": "DAZN",
-        "url": "https://www.dazn.com/en-US/live"
-    },
-    "destiny_voices_tv": {
-        "name": "Destiny Voices TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "dw_tv": {
-        "name": "DW-TV",
-        "url": "https://www.dw.com/en/tv/live"
-    },
-    "ebn_tv": {
-        "name": "EBN TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "ebru_tv": {
-        "name": "Ebru TV",
-        "url": "https://www.squidtv.net/africa/kenya/kenya-004.html"
-    },
-    "elimu_tv": {
-        "name": "Elimu TV Kenya",
-        "url": "https://kenyalivetv.co.ke/tv/"
-    },
-    "espn_plus": {
-        "name": "ESPN+",
-        "url": "https://plus.espn.com/live"
-    },
-    "euronews": {
-        "name": "Euronews",
-        "url": "https://www.euronews.com/live"
-    },
-    "family_tv": {
-        "name": "Family TV",
-        "url": "https://www.squidtv.net/africa/kenya/kenya-005.html"
-    },
-    "fifa_plus": {
-        "name": "FIFA+",
-        "url": "https://www.fifa.com/fifa-plus/live"
-    },
-    "france24": {
-        "name": "France 24 English",
-        "url": "https://www.france24.com/en/live"
-    },
-    "fuma_tv": {
-        "name": "Fuma TV",
-        "url": "https://www.squidtv.net/africa/kenya/kenya-005.html"
-    },
-    "gbs_tv": {
-        "name": "GBS TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "githima_tv": {
-        "name": "Githima TV",
-        "url": "https://www.squidtv.net/africa/kenya/kenya-004.html"
-    },
-    "gtntv": {
-        "name": "GTN TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "hadi_tv": {
-        "name": "Hadi TV",
-        "url": "https://en.haditv.co.uk/"
-    },
-    "heaven_bound_tv": {
-        "name": "Heaven Bound TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "his_grace_tv": {
-        "name": "His Grace TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "horizon_tv": {
-        "name": "Horizon TV Kenya",
-        "url": "https://kenyalivetv.co.ke/tv/"
-    },
-    "ictv": {
-        "name": "ICTV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "inooro": {
-        "name": "Inooro TV",
-        "url": "https://kenyalivetv.co.ke/embed/inooro-tv-live?autoplay=1&mute=1"
-    },
-    "iptv_cat_kenya": {
-        "name": "IPTV Cat Kenya",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "jcm_tv": {
-        "name": "JCM TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "jimjam": {
-        "name": "JimJam",
-        "url": "https://www.youtube.com/user/JimJamTVChannel"
-    },
-    "k24": {
-        "name": "K24 TV Kenya",
-        "url": "https://www.youtube.com/K24TV/streams"
-    },
-    "kamba_tv": {
-        "name": "Kamba TV",
-        "url": "https://kenyalivetv.co.ke/tv/"
-    },
-    "kass_tv": {
-        "name": "Kass TV",
-        "url": "https://www.squidtv.net/africa/kenya/kenya-003.html"
-    },
-    "ktn": {
-        "name": "KTN News",
-        "url": "https://kenyalivetv.co.ke/embed/ktn-news-live?autoplay=1&mute=1"
-    },
-    "lolwe_tv": {
-        "name": "Lolwe TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "luyaa_tv": {
-        "name": "Luyaa TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "meru_tv": {
-        "name": "MERU TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "mashariki_tv": {
-        "name": "Mashariki TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "morning_cloud_tv": {
-        "name": "Morning Cloud TV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "mtv_base": {
-        "name": "MTV Base Africa",
-        "url": "https://www.mtvbase.com/live"
-    },
-    "nbc_news_now": {
-        "name": "NBC News NOW",
-        "url": "https://www.nbc.com/live?brand=nbc-news&callsign=NBCNN"
-    },
-    "nbc_sports": {
-        "name": "NBC Sports",
-        "url": "https://www.nbcsports.com/live"
-    },
-    "nice_tv_kenya": {
-        "name": "Nice TV Kenya",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "nickelodeon": {
-        "name": "Nickelodeon (Pluto TV)",
-        "url": "https://pluto.tv/en/live-tv/nick-classics"
-    },
-    "ntv": {
+    "ntv-kenya": {
         "name": "NTV Kenya",
-        "url": "https://ntvkenya.co.ke/live/"
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCfY4WfXqkz0A9xDNJchpOAQ"
     },
-    "parliament_tv": {
-        "name": "Parliament TV (PBU)",
-        "url": "https://www.parliament.go.ke/the-national-assembly/live"
+    "k24-tv": {
+        "name": "K24 TV",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCq6cQZAlKbhMXgk4W7yNH6A"
     },
-    "pbs_kids": {
-        "name": "PBS Kids",
-        "url": "https://pbskids.org/video/"
+    "tv47-kenya": {
+        "name": "TV47 Kenya",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UC7uEaZ9tjO-Q7qJ_gqM9jjA"
     },
-    "pillar_tv": {
-        "name": "Pillar TV",
-        "url": "https://iptvcat.org/kenya"
+    "churchill-show": {
+        "name": "Churchill Show",
+        "url": "https://www.youtube.com/embed/0oJAwOLRGfQ"
     },
-    "ptv_world": {
-        "name": "PTV World",
-        "url": "https://ptv.com.pk/ptvWorld"
+    "jalango-tv": {
+        "name": "Jalang'o TV",
+        "url": "https://www.youtube.com/embed/3OD2scZsVt4"
     },
-    "ramogi": {
-        "name": "Ramogi TV",
-        "url": "https://kenyalivetv.co.ke/embed/ramogi-tv-live?autoplay=1&mute=1"
+    "mpasho-tv": {
+        "name": "Mpasho TV",
+        "url": "https://www.youtube.com/embed/6jV6_Y93_Tc"
     },
-    "raia_tv": {
-        "name": "Raia TV",
-        "url": "https://kenyalivetv.co.ke/tv/"
+    "wasafi-tv": {
+        "name": "Wasafi TV",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UC74QOAN2DJpcyZx_jruoWOA"
     },
-    "sayare_tv": {
-        "name": "Sayare RTVN",
-        "url": "https://iptvcat.org/kenya"
+    "kibata-kenya": {
+        "name": "Kibata Kenya",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UC46zGIE98A5Vnwi2-I6c1Dw"
     },
-    "senate_tv": {
-        "name": "Senate TV",
-        "url": "https://www.parliament.go.ke/the-senate/live"
+    "urban-street-254": {
+        "name": "Urban Street +254",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UC2Q4z3z4fLJc7k5J3a5V5A"
     },
-    "sky_news": {
-        "name": "Sky News",
-        "url": "https://news.sky.com/watch-live"
+    "kbc": {
+        "name": "Kenya Broadcasting Corporation (KBC)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCpl2xr6WWfxa2v2X6tqRmIw"
     },
-    "sky_sports": {
-        "name": "Sky Sports",
-        "url": "https://www.skysports.com/watch"
+    "kenya-news-agency": {
+        "name": "Kenya News Agency",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCaPmFHOiHht_yjXDMnTxlIA"
     },
-    "talksport": {
-        "name": "talkSPORT",
-        "url": "https://talksport.com/boxing/3261089/fabio-wardley-vs-justis-huni-live-commentary-stream-date-start-time-undercard-tv-channel/"
+    "nairobi-news": {
+        "name": "Nairobi News",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCZvTzdyYl9axT4m_BZ3bqMg"
     },
-    "trace_africa": {
-        "name": "Trace Africa",
-        "url": "https://trace.tv/trace-africa/"
+    "ktn-home": {
+        "name": "KTN Home",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCyo9yshD7ERrIr1kFJ38ufQ"
     },
-    "tumaini_tv": {
-        "name": "Tumaini TV",
-        "url": "https://www.squidtv.net/africa/kenya/kenya-006.html"
-    },
-    "utv": {
-        "name": "UTV",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "urejesho_tv_africa": {
-        "name": "Urejesho TV Africa",
-        "url": "https://iptvcat.org/kenya"
-    },
-    "younib_media_tv": {
-        "name": "YOUNIB Media TV",
-        "url": "https://livestreamlinks.net/en/onlinetv/kenya/younib-media-tv"
+    "capital-tv-kenya": {
+        "name": "Capital TV Kenya",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCkBqL-cGRcSLO-9h8k6dHHA"
     }
 }

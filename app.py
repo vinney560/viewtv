@@ -90,7 +90,7 @@ class User(db.Model, UserMixin):
 
     # Plus Access Logic
     plus_type = db.Column(db.String(10), nullable=True, default=None)  # 'free' or 'paid'
-    plus_expires_at = db.Column(db.DateTime, nullable=True, default=None)
+    plus_expires_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.utcnow() - timedelta(seconds=1))
     last_free_plus = db.Column(db.DateTime, nullable=True, default=None)
 
     # ------------------------
@@ -358,7 +358,7 @@ def register():
         hashed_password = generate_password_hash(password)
         new_user = User(name=name, password=hashed_password,
                         email=email_addr, role=role,
-                        status=status, agreed=True, plus_expires_at=None, plus_type=None, last_free_plus=None)
+                        status=status, agreed=True, plus_expires_at=datetime.utcnow() - timedelta(seconds=1), plus_type=None, last_free_plus=None)
         db.session.add(new_user)
         db.session.commit()
 
@@ -807,12 +807,7 @@ def claim_free_plus():
 @login_required
 @admin_required
 def manage_plus():
-    users = User.query.filter(
-        or_(
-            User.plus_expires_at == None,
-            User.plus_expires_at != None
-        )
-    ).all()
+    users = User.query.filter(User.plus_expires_at != None).all()
     
     now = datetime.utcnow()
     user_data = []
@@ -861,7 +856,7 @@ def update_plus(user_id):
 @admin_required
 def delete_plus(user_id):
     user = User.query.get_or_404(user_id)
-    user.plus_expires_at = None
+    user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
     user.plus_type = None
     db.session.commit()
 
@@ -1031,7 +1026,7 @@ def dashboard():
             remaining = int(diff.total_seconds())
         else:
             # Expired: downgrade role and flash
-            current_user.plus_expires_at = None
+            current_user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
             current_user.plus_type = None
             db.session.commit()
             flash("Plus depleted. You’ll be redirected in 2 minutes.", "error")

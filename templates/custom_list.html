@@ -46,7 +46,7 @@
         />
 
         <!-- Channel Name Link with horizontal scroll on hover -->
-        <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" 
+        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank" 
            class="flex-grow max-w-[60%] text-gray-200 font-semibold text-lg truncate relative cursor-pointer focus:outline-none">
           <span class="scrolling-text block">
             {{ info.name }}
@@ -54,7 +54,7 @@
         </a>
 
         <!-- Play Button -->
-        <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" 
+        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}"
            class="ml-6 flex-shrink-0 w-11 h-11 bg-gray-700 rounded-full flex items-center justify-center
                   shadow-md shadow-gray-900 hover:bg-gray-600 focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400
                   transition duration-300 ease-in-out"

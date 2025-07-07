@@ -780,12 +780,13 @@ def channel_stream_url():
 @app.route("/get_plus")
 @login_required
 def get_plus():
-    return render_template("plus.html", user=current_user, now=datetime.utcnow())
+    return render_template("plus.html", user=current_user, now=datetime.utcnow(), timedelta=timedelta)
 
 @app.route("/free-plus")
 @login_required
 def claim_free_plus():
     now = datetime.utcnow()
+    timedelta = timedelta
 
     # Check if already used today
     if current_user.last_free_plus and (now - current_user.last_free_plus) < timedelta(hours=24):

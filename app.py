@@ -993,6 +993,9 @@ def manage_users():
 @app.route('/admin/manage_channels')    
 def manage_channels():
     pass
+@app.route('/developer')
+def developer():
+    pass
 #-------------------------------------------------
 @app.route('/copyright')
 def copyright():
@@ -1020,6 +1023,8 @@ def manifest():
 @app.route("/account")
 def account():
     pass
+
+
 #================================
 
 @app.context_processor

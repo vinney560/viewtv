@@ -15,9 +15,9 @@ CUSTOM_CHANNELS = {
         "name": "K24 TV",
         "url": "https://www.youtube.com/embed/_lB9oSok1FM?controls=1&modestbranding=1&rel=0&fs=1&disablekb=0&iv_load_policy=3"
     },
-    "tv47-kenya": {
-        "name": "TV47 Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UC7uEaZ9tjO-Q7qJ_gqM9jjA&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
+    "fifa": {
+        "name": "Fifa +",
+        "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8"
     },
     "kbc": {
         "name": "Kenya Broadcasting Corporation (KBC)",

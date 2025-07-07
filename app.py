@@ -120,14 +120,12 @@ class Payment(db.Model):
     status = db.Column(db.String(50), default="Pending")  # "Pending", "Success", "Failed"
     mpesa_receipt = db.Column(db.String(100))  # Optional: store M-Pesa receipt
     
-with app.app_context():
-    # Drop all tables
-    db.drop_all()
-    print("✅ All tables dropped.")
+#=====================================    
 
+with app.app_context():
+    db.drop_all()
     # Recreate all tables from models
     db.create_all()
-    print("✅ All tables recreated.")
 
 #======================================
 

@@ -763,14 +763,14 @@ def claim_free_plus():
 
 @app.route("/admin/manage_plus")
 @login_required
-@admin_required
+#@admin_required
 def manage_plus():
     users = User.query.filter(User.plus_expires_at != None).all()
     return render_template("manage_plus.html", users=users)   
 #------------------------------------------------------------------
 @app.route("/admin/update_plus/<int:user_id>", methods=["POST"])
 @login_required
-@admin_required
+#@admin_required
 def update_plus(user_id):
     user = User.query.get_or_404(user_id)
 
@@ -797,7 +797,7 @@ def update_plus(user_id):
 #-------------------------------------------------------------------    
 @app.route("/admin/delete_plus/<int:user_id>", methods=["POST"])
 @login_required
-@admin_required
+#@admin_required
 def delete_plus(user_id):
     user = User.query.get_or_404(user_id)
     user.plus_expires_at = None

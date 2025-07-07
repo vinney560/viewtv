@@ -123,7 +123,6 @@ class Payment(db.Model):
 #=====================================    
 
 with app.app_context():
-    db.drop_all()
     db.create_all()
 
 #======================================
@@ -756,7 +755,7 @@ def claim_free_plus():
     current_user.plus_expires_at = now + timedelta(hours=2)
     current_user.plus_type = "free"
     current_user.last_free_plus = now
-    user.role = "plus"
+    current_user.role = "plus"
     db.session.commit()
 
     flash("🎁 Free Plus activated for 2 hours!", "success")

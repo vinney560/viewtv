@@ -69,33 +69,59 @@ def nairobi_time():
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=True)  # full name for reference in emailing
-    email = db.Column(db.String(255), unique=True, nullable=False)  # For day-to-day communication & Notice
-    password = db.Column(db.String(255), nullable=False)  # Increased length to hold hash
-    role = db.Column(db.String(50), default='user', nullable=True)  # plus, user, admin.
-    status = db.Column(db.String(50), nullable=True)  # Active, Paid, Deactivated, Blacklisted, Locked
-    failed_login_attempts = db.Column(db.Integer, nullable=True, default=0)  # 5 wrong password-locks account
-    email_verified = db.Column(db.Boolean, nullable=True, default=False)  # Confirms if email is valid & owned by User
-    agreed = db.Column(db.Boolean, nullable=True, default=False)  # Agreement to Terms & Conditions of the Services
-    created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
-    plus_expires_at = db.Column(db.DateTime, nullable=True, default=None)
-    plus_type = db.Column(db.String(10), nullable=True, default=None)  # 'free' or 'paid'
-    last_free_plus = db.Column(db.DateTime, nullable=True, default=None)
+
+    # Basic Info
+    name = db.Column(db.String(255), nullable=True)  # Optional full name
+    email = db.Column(db.String(255), unique=True, nullable=False)  # Required
+    password = db.Column(db.String(255), nullable=False)  # Should store hashed passwords
+
+    # Role & Status
+    role = db.Column(db.String(50), default='user', nullable=True)  # 'admin' or 'user'
+    status = db.Column(db.String(50), nullable=True)  # Optional: Active, Paid, Deactivated, etc.
+
+    # Login & Security
+    failed_login_attempts = db.Column(db.Integer, default=0, nullable=True)
     last_failed_login = db.Column(db.DateTime, nullable=True)
+    email_verified = db.Column(db.Boolean, default=False, nullable=True)
+    agreed = db.Column(db.Boolean, default=False, nullable=True)
+
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
+
+    # Plus Access Logic
+    plus_type = db.Column(db.String(10), nullable=True, default=None)  # 'free' or 'paid'
+    plus_expires_at = db.Column(db.DateTime, nullable=True, default=None)
+    last_free_plus = db.Column(db.DateTime, nullable=True, default=None)
+
+    # ------------------------
+    # Logic / Helpers
+    # ------------------------
 
     def is_locked(self):
+        """Check if user is temporarily locked due to failed logins."""
         if self.failed_login_attempts < 5:
             return False
         if not self.last_failed_login:
             return False
+
         unlock_time = self.last_failed_login + timedelta(minutes=5)
         if datetime.utcnow() > unlock_time:
-            # Reset if the time has passed
+            # Reset if lock duration has passed
             self.failed_login_attempts = 0
             self.last_failed_login = None
             db.session.commit()
             return False
-        return True    
+
+        return True
+
+    @property
+    def is_plus(self):
+        """Return True if Plus is active and not expired."""
+        return (
+            self.plus_type in ['free', 'paid']
+            and self.plus_expires_at
+            and self.plus_expires_at > datetime.utcnow()
+        )
 
 class Channel(db.Model):
     id = db.Column(db.Integer, primary_key=True)

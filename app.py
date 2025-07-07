@@ -1037,7 +1037,8 @@ def dashboard():
         user=current_user,
         time_remaining_seconds=remaining,
         redirect_in_2min=redirect_flag,
-        timedelta=timedelta
+        timedelta=timedelta,
+        now=datetime.utcnow()
     )
 #-------------------------------------------------
 

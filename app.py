@@ -78,9 +78,9 @@ class User(db.Model, UserMixin):
     email_verified = db.Column(db.Boolean, nullable=True, default=False)  # Confirms if email is valid & owned by User
     agreed = db.Column(db.Boolean, nullable=True, default=False)  # Agreement to Terms & Conditions of the Services
     created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
-    plus_expires_at = db.Column(db.DateTime, nullable=True)
-    plus_type = db.Column(db.String(10), nullable=True)  # 'free' or 'paid'
-    last_free_plus = db.Column(db.DateTime, nullable=True)
+    plus_expires_at = db.Column(db.DateTime, nullable=True, default=None)
+    plus_type = db.Column(db.String(10), nullable=True, default=None)  # 'free' or 'paid'
+    last_free_plus = db.Column(db.DateTime, nullable=True, default=None)
     last_failed_login = db.Column(db.DateTime, nullable=True)
 
     def is_locked(self):
@@ -124,7 +124,6 @@ class Payment(db.Model):
 
 with app.app_context():
     db.drop_all()
-    # Recreate all tables from models
     db.create_all()
 
 #======================================

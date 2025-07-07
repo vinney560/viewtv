@@ -35,76 +35,28 @@ CUSTOM_CHANNELS = {
         "name": "Al Jazeera English",
         "url": "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8"
     },
-    "pluto-tv-action": {
-        "name": "Pluto TV Action",
-        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5e6e2a9342931d0007b14e4a/master.m3u8"
+    "pluto-tv-sports": {
+        "name": "Pluto TV Sports",
+        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5f2aa5fce6fa5200070d707b/master.m3u8"
     },
-    "pluto-tv-drama": {
-        "name": "Pluto TV Drama",
-        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5e6e2b0f42931d0007b14e4b/master.m3u8"
+    "pluto-tv-action-sports": {
+        "name": "Pluto TV Action Sports",
+        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5f2aa60650e5940007e6081d/master.m3u8"
     },
-    "vevo-pop": {
-        "name": "Vevo Pop",
-        "url": "https://dai.google.com/linear/hls/event/4i9jsoDGShqeqRxfrSmtfQ/master.m3u8"
+    "tubi-sports": {
+        "name": "Tubi Sports (USA only, embed)",
+        "url": "https://tubitv.com/live/692524"
     },
-    "vevo-hiphop": {
-        "name": "Vevo Hip-Hop",
-        "url": "https://dai.google.com/linear/hls/event/sRgt7tdNRiC5rUgJIBZaYw/master.m3u8"
+    "pluto-tv-anime-all-day": {
+        "name": "Pluto TV Anime All Day",
+        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/603f3dcaa959e70007806d5c/master.m3u8"
     },
-    "musicbox-eu": {
-        "name": "Music Box (EU)",
-        "url": "http://live.musicboxgroup.ru:8081/musicboxhd/tracks-v1/mono.m3u8"
+    "pluto-tv-anime-247": {
+        "name": "Pluto TV Anime 24/7",
+        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5e7d178be6fa520007e28fd4/master.m3u8"
     },
-    "power-tv-africa": {
-        "name": "Power TV (Africa)",
-        "url": "http://stream.powersat.tv:1935/powertv/live/playlist.m3u8"
-    },
-    "afromovies": {
-        "name": "Afromovies",
-        "url": "http://afrostreaming.online:8080/live/afromovies.m3u8"
-    },
-    "gospel-music": {
-        "name": "Gospel Music",
-        "url": "https://edge6.clouding.host/live/gospelstream.m3u8"
-    },
-    "iptv-sports": {
-        "name": "IPTV Sports Playlist",
-        "url": "https://iptv-org.github.io/iptv/categories/sports.m3u"
-    },
-    "iptv-animation": {
-        "name": "IPTV Animation Playlist",
-        "url": "https://iptv-org.github.io/iptv/categories/animation.m3u"
-    },
-    "sky-sports-news": {
-        "name": "Sky Sports News",
-        "url": "http://198.27.94.105/hls/skysportsnews_1.m3u8"
-    },
-    "bt-sports-1": {
-        "name": "BT Sports 1",
-        "url": "http://198.27.94.105/hls/bt1_1.m3u8"
-    },
-    "bt-sports-2": {
-        "name": "BT Sports 2",
-        "url": "http://198.27.94.105/hls/bt2_1.m3u8"
-    },
-    "sky-sports-1": {
-        "name": "Sky Sports 1",
-        "url": "http://198.27.94.105/hls/skysports1_1.m3u8"
-    },
-    "sky-sports-2": {
-        "name": "Sky Sports 2",
-        "url": "http://198.27.94.105/hls/skysports2_1.m3u8"
-    },
-    "eurosport-1": {
-        "name": "Eurosport 1",
-        "url": "http://37.48.118.32/live/eurosport110.stream/playlist.m3u8"
-    },
-    "eurosport-2": {
-        "name": "Eurosport 2",
-        "url": "http://37.48.118.32/live/eurosport22.stream/playlist.m3u8"
-    },
-    "toonami-aftermath": {
-        "name": "Toonami Aftermath",
-        "url": "http://api.toonamiaftermath.com:3000/est/playlist.m3u8"
+    "pluto-tv-nick-anime": {
+        "name": "Nick Pluto TV (Family/Cartoons)",
+        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/6266b182b8d2fc00078d12d3/master.m3u8"
     }
 }    

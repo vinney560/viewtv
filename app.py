@@ -1024,9 +1024,54 @@ def dashboard():
         redirect_in_2min=redirect_flag
     )
 #-------------------------------------------------
-@app.route('/admin/manage_users')
+
+@app.route("/manage-users")
+@login_required
 def manage_users():
-    pass
+
+    users = User.query.filter(User.id != current_user.id).order_by(User.created_at.desc()).all()
+    return render_template("manage_users.html", users=users)
+
+
+@app.route("/toggle-admin/<int:user_id>", methods=["POST"])
+@login_required
+def toggle_admin(user_id):
+
+    user = User.query.get_or_404(user_id)
+    user.role = "user" if user.role == "admin" else "admin"
+    db.session.commit()
+    flash(f"User role changed to '{user.role}'.", "success")
+    return redirect(url_for("manage_users"))
+
+
+@app.route("/toggle-ban/<int:user_id>", methods=["POST"])
+@login_required
+def toggle_ban(user_id):
+
+    user = User.query.get_or_404(user_id)
+    if user.status == "Banned":
+        user.status = "Active"
+        flash("User unbanned.", "success")
+    else:
+        user.status = "Banned"
+        flash("User banned.", "warning")
+    db.session.commit()
+    return redirect(url_for("manage_users"))
+
+
+@app.route("/delete-user/<int:user_id>", methods=["POST"])
+@login_required
+def delete_user(user_id):
+    if current_user.role != "admin":
+        flash("Access denied", "error")
+        return redirect(url_for("dashboard"))
+
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash("User deleted.", "success")
+    return redirect(url_for("manage_users"))
+
 @app.route('/admin/manage_channels')    
 def manage_channels():
     pass

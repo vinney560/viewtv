@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Users | Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-cyan-400 mb-4">Manage Users</h1>
+
+    <!-- Search -->
+    <input type="text" id="searchInput" placeholder="Search users..."
+           class="w-full max-w-md p-2 mb-4 rounded bg-gray-800 border border-gray-700 text-sm text-white"
+           onkeyup="filterUsers()">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-toast" class="mb-4 space-y-2 transition-opacity duration-300">
+          {% for category, message in messages %}
+            <div class="px-4 py-2 rounded text-sm shadow
+              {% if category == 'success' %} bg-green-600
+              {% elif category == 'warning' %} bg-yellow-600
+              {% else %} bg-red-600 {% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- User Table -->
+    <div class="overflow-x-auto bg-gray-800 rounded shadow border border-gray-700">
+      <table class="min-w-full divide-y divide-gray-700 text-sm" id="userTable">
+        <thead class="bg-gray-700 text-cyan-300">
+          <tr>
+            <th class="px-4 py-3 text-left">#</th>
+            <th class="px-4 py-3 text-left">Email</th>
+            <th class="px-4 py-3 text-left">Role</th>
+            <th class="px-4 py-3 text-left">Status</th>
+            <th class="px-4 py-3 text-left">Plus</th>
+            <th class="px-4 py-3 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800">
+          {% for user in users %}
+          <tr class="hover:bg-gray-700">
+            <td class="px-4 py-2">{{ loop.index }}</td>
+            <td class="px-4 py-2 user-email">{{ user.email }}</td>
+            <td class="px-4 py-2 capitalize">{{ user.role or 'user' }}</td>
+            <td class="px-4 py-2">{{ user.status or 'Active' }}</td>
+            <td class="px-4 py-2">
+              {% if user.plus_type %}
+                <span class="text-green-400 font-semibold">{{ user.plus_type }}</span>
+                {% if user.plus_expires_at %}
+                  <br><span class="text-xs text-gray-400">{{ user.plus_expires_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                {% endif %}
+              {% else %}
+                <span class="text-red-400">None</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-2 text-center">
+              <div class="flex gap-2 justify-center">
+
+                <!-- Promote/Demote -->
+                <form method="POST" action="{{ url_for('toggle_admin', user_id=user.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit"
+                          class="px-3 py-1 rounded text-xs font-semibold
+                                 {{ 'bg-yellow-600 hover:bg-yellow-500' if user.role != 'admin' else 'bg-blue-600 hover:bg-blue-500' }}">
+                    {{ 'Promote' if user.role != 'user' else 'Demote' }}
+                  </button>
+                </form>
+
+                <!-- Ban/Unban -->
+                <form method="POST" action="{{ url_for('toggle_ban', user_id=user.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit"
+                          class="px-3 py-1 rounded text-xs font-semibold
+                                 {{ 'bg-red-600 hover:bg-red-500' if user.status != 'Banned' else 'bg-green-600 hover:bg-green-500' }}">
+                    {{ 'Ban' if user.status != 'Banned' else 'Unban' }}
+                  </button>
+                </form>
+
+                <!-- Delete -->
+                <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}"
+                      onsubmit="return confirm('Are you sure you want to delete this user?');">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit"
+                          class="px-3 py-1 rounded text-xs font-semibold bg-gray-600 hover:bg-gray-500">
+                    Delete
+                  </button>
+                </form>
+
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JS: Live Filter -->
+  <script>
+    function filterUsers() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#userTable tbody tr");
+
+      rows.forEach(row => {
+        const email = row.querySelector(".user-email").textContent.toLowerCase();
+        row.style.display = email.includes(input) ? "" : "none";
+      });
+    }
+  </script>
+
+  <!-- JS: Auto-Hide Flash Toast -->
+  <script>
+    setTimeout(() => {
+      const toast = document.getElementById('flash-toast');
+      if (toast) {
+        toast.style.opacity = 0;
+        setTimeout(() => toast.remove(), 400);
+      }
+    }, 4000);
+  </script>
+
+</body>
+</html>

@@ -66,5 +66,45 @@ CUSTOM_CHANNELS = {
     "gospel-music": {
         "name": "Gospel Music",
         "url": "https://edge6.clouding.host/live/gospelstream.m3u8"
+    },
+    "iptv-sports": {
+        "name": "IPTV Sports Playlist",
+        "url": "https://iptv-org.github.io/iptv/categories/sports.m3u"
+    },
+    "iptv-animation": {
+        "name": "IPTV Animation Playlist",
+        "url": "https://iptv-org.github.io/iptv/categories/animation.m3u"
+    },
+    "sky-sports-news": {
+        "name": "Sky Sports News",
+        "url": "http://198.27.94.105/hls/skysportsnews_1.m3u8"
+    },
+    "bt-sports-1": {
+        "name": "BT Sports 1",
+        "url": "http://198.27.94.105/hls/bt1_1.m3u8"
+    },
+    "bt-sports-2": {
+        "name": "BT Sports 2",
+        "url": "http://198.27.94.105/hls/bt2_1.m3u8"
+    },
+    "sky-sports-1": {
+        "name": "Sky Sports 1",
+        "url": "http://198.27.94.105/hls/skysports1_1.m3u8"
+    },
+    "sky-sports-2": {
+        "name": "Sky Sports 2",
+        "url": "http://198.27.94.105/hls/skysports2_1.m3u8"
+    },
+    "eurosport-1": {
+        "name": "Eurosport 1",
+        "url": "http://37.48.118.32/live/eurosport110.stream/playlist.m3u8"
+    },
+    "eurosport-2": {
+        "name": "Eurosport 2",
+        "url": "http://37.48.118.32/live/eurosport22.stream/playlist.m3u8"
+    },
+    "toonami-aftermath": {
+        "name": "Toonami Aftermath",
+        "url": "http://api.toonamiaftermath.com:3000/est/playlist.m3u8"
     }
-}
+}    

@@ -54,6 +54,7 @@
 
     <!-- Update Email -->
     <form method="POST" action="{{ url_for('account') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="form_type" value="update_email">
       <label class="block text-sm font-medium mb-1 mt-4">New Email:</label>
       <input type="email" name="new_email" required
@@ -67,6 +68,7 @@
 
     <!-- Change Password -->
     <form method="POST" action="{{ url_for('account') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="form_type" value="change_password">
 
       <label class="block text-sm font-medium mb-1 mt-4">Current Password:</label>
@@ -99,6 +101,7 @@
     <!-- Delete Account -->
     <form method="POST" action="{{ url_for('account') }}"
           onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="form_type" value="delete_account">
       <label class="block text-sm font-medium mb-1 mt-4">Confirm Password to Delete:</label>
       <div class="relative">

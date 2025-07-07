@@ -58,5 +58,25 @@ CUSTOM_CHANNELS = {
     "pluto-tv-nick-anime": {
         "name": "Nick Pluto TV (Family/Cartoons)",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/6266b182b8d2fc00078d12d3/master.m3u8"
+    },
+    "pltv-usa-movies": {
+        "name": "Pluto TV USA Movies",
+        "url": "https://i.mjh.nz/PlutoTV/us.m3u8"
+    },
+    "tubi-movies-live": {
+        "name": "Tubi Live Movies",
+        "url": "https://www.apsattv.com/tubi.m3u"
+    },
+    "nhk-world-japan": {
+        "name": "NHK World Japan",
+        "url": "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index.m3u8"
+    },
+    "nba-youtube": {
+        "name": "NBA TV (YouTube Live)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCWJ2lWNubArHWmf3FIHbfcQ&controls=0&modestbranding=1"
+    },
+    "cartoon-network-asia": {
+        "name": "Cartoon Network Asia (YouTube Live)",
+        "url": "https://www.youtube.com/embed/live_stream?channel=UCSahQLU1-218c0K9QJPD1oA&controls=0&modestbranding=1"
     }
-}    
+}        

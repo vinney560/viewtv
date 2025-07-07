@@ -827,7 +827,7 @@ def manage_plus():
 #------------------------------------------------------------------
 @app.route("/admin/update_plus/<int:user_id>", methods=["POST"])
 @login_required
-#@admin_required
+@admin_required
 def update_plus(user_id):
     user = User.query.get_or_404(user_id)
 
@@ -853,7 +853,7 @@ def update_plus(user_id):
 #-------------------------------------------------------------------    
 @app.route("/admin/delete_plus/<int:user_id>", methods=["POST"])
 @login_required
-#@admin_required
+@admin_required
 def delete_plus(user_id):
     user = User.query.get_or_404(user_id)
     user.plus_expires_at = None
@@ -1036,7 +1036,8 @@ def dashboard():
         "dashboard.html",
         user=current_user,
         time_remaining_seconds=remaining,
-        redirect_in_2min=redirect_flag
+        redirect_in_2min=redirect_flag,
+        timedelta=timedelta
     )
 #-------------------------------------------------
 

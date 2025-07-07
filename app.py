@@ -808,7 +808,12 @@ def claim_free_plus():
 @login_required
 @admin_required
 def manage_plus():
-    users = User.query.all()
+    users = User.query.filter(
+        or_(
+            User.plus_expires_at == None,
+            User.plus_expires_at != None
+        )
+    ).all()
     
     now = datetime.utcnow()
     user_data = []

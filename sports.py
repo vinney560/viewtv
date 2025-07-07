@@ -844,6 +844,12 @@ SPORT = {
     "sport_12": {
         "tvg-country": "US",
         "tvg-logo": "",
+        "name": "Sports Tv",
+        "url": "https://live.sportstv.com.tr/hls/low/sportstv.m3u8"
+    }    
+    "sport_13": {
+        "tvg-country": "US",
+        "tvg-logo": "",
         "name": "SportsGrid",
         "url": "https://amg00315-sportsgrid-firetv.amagi.tv/playlist.m3u8"
     }

@@ -29,11 +29,11 @@
 
     <!-- Free Plus Logic -->
     {% if not user.last_free_plus or (user.last_free_plus + timedelta(hours=24)) <= now %}
-      <form method="POST" action="{{ url_for('claim_free_plus') }}">
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded font-semibold transition">
+      <a href="{{ url_for('claim_free_plus') }}">
+        <button class="w-full bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded font-semibold transition">
           🎁 Activate Free Plus (2 Hours)
         </button>
-      </form>
+      </a>
     {% else %}
       <p class="text-sm text-gray-400 mb-4">You’ve already used Free Plus today.</p>
     {% endif %}

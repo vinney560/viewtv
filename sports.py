@@ -101,8 +101,8 @@ BEIN = {
     "Bein_1": {
         "tvg-country": "TR",
         "tvg-logo": "https://i.imgur.com/QWo0x7S.jpg",
-        "name": "beIN Sports Haber",
-        "url": "https://live.duhnet.tv/S2/HLS_LIVE/beinnew/index.m3u8"
+        "name": "beIN Sports 1 FHD",
+        "url": "https://stream1.freetv.fun/0--bein-sports-1-1.m3u8"
     },
     "Bein_2": {
         "tvg-country": "UN",
@@ -659,11 +659,11 @@ PTV = {
 }
 
 RAI = {
-    "rai": {
+    "rta": {
         "tvg-country": "IT",
         "tvg-logo": "",
-        "name": "Rai Sport 2",
-        "url": "http://originstream12.rai.it/italy/raisport2_1200/master.m3u8"
+        "name": "RTA 3",
+        "url": "https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/index.m3u8"
     }
 }
 

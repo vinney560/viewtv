@@ -184,7 +184,7 @@ def send_verification_email(user):
     verify_link = url_for('verify_registration', token=token, _external=True)
 
     msg = Message(
-        subject="Verify your T-Give Nexus account",
+        subject="Verify your View Tv account",
         recipients=[user.email]
     )
     msg.html = render_template('verify_email_template.html', verify_link=verify_link)
@@ -328,6 +328,7 @@ def register():
         db.session.commit()
 
         send_verification_email(new_user)
+        flash("Check you Email to verify your Account.", "success")
 
         return redirect(url_for('home'))
 

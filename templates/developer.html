@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Developer | View TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow-text { text-shadow: 0 0 10px rgba(0,255,255,0.5); }
+    .fade-in { animation: fadeIn 0.4s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+
+  <div class="max-w-4xl mx-auto space-y-8 fade-in">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-cyan-400 glow-text mb-2">Meet the Developer</h1>
+      <p class="text-gray-300 text-sm">The creative force behind View TV.</p>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 flex flex-col md:flex-row items-center gap-6">
+      <!-- Image -->
+      <img src="{{ url_for('uploaded_file', filename='developer.png') }}"
+           alt="Developer Image"
+           class="w-40 h-40 rounded-full object-cover border-4 border-cyan-400 shadow-md"/>
+
+      <!-- Info -->
+      <div class="text-left space-y-2 text-sm">
+        <p><span class="font-semibold text-white">Name:</span> Vincent Kipngetich</p>
+        <p><span class="font-semibold text-white">Age:</span> 18 years</p>
+        <p><span class="font-semibold text-white">Role:</span> Fullstack Developer</p>
+        <p><span class="font-semibold text-white">Tech Stack:</span> Python, Flask, TailwindCSS, SQLite</p>
+        <p><span class="font-semibold text-white">Focus:</span> Secure, fast, responsive systems with smooth user experience.</p>
+        <p><span class="font-semibold text-white">Project:</span> Lead developer of <span class="text-cyan-400">View TV</span> — an intelligent, feature-rich streaming platform with free & paid logic, role-based dashboards, and fully customized templates.</p>
+      </div>
+    </div>
+
+    <!-- Developer Statement -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg space-y-4 border border-gray-700">
+      <h2 class="text-xl font-semibold text-cyan-300">My Vision</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+        As a passionate young developer, I believe in building systems that are not only functional but also enjoyable. I designed View TV to be more than just a streaming site — it’s an experience tailored for real users, by someone who truly understands both the tech and the people.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-gray-500 text-xs mt-10">
+      Built by Vincent Kipngetich &copy; {{ current_year }}. With passion, vision, and code.
+    </div>
+  </div>
+
+</body>
+</html>

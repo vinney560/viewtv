@@ -1008,9 +1008,9 @@ def home():
     channels = CUSTOM_CHANNELS
     return render_template('index.html', channels=channels, current_year=datetime.now().year)
 #-------------------------------------------------
-@app.route('/about')
+@app.route("/about")
 def about():
-    return render_template('about.html')
+    return render_template("about.html", current_year=datetime.utcnow().year)
 #-------------------------------------------------
 @app.route("/dashboard")
 @login_required
@@ -1095,9 +1095,11 @@ def delete_user(user_id):
 @app.route('/admin/manage_channels')    
 def manage_channels():
     pass
-@app.route('/developer')
+
+#--------------------------------------------------
+@app.route("/developer")
 def developer():
-    pass
+    return render_template("developer.html", current_year=datetime.utcnow().year)
 #-------------------------------------------------
 @app.route('/copyright')
 def copyright():

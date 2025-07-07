@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About | View TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow-text { text-shadow: 0 0 10px rgba(0,255,255,0.5); }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+
+  <div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- Title -->
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-cyan-400 glow-text mb-2">About View TV</h1>
+      <p class="text-gray-300 text-sm">Your gateway to live channels and local entertainment.</p>
+    </div>
+
+    <!-- Overview -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg space-y-4 border border-gray-700">
+      <h2 class="text-2xl font-semibold text-cyan-300">What is View TV?</h2>
+      <p class="text-gray-300 text-sm leading-relaxed">
+        View TV is a modern, user-first platform that offers a curated collection of live channels, including local Kenyan TV, popular shows, and much more. Built with a clean dashboard and flexible user experience, it lets you explore and stream content on-demand.
+      </p>
+    </div>
+
+    <!-- How Plus Works -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg space-y-4 border border-gray-700">
+      <h2 class="text-xl font-semibold text-green-400">What is Plus Access?</h2>
+      <ul class="list-disc list-inside text-sm text-gray-300 space-y-2">
+        <li><span class="text-white">Plus</span> gives users access to premium channels and features.</li>
+        <li><span class="text-white">Free Plus</span> is available once per day, valid for 2 hours.</li>
+        <li>Paid Plus can be purchased (1 Ksh = 1 hour).</li>
+        <li>Plus time counts down dynamically on your dashboard.</li>
+        <li>Admins manage Plus access using a secure dashboard.</li>
+      </ul>
+    </div>
+
+    <!-- Platform Features -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg space-y-4 border border-gray-700">
+      <h2 class="text-xl font-semibold text-cyan-300">Why Choose View TV?</h2>
+      <ul class="list-disc list-inside text-sm text-gray-300 space-y-2">
+        <li>Stream local and international channels from one interface.</li>
+        <li>Clean UI, fast loading, fully responsive on all devices.</li>
+        <li>Dynamic Plus system to reward both free and paid users.</li>
+        <li>Admin dashboard for Plus management, banning, and analytics.</li>
+        <li>Secure login, account settings, and session tracking.</li>
+      </ul>
+    </div>
+
+    <!-- Admin Info -->
+    <div class="text-center text-gray-500 text-xs mt-10">
+      View TV &copy; {{ current_year }}. Built for entertainment — managed by trusted admins.
+    </div>
+
+  </div>
+
+</body>
+</html>

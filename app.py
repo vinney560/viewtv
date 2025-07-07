@@ -78,6 +78,9 @@ class User(db.Model, UserMixin):
     email_verified = db.Column(db.Boolean, nullable=True, default=False)  # Confirms if email is valid & owned by User
     agreed = db.Column(db.Boolean, nullable=True, default=False)  # Agreement to Terms & Conditions of the Services
     created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
+    plus_expires_at = db.Column(db.DateTime, nullable=True)
+    plus_type = db.Column(db.String(15), nullable=True)  # 'free' or 'paid'
+    last_free_plus = db.Column(db.DateTime, nullable=True)
     last_failed_login = db.Column(db.DateTime, nullable=True)
 
     def is_locked(self):
@@ -714,9 +717,6 @@ def play_channel(key):
         channels=channels,       # Now a list of dicts with name, url, key
         current_key=key          # Pass current key for highlighting
     )
-@app.route("/get_plus")
-def get_plus():
-    return render_template("plus.html")
 #-------------------------------------------------
 @app.route("/api/channel_stream_url")
 @login_required
@@ -735,8 +735,80 @@ def channel_stream_url():
 #        >>>>PLUS & PAYMENT FEATURE<<<<
 #================================
 #free plus feature
+
+@app.route("/get_plus")
+def get_plus():
+    return render_template("plus.html")
+
+@app.route("/free-plus")
+@login_required
+def claim_free_plus():
+    now = datetime.utcnow()
+
+    # Check if already used today
+    if current_user.last_free_plus and (now - current_user.last_free_plus) < timedelta(hours=24):
+        flash("You’ve already claimed Free Plus today. Try again tomorrow.", "error")
+        return redirect(url_for("dashboard"))
+
+    # Grant Free Plus for 2 hours
+    current_user.plus_expires_at = now + timedelta(hours=2)
+    current_user.plus_type = "free"
+    current_user.last_free_plus = now
+    db.session.commit()
+
+    flash("🎁 Free Plus activated for 2 hours!", "success")
+    return redirect(url_for("dashboard"))
+
 #add || update plus(timer)
-#-------------------------------------------------
+
+@app.route("/admin/manage_plus")
+@login_required
+@admin_required
+def manage_plus():
+    users = User.query.filter(User.plus_expires_at != None).all()
+    return render_template("manage_plus.html", users=users)   
+#------------------------------------------------------------------
+@app.route("/admin/update_plus/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def update_plus(user_id):
+    user = User.query.get_or_404(user_id)
+
+    try:
+        hours = int(request.form.get("hours", 0))
+        minutes = int(request.form.get("minutes", 0))
+        seconds = int(request.form.get("seconds", 0))
+
+        duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        if duration.total_seconds() <= 0:
+            flash("Duration must be greater than 0", "error")
+            return redirect(url_for("manage_plus"))
+
+        user.plus_expires_at = datetime.utcnow() + duration
+        user.plus_type = user.plus_type or "paid"
+        user.role = "plus"
+        db.session.commit()
+
+        flash(f"Updated Plus time for {user.email}", "success")
+    except Exception as e:
+        flash("Failed to update Plus", "error")
+
+    return redirect(url_for("manage_plus"))
+#-------------------------------------------------------------------    
+@app.route("/admin/delete_plus/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def delete_plus(user_id):
+    user = User.query.get_or_404(user_id)
+    user.plus_expires_at = None
+    user.plus_type = None
+    user.role = "user"
+    db.session.commit()
+
+    flash(f"Revoked Plus for {user.email}", "success")
+    return redirect(url_for("manage_plus"))
+#-----------------------------------------------------------------------
+
 @app.route('/payment')
 def payment():
     return render_template('pay.html', user=current_user)
@@ -886,12 +958,31 @@ def about():
     return render_template('about.html')
 #-------------------------------------------------
 @app.route("/dashboard")
+@login_required
 def dashboard():
-    time_remaining = timedelta(hours=1, minutes=20, seconds=30)
+    remaining = 0
+    redirect_flag = False  # Used by template JS
+
+    if current_user.plus_expires_at:
+        now = datetime.utcnow()
+        diff = current_user.plus_expires_at - now
+
+        if diff.total_seconds() > 0:
+            remaining = int(diff.total_seconds())
+        else:
+            # Expired: downgrade role and flash
+            current_user.role = 'user'
+            current_user.plus_expires_at = None
+            current_user.plus_type = None
+            db.session.commit()
+            flash("Plus depleted. You’ll be redirected in 2 minutes.", "error")
+            redirect_flag = True
+
     return render_template(
         "dashboard.html",
         user=current_user,
-        time_remaining_seconds=int(time_remaining.total_seconds())
+        time_remaining_seconds=remaining,
+        redirect_in_2min=redirect_flag
     )
 #-------------------------------------------------
 @app.route('/copyright')

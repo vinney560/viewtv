@@ -9,12 +9,8 @@
     tailwind.config = {
       theme: {
         extend: {
-          boxShadow: {
-            glow: '0 0 15px rgba(0,255,255,0.6)',
-          },
-          animation: {
-            pop: 'pop 0.3s ease-out',
-          },
+          boxShadow: { glow: '0 0 15px rgba(0,255,255,0.6)' },
+          animation: { pop: 'pop 0.3s ease-out' },
           keyframes: {
             pop: {
               '0%': { transform: 'scale(1)', opacity: '1' },
@@ -27,30 +23,53 @@
     }
   </script>
   <style>
-    .glow-hover:hover {
-      box-shadow: 0 0 15px rgba(0,255,255,0.6);
-      transform: translateY(-2px);
+    .glow-hover:hover { box-shadow: 0 0 15px rgba(0,255,255,0.6); transform: translateY(-2px); }
+    .fade-in { animation: fadeIn 0.5s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex justify-center items-start p-6 text-white">
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex justify-center items-start p-6 text-white relative">
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed top-4 right-4 bg-red-700 text-white px-4 py-2 rounded shadow-lg z-50 text-sm fade-in">
+    ⏳ Less than 30 minutes remaining!
+  </div>
 
   <div class="w-full max-w-6xl flex flex-col md:flex-row gap-6">
 
     <!-- Profile Section -->
     <div class="bg-white/10 backdrop-blur-lg p-6 rounded-2xl shadow-xl w-full md:w-1/3 border border-white/20">
       <div class="flex flex-col items-center">
+        <!-- Email -->
         <p class="text-sm text-gray-300 mb-4">Email: {{ user.email }}</p>
 
-        <!-- Countdown Timer (Smaller + Animated) -->
-        <div id="timer" class="flex gap-1 text-center">
-          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8 text-center" id="hours1">0</div>
-          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8 text-center" id="hours2">0</div>
-          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8 text-center" id="minutes1">0</div>
-          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8 text-center" id="minutes2">0</div>
-          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8 text-center" id="seconds1">0</div>
-          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8 text-center" id="seconds2">0</div>
+        <!-- Countdown Timer -->
+        <div id="timer" class="flex gap-1 text-center items-center">
+          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="hours1">0</div>
+          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="hours2">0</div>
+          <div class="text-xl font-bold text-cyan-300 px-1">:</div>
+          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="minutes1">0</div>
+          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="minutes2">0</div>
+          <div class="text-xl font-bold text-cyan-300 px-1">:</div>
+          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="seconds1">0</div>
+          <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="seconds2">0</div>
         </div>
+
+        <!-- Free Plus Button Logic -->
+        {% if user.plus_type == 'free' and time_remaining_seconds > 0 %}
+          <p class="text-green-400 mt-4 text-sm">Free Plus is currently active</p>
+        {% elif user.last_free_plus and (user.last_free_plus + timedelta(hours=24)) > now %}
+          <p class="text-gray-400 mt-4 text-sm">You’ve already used Free Plus today</p>
+        {% else %}
+          <a href="{{ url_for('claim_free_plus') }}"
+             class="mt-6 glow-hover bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded-xl shadow-lg text-sm">
+            🎁 Try Free Plus (2hrs)
+          </a>
+        {% endif %}
+
       </div>
     </div>
 
@@ -60,69 +79,56 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
 
         <!-- Watch Now -->
-        <a href="{{ url_for('browse') }}"
-           class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a1 1 0 011-1h2a1 1 0 01.894.553L9.382 5H15a1 1 0 011 1v2h-2V7H9a1 1 0 01-.894-.553L6.618 4H5v12h2v2H5a1 1 0 01-1-1V3z"/></svg>
+        <a href="{{ url_for('home_1') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3l7 7-7 7"/></svg>
           Watch Now
         </a>
 
-        <!-- Channel Categories -->
-        <a href="{{ url_for('categories') }}"
-           class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3h12a1 1 0 011 1v2H3V4a1 1 0 011-1zM3 8h14v2H3V8zm0 4h14v2H3v-2zm0 4h14v2H3v-2z"/></svg>
-          Channel Categories
+        <!-- Offered Services -->
+        <a href="{{ url_for('services') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3h12v2H4zm0 4h12v2H4zm0 4h12v2H4z"/></svg>
+          Offered Services
         </a>
 
         <!-- About Us -->
-        <a href="{{ url_for('about') }}"
-           class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12h1v5H9v-5zm0-6h1v4H9V6z"/></svg>
+        <a href="{{ url_for('about') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12h1v5H9zm0-6h1v4H9z"/></svg>
           About Us
         </a>
 
-        <!-- Services -->
-        <a href="{{ url_for('services') }}"
-           class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 00-6.29 17.29l1.42-1.42a8 8 0 1111.31 0l1.42 1.42A10 10 0 0012 2z"/></svg>
-          Services
-        </a>
-
-        <!-- Local Channels -->
-        <a href="/custom-list"
-           class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v16l-4-4H4a1 1 0 01-1-1V4z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Kenyan Locals TVs
+        <!-- Copyright -->
+        <a href="{{ url_for('copyright') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4a8 8 0 100 16 8 8 0 000-16zm1 12h-2V8h2v8z"/></svg>
+          Copyright
         </a>
 
         <!-- More Shows -->
-        <a href="more-channels"
-           class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M15 12H3m6-6v12m12-6l-4-4m4 4l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <a href="more-channels" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M15 12H3m6-6v12m12-6l-4-4m4 4l-4 4"/></svg>
           More Shows...
         </a>
 
-        <!-- Settings -->
-        <a href="/"
-           class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1012 8.5a3.5 3.5 0 000 7zm7.03-2.03a8.001 8.001 0 00-1.5-5.97l1.13-1.13a1 1 0 00-1.42-1.42l-1.13 1.13a8.001 8.001 0 00-5.97-1.5l-.35-1.42a1 1 0 00-1.94 0l-.35 1.42a8.001 8.001 0 00-5.97 1.5L3.36 5.05a1 1 0 10-1.42 1.42l1.13 1.13a8.001 8.001 0 00-1.5 5.97l-1.42.35a1 1 0 000 1.94l1.42.35a8.001 8.001 0 001.5 5.97l-1.13 1.13a1 1 0 101.42 1.42l1.13-1.13a8.001 8.001 0 005.97 1.5l.35 1.42a1 1 0 001.94 0l.35-1.42a8.001 8.001 0 005.97-1.5l1.13 1.13a1 1 0 001.42-1.42l-1.13-1.13a8.001 8.001 0 001.5-5.97l1.42-.35a1 1 0 000-1.94l-1.42-.35z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Settings
+        <!-- Account Settings -->
+        <a href="/account" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M5.121 17.804A4 4 0 1112 15a4 4 0 016.879 2.804"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Account Settings
         </a>
 
         <!-- Logout -->
-        <a href="{{ url_for('logout_current_user') }}"
-           class="glow-hover bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 col-span-full">
-          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 9V5a1 1 0 011-1h9v16h-9a1 1 0 01-1-1v-4H8v5a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H10a2 2 0 00-2 2v5h2zm-5.707.293a1 1 0 011.414 0L9 12l-3.293 3.293a1 1 0 01-1.414-1.414L6.586 13H1v-2h5.586l-1.293-1.293a1 1 0 010-1.414z"/></svg>
+        <a href="{{ url_for('logout_current_user') }}" class="glow-hover bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 col-span-full">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 9V5h9v14h-9v-4H8v5a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H10a2 2 0 00-2 2v5h2z"/><path d="M6 13h5"/></svg>
           Logout
         </a>
+
       </div>
     </div>
-
   </div>
 
-  <!-- Timer Countdown Script with Animation -->
+  <!-- Countdown & Toast -->
   <script>
     const totalSeconds = {{ time_remaining_seconds | safe }};
     let remaining = totalSeconds;
+    let toastShown = false;
 
     function updateDigit(id, value) {
       const el = document.getElementById(id);
@@ -155,6 +161,16 @@
           return;
         }
 
+        if (remaining <= 1800 && !toastShown) {
+          document.querySelectorAll('#timer div').forEach(div => {
+            div.classList.remove('text-cyan-400', 'bg-black/40');
+            div.classList.add('text-red-400', 'bg-red-900');
+          });
+
+          document.getElementById('toast').classList.remove('hidden');
+          toastShown = true;
+        }
+
         const hrs = Math.floor(remaining / 3600);
         const mins = Math.floor((remaining % 3600) / 60);
         const secs = remaining % 60;
@@ -166,6 +182,14 @@
 
     startCountdown();
   </script>
+
+  {% if redirect_in_2min %}
+  <script>
+    setTimeout(() => {
+      window.location.href = "{{ url_for('home_1') }}";
+    }, 120000);
+  </script>
+  {% endif %}
 
 </body>
 </html>

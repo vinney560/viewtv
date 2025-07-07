@@ -210,7 +210,7 @@ def verify_registration(token):
     user.email_verified = True
     db.session.commit()
     login_user(user)
-    flash('Email verified! Welcome to T-Give Nexus.', 'success')
+    flash('Email verified! Welcome to View Tv.', 'success')
     return redirect(url_for('welcome'))
 #-------------------------------------------------
 def create_reset_token(user):
@@ -324,7 +324,7 @@ def register():
         hashed_password = generate_password_hash(password)
         new_user = User(name=name, password=hashed_password,
                         email=email_addr, role=role,
-                        status=status, agreed=True)
+                        status=status, agreed=True, plus_expires_at=None, plus_type=None, last_free_plus=None)
         db.session.add(new_user)
         db.session.commit()
 
@@ -987,6 +987,13 @@ def dashboard():
         time_remaining_seconds=remaining,
         redirect_in_2min=redirect_flag
     )
+#-------------------------------------------------
+@app.route('/admin/manage_users')
+def manage_users():
+    pass
+@app.route('/admin/manage_channels')    
+def manage_channels():
+    pass
 #-------------------------------------------------
 @app.route('/copyright')
 def copyright():

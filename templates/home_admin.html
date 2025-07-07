@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Home | View TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: {
+            glow: '0 0 15px rgba(0,255,255,0.6)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(0,255,255,0.6);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white flex justify-center items-start p-6">
+
+  <div class="w-full max-w-5xl space-y-8">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-cyan-400">Welcome, Admin</h1>
+      <p class="text-sm text-gray-300 mt-1">Email: {{ user.email }}</p>
+    </div>
+
+    <!-- Admin Buttons -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <a href="{{ url_for('manage_plus') }}"
+         class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 4v16m8-8H4"/>
+        </svg>
+        Manage Plus Time
+      </a>
+
+      <a href="{{ url_for('manage_users') }}"
+         class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M5 3a2 2 0 012-2h10a2 2 0 012 2v18l-7-3-7 3V3z"/>
+        </svg>
+        Manage Users
+      </a>
+
+      <a href="{{ url_for('manage_channels') }}"
+         class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M4 5h16M4 12h16M4 19h16"/>
+        </svg>
+        Manage Channels
+      </a>
+
+      <a href="{{ url_for('account') }}"
+         class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 14a5 5 0 100-10 5 5 0 000 10zm0 2c-3.3 0-6 2.7-6 6h12c0-3.3-2.7-6-6-6z"/>
+        </svg>
+        Account Settings
+      </a>
+    </div>
+
+    <!-- Logout -->
+    <div class="text-center mt-6">
+      <a href="{{ url_for('logout_current_user') }}"
+         class="glow-hover bg-red-600 hover:bg-red-700 py-3 px-6 rounded-xl shadow-lg inline-flex items-center gap-2 font-bold">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M10 9V5h9v14h-9v-4H8v5a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H10a2 2 0 00-2 2v5h2z"/>
+          <path d="M6 13h5"/>
+        </svg>
+        Logout
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -846,7 +846,7 @@ SPORT = {
         "tvg-logo": "",
         "name": "Sports Tv",
         "url": "https://live.sportstv.com.tr/hls/low/sportstv.m3u8"
-    }    
+    },   
     "sport_13": {
         "tvg-country": "US",
         "tvg-logo": "",

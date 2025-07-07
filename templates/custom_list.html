@@ -6,41 +6,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#0d1117] text-[#c9d1d9] font-mono min-h-screen flex flex-col items-center p-8">
+<body class="bg-gray-900 text-gray-200 font-sans min-h-screen flex flex-col items-center p-6">
 
   <!-- Back Button -->
   <a href="#" onclick="history.back(); return false;" 
-     class="fixed top-3 left-3 flex items-center text-[#58a6ff] text-sm font-medium hover:text-[#8ae9ff] z-50">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-1">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+     class="fixed top-4 left-4 flex items-center text-green-500 text-sm font-semibold hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 rounded" 
+     aria-label="Go Back">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="w-5 h-5 mr-1">
+      <path d="M15 19l-7-7 7-7" />
     </svg>
-    <span>Back</span>
+    Back
   </a>
 
-  <h2 class="text-[#58a6ff] text-4xl font-bold mb-10 select-none">PlayList</h2>
+  <h2 class="text-green-500 text-4xl font-bold mb-10 select-none">PlayList</h2>
 
-  <div class="w-full max-w-xl bg-[#12171f] rounded-2xl p-4 shadow-inner shadow-black/50">
+  <div class="w-full max-w-xl bg-gray-800 rounded-lg border border-gray-700 overflow-y-auto max-h-[400px] shadow-inner shadow-black/50">
     {% for key, info in channels.items() %}
-      <div class="flex items-center justify-between bg-[#161b22] rounded-xl my-3 mx-6 px-6 py-4 shadow-md shadow-[#00663344] hover:bg-[#1e2a1d] hover:shadow-[#00bb6699] hover:-translate-y-0.5 transition-transform duration-200 cursor-pointer">
+      <div tabindex="0" role="listitem"
+           class="flex items-center gap-4 px-6 py-4 border-b border-gray-700 last:border-b-0
+                  hover:bg-gray-700 focus:bg-gray-700 focus:outline-none cursor-pointer transition-colors duration-150">
         
         <!-- Channel Image -->
         <img 
           src="{{ url_for('uploaded_file', filename='default_tv_icon.png') }}" 
           alt="{{ info.name }} logo" 
-          class="w-16 h-10 rounded-md object-cover border border-[#2f8055aa] mr-6 flex-shrink-0 bg-[#0f131a]" 
+          class="w-14 h-9 rounded-md object-cover border border-gray-600 flex-shrink-0 bg-gray-900" 
         />
 
         <!-- Channel Name Link -->
         <a href="{{ url_for('play_channel', key=key) }}" 
-           class="flex-grow text-[#8fddb1] font-semibold text-lg select-none hover:text-[#b9ffcc] hover:underline">
+           class="flex-grow text-gray-300 font-semibold text-lg truncate
+                  hover:text-green-400 focus:text-green-400 focus:outline-none"
+           >
           {{ info.name }}
         </a>
 
         <!-- Play Button -->
         <a href="{{ url_for('play_channel', key=key) }}" 
-           class="ml-6 flex-shrink-0 w-10 h-10 bg-[#3a6f4a] rounded-full flex items-center justify-center shadow-md shadow-[#2f8055aa] hover:bg-[#3fa25b] hover:shadow-[#66cc88cc] hover:scale-110 transition-transform duration-300"
+           class="ml-4 flex-shrink-0 w-9 h-9 bg-green-600 rounded-full flex items-center justify-center
+                  shadow-md shadow-green-900 hover:bg-green-500 focus:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400
+                  transition duration-200"
            aria-label="Play {{ info.name }}">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#d0f0d6" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-5 h-5 text-gray-900">
             <path d="M6 4l15 8-15 8z" />
           </svg>
         </a>

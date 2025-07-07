@@ -761,7 +761,6 @@ def play_channel(key):
 #-------------------------------------------------
 @app.route("/api/channel_stream_url")
 @login_required
-@plus_required
 def channel_stream_url():
     key = request.args.get("key")
     channel = CUSTOM_CHANNELS.get(key)

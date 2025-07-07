@@ -1020,11 +1020,51 @@ def services():
 @app.route('/manifest.json')
 def manifest():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'manifest.json', mimetype='application/manifest+json')
-#--------------------------------
-@app.route("/account")
-def account():
-    pass
+#----------------------------------------------
 
+@app.route("/account", methods=["GET", "POST"])
+@login_required
+def account():
+    if request.method == "POST":
+        form_type = request.form.get("form_type")
+
+        if form_type == "update_email":
+            new_email = request.form.get("new_email")
+            if new_email:
+                current_user.email = new_email
+                db.session.commit()
+                flash("Email updated successfully.", "success")
+
+        elif form_type == "change_password":
+            current_pw = request.form.get("current_password")
+            new_pw = request.form.get("new_password")
+            if check_password_hash(current_user.password, current_pw):
+                current_user.password = generate_password_hash(new_pw)
+                db.session.commit()
+                flash("Password changed successfully.", "success")
+            else:
+                flash("Incorrect current password.", "error")
+
+        elif form_type == "delete_account":
+            confirm_pw = request.form.get("confirm_password")
+            if check_password_hash(current_user.password, confirm_pw):
+                db.session.delete(current_user)
+                db.session.commit()
+                logout_user()
+                flash("Account deleted.", "success")
+                return redirect(url_for("login"))
+            else:
+                flash("Password incorrect. Account not deleted.", "error")
+
+    # For showing remaining Plus time
+    now = datetime.utcnow()
+    remaining = 0
+    if current_user.plus_expires_at:
+        diff = current_user.plus_expires_at - now
+        if diff.total_seconds() > 0:
+            remaining = int(diff.total_seconds())
+
+    return render_template("account_stns.html", user=current_user, time_remaining_seconds=remaining)
 
 #================================
 

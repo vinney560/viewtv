@@ -11,6 +11,7 @@
   <div class="bg-gray-800 p-8 rounded-xl shadow-xl w-full max-w-md text-center">
     <h2 class="text-2xl font-bold text-cyan-400 mb-6">Plus Access</h2>
 
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="mb-4 space-y-2">
@@ -26,23 +27,23 @@
       {% endif %}
     {% endwith %}
 
-    <!-- Free Plus Button -->
-    {% if free_plus_available %}
-      <form method="POST" action="{{ url_for('activate_free_plus') }}">
+    <!-- Free Plus Logic -->
+    {% if not user.last_free_plus or (user.last_free_plus + timedelta(hours=24)) <= now %}
+      <form method="POST" action="{{ url_for('claim_free_plus') }}">
         <button type="submit" class="w-full bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded font-semibold transition">
           🎁 Activate Free Plus (2 Hours)
         </button>
       </form>
     {% else %}
-      <p class="text-sm text-gray-400 mb-4">You've already used Free Plus today.</p>
+      <p class="text-sm text-gray-400 mb-4">You’ve already used Free Plus today.</p>
     {% endif %}
 
     <div class="my-4 border-t border-gray-700"></div>
 
-    <!-- Buy Plus Button -->
+    <!-- Buy Plus -->
     <a href="{{ url_for('payment') }}"
        class="w-full block bg-cyan-600 hover:bg-cyan-500 text-white py-2 px-4 rounded font-semibold transition">
-      💳 Buy Plus(2ksh=1hr)
+      💳 Buy Plus (2ksh = 1hr)
     </a>
   </div>
 

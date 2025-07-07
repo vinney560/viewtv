@@ -737,9 +737,10 @@ def channel_stream_url():
 #================================
 #free plus feature
 
-@app.route("/get_plus")
+@app.route("/get-plus")
+@login_required
 def get_plus():
-    return render_template("plus.html")
+    return render_template("plus.html", user=current_user, now=datetime.utcnow())
 
 @app.route("/free-plus")
 @login_required

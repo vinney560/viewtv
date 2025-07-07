@@ -1130,12 +1130,12 @@ def account():
     if request.method == "POST":
         form_type = request.form.get("form_type")
 
-        if form_type == "update_email":
-            new_email = request.form.get("new_email")
-            if new_email:
-                current_user.email = new_email
+        if form_type == "update_name":
+            new_name = request.form.get("new_name")
+            if new_name:
+                current_user.name = new_name
                 db.session.commit()
-                flash("Email updated successfully.", "success")
+                flash("Name updated successfully.", "success")
 
         elif form_type == "change_password":
             current_pw = request.form.get("current_password")

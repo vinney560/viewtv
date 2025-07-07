@@ -52,17 +52,17 @@
       {% endif %}
     </div>
 
-    <!-- Update Email -->
+    <!-- Update Name -->
     <form method="POST" action="{{ url_for('account') }}">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <input type="hidden" name="form_type" value="update_email">
-      <label class="block text-sm font-medium mb-1 mt-4">New Email:</label>
-      <input type="email" name="new_email" required
+      <input type="hidden" name="form_type" value="update_name">
+      <label class="block text-sm font-medium mb-1 mt-4">New Name:</label>
+      <input type="email" name="new_name" value="{{ user.name }}"required placeholder="Enter new name"
              class="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:ring-cyan-500">
       <button type="submit"
               class="mt-3 w-full bg-cyan-600 hover:bg-cyan-500 text-white font-semibold py-2 px-4 rounded transition flex items-center justify-center gap-2">
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h16v2H4V8zm0 4h10v2H4v-2z"/></svg>
-        Update Email
+        Update Name
       </button>
     </form>
 

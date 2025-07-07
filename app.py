@@ -152,7 +152,31 @@ with app.app_context():
     db.create_all()
 
 #======================================
+@app.route('/robots.txt')
+def robots_txt():
+    return (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Sitemap: https://viewtv-p2s3.onrender.com/sitemap.xml\n",
+        200,
+        {'Content-Type': 'text/plain'}
+    )
 
+@app.route('/sitemap.xml')
+def sitemap():
+    return Response(
+        """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://viewtv-p2s3.onrender.com/</loc></url>
+  <url><loc>https://viewtv-p2s3.onrender.com/about</loc></url>
+  <url><loc>https://viewtv-p2s3.onrender.com/services</loc></url>
+  <url><loc>https://viewtv-p2s3.onrender.com/account</loc></url>
+  <url><loc>https://viewtv-p2s3.onrender.com/home_1</loc></url>
+  <url><loc>https://viewtv-p2s3.onrender.com/developer</loc></url>
+</urlset>""",
+        mimetype='application/xml'
+    )
+#======================================
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -663,7 +687,6 @@ def more_channels():
 #-------------------------------------------------
 @app.route("/watch")
 @login_required
-@plus_required
 def watch():
     
     name = request.args.get("name")
@@ -739,7 +762,6 @@ def custom_list():
 #-------------------------------------------------
 @app.route("/channel/<key>")
 @login_required
-@plus_required
 def play_channel(key):
     channel = CUSTOM_CHANNELS.get(key)
     if not channel:

@@ -1,75 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-  <meta charset="UTF-8">
-  <title>Local & Kids Channels</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { 
-      margin: 0; padding: 20px; 
-      font-family: Arial, sans-serif; 
-      background: #0d1117; color: #c9d1d9;
-    }
-    h2 { 
-      color: #58a6ff; 
-      margin-bottom: 20px; 
-      padding-top: 40px; /* to avoid back btn overlap on small screens */
-      text-align: center;
-    }
-    .list { max-width: 600px; margin: 0 auto; }
-    .item {
-      background: #161b22; 
-      margin-bottom: 12px; 
-      padding: 14px 20px; 
-      border-radius: 8px; 
-      transition: background 0.2s; 
-    }
-    .item:hover { background: #238636; }
-    a.channel-link { 
-      text-decoration: none; 
-      color: #00ff88; 
-      font-weight: 600; 
-    }
-
-    /* Back Button Styling */
-    .back-btn {
-      position: fixed;
-      top: 12px;
-      left: 12px;
-      display: flex;
-      align-items: center;
-      color: #58a6ff;
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      z-index: 100;
-      transition: color 0.2s;
-    }
-    .back-btn:hover {
-      color: #8ae9ff;
-    }
-    .back-btn svg {
-      width: 18px;
-      height: 18px;
-      margin-right: 5px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>PlayList | ViewTv</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-[#0d1117] text-[#c9d1d9] font-mono min-h-screen flex flex-col items-center p-8">
 
-  <!-- Compact Back Button -->
-  <a href="/basic_mode" class="back-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+  <!-- Back Button -->
+  <a href="#" onclick="history.back(); return false;" 
+     class="fixed top-3 left-3 flex items-center text-[#58a6ff] text-sm font-medium hover:text-[#8ae9ff] z-50">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-1">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
     <span>Back</span>
   </a>
 
-  <h2>Local, Sports & Kids Channels</h2>
-  <div class="list">
-    {% for key, info in channels.items() %}{{ loop.index }}
-      <div class="item">
-        <a class="channel-link" href="{{ url_for('play_channel', key=key) }}">{{ info.name }}</a>
+  <h2 class="text-[#58a6ff] text-4xl font-bold mb-10 select-none">PlayList</h2>
+
+  <div class="w-full max-w-xl bg-[#12171f] rounded-2xl p-4 shadow-inner shadow-black/50">
+    {% for key, info in channels.items() %}
+      <div class="flex items-center justify-between bg-[#161b22] rounded-xl my-3 mx-6 px-6 py-4 shadow-md shadow-[#00663344] hover:bg-[#1e2a1d] hover:shadow-[#00bb6699] hover:-translate-y-0.5 transition-transform duration-200 cursor-pointer">
+        
+        <!-- Channel Image -->
+        <img 
+          src="{{ url_for('uploaded_file', filename='default_tv_icon.png') }}" 
+          alt="{{ info.name }} logo" 
+          class="w-16 h-10 rounded-md object-cover border border-[#2f8055aa] mr-6 flex-shrink-0 bg-[#0f131a]" 
+        />
+
+        <!-- Channel Name Link -->
+        <a href="{{ url_for('play_channel', key=key) }}" 
+           class="flex-grow text-[#8fddb1] font-semibold text-lg select-none hover:text-[#b9ffcc] hover:underline">
+          {{ info.name }}
+        </a>
+
+        <!-- Play Button -->
+        <a href="{{ url_for('play_channel', key=key) }}" 
+           class="ml-6 flex-shrink-0 w-10 h-10 bg-[#3a6f4a] rounded-full flex items-center justify-center shadow-md shadow-[#2f8055aa] hover:bg-[#3fa25b] hover:shadow-[#66cc88cc] hover:scale-110 transition-transform duration-300"
+           aria-label="Play {{ info.name }}">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#d0f0d6" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-5 h-5">
+            <path d="M6 4l15 8-15 8z" />
+          </svg>
+        </a>
       </div>
     {% endfor %}
   </div>

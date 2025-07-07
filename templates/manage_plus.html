@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manage Plus | View TV Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
@@ -19,14 +18,36 @@
     }
   </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen p-6">
+<body class="bg-gray-900 text-white min-h-screen p-6 relative">
+
+  <!-- Toast for Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
+        {% for category, message in messages %}
+          <div class="px-4 py-2 rounded shadow-md text-sm text-white
+                      {% if category == 'success' %} bg-green-600
+                      {% elif category == 'error' %} bg-red-600
+                      {% else %} bg-blue-600 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+      <script>
+        setTimeout(() => {
+          const toast = document.getElementById("toast");
+          if (toast) toast.remove();
+        }, 4000);
+      </script>
+    {% endif %}
+  {% endwith %}
 
   <div class="max-w-7xl mx-auto">
     <h1 class="text-3xl font-bold text-cyan-400 mb-6">Manage Plus Access</h1>
 
     <div class="overflow-x-auto rounded-lg shadow border border-gray-700 bg-gray-800">
-      <table class="min-w-full divide-y divide-gray-700">
-        <thead class="bg-gray-700 text-cyan-300 text-sm">
+      <table class="min-w-full divide-y divide-gray-700 text-sm">
+        <thead class="bg-gray-700 text-cyan-300">
           <tr>
             <th class="px-4 py-3 text-left">#</th>
             <th class="px-4 py-3 text-left">User</th>
@@ -35,35 +56,41 @@
             <th class="px-4 py-3 text-center">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-800 text-sm">
-          {% for user in users %}
+        <tbody class="divide-y divide-gray-800">
+          {% for item in users %}
+          {% set user = item.user %}
           <tr class="hover:bg-gray-700">
             <td class="px-4 py-2 align-top">{{ loop.index }}</td>
             <td class="px-4 py-2 align-top">
               <p class="font-semibold">{{ user.email }}</p>
-              <!-- Time Box (below user email) -->
+              <p class="text-xs text-gray-400 mt-1">⏳ {{ item.remaining_str }}</p>
+
+              <!-- Update Time Form -->
               <form method="POST" action="{{ url_for('update_plus', user_id=user.id) }}"
-                    class="flex gap-2 mt-2 flex-wrap justify-start items-center">
+                    onsubmit="return confirmTimeChange(this)">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                <input type="number" name="hours" min="0" max="99" value="0"
-                       class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
-                       placeholder="hh" />
-                <input type="number" name="minutes" min="0" max="59" value="0"
-                       class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
-                       placeholder="mm" />
-                <input type="number" name="seconds" min="0" max="59" value="0"
-                       class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
-                       placeholder="ss" />
+                <div class="flex gap-2 mt-2 flex-wrap items-center">
+                  <input type="number" name="hours" min="0" max="99" value="0"
+                         class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
+                         placeholder="hh" />
+                  <input type="number" name="minutes" min="0" max="59" value="0"
+                         class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
+                         placeholder="mm" />
+                  <input type="number" name="seconds" min="0" max="59" value="0"
+                         class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
+                         placeholder="ss" />
 
-                <button type="submit"
-                        class="bg-cyan-600 glow-btn hover:bg-cyan-500 text-white px-3 py-2 rounded text-xs flex items-center gap-1">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                       viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
-                  Update
-                </button>
+                  <button type="submit"
+                          class="bg-cyan-600 glow-btn hover:bg-cyan-500 text-white px-3 py-2 rounded text-xs flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                         viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+                    Update
+                  </button>
+                </div>
               </form>
             </td>
+
             <td class="px-4 py-2 align-top">
               {% if user.plus_expires_at %}
                 {{ user.plus_expires_at.strftime('%Y-%m-%d %H:%M:%S') }}
@@ -71,7 +98,9 @@
                 <span class="text-red-400">N/A</span>
               {% endif %}
             </td>
+
             <td class="px-4 py-2 align-top capitalize">{{ user.plus_type or 'N/A' }}</td>
+
             <td class="px-4 py-2 text-center align-top">
               <!-- Delete Form -->
               <form method="POST" action="{{ url_for('delete_plus', user_id=user.id) }}"
@@ -91,6 +120,22 @@
       </table>
     </div>
   </div>
+
+  <!-- JS Confirm Logic -->
+  <script>
+    function confirmTimeChange(form) {
+      const h = parseInt(form.hours.value || "0");
+      const m = parseInt(form.minutes.value || "0");
+      const s = parseInt(form.seconds.value || "0");
+
+      if (h === 0 && m === 0 && s === 0) {
+        alert("⚠️ No time added. Update skipped.");
+        return false;
+      }
+
+      return confirm(`Apply ${h}h ${m}m ${s}s to this user?`);
+    }
+  </script>
 
 </body>
 </html>

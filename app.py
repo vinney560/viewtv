@@ -805,10 +805,25 @@ def claim_free_plus():
 
 @app.route("/admin/manage_plus")
 @login_required
-#@admin_required
+@admin_required
 def manage_plus():
     users = User.query.filter(User.plus_expires_at != None).all()
-    return render_template("manage_plus.html", users=users)   
+    
+    now = datetime.utcnow()
+    user_data = []
+    for user in users:
+        remaining = (user.plus_expires_at - now).total_seconds()
+        if remaining < 0:
+            remaining = 0
+        hours = int(remaining // 3600)
+        minutes = int((remaining % 3600) // 60)
+        seconds = int(remaining % 60)
+        user_data.append({
+            "user": user,
+            "remaining_str": f"{hours}h {minutes}m {seconds}s"
+        })
+    
+    return render_template("manage_plus.html", users=user_data)
 #------------------------------------------------------------------
 @app.route("/admin/update_plus/<int:user_id>", methods=["POST"])
 @login_required

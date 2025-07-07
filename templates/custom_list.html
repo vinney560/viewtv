@@ -5,12 +5,31 @@
   <title>PlayList | ViewTv</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow-text {
+      text-shadow: 0 0 8px rgba(38, 203, 255, 0.6);
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out forwards;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-gray-200 font-sans min-h-screen flex flex-col items-center p-6">
+<body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col items-center p-6">
 
   <!-- Back Button -->
   <a href="#" onclick="history.back(); return false;" 
-     class="fixed top-4 left-4 flex items-center text-green-500 text-sm font-semibold hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-400 rounded" 
+     class="fixed top-5 left-5 flex items-center text-cyan-400 text-sm font-semibold hover:text-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded transition-colors duration-200" 
      aria-label="Go Back">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="w-5 h-5 mr-1">
       <path d="M15 19l-7-7 7-7" />
@@ -18,36 +37,36 @@
     Back
   </a>
 
-  <h2 class="text-green-500 text-4xl font-bold mb-10 select-none">PlayList</h2>
+  <h2 class="glow-text text-cyan-400 text-4xl font-extrabold mb-12 select-none tracking-wide fade-in">PlayList</h2>
 
-  <div class="w-full max-w-xl bg-gray-800 rounded-lg border border-gray-700 overflow-y-auto max-h-[400px] shadow-inner shadow-black/50">
+  <div class="w-full max-w-xl space-y-6 fade-in" style="animation-delay: 0.2s;">
     {% for key, info in channels.items() %}
       <div tabindex="0" role="listitem"
-           class="flex items-center gap-4 px-6 py-4 border-b border-gray-700 last:border-b-0
-                  hover:bg-gray-700 focus:bg-gray-700 focus:outline-none cursor-pointer transition-colors duration-150">
+           class="flex items-center gap-6 px-8 py-5 bg-gray-800 rounded-2xl border border-gray-700 shadow-lg shadow-black/70
+                  hover:bg-gray-700 focus:bg-gray-700 focus:outline-none cursor-pointer transition-colors duration-300 ease-in-out">
         
         <!-- Channel Image -->
         <img 
           src="{{ url_for('uploaded_file', filename='default_tv_icon.png') }}" 
           alt="{{ info.name }} logo" 
-          class="w-14 h-9 rounded-md object-cover border border-gray-600 flex-shrink-0 bg-gray-900" 
+          class="w-16 h-10 rounded-lg object-cover border border-gray-600 flex-shrink-0 bg-gray-900 shadow-inner shadow-black/50" 
         />
 
         <!-- Channel Name Link -->
-        <a href="{{ url_for('play_channel', key=key) }}" 
-           class="flex-grow text-gray-300 font-semibold text-lg truncate
-                  hover:text-green-400 focus:text-green-400 focus:outline-none"
+        <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" 
+           class="flex-grow text-gray-200 font-semibold text-lg truncate
+                  hover:text-cyan-400 focus:text-cyan-400 focus:outline-none"
            >
           {{ info.name }}
         </a>
 
         <!-- Play Button -->
-        <a href="{{ url_for('play_channel', key=key) }}" 
-           class="ml-4 flex-shrink-0 w-9 h-9 bg-green-600 rounded-full flex items-center justify-center
-                  shadow-md shadow-green-900 hover:bg-green-500 focus:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400
-                  transition duration-200"
+        <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" 
+           class="ml-6 flex-shrink-0 w-11 h-11 bg-gray-700 rounded-full flex items-center justify-center
+                  shadow-md shadow-cyan-800 hover:bg-cyan-600 focus:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-cyan-400
+                  transition duration-300 ease-in-out"
            aria-label="Play {{ info.name }}">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-5 h-5 text-gray-900">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-6 h-6 text-gray-200">
             <path d="M6 4l15 8-15 8z" />
           </svg>
         </a>

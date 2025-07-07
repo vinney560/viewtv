@@ -79,7 +79,7 @@ class User(db.Model, UserMixin):
     agreed = db.Column(db.Boolean, nullable=True, default=False)  # Agreement to Terms & Conditions of the Services
     created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
     plus_expires_at = db.Column(db.DateTime, nullable=True)
-    plus_type = db.Column(db.String(15), nullable=True)  # 'free' or 'paid'
+    plus_type = db.Column(db.String(10), nullable=True)  # 'free' or 'paid'
     last_free_plus = db.Column(db.DateTime, nullable=True)
     last_failed_login = db.Column(db.DateTime, nullable=True)
 
@@ -121,10 +121,12 @@ class Payment(db.Model):
     mpesa_receipt = db.Column(db.String(100))  # Optional: store M-Pesa receipt
     
 
-with app.app_context():
-    db.create_all()
+with db.engine.connect() as conn:
+    conn.execute(db.text("ALTER TABLE user ADD COLUMN plus_expires_at DATETIME"))
+    conn.execute(db.text("ALTER TABLE user ADD COLUMN plus_type VARCHAR(10)"))
+    conn.execute(db.text("ALTER TABLE user ADD COLUMN last_free_plus DATETIME"))
 
-#=================================================
+#======================================
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -754,6 +756,7 @@ def claim_free_plus():
     current_user.plus_expires_at = now + timedelta(hours=2)
     current_user.plus_type = "free"
     current_user.last_free_plus = now
+    user.role = "plus"
     db.session.commit()
 
     flash("🎁 Free Plus activated for 2 hours!", "success")

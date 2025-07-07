@@ -274,6 +274,15 @@ def reset_password(token):
 
     return render_template('reset_password.html')
 
+@property
+def is_plus(self):
+    from datetime import datetime
+    return (
+        self.plus_type in ['free', 'paid'] and
+        self.plus_expires_at and
+        self.plus_expires_at > datetime.utcnow()
+    )
+
 #================================
 #        >>>>ACCESS GRANTERS<<<<
 #================================
@@ -339,13 +348,11 @@ def register():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
-        role = session.get('role') or current_user.role
-        if role == 'admin':
+        if current_user.role == 'admin':
             return redirect(url_for('home_admin'))
-        elif role == 'plus':
+        if current_user.is_plus:
             return redirect(url_for('home_2'))
-        else:
-            return redirect(url_for('home_1'))
+        return redirect(url_for('home_1'))
 
     if request.method == "POST":
         email_addr = request.form['email']
@@ -379,14 +386,13 @@ def login():
                 session['role'] = user.role
                 session['active'] = user.status
                 login_user(user)
-                flash("?? Welcome back!", "success")
+                flash("♻️ Welcome back!", "success")
 
-                if user.role == 'plus':
-                    return redirect(url_for('home_2'))
-                elif user.role == 'admin':
+                if user.role == 'admin':
                     return redirect(url_for('home_admin'))
-                else:
-                    return redirect(url_for('home_1'))
+                if user.is_plus:
+                    return redirect(url_for('home_2'))
+                return redirect(url_for('home_1'))
             else:
                 # Increase failed attempt count
                 user.failed_login_attempts += 1
@@ -398,7 +404,7 @@ def login():
 
     return render_template('login.html')
 
-#=================================================
+#========================================
     
 @app.route('/home_admin')
 @login_required 
@@ -410,19 +416,22 @@ def home_admin():
 #           >>>>ROLE BASED ACTIONS<<<<
 #================================
 #           >>>>VIP MODE<<<<
-#================================
+#===============================
 def plus_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.role not in ['admin', 'plus']:
-            flash('This is a paid feature. Visit the plus page')
-            return render_template("home_1.html")
+        if not current_user.is_authenticated:
+            flash("Login required.", "error")
+            return redirect(url_for("login"))
+        if not current_user.is_plus:
+            flash("Plus access required.", "error")
+            return redirect(url_for("get_plus"))
         return f(*args, **kwargs)
-    return decorated_function
+    return decorated_function  
 #-------------------------------------------------
 @app.route('/home_2')
 @login_required
-#@plus_required
+@plus_required
 def home_2():
     return render_template('home_2.html', user=current_user)
 #------------------------------------------------
@@ -489,6 +498,8 @@ def get_grouped_channels():
     return grouped
 #------------------------------------------------
 @app.route("/sports_playlist")
+@plus_required
+@login_required
 def sports_playlist():
     channels_by_group = get_grouped_channels()
     return render_template(
@@ -498,6 +509,8 @@ def sports_playlist():
     )
 #------------------------------------------------
 @app.route("/plus_playlist")
+@login_required
+@plus_required
 def plus_playlist():
     pass
 #------------------------------------------------
@@ -523,6 +536,8 @@ def player():
 #-------------------------------------------------
 # Fetch & Save by Country
 @app.route('/save_channels')
+@login_required
+@admin_required
 def fetch_and_save_country_channels(country_code):
     url = f"https://iptv-org.github.io/iptv/countries/{country_code}.m3u"
     try:
@@ -549,7 +564,7 @@ def fetch_and_save_country_channels(country_code):
 #-------------------------------------------------
 @app.route("/countries")
 @login_required
-#@plus_required
+@plus_required
 def countries():
     try:
         response = requests.get("https://iptv-org.github.io/api/countries.json")
@@ -561,7 +576,7 @@ def countries():
 #------------------------------------------------
 @app.route("/country/<country_code>")
 @login_required
-#@plus_required
+@plus_required
 def fetch_country_channels(country_code):
     url = f"https://iptv-org.github.io/iptv/countries/{country_code.lower()}.m3u"
     try:
@@ -583,7 +598,7 @@ def fetch_country_channels(country_code):
 #-----------------------------------------------
 @app.route("/category/<category_id>")
 @login_required 
-#@plus_required
+@plus_required
 def fetch_category_channels(category_id):
     url = f"https://iptv-org.github.io/iptv/categories/{category_id}.m3u"
     try:
@@ -605,7 +620,7 @@ def fetch_category_channels(category_id):
 #-------------------------------------------------
 @app.route("/categories")
 @login_required
-#@plus_required
+@plus_required
 def categories():
     try:
         response = requests.get("https://iptv-org.github.io/api/categories.json")
@@ -617,13 +632,13 @@ def categories():
 #-------------------------------------------------
 @app.route("/more-channels")
 @login_required
-#@plus_required
+@plus_required
 def more_channels():
     return render_template("more_channels.html")
 #-------------------------------------------------
 @app.route("/watch")
 @login_required
-#@plus_required
+@plus_required
 def watch():
     
     name = request.args.get("name")
@@ -659,10 +674,7 @@ def watch():
         flash(f"Error fetching channels: {e}", "error")
 
     return render_template("player.html", stream_url=stream_url, name=name, channels=channels, source_label=source_label)
-#-------------------------------------------------
-@app.route('/browse')
-def browse():
-    return render_template('browse.html')
+
 #================================
 #        TEST FOR PLAYERS' UI/UX
 #================================
@@ -687,6 +699,7 @@ from channels import CUSTOM_CHANNELS
 
 #basic_mode Home page 
 @app.route('/home_1')
+@login_required
 def home_1():
     channels=CUSTOM_CHANNELS
     return render_template('home_1.html', user=current_user, channels=channels)
@@ -701,7 +714,7 @@ def custom_list():
 #-------------------------------------------------
 @app.route("/channel/<key>")
 @login_required
-#@plus_required
+@plus_required
 def play_channel(key):
     channel = CUSTOM_CHANNELS.get(key)
     if not channel:
@@ -722,7 +735,7 @@ def play_channel(key):
 #-------------------------------------------------
 @app.route("/api/channel_stream_url")
 @login_required
-#@plus_required
+@plus_required
 def channel_stream_url():
     key = request.args.get("key")
     channel = CUSTOM_CHANNELS.get(key)
@@ -757,7 +770,6 @@ def claim_free_plus():
     current_user.plus_expires_at = now + timedelta(hours=2)
     current_user.plus_type = "free"
     current_user.last_free_plus = now
-    current_user.role = "plus"
     db.session.commit()
 
     flash("🎁 Free Plus activated for 2 hours!", "success")
@@ -790,7 +802,6 @@ def update_plus(user_id):
 
         user.plus_expires_at = datetime.utcnow() + duration
         user.plus_type = user.plus_type or "paid"
-        user.role = "plus"
         db.session.commit()
 
         flash(f"Updated Plus time for {user.email}", "success")
@@ -806,7 +817,6 @@ def delete_plus(user_id):
     user = User.query.get_or_404(user_id)
     user.plus_expires_at = None
     user.plus_type = None
-    user.role = "user"
     db.session.commit()
 
     flash(f"Revoked Plus for {user.email}", "success")
@@ -902,7 +912,7 @@ def pay():
 @app.route('/callback', methods=['POST'])
 def callback():
     data = request.get_json()
-    print("?? Callback Received:", data)
+    print("Callback Received:", data)
 
     try:
         callback_data = data['Body']['stkCallback']
@@ -929,7 +939,7 @@ def callback():
 
                 user = User.query.get(payment.user_id)
                 if user:
-                    user.role = "VIP"
+                    user.role = "plus"
                     db.session.commit()
 
             print("?? Payment verified and VIP access granted.")
@@ -945,7 +955,7 @@ def callback():
 # ------------------------------------------------
 @app.route('/vip-confirm')
 def vip_confirm():
-    flash("?? PAYMENT SUCCESSFUL. You are now a VIP. Please log in again.", "success")
+    flash(" PAYMENT SUCCESSFUL. You are now a VIP. Please log in again.", "success")
     logout_user(current_user)
     return redirect(url_for('login'))
     
@@ -975,7 +985,6 @@ def dashboard():
             remaining = int(diff.total_seconds())
         else:
             # Expired: downgrade role and flash
-            current_user.role = 'user'
             current_user.plus_expires_at = None
             current_user.plus_type = None
             db.session.commit()

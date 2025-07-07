@@ -96,7 +96,7 @@
       <h2 class="text-2xl font-semibold mb-6 text-cyan-400">Dashboard Menu</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
 
-        <a href="{{ url_for('home_1') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+        <a href="{{ url_for('home_2') if user.plus_type in ['paid', 'free'] else url_for('home_1') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3l8 7-8 7V3z"/></svg>
           Watch Now
         </a>

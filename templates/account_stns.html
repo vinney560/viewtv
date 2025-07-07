@@ -73,7 +73,7 @@
 
       <label class="block text-sm font-medium mb-1 mt-4">Current Password:</label>
       <div class="relative">
-        <input type="password" name="current_password" id="current_password"
+        <input type="password" name="current_password" required id="current_password"
                class="w-full p-2 rounded bg-gray-700 border border-gray-600 pr-10">
         <span class="absolute right-2 top-2 text-gray-400 toggle-btn" onclick="togglePass('current_password')">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
@@ -83,7 +83,7 @@
 
       <label class="block text-sm font-medium mb-1 mt-4">New Password:</label>
       <div class="relative">
-        <input type="password" name="new_password" id="new_password"
+        <input type="password" name="new_password" required id="new_password"
                class="w-full p-2 rounded bg-gray-700 border border-gray-600 pr-10">
         <span class="absolute right-2 top-2 text-gray-400 toggle-btn" onclick="togglePass('new_password')">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
@@ -105,7 +105,7 @@
       <input type="hidden" name="form_type" value="delete_account">
       <label class="block text-sm font-medium mb-1 mt-4">Confirm Password to Delete:</label>
       <div class="relative">
-        <input type="password" name="confirm_password" id="confirm_password"
+        <input type="password" name="confirm_password" required  id="confirm_password"
                class="w-full p-2 rounded bg-gray-700 border border-gray-600 pr-10">
         <span class="absolute right-2 top-2 text-gray-400 toggle-btn" onclick="togglePass('confirm_password')">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"

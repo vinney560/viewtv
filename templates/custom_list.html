@@ -6,15 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Scroll marquee effect on hover for channel names */
+    /* Faster scroll marquee effect on hover for channel names */
     .group:hover .scrolling-text {
       transform: translateX(-100%);
-      transition: transform 6s linear;
+      transition: transform 3s linear;
     }
     .scrolling-text {
       white-space: nowrap;
       display: inline-block;
-      transition: transform 0.5s ease-out;
+      transition: transform 0.3s ease-out;
+    }
+
+    /* Cool gradient + glow for the PlayList title */
+    .cool-title {
+      background: linear-gradient(90deg, #7dd3fc, #22d3ee, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+    }
+    .cool-title::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 10%;
+      width: 80%;
+      height: 6px;
+      background: linear-gradient(90deg, #7dd3fc, #22d3ee, #06b6d4);
+      filter: blur(6px);
+      opacity: 0.7;
+      border-radius: 10px;
+      z-index: -1;
     }
   </style>
 </head>
@@ -30,23 +51,23 @@
     Back
   </a>
 
-  <h2 class="text-gray-300 text-4xl font-bold mb-6 select-none">PlayList</h2>
+  <h2 class="cool-title text-5xl font-extrabold mb-6 select-none">PlayList</h2>
 
   <div class="w-full max-w-xl space-y-3">
     {% for key, info in channels.items() %}
       <div tabindex="0" role="listitem"
-           class="group flex items-center gap-6 px-8 py-5 bg-gray-800 rounded-2xl border border-gray-700 shadow-lg shadow-black/70
+           class="group flex items-center gap-6 px-8 py-5 bg-gray-800 rounded-2xl border border-gray-700
                   hover:bg-gray-700 focus:bg-gray-700 focus:outline-none cursor-pointer transition-colors duration-300 ease-in-out">
         
         <!-- Channel Image -->
         <img 
           src="{{ url_for('uploaded_file', filename='default_tv_icon.png') }}" 
           alt="{{ info.name }} logo" 
-          class="w-16 h-10 rounded-lg object-cover border border-gray-600 flex-shrink-0 bg-gray-900 shadow-inner shadow-black/50" 
+          class="w-16 h-10 rounded-lg object-cover border border-gray-600 flex-shrink-0 bg-gray-900" 
         />
 
         <!-- Channel Name Link with horizontal scroll on hover -->
-        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank" 
+        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}"
            class="flex-grow max-w-[60%] text-gray-200 font-semibold text-lg truncate relative cursor-pointer focus:outline-none">
           <span class="scrolling-text block">
             {{ info.name }}
@@ -54,9 +75,9 @@
         </a>
 
         <!-- Play Button -->
-        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}"
+        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank" 
            class="ml-6 flex-shrink-0 w-11 h-11 bg-gray-700 rounded-full flex items-center justify-center
-                  shadow-md shadow-gray-900 hover:bg-gray-600 focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400
+                  hover:bg-gray-600 focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400
                   transition duration-300 ease-in-out"
            aria-label="Play {{ info.name }}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-6 h-6 text-gray-200">

@@ -1050,7 +1050,6 @@ def account():
             if check_password_hash(current_user.password, confirm_pw):
                 db.session.delete(current_user)
                 db.session.commit()
-                logout_user()
                 flash("Account deleted.", "success")
                 return redirect(url_for("login"))
             else:

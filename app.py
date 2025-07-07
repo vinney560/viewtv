@@ -542,7 +542,6 @@ def plus_playlist():
 #------------------------------------------------
 
 @app.route('/player')
-@login_required
 def player():
     name = request.args.get('name', 'Streaming')
     url = request.args.get('url')

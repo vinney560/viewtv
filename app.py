@@ -176,6 +176,10 @@ def sitemap():
 </urlset>""",
         mimetype='application/xml'
     )
+
+@app.route('/googlefd33f833766d41e1.html')
+def google_verification():
+    return "google-site-verification: googlefd33f833766d41e1.html"
 #======================================
 @login_manager.user_loader
 def load_user(user_id):

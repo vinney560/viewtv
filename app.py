@@ -436,7 +436,7 @@ def login():
 @login_required 
 @admin_required
 def home_admin():
-    return render_template('home_admin.html')
+    return render_template('home_admin.html', user=current_user)
 
 #================================
 #           >>>>ROLE BASED ACTIONS<<<<
@@ -1027,14 +1027,15 @@ def dashboard():
 
 @app.route("/manage-users")
 @login_required
+@admin_required
 def manage_users():
 
     users = User.query.filter(User.id != current_user.id).order_by(User.created_at.desc()).all()
     return render_template("manage_users.html", users=users)
 
-
 @app.route("/toggle-admin/<int:user_id>", methods=["POST"])
 @login_required
+@admin_required
 def toggle_admin(user_id):
 
     user = User.query.get_or_404(user_id)
@@ -1046,6 +1047,7 @@ def toggle_admin(user_id):
 
 @app.route("/toggle-ban/<int:user_id>", methods=["POST"])
 @login_required
+@admin_required
 def toggle_ban(user_id):
 
     user = User.query.get_or_404(user_id)
@@ -1061,6 +1063,7 @@ def toggle_ban(user_id):
 
 @app.route("/delete-user/<int:user_id>", methods=["POST"])
 @login_required
+@admin_required
 def delete_user(user_id):
     if current_user.role != "admin":
         flash("Access denied", "error")

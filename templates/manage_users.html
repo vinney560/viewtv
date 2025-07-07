@@ -8,11 +8,12 @@
 <body class="bg-gray-900 text-white min-h-screen p-6">
 
   <div class="max-w-7xl mx-auto">
+
     <h1 class="text-3xl font-bold text-cyan-400 mb-4">Manage Users</h1>
 
     <!-- Search -->
     <input type="text" id="searchInput" placeholder="Search users..."
-           class="w-full max-w-md p-2 mb-4 rounded bg-gray-800 border border-gray-700 text-sm text-white"
+           class="w-full p-2 mb-4 rounded bg-gray-800 border border-gray-700 text-sm text-white"
            onkeyup="filterUsers()">
 
     <!-- Flash Messages -->
@@ -64,13 +65,13 @@
             <td class="px-4 py-2 text-center">
               <div class="flex gap-2 justify-center">
 
-                <!-- Promote/Demote -->
+                <!-- Promote if role == 'user', Demote if role == 'admin' -->
                 <form method="POST" action="{{ url_for('toggle_admin', user_id=user.id) }}">
                   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                   <button type="submit"
                           class="px-3 py-1 rounded text-xs font-semibold
-                                 {{ 'bg-yellow-600 hover:bg-yellow-500' if user.role != 'admin' else 'bg-blue-600 hover:bg-blue-500' }}">
-                    {{ 'Promote' if user.role != 'user' else 'Demote' }}
+                                 {{ 'bg-yellow-600 hover:bg-yellow-500' if user.role == 'user' else 'bg-blue-600 hover:bg-blue-500' }}">
+                    {{ 'Promote' if user.role == 'user' else 'Demote' }}
                   </button>
                 </form>
 

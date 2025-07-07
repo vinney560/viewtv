@@ -27,10 +27,6 @@ CUSTOM_CHANNELS = {
         "name": "Inooro TV (Kikuyu)",
         "url": "https://www.youtube.com/embed/P3VPIjl_pl0?autoplay=1&controls=1&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
     },
-    "ktn-home-show": {
-        "name": "KTN Home (Entertainment)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCT9hYJzzQY_VaZx3PMeFPJQ&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3"
-    },
     "ntv-kenya": {
         "name": "NTV Kenya",
         "url": "https://ntvkenya-live.stream/ntvkenya.m3u8"
@@ -148,10 +144,6 @@ CUSTOM_CHANNELS = {
         "name": "Al Jazeera English",
         "url": "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8"
     },
-    "dw-news-youtube": {
-        "name": "DW News",
-        "url": "https://dwstream3-lh.akamaihd.net/i/dwstream3_live@124344/index_1_av-p.m3u8"
-    },
     "sky-news-uk": {
         "name": "Sky News UK",
         "url": "https://linear021-gb-hls1-prd-ak.cdn.skycdp.com/Content/HLS_001_sd/Live/channel(skynews)/09_hd30.m3u8"
@@ -163,10 +155,6 @@ CUSTOM_CHANNELS = {
     "bbc-news-youtube": {
         "name": "BBC News (YouTube Live)",
         "url": "https://www.youtube.com/embed/live_stream?channel=UC16niRr50-MSBwiO3YDb3RA"
-    },
-    "citizen-tv-kenya": {
-        "name": "Citizen TV Kenya",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g"
     },
     "nickelodeon-youtube": {
         "name": "Nickelodeon (Kids & Animation)",
@@ -183,10 +171,6 @@ CUSTOM_CHANNELS = {
     "vh1-music-youtube": {
         "name": "VH1 Music & Entertainment",
         "url": "https://www.youtube.com/embed/live_stream?channel=UCy4xxX6sAcG5IHJYYKNH8PQ"
-    },
-    "popcornflix-movies": {
-        "name": "Popcornflix Movies (Official)",
-        "url": "https://www.youtube.com/embed/live_stream?channel=UCxboW7x0jZqFdvMdCFKTMsQ"
     },
     "classic-movies": {
         "name": "Classic Movies Channel",

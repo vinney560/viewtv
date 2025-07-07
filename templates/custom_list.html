@@ -68,7 +68,7 @@
 
         <!-- Channel Name Link with horizontal scroll on hover -->
         <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}"
-           class="flex-grow max-w-[60%] text-gray-200 font-semibold text-lg truncate relative cursor-pointer focus:outline-none">
+           class="flex-grow max-w-[70%] text-gray-200 font-semibold text-lg truncate relative cursor-pointer focus:outline-none">
           <span class="scrolling-text block">
             {{ info.name }}
           </span>
@@ -78,7 +78,7 @@
         <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank" 
            class="ml-6 flex-shrink-0 w-11 h-11 bg-gray-700 rounded-full flex items-center justify-center
                   hover:bg-gray-600 focus:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400
-                  transition duration-300 ease-in-out"
+                  transition duration-200 ease-in-out"
            aria-label="Play {{ info.name }}">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-6 h-6 text-gray-200">
             <path d="M6 4l15 8-15 8z" />

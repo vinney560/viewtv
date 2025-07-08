@@ -56,7 +56,7 @@ login_manager.login_view = "login"
 CORS(app)
 csrf = CSRFProtect()
 csrf.init_app(app)
-limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"])
+limiter = Limiter(get_remote_address, app=app, default_limits=["1000 per hour"])
 
 mail = Mail(app)
 

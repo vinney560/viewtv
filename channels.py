@@ -35,13 +35,13 @@ CUSTOM_CHANNELS = {
         "name": "Boomerang",
         "url": "https://dai.google.com/linear/hls/event/d4J7lXUyQp2dZQ-pXJ-ItA/master.m3u8"
     },
-    "cbeebies": {
-        "name": "CBeebies (BBC Kids)",
-        "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8"
-    },
     "cartoon_network": {
         "name": "Cartoon Network (Pluto)",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5eac0ed285f07d0007b9d63b/master.m3u8"
+    },
+    "cbeebies": {
+        "name": "CBeebies (BBC Kids)",
+        "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8"
     },
     "citizen-tv": {
         "name": "Citizen TV",
@@ -55,6 +55,10 @@ CUSTOM_CHANNELS = {
         "name": "Discovery Kids (LATAM)",
         "url": "https://playout1753.livextend.tv/live/discoverykids_adaptive/index.m3u8"
     },
+    "disney_1": {
+        "name": "Disney Channel",
+        "url": "http://168.181.122.234:8000/play/a037/index.m3u8"
+    },
     "disney_channel": {
         "name": "Disney Channel",
         "url": "https://disneynow-lh.akamaihd.net/i/disneynow_1@345060/master.m3u8"
@@ -62,10 +66,6 @@ CUSTOM_CHANNELS = {
     "disney_junior": {
         "name": "Disney Junior",
         "url": "https://disneynow-lh.akamaihd.net/i/disneyjr_1@356032/master.m3u8"
-    },
-    "disney_1": {
-        "name": "Disney Channel",
-        "url": "http://168.181.122.234:8000/play/a037/index.m3u8"
     },
     "espn_plus": {
         "name": "ESPN+",
@@ -112,7 +112,7 @@ CUSTOM_CHANNELS = {
         "url": "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index.m3u8"
     },
     "nick-anime": {
-        "name": "Nick",
+        "name": "Nick Anime",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/6266b182b8d2fc00078d12d3/master.m3u8"
     },
     "nick_jr": {

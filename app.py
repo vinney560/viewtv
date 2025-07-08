@@ -162,20 +162,21 @@ def robots_txt():
         {'Content-Type': 'text/plain'}
     )
 
+from flask import Response
+
 @app.route('/sitemap.xml')
 def sitemap():
-    return Response(
-        """<?xml version="1.0" encoding="UTF-8"?>
+    sitemap = '''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://viewtv-p2s3.onrender.com/</loc></url>
   <url><loc>https://viewtv-p2s3.onrender.com/about</loc></url>
   <url><loc>https://viewtv-p2s3.onrender.com/services</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/account</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/home_1</loc></url>
   <url><loc>https://viewtv-p2s3.onrender.com/developer</loc></url>
-</urlset>""",
-        mimetype='application/xml'
-    )
+  <url><loc>https://viewtv-p2s3.onrender.com/terms</loc></url>
+  <url><loc>https://viewtv-p2s3.onrender.com/privacy</loc></url>
+</urlset>
+'''
+    return Response(sitemap, mimetype='application/xml')
 
 #--------------------------------------------------------------------------
 @app.route('/googlefd33f833766d41e1.html')

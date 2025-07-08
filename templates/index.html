@@ -3,59 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="title" content="View Tv - Stream closely all the World's Channels on the comfort of your home" />
-  <meta name="google-site-verification" content="googlefd33f833766d41e1.html">
-  <!-- Inside <head> -->
-  <meta name="google" content="notranslate">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="{{ request.url }}">
-  <meta name="author" content="Vincent Kipngetich" />
-  <meta name="ratings" content="general" />
-  <meta name="description" content="Stream your favorite movies, news and TV shows anytime, anywhere. Sign in or register to watch instantly with no distractions or clutter." />
-  <meta name="keywords" content="TV shows, streaming, online TV, View Tv, watch shows online, online streaming, live tv" />
+  <title>View Tv - Stream Instantly</title>
+
+  <!-- Meta Tags -->
+  <meta name="description" content="Watch global TV channels instantly. No clutter. Just streaming." />
+  <meta name="keywords" content="live tv, streaming, viewtv, watch channels, global shows" />
   <meta name="author" content="View Tv" />
   <meta name="robots" content="index, follow" />
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://viewtv.onrender.com" />
-  <meta property="og:title" content="View Tv - Stream Your Favorite Movies, Shows and more" />
-  <meta property="og:description" content="Sign in or register to start streaming your favorite movies and TV shows instantly." />
-  <meta property="og:image" content="https://viewtv.onrender.com/uploads/og-image.jpg" />
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://viewtv.onrender.com" />
-  <meta property="twitter:title" content="View Tv - Stream Your Favorite Movies and Shows" />
-  <meta property="twitter:description" content="Watch everything, anytime. Start streaming in seconds." />
-  <meta property="twitter:image" content="https://viewtv.onrender.com/uploads/og-image.jpg" />
   <link rel="canonical" href="https://viewtv.onrender.com" />
-  <link rel="icon" type="image/x-icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}" />
+  <link rel="icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}" />
   <link rel="manifest" href="/manifest.json" />
 
-  <title>View Tv - Welcome</title>
+  <!-- Social Meta -->
+  <meta property="og:title" content="View Tv - Global Streaming" />
+  <meta property="og:description" content="Start streaming your favorite TV channels worldwide, instantly." />
+  <meta property="og:image" content="https://viewtv.onrender.com/uploads/og-image.jpg" />
+  <meta property="og:url" content="https://viewtv.onrender.com" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- TailwindCSS CDN -->
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'float': 'float 3s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-5px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    
     .glow-hover:hover {
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
       transform: translateY(-2px);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, #00ffff, #00bfff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .channel-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .channel-card:hover {
+      transform: translateY(-3px);
     }
   </style>
 </head>
-<body class="h-full flex flex-col min-h-screen items-center justify-start text-gray-100 bg-gradient-to-br from-gray-900 to-black p-5">
 
-  <!-- Header -->
-  <header class="w-full sticky top-0 bg-opacity-90 bg-gray-900 flex justify-end p-4 space-x-4 z-30 shadow-md">
-    <a href="/login" class="text-cyan-400 font-semibold px-4 py-2 rounded-full border border-transparent transition hover:bg-cyan-400 hover:text-gray-900 glow-hover">Login</a>
-    <a href="/register" class="text-cyan-400 font-semibold px-4 py-2 rounded-full border border-transparent transition hover:bg-cyan-400 hover:text-gray-900 glow-hover">Register</a>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 flex flex-col min-h-screen">
+
+  <!-- Navigation -->
+  <header class="w-full sticky top-0 z-30 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800 shadow-lg p-4 flex justify-end space-x-4">
+    <a href="/login" class="text-cyan-400 font-medium px-5 py-2 rounded-full hover:bg-cyan-400/10 hover:text-cyan-300 glow-hover transition-all duration-300 border border-cyan-400/30">
+      Login
+    </a>
+    <a href="/register" class="bg-cyan-400/10 text-cyan-400 font-medium px-5 py-2 rounded-full hover:bg-cyan-400 hover:text-gray-900 glow-hover transition-all duration-300 border border-cyan-400/30">
+      Register
+    </a>
   </header>
 
   <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-      <div id="flash-container" class="fixed top-20 right-5 space-y-2 z-40 max-w-xs">
+      <div id="flash-container" class="fixed top-20 right-5 z-40 space-y-2 max-w-xs animate-fade-in">
         {% for category, message in messages %}
-          <div class="px-4 py-2 rounded-lg font-bold shadow-lg {{ 'bg-red-500 text-white' if category == 'error' else 'bg-green-400 text-gray-900' }} transition-opacity duration-500">
+          <div class="px-4 py-3 rounded-lg font-medium shadow-xl 
+                      {{ 'bg-red-500/90 text-white' if category == 'error' else 'bg-green-400/90 text-gray-900' }} transition-all duration-300 border 
+                      {{ 'border-red-400' if category == 'error' else 'border-green-300' }}">
             {{ message }}
           </div>
         {% endfor %}
@@ -73,37 +112,66 @@
   {% endwith %}
 
   <!-- Main Content -->
-  <main class="w-full max-w-4xl mt-20 bg-gray-800 bg-opacity-80 p-8 rounded-3xl shadow-2xl text-center">
-    <h1 class="text-5xl font-extrabold text-cyan-400 mb-6 tracking-wide select-none">Welcome to View Tv</h1>
-    <p class="text-xl text-gray-300 mb-8 max-w-xl mx-auto select-none">Enjoy unlimited streaming of top TV channels and shows — no ads, no clutter. Start watching instantly.</p>
-    <button onclick="location.href='/login'" class="glow-hover bg-cyan-400 text-gray-900 font-bold py-4 px-10 rounded-full shadow-lg transition transform hover:scale-105">Get Started</button>
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-10 space-y-12">
 
-    <section class="channels mt-12 max-h-[38rem] overflow-y-auto space-y-5 px-3">
-      <h2 class="text-3xl font-semibold text-cyan-400 mb-6 select-none">Available TV Channels</h2>
+    <!-- Welcome Section -->
+    <section class="bg-gray-800/60 backdrop-blur-md p-12 rounded-3xl shadow-2xl border border-gray-700/50 animate-float">
+      <h1 class="text-6xl font-bold gradient-text mb-6 tracking-tight">View Tv</h1>
+      <p class="text-xl text-gray-300/90 mb-8 max-w-2xl mx-auto leading-relaxed">
+        View TV is a modern, full-featured streaming platform created by Vincent Kipngetich. It enables users to stream global TV channels instantly, with crystal-clear quality and zero distractions. Global Channel Access. 100+ curated live TV channels. Categories: News, Entertainment, Sports, Movies, Kids. Examples: Citizen TV, Al Jazeera, Baby TV, France 24, ESPN+, Zee One. ⚡ Instant, Distraction-Free Streaming, No ads, no popups, Direct "Watch Now" functionality, Optimized player and much much—more.
+      </p>
+      <button onclick="location.href='/login'" class="glow-hover bg-cyan-400 text-gray-900 font-bold py-3 px-12 rounded-full shadow-lg hover:scale-105 transition-all duration-300 transform hover:shadow-cyan-400/30">
+        Get Started > View Tv
+      </button>
+    </section>
 
-      {% for key, ch in channels.items() %}
-        <div
-          class="channel flex flex-col sm:flex-row sm:justify-between sm:items-center bg-gray-700 bg-opacity-50 p-6 rounded-xl border-l-4 border-cyan-400 glow-hover transition-colors duration-300 hover:bg-gray-600"
-        >
-          <div class="flex items-center text-gray-200 font-semibold text-lg mb-3 sm:mb-0">
-            <span class="mr-3 text-2xl select-none">📺</span>{{ ch.name }}
+    <!-- Channel List -->
+    <section class="space-y-6">
+      <h2 class="text-4xl font-bold text-center text-gray-200 mb-8">
+        <span class="gradient-text">Available Channels</span>
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for key, ch in channels.items() %}
+          <div class="channel-card flex flex-col justify-between bg-gray-800/40 p-6 rounded-xl border border-gray-700/50 hover:border-cyan-400/30">
+            <div class="flex items-center space-x-4">
+              <div class="w-12 h-12 rounded-lg bg-cyan-400/10 flex items-center justify-center border border-cyan-400/20">
+                <span class="text-2xl">📺</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">{{ ch.name }}</h3>
+                <p class="text-sm text-gray-400">{{ ch.category or 'Not Specified' }}</p>
+              </div>
+            </div>
+
+            <div class="mt-4 flex justify-end">
+              {% if ch.url %}
+                <a href="{{ url_for('player', key=key) }}"
+                   class="inline-flex items-center py-2 px-5 rounded-full bg-cyan-400/10 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900 font-medium transition-all duration-300 border border-cyan-400/20">
+                  Watch Now <span class="ml-2">→</span>
+                </a>
+              {% else %}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-700/50 text-gray-400">
+                  Coming Soon
+                </span>
+              {% endif %}
+            </div>
           </div>
-
-          {% if ch.url %}
-            <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank"
-              class="btn glow-hover font-semibold py-2 px-6 rounded-full border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900 transition"
-              >Watch Now</a>
-          {% else %}
-            <span class="italic text-gray-500 select-none">Stream not available</span>
-          {% endif %}
-        </div>
-      {% endfor %}
+        {% endfor %}
+      </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="mt-auto py-6 text-gray-500 text-sm text-center select-none">
-    &copy; {{ current_year }} View Tv. All rights reserved.
+  <footer class="mt-16 py-8 text-gray-500 text-center border-t border-gray-800/50">
+    <div class="max-w-4xl mx-auto px-4">
+      <p class="text-sm">&copy; {{ current_year }} View Tv. Built for seamless streaming.</p>
+      <div class="flex justify-center space-x-6 mt-4">
+        <a href="/terms" class="text-gray-400 hover:text-cyan-400 transition">Terms</a>
+        <a href="/privacy" class="text-gray-400 hover:text-cyan-400 transition">Privacy</a>
+        <a href="/copyright" class="text-gray-400 hover:text-cyan-400 transition">Copyright</a>
+      </div>
+    </div>
   </footer>
 
 </body>

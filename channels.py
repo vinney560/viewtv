@@ -127,7 +127,7 @@ CUSTOM_CHANNELS = {
       "name": "Akili Kids! TV",
       "url": "https://akilikids.co.ke/live/"
     },
-    {
+    "edu": {
       "name": "Edu TV",
       "url": "https://kicd.ac.ke/edutv-live/"
     },

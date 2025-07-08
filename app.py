@@ -1009,11 +1009,11 @@ def callback():
                     user.role = "plus"
                     db.session.commit()
 
-            print("?? Payment verified and VIP access granted.")
+            print("Payment verified and Plus access granted.")
             return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
 
         else:
-            print("?? Payment failed:", result_desc)
+            print("Payment failed:", result_desc)
             return jsonify({"ResultCode": 0, "ResultDesc": "Failed transaction"})
 
     except Exception as e:
@@ -1055,7 +1055,7 @@ def dashboard():
             current_user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
             current_user.plus_type = None
             db.session.commit()
-            flash("Plus depleted. You’ll be redirected in 2 minutes.", "error")
+            flash("Plus depleted.", "error")
             redirect_flag = True
 
     return render_template(

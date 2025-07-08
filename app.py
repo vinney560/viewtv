@@ -177,9 +177,10 @@ def sitemap():
         mimetype='application/xml'
     )
 
+#--------------------------------------------------------------------------
 @app.route('/googlefd33f833766d41e1.html')
 def google_verification():
-    return "google-site-verification: googlefd33f833766d41e1.html"
+    return "google-site-verification: googlefd33f833766d41e1.html"              
 #======================================
 @login_manager.user_loader
 def load_user(user_id):
@@ -1144,6 +1145,14 @@ def logout_current_user():
 def services():
     return render_template('services.html')
 #-----------------------------------------------
+@app.route("/terms")
+def terms():
+    return render_template("terms.html", current_year=datetime.now().year)
+#-------------------------------------------------
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html", current_year=datetime.now().year)
+#------------------------------------------------------
 @app.route('/manifest.json')
 def manifest():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'manifest.json', mimetype='application/manifest+json')

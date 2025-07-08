@@ -941,10 +941,13 @@ def vip_confirm():
 # /copyright, /terms, /developer, /privacy, /about, /logout_current_user, /dashboard, /account, /services, /player, /,
 
 #========================================
+import random
+
 @app.route("/")
 def home():
-    channels = CUSTOM_CHANNELS
-    return render_template('index.html', channels=channels, current_year=datetime.now().year)
+    all_channels = list(CUSTOM_CHANNELS.items())
+    random_channels = dict(random.sample(all_channels, min(15, len(all_channels))))
+    return render_template('index.html', channels=random_channels, current_year=datetime.now().year)
 #--------------------------------------------------------------------------
 @app.route("/about")
 def about():

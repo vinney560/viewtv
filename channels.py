@@ -234,5 +234,73 @@ CUSTOM_CHANNELS = {
     "twenty_four_hour_movies": {
         "name": "24 Hour Free Movie",
         "url": "https://d1j2u714xk898n.cloudfront.net/scheduler/scheduleMaster/145.m3u8"
+    },
+    "movie_box": {
+        "name": "Movie Box",
+        "url": "https://cdn3.skygo.mn/live/disk1/Moviebox/HLS-FTA/Moviebox.m3u8"
+    },
+    "movies_bang": {
+        "name": "Movies!",
+        "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-movies!/index.m3u8"
+    },
+    "moviesphere_hd": {
+        "name": "MovieSphere HD",
+        "url": "https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8"
+    },
+    "gem_drama": {
+        "name": "Gem Drama",
+        "url": "https://ca-rt.onetv.app/gemdrama/index-0.m3u8"
+    },
+    "great_movies": {
+        "name": "Great Movies",
+        "url": "https://amg01753-narrativeuk-amg01753c3-lg-gb-1833.playouts.now.amagi.tv/playlist/amg01753-narrativeuk-greatmovies-lggb/playlist.m3u8"
+    },
+    "great_mystery": {
+        "name": "Great Mystery",
+        "url": "https://linear-861.frequency.stream/dist/lg-uk/861/hls/master/playlist.m3u8"
+    },
+    "bet_her": {
+        "name": "BET HER",
+        "url": "https://fl3.moveonjoy.com/BET_HER/index.m3u8"
+    },
+    "cg_entertainment": {
+        "name": "GG Entertainment",
+        "url": "https://cgentertainment-cgtv-1-it.samsung.wurl.tv/playlist.m3u8"
+    },
+    "entertainment_tonight": {
+        "name": "Entertainment Tonight",
+        "url": "https://cbsta49f-cbsta49f-ms.global.ssl.fastly.net/amagi7b98-AmagiMixible/master/amagi7b98-AmagiMixible.m3u8"
+    },
+    "red_plus": {
+        "name": "RED +",
+        "url": "https://inforedvos.lcdn.claro.net.co/Content/HLS_HLS_DIR/Live/channel(REDMASHDWEB)/master.m3u8"
+    },
+    "zee_one": {
+        "name": "Zee One",
+        "url": "https://ef56ef401101403a8b06f1dec29ef1eb.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/Samsung-de_ZeeOne/playlist.m3u8"
+    },
+    "lol_network": {
+        "name": "LOL! Network",
+        "url": "https://lol-lolnetwork-2-nl.samsung.wurl.tv/playlist.m3u8"
+    },
+    "outdoor_channel": {
+        "name": "Outdoor Channel",
+        "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg00718-outdoorchannela-outdoortvnz-samsungnz/playlist.m3u8"
+    },
+    "bbc_doctor_who": {
+        "name": "BBC Doctor Who",
+        "url": "https://amg00793-amg00793c15-rakuten-es-5359.playouts.now.amagi.tv/playlist.m3u8"
+    },
+    "hells_kitchen": {
+        "name": "Hell's Kitchen",
+        "url": "https://itv-hellskitchen-rakuten.amagi.tv/playlist.m3u8"
+    },
+    "bloomberg_tv_us": {
+        "name": "Bloomberg TV US",
+        "url": "https://bloomberg-bloomberg-3-br.samsung.wurl.tv/manifest/playlist.m3u8"
+    },
+    "military_history": {
+        "name": "Military History",
+        "url": "https://fl3.moveonjoy.com/Military_History/index.m3u8"
     }
-}
+}    

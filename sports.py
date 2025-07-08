@@ -101,13 +101,13 @@ BEIN = {
     "Bein_1": {
         "tvg-country": "TR",
         "tvg-logo": "https://i.imgur.com/QWo0x7S.jpg",
-        "name": "beIN Sports 1 FHD",
+        "name": "beIN Sports FHD",
         "url": "https://stream1.freetv.fun/0--bein-sports-1-1.m3u8"
     },
     "Bein_2": {
         "tvg-country": "UN",
         "tvg-logo": "https://i.imgur.com/QWo0x7S.jpg",
-        "name": "BEIN SPORTS PREMIUM HD",
+        "name": "BEIN SPORTS HD",
         "url": "http://7b30f9aa.tvclub.xyz/iptv/SGME6W4L2A6MNZ/6131/index.m3u8"
     },
     "Bein_3": {
@@ -137,7 +137,7 @@ BEIN = {
     "Bein_7": {
         "tvg-country": "US",
         "tvg-logo": "https://i.imgur.com/uJosqHh.png",
-        "name": "BeIN SPORTS XTRA En Espanol",
+        "name": "BeIN SPORTS En Espanol",
         "url": "https://aegis-cloudfront-1.tubi.video/82c7f2de-f4ea-44a4-8200-069c5c0bb639/playlist.m3u8"
     },
     "Bein_8": {
@@ -149,19 +149,19 @@ BEIN = {
     "Bein_9": {
         "tvg-country": "US",
         "tvg-logo": "https://i.imgur.com/uJosqHh.png",
-        "name": "beIN SPORTS XTRA en español",
+        "name": "beIN SPORTS en español",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/60492fdd9989d30007ccd30a/master.m3u8"
     },
     "Bein_10": {
         "tvg-country": "US",
         "tvg-logo": "https://i.imgur.com/uJosqHh.png",
-        "name": "beIN SPORTS XTRA en español",
+        "name": "beIN SPORTS en español",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/60492fdd9989d30007ccd30a/master.m3u8"
     },
     "Bein_11": {
         "tvg-country": "US",
         "tvg-logo": "https://i.imgur.com/V562tpO.png",
-        "name": "BeIN SPORTS XTRA En Espanol",
+        "name": "BeIN SPORTS En Espanol",
         "url": "https://aegis-cloudfront-1.tubi.video/82c7f2de-f4ea-44a4-8200-069c5c0bb639/playlist.m3u8"
     }
 }
@@ -215,37 +215,37 @@ DAZN = {
     "dazn_1": {
         "tvg-country": "AT",
         "tvg-logo": "",
-        "name": "DAZN x Pluto TV",
+        "name": "DAZN 1",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/64b79c057d934100080b3583/master.m3u8"
     },
     "dazn_2": {
         "tvg-country": "DE",
         "tvg-logo": "",
-        "name": "DAZN x Pluto TV",
+        "name": "DAZN 2",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/64b79c057d934100080b3583/master.m3u8"
     },
     "dazn_3": {
         "tvg-country": "DE",
         "tvg-logo": "",
-        "name": "DAZN x Pluto TV",
+        "name": "DAZN 3",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/64b79c057d934100080b3583/master.m3u8"
     },
     "dazn_4": {
         "tvg-country": "CH",
         "tvg-logo": "",
-        "name": "DAZN x Pluto TV",
+        "name": "DAZN 4",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/64b79c057d934100080b3583/master.m3u8"
     },
     "dazn_5": {
         "tvg-country": "CH",
         "tvg-logo": "",
-        "name": "DAZN x Pluto TV",
+        "name": "DAZN 5",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/64b79c057d934100080b3583/master.m3u8"
     },
     "dazn_6": {
         "tvg-country": "AT",
         "tvg-logo": "",
-        "name": "DAZN x Pluto TV",
+        "name": "DAZN 6",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/64b79c057d934100080b3583/master.m3u8"
     },
     "dazn_7": {
@@ -311,7 +311,7 @@ TV25 = {
     "tv25": {
         "tvg-country": "UN",
         "tvg-logo": "https://od.lk/s/MF8yMjM5NTI2OTZf/TV25_360x360.png",
-        "name": "TV25.8 Untamed TV",
+        "name": "TV25.8",
         "url": "https://cdn.igocast.com/channel8_hls/channel8_master.m3u8"
     }
 }
@@ -320,13 +320,13 @@ E_SPORT = {
     "e_sport_1": {
         "tvg-country": "ES",
         "tvg-logo": "",
-        "name": "Esport3 [Geo-blocked]",
+        "name": "Esport3",
         "url": "https://directes-tv-es.ccma.cat/live-origin/esport3-hls/master.m3u8"
     },
     "e_sport_2": {
         "tvg-country": "ES",
         "tvg-logo": "",
-        "name": "E-sport3 [Geo-blocked]",
+        "name": "E-sport3",
         "url": "https://directes-tv-cat.ccma.cat/live-origin/esport3-hls/master.m3u8"
     }
 }
@@ -354,7 +354,7 @@ EXTREME_SPORTS = {
         "url": "https://extreme-sports-xumo.amagi.tv/playlist.m3u8"
     },
     "extreme_sports_2": {
-        "tvg-country": "AL;AM;BG;DK;FI;FR;GE;DE;GR;HU;IT;NO;PT;RS;ES;SE;CH;TR;UA",
+        "tvg-country": "AL;...",
         "tvg-logo": "https://i.imgur.com/m7IC01U.png",
         "name": "Extreme Sports",
         "url": "https://edge02.odtv.az/o4/extremesport/playlist.m3u8"
@@ -386,13 +386,13 @@ FUTBOL = {
     "futbol_2": {
         "tvg-country": "US",
         "tvg-logo": "",
-        "name": "Futbol 2 [Geo-blocked]",
+        "name": "Futbol 2",
         "url": "https://unidfp-nlds153.global.ssl.fastly.net/nlds/univisionnow/futbol/as/live/futbol_hd_pc.m3u8"
     },
     "futbol_3": {
         "tvg-country": "US",
         "tvg-logo": "",
-        "name": "Futbol 3 [Geo-blocked]",
+        "name": "Futbol 3",
         "url": "https://unidfp-nlds153.global.ssl.fastly.net/nlds/univisionnow/futbol/as/live/futbol_hd_pc.m3u8"
     },
     "futbol_4": {
@@ -455,13 +455,13 @@ FOX_SPORTS = {
     "fox_sports_6": {
         "tvg-country": "US",
         "tvg-logo": "",
-        "name": "Fox Sports en Espanol",
+        "name": "Fox en Espanol",
         "url": "https://lnc-fox-sports-espanol2.tubi.video/index.m3u8"
     },
     "fox_sports_7": {
         "tvg-country": "US",
         "tvg-logo": "",
-        "name": "FOX Sports [Geo-blocked]",
+        "name": "FOX Sports",
         "url": "https://amg02855-foxsports-amg02855c1-xumo-us-1755.playouts.now.amagi.tv/Fox-Sports-AmazonNews/playlist.m3u8"
     }
 }
@@ -470,7 +470,7 @@ FUBO_SPORTS = {
     "fubo_1": {
         "tvg-country": "US",
         "tvg-logo": "",
-        "name": "Fubo Sports [Geo-blocked]",
+        "name": "Fubo Sports",
         "url": "https://lnc-fubo.tubi.video/master.m3u8"
     }
 }
@@ -539,7 +539,7 @@ MORE_THAN_SPORTS = {
     "more_than_spports": {
         "tvg-country": "DE",
         "tvg-logo": "https://i.imgur.com/hRNUo9n.png",
-        "name": "More Than Sports TV",
+        "name": "View TV",
         "url": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8"
     }
 }
@@ -548,13 +548,13 @@ NBA = {
     "nba_1": {
         "tvg-country": "US",
         "tvg-logo": "https://upload.wikimedia.org/wikipedia/en/thumb/d/d2/NBA_TV.svg/512px-NBA_TV.svg.png",
-        "name": "NBA [Geo-blocked]",
+        "name": "NBA",
         "url": "https://nba-tvevents.mobile.aws.nba.com/2024/05/16/26607/dfp/26607_1080p.m3u8"
     },
     "nba_2": {
         "tvg-country": "US",
         "tvg-logo": "",
-        "name": "NBA G-League [Geo-blocked]",
+        "name": "NBA [Geo-blocked]",
         "url": "https://lnc-nba-g.tubi.video/playlist.m3u8"
     }
 }
@@ -599,7 +599,7 @@ OMAN = {
     "oman_1": {
         "tvg-country": "OM",
         "tvg-logo": "https://i.imgur.com/1omi7p8.png",
-        "name": "Oman Sports TV [Not 24/7]",
+        "name": "Oman Sports TV",
         "url": "https://partneta.cdn.mgmlcdn.com/omsport/smil:omsport.stream.smil/chunklist.m3u8"
     }
 }
@@ -608,7 +608,7 @@ PLUTO = {
     "pluto_1": {
         "tvg-country": "IT",
         "tvg-logo": "",
-        "name": "Pluto TV Sport Italy",
+        "name": "Pluto Sport Italy",
         "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/608030eff4b6f70007e1684c/master.m3u8"
     },
     "pluto_2": {
@@ -720,15 +720,15 @@ RED_BULL = {
 
 SEO = {
     "seo_1": {
-        "tvg-country": "AR;BO;CL;CO;PA;PE",
+        "tvg-country": "AR;...",
         "tvg-logo": "https://i.imgur.com/N56B7si.png",
-        "name": "SEO TV 5 Deportes",
+        "name": "SEO 5 Deportes",
         "url": "https://seo.tv.bo/tv/SEOtv_5sd.m3u8"
     },
     "seo_2": {
         "tvg-country": "BO",
         "tvg-logo": "https://i.imgur.com/N56B7si.png",
-        "name": "SEO TV 5 Deportes 2",
+        "name": "SEO 5 Deportes 2",
         "url": "https://seo.tv.bo/tv/SEOtv_5B.m3u8"
     }
 }
@@ -944,7 +944,7 @@ TIGO = {
     "tigo_2": {
         "tvg-country": "SV",
         "tvg-logo": "",
-        "name": "Tigo Sports TV El Salvador",
+        "name": "Tigo Sports TV",
         "url": "https://channel03.tigosports.com.sv/out/v1/31f36d52d558475ca18799d8ca5e4b40/index.m3u8"
     }
 }
@@ -962,7 +962,7 @@ TV_3 = {
     "tv_3": {
         "tvg-country": "",
         "tvg-logo": "",
-        "name": "TV 3 Sport HD LT",
+        "name": "TV 3 Sport HD",
         "url": "http://myott.top/stream/DT6QU63K5VX/416.m3u8"
     }
 }
@@ -971,7 +971,7 @@ TVR = {
     "tvr": {
         "tvg-country": "RO",
         "tvg-logo": "",
-        "name": "TVR Sport [Geo-blocked]",
+        "name": "TVR Sport",
         "url": "https://tvr-tvrsport.cdn.zitec.com/live/tvrsport/main.m3u8"
     }
 }
@@ -986,7 +986,7 @@ TVS = {
     "tvs_2": {
         "tvg-country": "US",
         "tvg-logo": "https://i.imgur.com/Lwwq62E.png",
-        "name": "TVS Sports [Not 24/7]",
+        "name": "TVS Sports",
         "url": "https://bozztv.com/gusa/gusa-tvssports/index.m3u8"
     }
 }
@@ -1031,7 +1031,7 @@ X_SPORTS = {
     "x_sports": {
         "tvg-country": "",
         "tvg-logo": "",
-        "name": "X Sport Plus HD",
+        "name": "X Sport Plus",
         "url": "http://myott.top/stream/DT6QU63K5VX/332.m3u8"
     }
 }
@@ -1040,7 +1040,7 @@ ZOY = {
     "zoy": {
         "tvg-country": "BO",
         "tvg-logo": "",
-        "name": "Zoy TV Sports 1",
+        "name": "Zoy TV Sports",
         "url": "https://fl1004.bozztv.com/ssh101/zoytvsports/index.m3u8"
     }
 }

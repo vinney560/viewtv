@@ -565,6 +565,7 @@ def plus_playlist():
     return redirect(url_for('custom_list'))
 @app.route("/plus-channels")
 @login_required
+@plus_required
 def custom_list():
     return render_template("custom_list.html", channels=CUSTOM_CHANNELS)
 #-------------------------------------------------------------------------

@@ -107,26 +107,6 @@ CUSTOM_CHANNELS = {
         "name": "NBC Sports",
         "url": "https://www.nbcsports.com/live"
     },
-    "nhk-world-japan": {
-        "name": "NHK World Japan",
-        "url": "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index.m3u8"
-    },
-    "nick-anime": {
-        "name": "Nick Anime",
-        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/6266b182b8d2fc00078d12d3/master.m3u8"
-    },
-    "nick_jr": {
-        "name": "Nick Jr.",
-        "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5ca6748a37b88b269472dad9/master.m3u8?serverSideAds=false"
-    },
-    "nick_jr_east": {
-        "name": "Nick Jr. East (USA)",
-        "url": "https://fl2.moveonjoy.com/NICK_JR/index.m3u8"
-    },
-    "nickelodeon": {
-        "name": "Nickelodeon (Pluto TV)",
-        "url": "https://pluto.tv/en/live-tv/nick-classics"
-    },
     "ntv": {
         "name": "NTV Digital",
         "url": "https://ntvkenya.co.ke/live/"
@@ -151,12 +131,108 @@ CUSTOM_CHANNELS = {
         "name": "Ramogi Tv",
         "url": "https://citizen.digital/tv/ramogi-tv-19"
     },
-    "universal_kids": {
-        "name": "Universal Kids",
-        "url": "https://universalkids-plex.amagi.tv/playlist.m3u8"
+    "animax": {
+        "name": "Animax",
+        "url": "https://amg02159-kcglobal-amg02159c1-samsung-in-521.playouts.now.amagi.tv/playlist/amg02159-kcglobal-animax-samsungin/playlist.m3u8"
     },
-    "werutv": {
-        "name": "Weru TV",
-        "url": "https://werutv.co.ke/live/"
+    "baby_first": {
+        "name": "Baby First TV",
+        "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/c8d16110-566c-4e95-a1df-55d175e9e201/manifest.m3u8"
+    },
+    "baby_shark": {
+        "name": "Baby Shark",
+        "url": "https://newidco-babysharktv-1-eu.rakuten.wurl.tv/playlist.m3u8"
+    },
+    "baby_tv": {
+        "name": "Baby TV",
+        "url": "https://babytv-mdh-aka.amagi.tv/playlist.m3u8"
+    },
+    "bollywood_classic": {
+        "name": "Bollywood Classic",
+        "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-classic/manifest.m3u8"
+    },
+    "bollywood_hd": {
+        "name": "Bollywood HD",
+        "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-hd/manifest.m3u8"
+    },
+    "boomerang": {
+        "name": "Boomerang",
+        "url": "https://dai.google.com/linear/hls/event/d4J7lXUyQp2dZQ-pXJ-ItA/master.m3u8"
+    },
+    "btn": {
+        "name": "BTN",
+        "url": "https://2-fss-2.streamhoster.com/pl_138/205510-3094608-1/playlist.m3u8"
+    },
+    "cartoon_network": {
+        "name": "Cartoon Network (Pluto)",
+        "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5eac0ed285f07d0007b9d63b/master.m3u8"
+    },
+    "cbeebies": {
+        "name": "CBeebies (BBC Kids)",
+        "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8"
+    },
+    "chinola": {
+        "name": "CHINOLA TV",
+        "url": "https://tv.wracanal10.com:3300/live/chinolatvlive.m3u8"
+    },
+    "classic_movie": {
+        "name": "Classic Movie",
+        "url": "https://30a-tv.com/feeds/pzaz/30atvmovies.m3u8"
+    },
+    "clan_hevc": {
+        "name": "Clan HEVC",
+        "url": "https://d3nnqrdb77sy13.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-eimbp20cszixb/Clan_ES.m3u8"
+    },
+    "disney": {
+        "name": "Disney",
+        "url": "https://fl5.moveonjoy.com/DISNEY/index.m3u8"
+    },
+    "disney_jr": {
+        "name": "Disney JR",
+        "url": "https://fl3.moveonjoy.com/DISNEY_JR/index.m3u8"
+    },
+    "gem_jr": {
+        "name": "GEM JR",
+        "url": "https://ca-rt.onetv.app/gemjunior/index-0.m3u8"
+    },
+    "gem_kids": {
+        "name": "GEM Kids",
+        "url": "https://ca-rt.onetv.app/gemkids/index-0.m3u8"
+    },
+    "kartoon_channel": {
+        "name": "Kartoon Channel",
+        "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-kartoonchannel-samsungnz/playlist.m3u8"
+    },
+    "ketchap": {
+        "name": "Ketchup",
+        "url": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=13171"
+    },
+    "kidsflix": {
+        "name": "KidsFlix",
+        "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=50"
+    },
+    "ninja_kidz_tv": {
+        "name": "Ninja Kidz TV",
+        "url": "https://playworksdigital-ninjakidztv-1-us.xumo.wurl.tv/playlist.m3u8"
+    },
+    "pbs_kids_1": {
+        "name": "PBS Kids 1",
+        "url": "https://livestream.pbskids.org/out/v1/1e3d77b418ad4a819b3f4c80ac0373b5/est.m3u8"
+    },
+    "pbs_kids_2": {
+        "name": "PBS Kids 2",
+        "url": "https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8"
+    },
+    "tiny_pop": {
+        "name": "Tiny Pop",
+        "url": "https://amg01753-narrativeuk-amg01753c1-lg-gb-1830.playouts.now.amagi.tv/playlist/amg01753-narrativeuk-tinypop-lggb/playlist.m3u8"
+    },
+    "tom_and_jerry": {
+        "name": "Tom and Jerry",
+        "url": "https://live20.bozztv.com/giatvplayout7/giatv-208314/playlist.m3u8"
+    },
+    "twenty_four_hour_movies": {
+        "name": "24 Hour Free Movie",
+        "url": "https://d1j2u714xk898n.cloudfront.net/scheduler/scheduleMaster/145.m3u8"
     }
 }

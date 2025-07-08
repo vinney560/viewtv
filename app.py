@@ -460,19 +460,12 @@ def login():
 
     return render_template('login.html')
 
-#========================================
-    
-@app.route('/home_admin')
-@login_required 
-@admin_required
-def home_admin():
-    return render_template('home_admin.html', user=current_user)
-
-#================================
+#=======================================
 #           >>>>ROLE BASED ACTIONS<<<<
-#================================
-#           >>>>VIP MODE<<<<
-#===============================
+#=======================================
+#           >>>>VIP | PLUS ACCESS<<<<
+#=======================================
+
 def plus_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -484,13 +477,14 @@ def plus_required(f):
             return redirect(url_for("get_plus"))
         return f(*args, **kwargs)
     return decorated_function  
-#-------------------------------------------------
+#-----------------------------------------------------------------------
 @app.route('/home_2')
 @login_required
 @plus_required
 def home_2():
     return render_template('home_2.html', user=current_user)
-#------------------------------------------------
+#-----------------------------------------------------------------------
+# Exclusive sport Logic
 
 import sports  # from sports.py file
 
@@ -552,7 +546,7 @@ def get_grouped_channels():
             })
 
     return grouped
-#------------------------------------------------
+#----------------------------------------------------------------------
 @app.route("/sports_playlist")
 @plus_required
 @login_required
@@ -563,60 +557,17 @@ def sports_playlist():
         channels_by_group=channels_by_group,
         current_year=datetime.now().year
     )
-#------------------------------------------------
-@app.route("/plus_playlist")
+#----------------------------------------------------------------------
+@app.route("/plus-playlist")
 @login_required
 @plus_required
 def plus_playlist():
-    pass
-#------------------------------------------------
-
-@app.route('/player')
-def player():
-    name = request.args.get('name', 'Streaming')
-    url = request.args.get('url')
-    token = request.args.get('token', '')
-
-    if not url:
-        flash("Missing streaming URL.")
-        return render_template("404.html")
-    return render_template(
-        'plus_player.html',
-        name=name,
-        url=url,
-        token=token,
-        current_year=datetime.now().year
-    )
-    
-#-------------------------------------------------
-# Fetch & Save by Country
-@app.route('/save_channels')
+    return redirect(url_for('custom_list'))
+@app.route("/plus-channels")
 @login_required
-@admin_required
-def fetch_and_save_country_channels(country_code):
-    url = f"https://iptv-org.github.io/iptv/countries/{country_code}.m3u"
-    try:
-        response = requests.get(url)
-        lines = response.text.strip().splitlines()
-        new_count = 0
-
-        for i in range(len(lines)):
-            if lines[i].startswith("#EXTINF"):
-                name = lines[i].split(",")[-1].strip()
-                if i + 1 < len(lines):
-                    link = lines[i + 1].strip()
-                    if link.endswith(".m3u8"):
-                        # Avoid duplicates
-                        exists = Channel.query.filter_by(Tv=name, Tv_url=link).first()
-                        if not exists:
-                            db.session.add(Channel(Tv=name, Tv_url=link, country=country_code))
-                            new_count += 1
-
-        db.session.commit()
-        print(f"[INFO] Added {new_count} new channels from {country_code}")
-    except Exception as e:
-        print(f"[ERROR] Failed to fetch from {url}: {e}")
-#-------------------------------------------------
+def custom_list():
+    return render_template("custom_list.html", channels=CUSTOM_CHANNELS)
+#-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required
 @plus_required
@@ -628,7 +579,7 @@ def countries():
         return render_template("countries.html", countries=countries)
     except Exception as e:
         return f"Error fetching countries: {e}"
-#------------------------------------------------
+#-------------------------------------------------------------------------
 @app.route("/country/<country_code>")
 @login_required
 @plus_required
@@ -650,7 +601,7 @@ def fetch_country_channels(country_code):
         return render_template("channels.html", channels=channels, country=country_code.upper())
     except Exception as e:
         return f"Error fetching channels: {e}"
-#-----------------------------------------------
+#-------------------------------------------------------------------------
 @app.route("/category/<category_id>")
 @login_required 
 @plus_required
@@ -672,7 +623,7 @@ def fetch_category_channels(category_id):
         return render_template("channels.html", channels=channels, category=category_id.capitalize())
     except Exception as e:
         return f"Error fetching category channels: {e}"
-#-------------------------------------------------
+#------------------------------------------------------------------------
 @app.route("/categories")
 @login_required
 @plus_required
@@ -684,13 +635,13 @@ def categories():
         return render_template("categories.html", categories=categories)
     except Exception as e:
         return f"Failed to load categories: {e}"
-#-------------------------------------------------
+#-----------------------------------------------------------------------
 @app.route("/more-channels")
 @login_required
 @plus_required
 def more_channels():
     return render_template("more_channels.html")
-#-------------------------------------------------
+#-------------------------------------------------------------------------
 @app.route("/watch")
 @login_required
 def watch():
@@ -746,9 +697,9 @@ def test_channels():
             channels.append({"name": name, "url": stream_url})
     return render_template("channels.html", channels=channels)
 
-#================================
-#             >>>>BASIC MODE<<<<
-#================================
+#=======================================
+#           >>>>BASIC USER ENDPOINTS<<<<
+#=======================================
 from channels import CUSTOM_CHANNELS 
 
 #basic_mode Home page 
@@ -761,11 +712,11 @@ def home_1():
 #with open('channels.json', 'r') as file:
 #    custom_channels = json.load(file)
 
-@app.route("/custom-list")
-@login_required
-def custom_list():
-    return render_template("custom_list.html", channels=CUSTOM_CHANNELS)
-#-------------------------------------------------
+#======================================
+#               >>>>PLAYERS AVAILABLE<<<<
+#======================================
+#  For home_1 - basic users and home_2 - Plus          access users
+
 @app.route("/channel/<key>")
 @login_required
 def play_channel(key):
@@ -785,7 +736,24 @@ def play_channel(key):
         channels=channels,       # Now a list of dicts with name, url, key
         current_key=key          # Pass current key for highlighting
     )
-#-------------------------------------------------
+#------------------------------------------------------------------------
+@app.route('/player')
+def player():
+    name = request.args.get('name', 'Streaming')
+    url = request.args.get('url')
+    token = request.args.get('token', '')
+
+    if not url:
+        flash("Missing streaming URL.")
+        return render_template("404.html")
+    return render_template(
+        'plus_player.html',
+        name=name,
+        url=url,
+        token=token,
+        current_year=datetime.now().year
+    )
+#------------------------------------------------------------------------
 @app.route("/api/channel_stream_url")
 @login_required
 def channel_stream_url():
@@ -798,9 +766,9 @@ def channel_stream_url():
         "name": channel["name"]
     })
 
-#================================
+#======================================
 #        >>>>PLUS & PAYMENT FEATURE<<<<
-#================================
+#======================================
 #free plus feature
 
 @app.route("/get_plus")
@@ -827,74 +795,14 @@ def claim_free_plus():
     flash("🎁 Free Plus activated for 2 hours!", "success")
     return redirect(url_for("dashboard"))
 
-#add || update plus(timer)
 
-@app.route("/admin/manage_plus")
-@login_required
-@admin_required
-def manage_plus():
-    users = User.query.filter(User.plus_expires_at != None).all()
-    
-    now = datetime.utcnow()
-    user_data = []
-    for user in users:
-        remaining = (user.plus_expires_at - now).total_seconds()
-        if remaining < 0:
-            remaining = 0
-        hours = int(remaining // 3600)
-        minutes = int((remaining % 3600) // 60)
-        seconds = int(remaining % 60)
-        user_data.append({
-            "user": user,
-            "remaining_str": f"{hours}h {minutes}m {seconds}s"
-        })
-    
-    return render_template("manage_plus.html", users=user_data)
-#------------------------------------------------------------------
-@app.route("/admin/update_plus/<int:user_id>", methods=["POST"])
-@login_required
-@admin_required
-def update_plus(user_id):
-    user = User.query.get_or_404(user_id)
-
-    try:
-        hours = int(request.form.get("hours", 0))
-        minutes = int(request.form.get("minutes", 0))
-        seconds = int(request.form.get("seconds", 0))
-
-        duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
-        if duration.total_seconds() <= 0:
-            flash("Duration must be greater than 0", "error")
-            return redirect(url_for("manage_plus"))
-
-        user.plus_expires_at = datetime.utcnow() + duration
-        user.plus_type = user.plus_type or "paid"
-        db.session.commit()
-
-        flash(f"Updated Plus time for {user.email}", "success")
-    except Exception as e:
-        flash("Failed to update Plus", "error")
-
-    return redirect(url_for("manage_plus"))
-#-------------------------------------------------------------------    
-@app.route("/admin/delete_plus/<int:user_id>", methods=["POST"])
-@login_required
-@admin_required
-def delete_plus(user_id):
-    user = User.query.get_or_404(user_id)
-    user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
-    user.plus_type = None
-    db.session.commit()
-
-    flash(f"Revoked Plus for {user.email}", "success")
-    return redirect(url_for("manage_plus"))
 #-----------------------------------------------------------------------
 
 @app.route('/payment')
 def payment():
     return render_template('pay.html', user=current_user)
 
-# ------------------------------------------------
+# ----------------------------------------------------------------------
 
 @app.route('/api/pay', methods=['POST'])
 def pay():
@@ -975,7 +883,7 @@ def pay():
     except Exception as e:
         return jsonify({"success": False, "message": f"Push error: {str(e)}"}), 500
 
-# ------------------------------------------------
+# ------------------------------------------------------------------------
 @app.route('/callback', methods=['POST'])
 def callback():
     data = request.get_json()
@@ -1019,7 +927,7 @@ def callback():
     except Exception as e:
         print("Callback processing error:", str(e))
         return jsonify({"ResultCode": 1, "ResultDesc": "Error processing callback"})
-# ------------------------------------------------
+# ------------------------------------------------------------------------
 @app.route('/vip-confirm')
 def vip_confirm():
     flash(" PAYMENT SUCCESSFUL. You are now a VIP. Please log in again.", "success")
@@ -1028,16 +936,54 @@ def vip_confirm():
     
 #================================
 #       >>>>GENERAL ENDPOINTS<<<<
-#================================
+
+# /copyright, /terms, /developer, /privacy, /about, /logout_current_user, /dashboard, /account, /services, /player, /,
+
+#========================================
 @app.route("/")
 def home():
     channels = CUSTOM_CHANNELS
     return render_template('index.html', channels=channels, current_year=datetime.now().year)
-#-------------------------------------------------
+#--------------------------------------------------------------------------
 @app.route("/about")
 def about():
     return render_template("about.html", current_year=datetime.utcnow().year)
-#-------------------------------------------------
+#------------------------------------------------------------------------
+@app.route("/developer")
+def developer():
+    return render_template("developer.html", current_year=datetime.utcnow().year)
+#------------------------------------------------------------------------
+@app.route('/copyright')
+def copyright():
+    return render_template('copyright.html')
+#-------------------------------------------------------------------------
+@app.route("/welcome")
+@login_required
+def welcome():
+    return render_template("welcome.html")
+#--------------------------------------------------------------------------
+@app.route('/logout_current_user')
+def logout_current_user():
+    session.clear()
+    flask_logout_user()
+    return redirect(url_for("home"))
+#-------------------------------------------------------------------------  
+@app.route('/services') 
+def services():
+    return render_template('services.html')
+#--------------------------------------------------------------------------
+@app.route("/terms")
+def terms():
+    return render_template("terms.html", current_year=datetime.now().year)
+#------------------------------------------------------------------------
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html", current_year=datetime.now().year)
+#--------------------------------------------------------------------------
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'manifest.json', mimetype='application/manifest+json')
+#-------------------------------------------------------------------------
 @app.route("/dashboard")
 @login_required
 def dashboard():
@@ -1065,100 +1011,8 @@ def dashboard():
         redirect_in_2min=redirect_flag,
         timedelta=timedelta,
         now=datetime.utcnow()
-    )
-#-------------------------------------------------
-
-@app.route("/manage-users")
-@login_required
-@admin_required
-def manage_users():
-
-    users = User.query.filter(User.id != current_user.id).order_by(User.created_at.desc()).all()
-    return render_template("manage_users.html", users=users)
-
-@app.route("/toggle-admin/<int:user_id>", methods=["POST"])
-@login_required
-@admin_required
-def toggle_admin(user_id):
-
-    user = User.query.get_or_404(user_id)
-    user.role = "user" if user.role == "admin" else "admin"
-    db.session.commit()
-    flash(f"User role changed to '{user.role}'.", "success")
-    return redirect(url_for("manage_users"))
-
-
-@app.route("/toggle-ban/<int:user_id>", methods=["POST"])
-@login_required
-@admin_required
-def toggle_ban(user_id):
-
-    user = User.query.get_or_404(user_id)
-    if user.status == "Banned":
-        user.status = "Active"
-        flash("User unbanned.", "success")
-    else:
-        user.status = "Banned"
-        flash("User banned.", "warning")
-    db.session.commit()
-    return redirect(url_for("manage_users"))
-
-
-@app.route("/delete-user/<int:user_id>", methods=["POST"])
-@login_required
-@admin_required
-def delete_user(user_id):
-    if current_user.role != "admin":
-        flash("Access denied", "error")
-        return redirect(url_for("dashboard"))
-
-    user = User.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
-    flash("User deleted.", "success")
-    return redirect(url_for("manage_users"))
-
-@app.route('/admin/manage_channels')    
-def manage_channels():
-    pass
-
-#--------------------------------------------------
-@app.route("/developer")
-def developer():
-    return render_template("developer.html", current_year=datetime.utcnow().year)
-#-------------------------------------------------
-@app.route('/copyright')
-def copyright():
-    return render_template('copyright.html')
-#-------------------------------------------------
-@app.route("/welcome")
-@login_required
-def welcome():
-    return render_template("welcome.html")
-#-------------------------------------------------
-@app.route('/logout_current_user')
-def logout_current_user():
-    session.clear()
-    flask_logout_user()
-    return redirect(url_for("home"))
-#-----------------------------------------------  
-@app.route('/services') 
-def services():
-    return render_template('services.html')
-#-----------------------------------------------
-@app.route("/terms")
-def terms():
-    return render_template("terms.html", current_year=datetime.now().year)
-#-------------------------------------------------
-@app.route("/privacy")
-def privacy():
-    return render_template("privacy.html", current_year=datetime.now().year)
-#------------------------------------------------------
-@app.route('/manifest.json')
-def manifest():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'manifest.json', mimetype='application/manifest+json')
-#----------------------------------------------
-
+    )    
+#-------------------------------------------------------------------------
 @app.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
@@ -1206,7 +1060,160 @@ def account():
 
     return render_template("account_stns.html", user=current_user, time_remaining_seconds=remaining)
 
-#================================
+#=======================================
+#              >>>>ADMIN ENDPOINT<<<<
+#=======================================
+
+@app.route('/home_admin')
+@login_required 
+@admin_required
+def home_admin():
+    return render_template('home_admin.html', user=current_user)
+#-------------------------------------------------------------------------
+#add || update plus(timer)
+
+@app.route("/admin/manage_plus")
+@login_required
+@admin_required
+def manage_plus():
+    users = User.query.filter(User.plus_expires_at != None).all()
+    
+    now = datetime.utcnow()
+    user_data = []
+    for user in users:
+        remaining = (user.plus_expires_at - now).total_seconds()
+        if remaining < 0:
+            remaining = 0
+        hours = int(remaining // 3600)
+        minutes = int((remaining % 3600) // 60)
+        seconds = int(remaining % 60)
+        user_data.append({
+            "user": user,
+            "remaining_str": f"{hours}h {minutes}m {seconds}s"
+        })
+    
+    return render_template("manage_plus.html", users=user_data)
+#-------------------------------------------------------------------------
+@app.route("/admin/update_plus/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def update_plus(user_id):
+    user = User.query.get_or_404(user_id)
+
+    try:
+        hours = int(request.form.get("hours", 0))
+        minutes = int(request.form.get("minutes", 0))
+        seconds = int(request.form.get("seconds", 0))
+
+        duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        if duration.total_seconds() <= 0:
+            flash("Duration must be greater than 0", "error")
+            return redirect(url_for("manage_plus"))
+
+        user.plus_expires_at = datetime.utcnow() + duration
+        user.plus_type = user.plus_type or "paid"
+        db.session.commit()
+
+        flash(f"Updated Plus time for {user.email}", "success")
+    except Exception as e:
+        flash("Failed to update Plus", "error")
+
+    return redirect(url_for("manage_plus"))
+#-------------------------------------------------------------------    
+@app.route("/admin/delete_plus/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def delete_plus(user_id):
+    user = User.query.get_or_404(user_id)
+    user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
+    user.plus_type = None
+    db.session.commit()
+
+    flash(f"Revoked Plus for {user.email}", "success")
+    return redirect(url_for("manage_plus"))
+#-------------------------------------------------------------------------
+# user management
+
+@app.route("/manage-users")
+@login_required
+@admin_required
+def manage_users():
+
+    users = User.query.filter(User.id != current_user.id).order_by(User.created_at.desc()).all()
+    return render_template("manage_users.html", users=users)
+#--------------------------------------------------------------------------
+@app.route("/toggle-admin/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def toggle_admin(user_id):
+
+    user = User.query.get_or_404(user_id)
+    user.role = "user" if user.role == "admin" else "admin"
+    db.session.commit()
+    flash(f"User role changed to '{user.role}'.", "success")
+    return redirect(url_for("manage_users"))
+#-------------------------------------------------------------------------
+@app.route("/toggle-ban/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def toggle_ban(user_id):
+
+    user = User.query.get_or_404(user_id)
+    if user.status == "Banned":
+        user.status = "Active"
+        flash("User unbanned.", "success")
+    else:
+        user.status = "Banned"
+        flash("User banned.", "warning")
+    db.session.commit()
+    return redirect(url_for("manage_users"))
+#--------------------------------------------------------------------------
+@app.route("/delete-user/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def delete_user(user_id):
+    if current_user.role != "admin":
+        flash("Access denied", "error")
+        return redirect(url_for("dashboard"))
+
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash("User deleted.", "success")
+    return redirect(url_for("manage_users"))
+#---------------------------------------------------------------------------
+@app.route('/admin/manage_channels')    
+def manage_channels():
+    pass
+#-------------------------------------------------------------------------
+# Fetch & Save by Country
+@app.route('/save_channels')
+@login_required
+@admin_required
+def fetch_and_save_country_channels(country_code):
+    url = f"https://iptv-org.github.io/iptv/countries/{country_code}.m3u"
+    try:
+        response = requests.get(url)
+        lines = response.text.strip().splitlines()
+        new_count = 0
+
+        for i in range(len(lines)):
+            if lines[i].startswith("#EXTINF"):
+                name = lines[i].split(",")[-1].strip()
+                if i + 1 < len(lines):
+                    link = lines[i + 1].strip()
+                    if link.endswith(".m3u8"):
+                        # Avoid duplicates
+                        exists = Channel.query.filter_by(Tv=name, Tv_url=link).first()
+                        if not exists:
+                            db.session.add(Channel(Tv=name, Tv_url=link, country=country_code))
+                            new_count += 1
+
+        db.session.commit()
+        print(f"[INFO] Added {new_count} new channels from {country_code}")
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch from {url}: {e}")
+#========================================
 
 @app.context_processor
 def inject_csrf_token():
@@ -1236,6 +1243,6 @@ def handle_csrf_error(e):
     flash("CSRF token missing or invalid", "error")
     return redirect(request.referrer or url_for('home')), 400
 
-#================================
+#========================================
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=47947, debug=False)

@@ -1055,7 +1055,7 @@ def dashboard():
             current_user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
             current_user.plus_type = None
             db.session.commit()
-            flash("Plus depleted.", "error")
+            flash("Plus depleted. Visit Plus Page", "error")
             redirect_flag = True
 
     return render_template(

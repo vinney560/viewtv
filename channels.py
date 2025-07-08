@@ -19,6 +19,10 @@ CUSTOM_CHANNELS = {
         "name": "Al Jazeera English",
         "url": "https://www.aljazeera.com/live"
     },
+    "baby_tv": {
+        "name": "Baby TV",
+        "url": "https://babytv-mdh-aka.amagi.tv/playlist.m3u8"
+    },
     "baby_tv_hls": {
         "name": "Baby TV (HLS)",
         "url": "http://181.78.85.53:9002/play/a03f/index.m3u8"
@@ -26,6 +30,14 @@ CUSTOM_CHANNELS = {
     "bein_sports": {
         "name": "beIN SPORTS",
         "url": "https://aegis-cloudfront-1.tubi.video/82c7f2de-f4ea-44a4-8200-069c5c0bb639/playlist.m3u8"
+    },
+    "boomerang": {
+        "name": "Boomerang",
+        "url": "https://dai.google.com/linear/hls/event/d4J7lXUyQp2dZQ-pXJ-ItA/master.m3u8"
+    },
+    "cbeebies": {
+        "name": "CBeebies (BBC Kids)",
+        "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8"
     },
     "cartoon_network": {
         "name": "Cartoon Network (Pluto)",
@@ -38,6 +50,18 @@ CUSTOM_CHANNELS = {
     "citizen-tv-extra": {
         "name": "Citizen Extra",
         "url": "https://www.youtube.com/embed/MDA0XHrnNl4"
+    },
+    "discovery_kids": {
+        "name": "Discovery Kids (LATAM)",
+        "url": "https://playout1753.livextend.tv/live/discoverykids_adaptive/index.m3u8"
+    },
+    "disney_channel": {
+        "name": "Disney Channel",
+        "url": "https://disneynow-lh.akamaihd.net/i/disneynow_1@345060/master.m3u8"
+    },
+    "disney_junior": {
+        "name": "Disney Junior",
+        "url": "https://disneynow-lh.akamaihd.net/i/disneyjr_1@356032/master.m3u8"
     },
     "disney_1": {
         "name": "Disney Channel",
@@ -111,6 +135,10 @@ CUSTOM_CHANNELS = {
         "name": "NTV",
         "url": "https://www.youtube.com/embed/p4BWnK2xeHw"
     },
+    "pbs_kids": {
+        "name": "PBS Kids",
+        "url": "https://kidslive-aka.amagi.tv/playlist.m3u8"
+    },
     "pltv-usa-movies": {
         "name": "Movies",
         "url": "https://i.mjh.nz/PlutoTV/us.m3u8"
@@ -122,6 +150,10 @@ CUSTOM_CHANNELS = {
     "ramogitv": {
         "name": "Ramogi Tv",
         "url": "https://citizen.digital/tv/ramogi-tv-19"
+    },
+    "universal_kids": {
+        "name": "Universal Kids",
+        "url": "https://universalkids-plex.amagi.tv/playlist.m3u8"
     },
     "werutv": {
         "name": "Weru TV",

@@ -88,6 +88,8 @@
   {% endwith %}
 
   <div class="w-full max-w-5xl space-y-6 animate-fade-in">
+    <!-- Back Button -->
+    <a href="{{ url_for('home_admin') }}" class="flex items-center text-cyan-400 hover:text-cyan-300 transition-colors mb-4"><svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>Back</a>
     <h1 class="text-3xl font-bold text-center text-cyan-400 mb-2">Manage Channels</h1>
     <p class="text-center text-gray-400 mb-6">Total Channels: {{ channels|length }}</p>
 

@@ -790,6 +790,23 @@ def play_channel(key):
     )
 #------------------------------------------------------------------------
 import subprocess
+from flask import jsonify
+
+@app.route('/diagnostics', methods=['POST'])
+def diagnostics():
+    if request.form.get('cmd') == 'which ffmpeg':
+        try:
+            result = subprocess.check_output(['which', 'ffmpeg'], stderr=subprocess.STDOUT)
+            return jsonify({
+                'success': True,
+                'path': result.decode().strip()
+            })
+        except subprocess.CalledProcessError:
+            return jsonify({
+                'success': False,
+                'error': 'FFmpeg not found'
+            }), 500
+    return jsonify({'error': 'Invalid command'}), 400
 
 # Enhanced HLS Proxy Route
 @app.route('/hls/<int:channel_id>.m3u8')

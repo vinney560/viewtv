@@ -1264,7 +1264,6 @@ from sqlalchemy.exc import OperationalError
 
 @app.route("/admin/clone_data")
 @login_required
-@admin_required
 def clone_data():
 
     db1_url = os.getenv("DATABASE_URL")

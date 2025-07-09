@@ -34,26 +34,26 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 
 def choose_db_uri():
-    new_uri = os.getenv('DATABASE_URL_2')     # Prefer this (New render)
-    render_uri = os.getenv('DATABASE_URL')    # Fallback (Render)
+    new_uri = os.getenv('DATABASE_URL')     # Prefer this (Old Render)
+    render_uri = os.getenv('DATABASE_URL_2')    # Fallback ( New Render)
 
     if new_uri:
         try:
             engine = create_engine(new_uri)
             engine.connect().close()
-            print("✅ Connected to New DB (DATABASE_URL_2)")
+            print("✅ Connected to Render DB (DATABASE_URL)")
             return new_uri
         except OperationalError:
-            print("⚠ Failed to connect to New DB. Trying Render DB...")
+            print("⚠ Failed to connect to Render DB. Trying Render 2 DB...")
 
     if render_uri:
         try:
             engine = create_engine(render_uri)
             engine.connect().close()
-            print("Connected to Render DB (DATABASE_URL)")
+            print("Connected to Render 2 DB (DATABASE_URL)")
             return render_uri
         except OperationalError:
-            print("⚠ Failed to connect to Render DB.")
+            print("⚠ Failed to connect to Render 2 DB.")
 
     print("All remote DBs failed. Falling back to SQLite.")
     return "sqlite:///default.db"

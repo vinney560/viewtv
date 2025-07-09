@@ -1244,11 +1244,10 @@ def toggle_ban(user_id):
 @login_required
 @admin_required
 def delete_user(user_id):
-    if current_user.role != "admin":
-        flash("Access denied", "error")
-        return redirect(url_for("dashboard"))
 
     user = User.query.get_or_404(user_id)
+    # Delete associated payments (if any)
+    Payment.query.filter_by(user_id=user.id).delete()
     db.session.delete(user)
     db.session.commit()
     flash("User deleted.", "success")

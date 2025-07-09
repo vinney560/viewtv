@@ -749,12 +749,13 @@ def save_channels(channels):
 # Expose as alias
 CUSTOM_CHANNELS = load_channels()
 
-#basic_mode Home page 
+# Generate a random sample ONCE when the server starts
+RANDOMIZED_CHANNELS = dict(random.sample(CUSTOM_CHANNELS.items(), min(15, len(CUSTOM_CHANNELS))))
+
 @app.route('/home_1')
 @login_required
 def home_1():
-    channels=CUSTOM_CHANNELS
-    return render_template('home_1.html', user=current_user, channels=channels)
+    return render_template('home_1.html', user=current_user, channels=RANDOMIZED_CHANNELS)
 
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<

@@ -67,6 +67,19 @@
       opacity: 0;
       pointer-events: none;
     }
+    #retry-button {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(34, 211, 238, 0.8);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 100;
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen bg-black text-white">
@@ -99,6 +112,7 @@
         webkit-playsinline
       ></video>
       <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+      <button id="retry-button" class="hidden">Retry Connection</button>
     </div>
     <p id="error-message" class="mt-4 text-red-500 hidden text-sm sm:text-base"></p>
   </main>
@@ -113,6 +127,9 @@
     // Configuration
     const FFMPEG_PROXY_URL = "https://viewtv-p2s3.onrender.com/hls";
     let currentHlsInstance = null;
+    let currentStreamUrl = '';
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
 
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -125,10 +142,18 @@
       return extMatch ? extMatch[1].toLowerCase() : '';
     }
 
-    function showError(msg) {
+    function showError(msg, showRetry = true) {
       const errorMsg = document.getElementById('error-message');
+      const retryBtn = document.getElementById('retry-button');
+      
       errorMsg.textContent = msg;
       errorMsg.classList.remove('hidden');
+      
+      if (showRetry) {
+        retryBtn.classList.remove('hidden');
+      } else {
+        retryBtn.classList.add('hidden');
+      }
     }
 
     function cleanupPreviousStream() {
@@ -142,14 +167,21 @@
       }
     }
 
-    function playStream(url) {
+    function playStream(url, isRetry = false) {
+      if (!isRetry) {
+        retryCount = 0;
+        currentStreamUrl = url;
+      }
+      
       cleanupPreviousStream();
       
       const player = document.getElementById('player');
       const iframe = document.getElementById('iframe-player');
       const errorMsg = document.getElementById('error-message');
+      const retryBtn = document.getElementById('retry-button');
 
       errorMsg.classList.add('hidden');
+      retryBtn.classList.add('hidden');
       iframe.style.display = 'none';
 
       const ext = getExtension(url);
@@ -181,19 +213,22 @@
         currentHlsInstance = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
-          backBufferLength: 30,
           maxBufferLength: 30,
-          maxMaxBufferLength: 60
+          maxMaxBufferLength: 60,
+          maxBufferSize: 60 * 1000 * 1000,
+          maxBufferHole: 0.5,
+          highBufferWatchdogPeriod: 2
         });
         
         currentHlsInstance.loadSource(url);
         currentHlsInstance.attachMedia(player);
         
         currentHlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+          retryCount = 0;
           player.style.display = 'block';
           player.muted = false;
           player.play().catch(e => {
-            showError("Autoplay blocked. Click the player to start.");
+            showError("Autoplay blocked. Click the player to start.", false);
           });
         });
         
@@ -201,29 +236,36 @@
           if (data.fatal) {
             switch(data.type) {
               case Hls.ErrorTypes.NETWORK_ERROR:
-                showError("Network error. Retrying...");
-                currentHlsInstance.startLoad();
+                retryCount++;
+                if (retryCount <= MAX_RETRIES) {
+                  showError(`Network error. Retrying (${retryCount}/${MAX_RETRIES})...`, false);
+                  setTimeout(() => {
+                    if (data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR || 
+                        data.details === Hls.ErrorDetails.MANIFEST_LOAD_TIMEOUT) {
+                      // Force fresh manifest load
+                      playStream(currentStreamUrl, true);
+                    } else {
+                      currentHlsInstance.startLoad();
+                    }
+                  }, 2000 * retryCount); // Exponential backoff
+                } else {
+                  showError("Connection failed. Try again later.", true);
+                }
                 break;
               case Hls.ErrorTypes.MEDIA_ERROR:
                 currentHlsInstance.recoverMediaError();
                 break;
               default:
-                showError("Stream error. Try refreshing.");
-                if (isProxy) {
-                  // Fallback to direct TS if proxy fails
-                  const tsUrl = url.replace('.m3u8', '.ts')
-                                   .replace(/^.*\/hls\//, 'http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/');
-                  playDirect(tsUrl);
-                }
+                showError("Stream error. Try refreshing.", true);
             }
           }
         });
       } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
         player.src = url;
         player.style.display = 'block';
-        player.play().catch(e => showError("Autoplay blocked. Click to start."));
+        player.play().catch(e => showError("Autoplay blocked. Click to start.", false));
       } else {
-        showError("HLS not supported in this browser");
+        showError("HLS not supported in this browser", true);
       }
     }
 
@@ -233,9 +275,9 @@
         const dashPlayer = dashjs.MediaPlayer().create();
         dashPlayer.initialize(player, url, true);
         player.style.display = 'block';
-        player.play().catch(e => showError("Autoplay blocked. Click to start."));
+        player.play().catch(e => showError("Autoplay blocked. Click to start.", false));
       } catch(e) {
-        showError("DASH playback error: " + e.message);
+        showError("DASH playback error: " + e.message, true);
       }
     }
 
@@ -243,7 +285,7 @@
       const player = document.getElementById('player');
       player.src = url;
       player.style.display = 'block';
-      player.play().catch(e => showError("Autoplay blocked. Click to start."));
+      player.play().catch(e => showError("Autoplay blocked. Click to start.", false));
     }
 
     function playIFrame(url) {
@@ -257,12 +299,18 @@
       const streamUrl = getQueryParam('url');
       const token = getQueryParam('token');
       if (!streamUrl) {
-        showError("No stream URL provided");
+        showError("No stream URL provided", false);
         return;
       }
 
-      const urlWithToken = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
-      playStream(urlWithToken);
+      currentStreamUrl = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
+      
+      // Set up retry button
+      document.getElementById('retry-button').addEventListener('click', () => {
+        playStream(currentStreamUrl, true);
+      });
+
+      playStream(currentStreamUrl);
     })();
 
     // Fullscreen toggle logic

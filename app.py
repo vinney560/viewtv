@@ -732,7 +732,22 @@ def test_channels():
 #=======================================
 #           >>>>BASIC USER ENDPOINTS<<<<
 #=======================================
-from channels import CUSTOM_CHANNELS 
+import json
+
+CHANNELS_FILE = 'channels.json'
+
+def load_channels():
+    if not os.path.exists(CHANNELS_FILE):
+        return {}
+    with open(CHANNELS_FILE, 'r') as f:
+        return json.load(f)
+
+def save_channels(channels):
+    with open(CHANNELS_FILE, 'w') as f:
+        json.dump(channels, f, indent=2)
+
+# Expose as alias
+CUSTOM_CHANNELS = load_channels()
 
 #basic_mode Home page 
 @app.route('/home_1')
@@ -740,9 +755,6 @@ from channels import CUSTOM_CHANNELS
 def home_1():
     channels=CUSTOM_CHANNELS
     return render_template('home_1.html', user=current_user, channels=channels)
-
-#with open('channels.json', 'r') as file:
-#    custom_channels = json.load(file)
 
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
@@ -1217,10 +1229,6 @@ def delete_user(user_id):
     flash("User deleted.", "success")
     return redirect(url_for("manage_users"))
 #---------------------------------------------------------------------------
-@app.route('/admin/manage_channels')    
-def manage_channels():
-    pass
-#-------------------------------------------------------------------------
 # Fetch & Save by Country
 @app.route('/save_channels')
 @login_required
@@ -1299,6 +1307,63 @@ def clone_data():
         dest_session.close()
 
     return redirect(url_for("home_admin"))
+#--------------------------------------------------------------------------
+@app.route("/admin/manage_channels")
+@login_required
+@admin_required
+def manage_channels():
+    channels = load_channels()
+    return render_template("manage_channels.html", channels=channels)
+#--------------------------------------------------------------------------
+@app.route("/admin/channels/add", methods=["POST"])
+def add_channel():
+    key = request.form.get("key").strip()
+    name = request.form.get("name").strip()
+    url = request.form.get("url").strip()
+
+    if not key or not name or not url:
+        flash("All fields are required.", "error")
+        return redirect(url_for("manage_channels"))
+
+    channels = load_channels()
+    if key in channels:
+        flash("Key already exists.", "error")
+        return redirect(url_for("manage_channels"))
+
+    channels[key] = {"name": name, "url": url}
+    save_channels(channels)
+    flash("Channel added successfully.", "success")
+    return redirect(url_for("manage_channels"))
+#--------------------------------------------------------------------------
+@app.route("/admin/channels/edit/<key>", methods=["POST"])
+def edit_channel(key):
+    name = request.form.get("name").strip()
+    url = request.form.get("url").strip()
+
+    if not name or not url:
+        flash("All fields are required.", "error")
+        return redirect(url_for("manage_channels"))
+
+    channels = load_channels()
+    if key not in channels:
+        flash("Channel not found.", "error")
+        return redirect(url_for("manage_channels"))
+
+    channels[key] = {"name": name, "url": url}
+    save_channels(channels)
+    flash("Channel updated.", "success")
+    return redirect(url_for("manage_channels"))
+#--------------------------------------------------------------------------
+@app.route("/admin/channels/delete/<key>", methods=["POST"])
+def delete_channel(key):
+    channels = load_channels()
+    if key in channels:
+        del channels[key]
+        save_channels(channels)
+        flash("Channel deleted.", "success")
+    else:
+        flash("Channel not found.", "error")
+    return redirect(url_for("manage_channels"))
 #========================================
 
 @app.context_processor

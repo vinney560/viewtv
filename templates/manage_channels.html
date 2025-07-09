@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Channels | View TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: {
+            glow: '0 0 15px rgba(0,255,255,0.6)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(0,255,255,0.6);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white flex flex-col items-center p-6">  <div class="w-full max-w-5xl space-y-6"><h1 class="text-3xl font-bold text-center text-cyan-400 mb-6">Manage Channels</h1>
+
+<!-- Add Channel Form -->
+<form action="/admin/channels/add" method="POST" class="bg-gray-800 p-6 rounded-xl space-y-4">
+  <h2 class="text-xl font-semibold">Add New Channel</h2>
+  <input name="key" placeholder="Unique Key (e.g., citizen-tv)" required class="w-full p-2 rounded bg-gray-700 text-white" />
+  <input name="name" placeholder="Channel Name" required class="w-full p-2 rounded bg-gray-700 text-white" />
+  <input name="url" placeholder="Channel URL (embed or .m3u8)" required class="w-full p-2 rounded bg-gray-700 text-white" />
+  <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2 px-6 rounded glow-hover">Add Channel</button>
+</form>
+
+<!-- Existing Channels List -->
+<div class="space-y-4">
+  {% for key, ch in channels.items() %}
+    <div class="bg-gray-800 p-4 rounded-xl shadow-md flex flex-col sm:flex-row sm:justify-between sm:items-center">
+      <div>
+        <p class="font-bold text-lg text-cyan-300">{{ ch.name }}</p>
+        <p class="text-sm text-gray-400 break-words">{{ ch.url }}</p>
+      </div>
+      <div class="flex gap-2 mt-3 sm:mt-0">
+        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank" class="bg-green-500 hover:bg-green-400 text-black px-4 py-2 rounded font-semibold">Play</a>
+        <a href="/admin/channels/edit/{{ key }}" class="bg-yellow-500 hover:bg-yellow-400 text-black px-4 py-2 rounded font-semibold">Edit</a>
+        <a href="/admin/channels/delete/{{ key }}" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-semibold" onclick="return confirm('Delete {{ ch.name }}?')">Delete</a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+  </div></body>
+</html>

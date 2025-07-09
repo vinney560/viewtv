@@ -1126,7 +1126,7 @@ def home_admin():
     
     # Plus subscribers
     plus_users = User.query.filter(
-        User.is_plus == True,
+        User.plus_type = "paid"
         User.plus_expires_at != None,
         User.plus_expires_at > datetime.utcnow()
     ).count()

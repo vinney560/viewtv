@@ -37,14 +37,14 @@
         <svg class="w-6 h-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
         </svg>
-        <p class="text-lg font-medium">Preparing channel list download...</p>
+        <p class="text-lg font-medium">Exporting channels.json...</p>
       </div>
       
       <div class="flex items-center justify-center gap-3 animate-pulse-slow">
         <svg class="w-6 h-6 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
-        <p class="text-lg font-medium">Redirecting to channel manager...</p>
+        <p class="text-lg font-medium">Preparing your download...</p>
       </div>
     </div>
 
@@ -55,7 +55,6 @@
   </div>
 
   <script>
-    // Start the download and redirect flow
     window.onload = () => {
       // Animate progress bar
       const progressBar = document.getElementById('progressBar');
@@ -63,17 +62,14 @@
       const progressInterval = setInterval(() => {
         progress += 5;
         progressBar.style.width = `${Math.min(progress, 100)}%`;
-        
-        if (progress >= 100) {
-          clearInterval(progressInterval);
-        }
+        if (progress >= 100) clearInterval(progressInterval);
       }, 75);
 
-      // Trigger download after short delay to allow UI to show
+      // Trigger download after short delay
       setTimeout(() => {
         const a = document.createElement('a');
-        a.href = '/admin/channels/download';
-        a.download = 'channels.json';
+        a.href = '/admin/channels/download';  // Changed to match Flask route
+        a.download = 'channels.json';   // exact filename
         document.body.appendChild(a);
         a.click();
         a.remove();

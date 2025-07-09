@@ -1427,10 +1427,15 @@ def delete_channel(key):
 def download_and_redirect():
     return render_template("download_and_redirect.html")
 
+from flask import send_file
 @app.route("/admin/channels/download")
 def download_channels():
-    file_path = os.path.join(os.getcwd(), "channels.json")
-    return send_file(file_path, as_attachment=True)
+    return send_file(
+        'channels.json',
+        as_attachment=True,
+        download_name='channels.json',
+        mimetype='application/json'
+    )
 #========================================
 
 @app.context_processor

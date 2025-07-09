@@ -125,7 +125,7 @@
           </div>
           <div class="flex items-center justify-between mt-1">
             <span class="text-gray-300">Expires in:</span>
-            <span class="font-medium text-cyan-300">{{ user.plus_expires_at|time_remaining }}</span>
+            <span class="font-medium text-cyan-300">{{ user.plus_expires_at }}</span>
           </div>
           {% if user.plus_type == "paid" %}
             <div class="mt-2 p-2 bg-green-600/20 rounded text-sm text-green-300 flex items-center">

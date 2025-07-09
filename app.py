@@ -1217,6 +1217,55 @@ def fetch_and_save_country_channels(country_code):
         print(f"[INFO] Added {new_count} new channels from {country_code}")
     except Exception as e:
         print(f"[ERROR] Failed to fetch from {url}: {e}")
+#------------------------------------------------------------------------
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+@app.route("/admin/clone_data")
+@login_required
+@admin_required
+def clone_data():
+
+    db1_url = os.getenv("DATABASE_URL")
+    db2_url = os.getenv("DATABASE_URL_2")
+
+    if not db1_url or not db2_url:
+        flash("Database URLs not set in environment file.", "error")
+        return redirect(url_for("home_admin"))
+
+    source_engine = create_engine(db1_url)
+    dest_engine = create_engine(db2_url)
+    SourceSession = sessionmaker(bind=source_engine)
+    DestSession = sessionmaker(bind=dest_engine)
+    source_session = SourceSession()
+    dest_session = DestSession()
+
+    try:
+        # Ensure destination DB has the tables
+        db.metadata.create_all(dest_engine)
+
+        # List of models to clone
+        for model in [User, Product, Order]:  # add all models you want to migrate
+            rows = source_session.query(model).all()
+            for row in rows:
+                clone = model(**{
+                    col.name: getattr(row, col.name)
+                    for col in model.__table__.columns
+                })
+                dest_session.add(clone)
+
+        dest_session.commit()
+        flash("Cloning completed successfully.", "success")
+
+    except Exception as e:
+        dest_session.rollback()
+        flash(f"Cloning failed: {e}", "error")
+
+    finally:
+        source_session.close()
+        dest_session.close()
+
+    return redirect(url_for("home_admin"))
 #========================================
 
 @app.context_processor

@@ -87,12 +87,12 @@
               <img 
                 src="{{ url_for('uploaded_file', filename='default_tv_icon.png') }}" 
                 alt="{{ info.name }} logo" 
-                class="w-16 h-10 rounded-lg object-cover border border-gray-600 flex-shrink-0 bg-gray-900" 
+                class="w-16 h-18 rounded-lg object-cover border border-gray-600 flex-shrink-0 bg-gray-900" 
               />
 
               <!-- Channel Name Link - Full width with wrapping -->
               <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank"
-                 class="flex-grow min-w-0 text-gray-200 font-semibold text-lg whitespace-normal break-words cursor-pointer focus:outline-none">
+                 class="flex-grow min-w-[9ch] text-gray-200 font-semibold text-lg whitespace-normal break-words cursor-pointer focus:outline-none">
                 {{ info.name }}
               </a>
 

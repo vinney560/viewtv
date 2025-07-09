@@ -28,7 +28,7 @@
     {% endwith %}
 
     <!-- Free Plus Logic -->
-    {% if not user.last_free_plus or (user.last_free_plus + timedelta(hours=24)) <= now or user.plus_type != "paid" %}
+    {% if not user.last_free_plus or (user.last_free_plus + timedelta(hours=24)) <= now or user.plus_type == "paid" %}
       <a href="{{ url_for('claim_free_plus') }}">
         <button class="w-full bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded font-semibold transition">
           🎁 Activate Free Plus (2 Hours)

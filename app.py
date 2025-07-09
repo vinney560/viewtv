@@ -147,6 +147,9 @@ class User(db.Model, UserMixin):
         return True
 
     @property
+    def has_plus(self):
+        return self.plus_expires_at and self.plus_expires_at > datetime.utcnow()
+    @property
     def is_plus(self):
         """Return True if Plus is active and not expired."""
         return (
@@ -819,11 +822,15 @@ def channel_stream_url():
 #        >>>>PLUS & PAYMENT FEATURE<<<<
 #======================================
 #free plus feature
-
 @app.route("/get_plus")
 @login_required
 def get_plus():
-    return render_template("plus.html", user=current_user, now=datetime.utcnow(), timedelta=timedelta)
+    now = datetime.utcnow()
+    current_user.has_plus = (
+        current_user.plus_expires_at and current_user.plus_expires_at > now
+    )
+
+    return render_template("get_plus.html", user=current_user, now=now)
 
 @app.route("/free-plus")
 @login_required

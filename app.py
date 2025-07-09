@@ -1125,7 +1125,11 @@ def home_admin():
     total_channels = len(CUSTOM_CHANNELS)
     
     # Plus subscribers
-    plus_users = User.query.filter_by(is_plus=True).count()
+    plus_users = User.query.filter(
+        User.is_plus == True,
+        User.plus_expires_at != None,
+        User.plus_expires_at > datetime.utcnow()
+    ).count()
     
     return render_template(
         'home_admin.html',

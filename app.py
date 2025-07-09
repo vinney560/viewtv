@@ -1115,13 +1115,13 @@ def account():
 @login_required 
 @admin_required
 def home_admin():
-    # Get statistics from your database
+    # Get statistics from database
     total_users = User.query.count()
     
     # Count users marked as 'active'
     active_today = User.query.filter_by(status='active').count()
     
-    # Total channels from your CUSTOM_CHANNELS dictionary
+    # Total channels from CUSTOM_CHANNELS dictionary
     total_channels = len(CUSTOM_CHANNELS)
     
     # Plus subscribers

@@ -41,7 +41,7 @@ def choose_db_uri():
         try:
             engine = create_engine(new_uri)
             engine.connect().close()
-            print("✅ Connected to Render DB (DATABASE_URL)")
+            print("Connected to Render DB (DATABASE_URL)")
             return new_uri
         except OperationalError:
             print("⚠ Failed to connect to Render DB. Trying Render 2 DB...")
@@ -1115,7 +1115,28 @@ def account():
 @login_required 
 @admin_required
 def home_admin():
-    return render_template('home_admin.html', user=current_user)
+    # Get statistics from your database
+    total_users = User.query.count()
+    
+    # Count users marked as 'active'
+    active_today = User.query.filter_by(status='active').count()
+    
+    # Total channels from your CUSTOM_CHANNELS dictionary
+    total_channels = len(CUSTOM_CHANNELS)
+    
+    # Plus subscribers
+    plus_users = User.query.filter_by(is_plus=True).count()
+    
+    return render_template(
+        'home_admin.html',
+        user=current_user,
+        stats={
+            'total_users': total_users,
+            'active_today': active_today,
+            'total_channels': total_channels,
+            'plus_users': plus_users
+        }
+    )
 #-------------------------------------------------------------------------
 #add || update plus(timer)
 

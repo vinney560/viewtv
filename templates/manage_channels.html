@@ -42,7 +42,7 @@
         <p class="text-sm text-gray-400 break-words">{{ ch.url }}</p>
       </div>
       <div class="flex gap-2 mt-3 sm:mt-0">
-        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank" class="bg-green-500 hover:bg-green-400 text-black px-4 py-2 rounded font-semibold">Play</a>
+        <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" class="bg-green-500 hover:bg-green-400 text-black px-4 py-2 rounded font-semibold">Play</a>
         <a href="/admin/channels/edit/{{ key }}" class="bg-yellow-500 hover:bg-yellow-400 text-black px-4 py-2 rounded font-semibold">Edit</a>
         <a href="/admin/channels/delete/{{ key }}" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded font-semibold" onclick="return confirm('Delete {{ ch.name }}?')">Delete</a>
       </div>

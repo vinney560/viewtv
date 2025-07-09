@@ -11,6 +11,27 @@
         extend: {
           boxShadow: {
             glow: '0 0 15px rgba(0,255,255,0.6)',
+            'glow-sm': '0 0 8px rgba(0,255,255,0.4)'
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out',
+            'slide-up': 'slideUp 0.3s ease-out',
+            'toast': 'toast 4s forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            toast: {
+              '0%, 90%': { opacity: '1', transform: 'translateY(0)' },
+              '100%': { opacity: '0', transform: 'translateY(-20px)' }
+            }
           }
         }
       }
@@ -21,75 +42,188 @@
       box-shadow: 0 0 15px rgba(0,255,255,0.6);
       transform: translateY(-2px);
     }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, rgba(8, 51, 68, 0.8) 0%, rgba(6, 30, 51, 0.9) 100%);
+    }
+    
+    .card-glass {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.7);
+    }
+    
+    .stat-card {
+      transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen text-white flex justify-center items-start p-6">
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen text-white flex justify-center items-start p-4 md:p-6">
 
-  <div class="w-full max-w-5xl space-y-8">
+  <!-- Toast Notifications -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="fixed top-4 right-4 z-50 space-y-3 w-full max-w-xs">
+        {% for category, message in messages %}
+          <div class="animate-toast card-glass border-l-4 {{ 'border-green-500' if category == 'success' else 'border-red-500' }} rounded-lg shadow-xl overflow-hidden">
+            <div class="p-4 flex items-start">
+              <div class="flex-shrink-0">
+                {% if category == 'success' %}
+                  <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% else %}
+                  <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% endif %}
+              </div>
+              <div class="ml-3 w-0 flex-1 pt-0.5">
+                <p class="text-sm font-medium">{{ message }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="w-full max-w-5xl space-y-8 animate-fade-in">
 
     <!-- Header -->
     <div class="text-center">
-      <h1 class="text-3xl font-bold text-cyan-400">Welcome, Admin</h1>
-      <p class="text-sm text-gray-300 mt-1">Email: {{ user.email }}</p>
+      <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+        Admin Dashboard
+      </h1>
+      <div class="mt-4 p-4 card-glass rounded-xl shadow-lg inline-block">
+        <p class="text-sm text-gray-300">Logged in as: <span class="font-medium text-cyan-300">{{ user.email }}</span></p>
+        <div class="mt-2 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full"></div>
+      </div>
     </div>
 
     <!-- Admin Buttons -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <a href="{{ url_for('manage_plus') }}"
-         class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 4v16m8-8H4"/>
-        </svg>
-        Manage Plus Time
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </div>
+        <span>Manage Plus Time</span>
       </a>
 
       <a href="{{ url_for('manage_users') }}"
-         class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M5 3a2 2 0 012-2h10a2 2 0 012 2v18l-7-3-7 3V3z"/>
-        </svg>
-        Manage Users
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <span>Manage Users</span>
       </a>
 
       <a href="{{ url_for('manage_channels') }}"
-         class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M4 5h16M4 12h16M4 19h16"/>
-        </svg>
-        Manage Channels
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <span>Manage Channels</span>
       </a>
 
       <a href="{{ url_for('account') }}"
-         class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 14a5 5 0 100-10 5 5 0 000 10zm0 2c-3.3 0-6 2.7-6 6h12c0-3.3-2.7-6-6-6z"/>
-        </svg>
-        Account Settings
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <span>Account Settings</span>
       </a>
 
       <!-- Clone Data Button -->
       <a href="{{ url_for('clone_data') }}"
-         class="glow-hover bg-green-600 hover:bg-green-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 5v14m7-7H5"/>
-        </svg>
-        Clone Data
+         class="glow-hover bg-gradient-to-r from-green-600 to-emerald-600 hover:shadow-glow py-4 px-6 rounded-xl border border-green-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+        <div class="p-2 bg-green-600/20 rounded-lg group-hover:bg-green-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <span>Clone Data</span>
+      </a>
+
+      <!-- Logout Button -->
+      <a href="{{ url_for('logout_current_user') }}"
+         class="glow-hover bg-gradient-to-r from-red-600 to-pink-600 hover:shadow-glow py-4 px-6 rounded-xl border border-red-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+        <div class="p-2 bg-red-600/20 rounded-lg group-hover:bg-red-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </div>
+        <span>Logout</span>
       </a>
     </div>
 
-    <!-- Logout -->
-    <div class="text-center mt-6">
-      <a href="{{ url_for('logout_current_user') }}"
-         class="glow-hover bg-red-600 hover:bg-red-700 py-3 px-6 rounded-xl shadow-lg inline-flex items-center gap-2 font-bold">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M10 9V5h9v14h-9v-4H8v5a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H10a2 2 0 00-2 2v5h2z"/>
-          <path d="M6 13h5"/>
+    <!-- Stats Section -->
+    <div class="card-glass p-6 rounded-xl border border-cyan-400/20 shadow-lg">
+      <h3 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
         </svg>
-        Logout
-      </a>
+        Quick Stats
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="stat-card bg-gray-800/50 p-4 rounded-lg border border-gray-700 hover:border-cyan-400/30">
+          <p class="text-sm text-gray-400">Total Users</p>
+          <p class="text-2xl font-bold text-cyan-400 animate-pulse-slow">{{ stats.total_users }}</p>
+        </div>
+        <div class="stat-card bg-gray-800/50 p-4 rounded-lg border border-gray-700 hover:border-green-400/30">
+          <p class="text-sm text-gray-400">Active Today</p>
+          <p class="text-2xl font-bold text-green-400">{{ stats.active_today }}</p>
+        </div>
+        <div class="stat-card bg-gray-800/50 p-4 rounded-lg border border-gray-700 hover:border-blue-400/30">
+          <p class="text-sm text-gray-400">Channels</p>
+          <p class="text-2xl font-bold text-blue-400">{{ stats.total_channels }}</p>
+        </div>
+        <div class="stat-card bg-gray-800/50 p-4 rounded-lg border border-gray-700 hover:border-purple-400/30">
+          <p class="text-sm text-gray-400">Plus Users</p>
+          <p class="text-2xl font-bold text-purple-400">{{ stats.plus_users }}</p>
+        </div>
+      </div>
     </div>
 
   </div>
 
+  <!-- Auto-refresh script -->
+  <script>
+    // Auto-refresh stats every 60 seconds
+    function refreshStats() {
+      fetch(window.location.href, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newStats = doc.querySelector('.card-glass');
+        if (newStats) {
+          document.querySelector('.card-glass').outerHTML = newStats.outerHTML;
+        }
+      })
+      .catch(err => console.log('Refresh error:', err));
+    }
+    
+    // Start auto-refresh (every 60 seconds)
+    setInterval(refreshStats, 60000);
+  </script>
 </body>
 </html>

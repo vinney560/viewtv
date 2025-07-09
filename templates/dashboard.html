@@ -78,7 +78,7 @@
         </div>
 
         <!-- Free Plus Button Logic -->
-        {% if user.plus_type == 'free' and time_remaining_seconds > 0 or user_plus_type=='paid' %}
+        {% if user.plus_type == 'free' and time_remaining_seconds > 0 or user.plus_type=='paid' %}
           <p class="text-green-400 mt-4 text-sm">Plus is currently active</p>
         {% elif user.last_free_plus and (user.last_free_plus + timedelta(hours=24)) > now %}
           <p class="text-gray-400 mt-4 text-sm">You’ve already used Free Plus today</p>

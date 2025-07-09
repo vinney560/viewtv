@@ -1,22 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>PlayList | ViewTv</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Faster scroll marquee effect on hover for channel names */
-    .group:hover .scrolling-text {
-      transform: translateX(-100%);
-      transition: transform 3s linear;
-    }
-    .scrolling-text {
-      white-space: nowrap;
-      display: inline-block;
-      transition: transform 0.3s ease-out;
-    }
-
     /* Cool gradient + glow for the PlayList title */
     .cool-title {
       background: linear-gradient(90deg, #7dd3fc, #22d3ee, #06b6d4);
@@ -37,6 +26,22 @@
       border-radius: 10px;
       z-index: -1;
     }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(31, 41, 55, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(8, 145, 178, 0.7);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(6, 182, 212, 0.9);
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-gray-200 font-sans min-h-screen flex flex-col items-center p-6">
@@ -51,42 +56,83 @@
     Back
   </a>
 
-  <h2 class="cool-title text-5xl font-extrabold mb-6 select-none">PlayList</h2>
-
-  <div class="w-full max-w-xl space-y-3">
-    {% for key, info in channels.items() %}
-      <div tabindex="0" role="listitem"
-           class="group flex items-center gap-6 px-8 py-5 bg-gray-800 rounded-2xl border border-gray-700
-                  hover:bg-gray-700 focus:bg-gray-700 focus:outline-none cursor-pointer transition-colors duration-300 ease-in-out">
-        
-        <!-- Channel Image -->
-        <img 
-          src="{{ url_for('uploaded_file', filename='default_tv_icon.png') }}" 
-          alt="{{ info.name }} logo" 
-          class="w-16 h-10 rounded-lg object-cover border border-gray-600 flex-shrink-0 bg-gray-900" 
-        />
-
-        <!-- Channel Name Link with horizontal scroll on hover -->
-        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank"
-           class="flex-grow max-w-[95%] text-gray-200 font-semibold text-lg truncate relative cursor-pointer focus:outline-none">
-          <span class="scrolling-text block">
-            {{ info.name }}
-          </span>
-        </a>
-
-        <!-- Play Button -->
-        <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank"
-           class="ml-6 flex-shrink-0 w-11 h-11 bg-gray-700 rounded-full flex items-center justify-center
-                  hover:bg-gray-600 focus:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-gray-400
-                  transition duration-300 ease-in-out"
-           aria-label="Play {{ info.name }}">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-6 h-6 text-gray-200">
-            <path d="M6 4l15 8-15 8z" />
-          </svg>
-        </a>
+  <div class="w-full max-w-3xl space-y-6">
+    <h2 class="cool-title text-5xl font-extrabold mb-2 select-none text-center">PlayList</h2>
+    
+    <!-- Search Bar -->
+    <div class="relative">
+      <input 
+        type="text" 
+        id="channelSearch" 
+        placeholder="Search channels..." 
+        class="w-full px-4 py-3 pl-12 bg-gray-800 border border-gray-700 rounded-xl text-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200"
+      >
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 text-gray-400">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
       </div>
-    {% endfor %}
+    </div>
+
+    <!-- Channels List Container -->
+    <div class="max-h-[70vh] overflow-y-auto pr-2">
+      <div id="channelsList" class="space-y-3">
+        {% for key, info in channels.items() %}
+          <div class="channel-item" data-name="{{ info.name|lower }}">
+            <div tabindex="0" role="listitem"
+                 class="group flex items-center gap-6 px-8 py-5 bg-gray-800 rounded-2xl border border-gray-700
+                        hover:bg-gray-700 focus:bg-gray-700 focus:outline-none cursor-pointer transition-colors duration-300 ease-in-out">
+              
+              <!-- Channel Image -->
+              <img 
+                src="{{ url_for('uploaded_file', filename='default_tv_icon.png') }}" 
+                alt="{{ info.name }} logo" 
+                class="w-16 h-10 rounded-lg object-cover border border-gray-600 flex-shrink-0 bg-gray-900" 
+              />
+
+              <!-- Channel Name Link - Full width with wrapping -->
+              <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank"
+                 class="flex-grow min-w-0 text-gray-200 font-semibold text-lg whitespace-normal break-words cursor-pointer focus:outline-none">
+                {{ info.name }}
+              </a>
+
+              <!-- Play Button -->
+              <a href="{{ url_for('player') }}?{{ {'url': info.url, 'token': info.token}|urlencode }}" target="_blank"
+                 class="ml-6 flex-shrink-0 w-11 h-11 bg-gray-700 rounded-full flex items-center justify-center
+                        hover:bg-gray-600 focus:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-gray-400
+                        transition duration-300 ease-in-out"
+                 aria-label="Play {{ info.name }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" class="w-6 h-6 text-gray-200">
+                  <path d="M6 4l15 8-15 8z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 
+  <script>
+    // Live Search Functionality
+    document.getElementById('channelSearch').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const channelItems = document.querySelectorAll('.channel-item');
+      
+      channelItems.forEach(item => {
+        const channelName = item.getAttribute('data-name');
+        if (channelName.includes(searchTerm)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+
+    // Focus search on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('channelSearch').focus();
+    });
+  </script>
 </body>
 </html>

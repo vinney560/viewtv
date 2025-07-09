@@ -1392,24 +1392,29 @@ def add_channel():
     flash("Channel added successfully.", "success")
     return redirect(url_for("download_and_redirect"))
 #--------------------------------------------------------------------------
-@app.route("/admin/channels/edit/<key>", methods=["GET","POST"])
+@app.route("/admin/channels/edit/<key>", methods=["GET", "POST"])
 def edit_channel(key):
-    name = request.form.get("name")
-    url = request.form.get("url")
-
-    if not name or not url:
-        flash("All fields are required.", "error")
-        return redirect(url_for("manage_channels"))
-
     channels = load_channels()
+
     if key not in channels:
         flash("Channel not found.", "error")
         return redirect(url_for("manage_channels"))
 
-    channels[key] = {"name": name, "url": url}
-    save_channels(channels)
-    flash("Channel updated.", "success")
-    return redirect(url_for("download_and_redirect"))
+    if request.method == "POST":
+        name = request.form.get("name")
+        url = request.form.get("url")
+
+        if not name or not url:
+            flash("All fields are required.", "error")
+            return redirect(url_for("edit_channel", key=key))
+
+        channels[key] = {"name": name.strip(), "url": url.strip()}
+        save_channels(channels)
+        flash("Channel updated.", "success")
+        return redirect(url_for("download_and_redirect"))
+
+    # GET request
+    return render_template("edit_channel.html", key=key, channel=channels[key])
 #--------------------------------------------------------------------------
 @app.route("/admin/channels/delete/<key>", methods=["GET","POST"])
 def delete_channel(key):

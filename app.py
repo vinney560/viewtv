@@ -1254,23 +1254,40 @@ def delete_user(user_id):
     flash("User deleted.", "success")
     return redirect(url_for("manage_users"))
 #------------------------------------------------------------------------
-@app.route('/admin/update_email/<int:user_id>', methods=['POST'])
+@app.route("/admin/update_email/<int:user_id>", methods=["POST"])
 @login_required
-def update_user_email(user_id):
+def update_email(user_id):
+    if current_user.role != 'admin':
+        abort(403)
+
+    new_email = request.form.get("new_email", "").strip()
+
+    # Basic validation
+    if not new_email:
+        flash("Email is required", "error")
+        return redirect(url_for("manage_users"))
+
+    if not (new_email.endswith("@gmail.com") or new_email.endswith("@yahoo.com")):
+        flash("Only Gmail or Yahoo emails allowed.", "error")
+        return redirect(url_for("manage_users"))
+
     user = User.query.get_or_404(user_id)
-    new_email = request.form.get('new_email')
-    
-    if new_email and new_email != user.email:
-        if User.query.filter_by(email=new_email).first():
-            flash('Email already in use.', 'error')
-        else:
-            user.email = new_email
-            db.session.commit()
-            flash('Email updated successfully.', 'success')
-    else:
-        flash('No changes made.', 'warning')
-    
-    return redirect(url_for('manage_users'))
+
+    # Ensure email doesn't belong to someone else
+    existing_user = User.query.filter(User.email == new_email, User.id != user.id).first()
+    if existing_user:
+        flash("Email is already taken by another user.", "error")
+        return redirect(url_for("manage_users"))
+
+    user.email = new_email
+    user.email_verified = False  # Set email verification to false
+    db.session.commit()
+
+    # Send verification email
+    send_verification_email(user)
+
+    flash(f"Email updated successfully. Verification sent to {new_email}", "success")
+    return redirect(url_for("manage_users"))
 #---------------------------------------------------------------------------
 # Fetch & Save by Country
 @app.route('/save_channels')

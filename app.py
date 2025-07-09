@@ -1256,9 +1256,8 @@ def delete_user(user_id):
 #------------------------------------------------------------------------
 @app.route("/admin/update_email/<int:user_id>", methods=["POST"])
 @login_required
-def update_email(user_id):
-    if current_user.role != 'admin':
-        abort(403)
+@admin_required
+def update_user_email(user_id):
 
     new_email = request.form.get("new_email", "").strip()
 

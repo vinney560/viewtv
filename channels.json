@@ -79,17 +79,9 @@
     "name": "BTN",
     "url": "https://2-fss-2.streamhoster.com/pl_138/205510-3094608-1/playlist.m3u8"
   },
-  "cartoon_network": {
-    "name": "Cartoon Network (Pluto)",
-    "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5eac0ed285f07d0007b9d63b/master.m3u8"
-  },
   "cbeebies": {
     "name": "CBeebies (BBC Kids)",
     "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8"
-  },
-  "cg_entertainment": {
-    "name": "GG Entertainment",
-    "url": "https://cgentertainment-cgtv-1-it.samsung.wurl.tv/playlist.m3u8"
   },
   "chinola": {
     "name": "CHINOLA TV",
@@ -124,16 +116,8 @@
     "url": "https://playout1753.livextend.tv/live/discoverykids_adaptive/index.m3u8"
   },
   "disney": {
-    "name": "Disney",
+    "name": "Disney Kids",
     "url": "https://fl5.moveonjoy.com/DISNEY/index.m3u8"
-  },
-  "disney_1": {
-    "name": "Disney Channel",
-    "url": "http://168.181.122.234:8000/play/a037/index.m3u8"
-  },
-  "disney_channel": {
-    "name": "Disney Channel",
-    "url": "https://disneynow-lh.akamaihd.net/i/disneynow_1@345060/master.m3u8"
   },
   "disney_jr": {
     "name": "Disney JR",

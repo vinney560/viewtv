@@ -789,6 +789,29 @@ def play_channel(key):
         current_key=key          # Pass current key for highlighting
     )
 #------------------------------------------------------------------------
+import subprocess
+
+@app.route('/hls/<channel_id>.m3u8')
+def hls_proxy(channel_id):
+    ts_url = f"http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/{channel_id}.ts"
+    cmd = [
+        'ffmpeg',
+        '-i', ts_url,
+        '-c', 'copy',
+        '-f', 'hls',
+        '-hls_time', '2',
+        '-hls_list_size', '5',
+        '-'
+    ]
+    return Response(
+        subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout,
+        mimetype='application/vnd.apple.mpegurl'
+    )
+
+@app.route('/status')
+def status():
+    return "Proxy active"
+#--------------------------------------------------------------------------
 @app.route('/player')
 def player():
     name = request.args.get('name', 'Streaming')

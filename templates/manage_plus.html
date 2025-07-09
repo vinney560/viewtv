@@ -20,7 +20,7 @@
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-6 relative">
 
-  <!-- Toast for Flash Messages -->
+  <!-- Flash Toast -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
@@ -43,8 +43,17 @@
   {% endwith %}
 
   <div class="max-w-7xl mx-auto">
-    <h1 class="text-3xl font-bold text-cyan-400 mb-6">Manage Plus Access</h1>
 
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-cyan-400">Manage Plus Access</h1>
+      <a href="{{ url_for('home_admin') }}"
+         class="glow-btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold border border-gray-500">
+        Back
+      </a>
+    </div>
+
+    <!-- Table -->
     <div class="overflow-x-auto rounded-lg shadow border border-gray-700 bg-gray-800">
       <table class="min-w-full divide-y divide-gray-700 text-sm">
         <thead class="bg-gray-700 text-cyan-300">
@@ -61,11 +70,12 @@
           {% set user = item.user %}
           <tr class="hover:bg-gray-700">
             <td class="px-4 py-2 align-top">{{ loop.index }}</td>
+
+            <!-- User Column -->
             <td class="px-4 py-2 align-top">
               <p class="font-semibold">{{ user.email }}</p>
               <p class="text-xs text-gray-400 mt-1">⏳ {{ item.remaining_str }}</p>
 
-              <!-- Update Time Form -->
               <form method="POST" action="{{ url_for('update_plus', user_id=user.id) }}"
                     onsubmit="return confirmTimeChange(this)">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -81,16 +91,28 @@
                          class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
                          placeholder="ss" />
 
+                  <!-- Update Button -->
                   <button type="submit"
                           class="bg-cyan-600 glow-btn hover:bg-cyan-500 text-white px-3 py-2 rounded text-xs flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                          viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
                     Update
                   </button>
+
+                  <!-- Add Button -->
+                  <button type="button"
+                          onclick="prefillTime(this)"
+                          data-remaining="{{ item.remaining_str }}"
+                          class="bg-green-600 glow-btn hover:bg-green-500 text-white px-3 py-2 rounded text-xs flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                         viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+                    Add
+                  </button>
                 </div>
               </form>
             </td>
 
+            <!-- Expiry -->
             <td class="px-4 py-2 align-top">
               {% if user.plus_expires_at %}
                 {{ user.plus_expires_at.strftime('%Y-%m-%d %H:%M:%S') }}
@@ -99,10 +121,13 @@
               {% endif %}
             </td>
 
-            <td class="px-4 py-2 align-top capitalize">{{ user.plus_type or 'N/A' }}</td>
+            <!-- Type -->
+            <td class="px-4 py-2 align-top capitalize">
+              {{ user.plus_type or 'N/A' }}
+            </td>
 
+            <!-- Delete Action -->
             <td class="px-4 py-2 text-center align-top">
-              <!-- Delete Form -->
               <form method="POST" action="{{ url_for('delete_plus', user_id=user.id) }}"
                     onsubmit="return confirm('Revoke Plus for this user?');">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -121,7 +146,7 @@
     </div>
   </div>
 
-  <!-- JS Confirm Logic -->
+  <!-- JS Logic -->
   <script>
     function confirmTimeChange(form) {
       const h = parseInt(form.hours.value || "0");
@@ -132,8 +157,25 @@
         alert("⚠️ No time added. Update skipped.");
         return false;
       }
-
       return confirm(`Apply ${h}h ${m}m ${s}s to this user?`);
+    }
+
+    function prefillTime(btn) {
+      const form = btn.closest('form');
+      const remaining = btn.getAttribute('data-remaining');
+      const h = form.querySelector('input[name="hours"]');
+      const m = form.querySelector('input[name="minutes"]');
+      const s = form.querySelector('input[name="seconds"]');
+
+      // Reset
+      h.value = 0; m.value = 0; s.value = 0;
+
+      const match = remaining.match(/(\d+)\s*h.*?(\d+)\s*m.*?(\d+)\s*s/i);
+      if (match) {
+        h.value = parseInt(match[1] || "0");
+        m.value = parseInt(match[2] || "0");
+        s.value = parseInt(match[3] || "0");
+      }
     }
   </script>
 

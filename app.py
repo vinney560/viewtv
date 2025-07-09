@@ -791,26 +791,47 @@ def play_channel(key):
 #------------------------------------------------------------------------
 import subprocess
 
-@app.route('/hls/<channel_id>.m3u8')
+# Enhanced HLS Proxy Route
+@app.route('/hls/<int:channel_id>.m3u8')
 def hls_proxy(channel_id):
     ts_url = f"http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/{channel_id}.ts"
-    cmd = [
-        'ffmpeg',
-        '-i', ts_url,
-        '-c', 'copy',
-        '-f', 'hls',
-        '-hls_time', '2',
-        '-hls_list_size', '5',
-        '-'
-    ]
-    return Response(
-        subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout,
-        mimetype='application/vnd.apple.mpegurl'
-    )
+    
+    try:
+        ffmpeg_cmd = [
+            'ffmpeg',
+            '-i', ts_url,
+            '-c', 'copy',           # No re-encoding
+            '-f', 'hls',            # HLS format
+            '-hls_time', '2',       # 2-second segments
+            '-hls_list_size', '5',  # Store 5 segments
+            '-hls_flags', 'delete_segments+append_list',
+            '-'  # Output to stdout
+        ]
+        
+        proc = subprocess.Popen(
+            ffmpeg_cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True
+        )
+        
+        return Response(
+            proc.stdout,
+            mimetype='application/vnd.apple.mpegurl',
+            headers={
+                'Access-Control-Allow-Origin': '*',
+                'Cache-Control': 'no-cache'
+            }
+        )
+    
+    except Exception as e:
+        app.logger.error(f"FFmpeg failed: {str(e)}")
+        abort(500, description="Stream conversion failed")
 
+# Health Check Route
 @app.route('/status')
 def status():
-    return "Proxy active"
+    return "Proxy active", 200, {'Content-Type': 'text/plain'}
 #--------------------------------------------------------------------------
 @app.route('/player')
 def player():

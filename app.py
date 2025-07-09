@@ -1285,7 +1285,7 @@ def clone_data():
         db.metadata.create_all(dest_engine)
 
         # List of models to clone
-        for model in [User, Channel, AdminCode, Payment]:  # add all models you want to migrate
+        for model in [User, Channel, Payment]:  # add all models you want to migrate
             rows = source_session.query(model).all()
             for row in rows:
                 clone = model(**{

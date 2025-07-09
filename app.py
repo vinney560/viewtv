@@ -826,9 +826,7 @@ def channel_stream_url():
 @login_required
 def get_plus():
     now = datetime.utcnow()
-    current_user.has_plus = (
-        current_user.plus_expires_at and current_user.plus_expires_at > now
-    )
+    return render_template("get_plus.html", user=current_user, now=now)
 
     return render_template("get_plus.html", user=current_user, now=now)
 

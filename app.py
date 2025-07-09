@@ -1253,6 +1253,24 @@ def delete_user(user_id):
     db.session.commit()
     flash("User deleted.", "success")
     return redirect(url_for("manage_users"))
+#------------------------------------------------------------------------
+@app.route('/admin/update_email/<int:user_id>', methods=['POST'])
+@login_required
+def update_user_email(user_id):
+    user = User.query.get_or_404(user_id)
+    new_email = request.form.get('new_email')
+    
+    if new_email and new_email != user.email:
+        if User.query.filter_by(email=new_email).first():
+            flash('Email already in use.', 'error')
+        else:
+            user.email = new_email
+            db.session.commit()
+            flash('Email updated successfully.', 'success')
+    else:
+        flash('No changes made.', 'warning')
+    
+    return redirect(url_for('manage_users'))
 #---------------------------------------------------------------------------
 # Fetch & Save by Country
 @app.route('/save_channels')

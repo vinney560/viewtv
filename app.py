@@ -1372,7 +1372,7 @@ def manage_channels():
     channels = load_channels()
     return render_template("manage_channels.html", channels=channels)
 #--------------------------------------------------------------------------
-@app.route("/admin/channels/add", methods=["POST"])
+@app.route("/admin/channels/add", methods=["POST", "GET"])
 def add_channel():
     key = request.form.get("key").strip()
     name = request.form.get("name").strip()
@@ -1392,7 +1392,7 @@ def add_channel():
     flash("Channel added successfully.", "success")
     return redirect(url_for("manage_channels"))
 #--------------------------------------------------------------------------
-@app.route("/admin/channels/edit/<key>", methods=["POST"])
+@app.route("/admin/channels/edit/<key>", methods=["GET","POST"])
 def edit_channel(key):
     name = request.form.get("name").strip()
     url = request.form.get("url").strip()
@@ -1411,7 +1411,7 @@ def edit_channel(key):
     flash("Channel updated.", "success")
     return redirect(url_for("manage_channels"))
 #--------------------------------------------------------------------------
-@app.route("/admin/channels/delete/<key>", methods=["POST"])
+@app.route("/admin/channels/delete/<key>", methods=["GET","POST"])
 def delete_channel(key):
     channels = load_channels()
     if key in channels:

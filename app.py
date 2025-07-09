@@ -757,7 +757,7 @@ CUSTOM_CHANNELS = load_channels()
 import random
 
 # Sample 15 random items from CUSTOM_CHANNELS once when the server starts
-RANDOMIZED_CHANNELS = dict(random.sample(list(CUSTOM_CHANNELS.items()), min(15, len(CUSTOM_CHANNELS))))
+RANDOMIZED_CHANNELS = dict(random.sample(list(CUSTOM_CHANNELS.items()), min(17, len(CUSTOM_CHANNELS))))
 
 @app.route('/home_1')
 @login_required
@@ -772,13 +772,13 @@ def home_1():
 @app.route("/channel/<key>")
 @login_required
 def play_channel(key):
-    channel = CUSTOM_CHANNELS.get(key)
+    channel = RANDOMIZED_CHANNELS.get(key)
     if not channel:
         abort(404)
 
     channels = [
         {"key": k, "name": v["name"], "url": v["url"]}
-        for k, v in CUSTOM_CHANNELS.items()
+        for k, v in RANDOMIZED_CHANNELS.items()
     ]
 
     return render_template(
@@ -810,7 +810,7 @@ def player():
 @login_required
 def channel_stream_url():
     key = request.args.get("key")
-    channel = CUSTOM_CHANNELS.get(key)
+    channel = RANDOMIZED_CHANNELS.get(key)
     if not channel:
         return jsonify({"error": "Channel not found"}), 404
     return jsonify({

@@ -67,17 +67,16 @@
       opacity: 0;
       pointer-events: none;
     }
-    #ffmpeg-toggle {
+    #ffmpeg-status {
       position: absolute;
       bottom: 20px;
       right: 20px;
       z-index: 100;
       background: rgba(0,0,0,0.7);
-      color: white;
-      border: 1px solid #22d3ee;
+      color: #22d3ee;
       padding: 5px 10px;
       border-radius: 4px;
-      cursor: pointer;
+      font-size: 12px;
     }
   </style>
 </head>
@@ -111,7 +110,7 @@
         webkit-playsinline
       ></video>
       <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
-      <button id="ffmpeg-toggle" class="hidden">Enable FFmpeg Proxy</button>
+      <div id="ffmpeg-status" class="hidden">Using FFmpeg Proxy</div>
     </div>
     <p id="error-message" class="mt-4 text-red-500 hidden text-sm sm:text-base"></p>
   </main>
@@ -123,9 +122,9 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Configuration - Set your FFmpeg proxy endpoint here
-    const FFMPEG_PROXY_URL = "https://your-ffmpeg-proxy.onrender.com/hls";
-    let useFFmpegProxy = false;
+    // Configuration
+    const FFMPEG_PROXY_URL = "https://viewtv-p2s3.onrender.com/hls";
+    const AUTO_FFMPEG_FOR_TS = true; // Set to false to disable auto-FFmpeg
 
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -144,41 +143,45 @@
       errorMsg.classList.remove('hidden');
     }
 
-    function playStream(url, isRetry = false) {
+    function updateFFmpegStatus(show) {
+      const status = document.getElementById('ffmpeg-status');
+      if (show) {
+        status.classList.remove('hidden');
+      } else {
+        status.classList.add('hidden');
+      }
+    }
+
+    function playStream(url) {
       const player = document.getElementById('player');
       const iframe = document.getElementById('iframe-player');
       const errorMsg = document.getElementById('error-message');
-      const ffmpegToggle = document.getElementById('ffmpeg-toggle');
 
       errorMsg.classList.add('hidden');
       player.style.display = 'none';
       iframe.style.display = 'none';
-      ffmpegToggle.classList.add('hidden');
 
       const ext = getExtension(url);
 
-      // Handle TS streams with FFmpeg proxy option
-      if (ext === 'ts') {
-        ffmpegToggle.classList.remove('hidden');
-        ffmpegToggle.textContent = useFFmpegProxy ? 'Using FFmpeg Proxy' : 'Enable FFmpeg Proxy';
-        
-        if (useFFmpegProxy) {
-          // Extract channel ID from URL (assuming format ends with /CHANNEL_ID.ts)
-          const channelId = url.split('/').pop().replace('.ts', '');
-          const proxyUrl = `${FFMPEG_PROXY_URL}/${channelId}.m3u8`;
-          playHLS(proxyUrl);
-          return;
-        }
+      // Auto-convert TS to HLS via FFmpeg proxy
+      if (ext === 'ts' && AUTO_FFMPEG_FOR_TS) {
+        updateFFmpegStatus(true);
+        const channelId = url.split('/').pop().replace('.ts', '');
+        const proxyUrl = `${FFMPEG_PROXY_URL}/${channelId}.m3u8`;
+        playHLS(proxyUrl);
+        return;
       }
 
+      updateFFmpegStatus(false);
+      
       if (ext === 'm3u8') {
         playHLS(url);
       } else if (ext === 'mpd') {
         playDASH(url);
       } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
         playDirect(url);
-      } else if (ext === 'ts' && !useFFmpegProxy) {
-        // Fallback for TS streams when proxy is disabled
+      } else if (ext === 'ts') {
+        // Fallback for TS when AUTO_FFMPEG_FOR_TS is false
         playDirect(url);
       } else {
         playIFrame(url);
@@ -244,13 +247,6 @@
       }
 
       const urlWithToken = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
-      
-      // Set up FFmpeg toggle button
-      document.getElementById('ffmpeg-toggle').addEventListener('click', () => {
-        useFFmpegProxy = !useFFmpegProxy;
-        playStream(urlWithToken);
-      });
-
       playStream(urlWithToken);
     })();
 

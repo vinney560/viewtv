@@ -792,19 +792,33 @@ def play_channel(key):
 import subprocess
 from flask import jsonify
 
-# Disable strict slashes to prevent redirects
-app.url_map.strict_slashes = False
+# Disable all default Flask behaviors that could cause redirects
+app.config.update({
+    'PREFERRED_URL_SCHEME': 'https',
+    'SERVER_NAME': 'viewtv-p2s3.onrender.com',
+    'APPLICATION_ROOT': '/',
+    'SESSION_COOKIE_PATH': '/',
+    'TRAP_HTTP_EXCEPTIONS': True
+})
 
 @app.route('/status', methods=['GET'])
 def status():
-    return Response("Proxy active", mimetype='text/plain')
+    return Response(
+        "Proxy active",
+        mimetype='text/plain',
+        headers={
+            'X-Content-Type-Options': 'nosniff',
+            'Content-Disposition': 'inline'
+        }
+    )
 
 @app.route('/diagnostics', methods=['POST'])
 def diagnostics():
     if not request.form.get('cmd'):
         return jsonify({'error': 'Missing command'}), 400
         
-    if request.form.get('cmd') == 'which ffmpeg':
+    cmd = request.form.get('cmd')
+    if cmd == 'which ffmpeg':
         try:
             result = subprocess.run(
                 ['which', 'ffmpeg'],
@@ -847,7 +861,8 @@ def hls_proxy(channel_id):
             mimetype='application/vnd.apple.mpegurl',
             headers={
                 'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-cache, no-store'
+                'Cache-Control': 'no-cache, no-store',
+                'X-Accel-Buffering': 'no'
             }
         )
     except Exception as e:

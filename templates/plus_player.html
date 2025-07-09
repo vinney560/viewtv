@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Player | View Tv</title>
-  <script src="https://cdn.tailwindcss.com"></script>  <!-- hls.js for HLS playback -->  
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>  <!-- dash.js for DASH playback -->  
-  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>  <!-- video.js CSS & JS -->  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
   <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
-  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>  
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
   <style>
     html, body {
       margin: 0; padding: 0; height: 100%;
@@ -40,8 +40,6 @@
         aspect-ratio: 4 / 3;
       }
     }
-
-    /* Fullscreen styles to stretch container to full screen */
     :fullscreen #player-container,
     :-webkit-full-screen #player-container {
       width: 100vw !important;
@@ -50,8 +48,6 @@
       aspect-ratio: unset !important;
       border-radius: 0 !important;
     }
-
-    /* Fullscreen toggle button styles */
     #fullscreen-toggle {
       background: transparent;
       border: none;
@@ -62,16 +58,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #22d3ee; /* Tailwind cyan-400 */
+      color: #22d3ee;
     }
     #fullscreen-toggle:hover {
       color: #ffffff;
     }
-
-    /* Auto-hide logic - hidden by adding 'hide' class */
     #fullscreen-toggle.hide {
       opacity: 0;
       pointer-events: none;
+    }
+    #ffmpeg-toggle {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      border: 1px solid #22d3ee;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -85,10 +91,8 @@
       <span>Back</span>
     </button>
     <h1 class="font-bold text-cyan-400">Now Streaming</h1>
-    <!-- Fullscreen Toggle Button here -->
     <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
       <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <!-- Enter fullscreen icon: a square [ ] -->
         <path stroke-linecap="round" stroke-linejoin="round"
           d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
       </svg>
@@ -107,6 +111,7 @@
         webkit-playsinline
       ></video>
       <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+      <button id="ffmpeg-toggle" class="hidden">Enable FFmpeg Proxy</button>
     </div>
     <p id="error-message" class="mt-4 text-red-500 hidden text-sm sm:text-base"></p>
   </main>
@@ -118,6 +123,10 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
+    // Configuration - Set your FFmpeg proxy endpoint here
+    const FFMPEG_PROXY_URL = "https://your-ffmpeg-proxy.onrender.com/hls";
+    let useFFmpegProxy = false;
+
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
@@ -125,10 +134,107 @@
 
     function getExtension(url) {
       const path = url.split('?')[0].split('#')[0];
-      const extMatch = path.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv)$/i);
+      const extMatch = path.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv|ts)$/i);
       return extMatch ? extMatch[1].toLowerCase() : '';
     }
 
+    function showError(msg) {
+      const errorMsg = document.getElementById('error-message');
+      errorMsg.textContent = msg;
+      errorMsg.classList.remove('hidden');
+    }
+
+    function playStream(url, isRetry = false) {
+      const player = document.getElementById('player');
+      const iframe = document.getElementById('iframe-player');
+      const errorMsg = document.getElementById('error-message');
+      const ffmpegToggle = document.getElementById('ffmpeg-toggle');
+
+      errorMsg.classList.add('hidden');
+      player.style.display = 'none';
+      iframe.style.display = 'none';
+      ffmpegToggle.classList.add('hidden');
+
+      const ext = getExtension(url);
+
+      // Handle TS streams with FFmpeg proxy option
+      if (ext === 'ts') {
+        ffmpegToggle.classList.remove('hidden');
+        ffmpegToggle.textContent = useFFmpegProxy ? 'Using FFmpeg Proxy' : 'Enable FFmpeg Proxy';
+        
+        if (useFFmpegProxy) {
+          // Extract channel ID from URL (assuming format ends with /CHANNEL_ID.ts)
+          const channelId = url.split('/').pop().replace('.ts', '');
+          const proxyUrl = `${FFMPEG_PROXY_URL}/${channelId}.m3u8`;
+          playHLS(proxyUrl);
+          return;
+        }
+      }
+
+      if (ext === 'm3u8') {
+        playHLS(url);
+      } else if (ext === 'mpd') {
+        playDASH(url);
+      } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
+        playDirect(url);
+      } else if (ext === 'ts' && !useFFmpegProxy) {
+        // Fallback for TS streams when proxy is disabled
+        playDirect(url);
+      } else {
+        playIFrame(url);
+      }
+    }
+
+    function playHLS(url) {
+      const player = document.getElementById('player');
+      
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(player);
+        hls.on(Hls.Events.ERROR, function(event, data) {
+          if (data.fatal) {
+            showError("HLS playback error: " + data.details);
+          }
+        });
+        player.style.display = 'block';
+        player.muted = false;
+        player.play().catch(e => showError("Playback failed: " + e.message));
+      } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+        player.src = url;
+        player.style.display = 'block';
+        player.play().catch(e => showError("Playback failed: " + e.message));
+      } else {
+        showError("HLS not supported on this browser");
+      }
+    }
+
+    function playDASH(url) {
+      const player = document.getElementById('player');
+      try {
+        const dashPlayer = dashjs.MediaPlayer().create();
+        dashPlayer.initialize(player, url, true);
+        player.style.display = 'block';
+        player.play().catch(e => showError("Playback failed: " + e.message));
+      } catch(e) {
+        showError("DASH playback error: " + e.message);
+      }
+    }
+
+    function playDirect(url) {
+      const player = document.getElementById('player');
+      player.src = url;
+      player.style.display = 'block';
+      player.play().catch(e => showError("Playback failed: " + e.message));
+    }
+
+    function playIFrame(url) {
+      const iframe = document.getElementById('iframe-player');
+      iframe.src = url;
+      iframe.style.display = 'block';
+    }
+
+    // Initialize player
     (function() {
       const streamUrl = getQueryParam('url');
       const token = getQueryParam('token');
@@ -138,75 +244,31 @@
       }
 
       const urlWithToken = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
-      const ext = getExtension(urlWithToken);
+      
+      // Set up FFmpeg toggle button
+      document.getElementById('ffmpeg-toggle').addEventListener('click', () => {
+        useFFmpegProxy = !useFFmpegProxy;
+        playStream(urlWithToken);
+      });
 
-      const player = document.getElementById('player');
-      const iframe = document.getElementById('iframe-player');
-      const errorMsg = document.getElementById('error-message');
-
-      function showError(msg) {
-        errorMsg.textContent = msg;
-        errorMsg.classList.remove('hidden');
-      }
-
-      errorMsg.classList.add('hidden');
-      player.style.display = 'none';
-      iframe.style.display = 'none';
-
-      if (ext === 'm3u8') {
-        if (Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(urlWithToken);
-          hls.attachMedia(player);
-          hls.on(Hls.Events.ERROR, function(event, data) {
-            showError("Playback error: " + data.details);
-          });
-          player.style.display = 'block';
-          player.muted = false;
-          player.play();
-        } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
-          player.src = urlWithToken;
-          player.style.display = 'block';
-          player.play();
-        } else {
-          showError("HLS not supported on this browser");
-        }
-      } else if (ext === 'mpd') {
-        try {
-          const dashPlayer = dashjs.MediaPlayer().create();
-          dashPlayer.initialize(player, urlWithToken, true);
-          player.style.display = 'block';
-        } catch(e) {
-          showError("DASH playback error: " + e.message);
-        }
-      } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
-        player.src = urlWithToken;
-        player.style.display = 'block';
-        player.play().catch(() => {});
-      } else {
-        iframe.src = urlWithToken;
-        iframe.style.display = 'block';
-      }
+      playStream(urlWithToken);
     })();
 
-    // Fullscreen toggle logic with icon switch and auto-hide
+    // Fullscreen toggle logic
     (function() {
       const fullscreenBtn = document.getElementById('fullscreen-toggle');
       const fullscreenIcon = document.getElementById('fullscreen-icon');
       const playerContainer = document.getElementById('player-container');
       let hideTimeout;
 
-      // SVG paths for icons
-      const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6'; // square [ ]
-      const exitFullscreenPath = 'M6 18L18 6M6 6l12 12'; // X icon
+      const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6';
+      const exitFullscreenPath = 'M6 18L18 6M6 6l12 12';
 
       function setIcon(isFullscreen) {
         fullscreenIcon.innerHTML = '';
         if (isFullscreen) {
-          // X icon
           fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${exitFullscreenPath}" />`;
         } else {
-          // Square icon
           fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${enterFullscreenPath}" />`;
         }
       }
@@ -226,27 +288,21 @@
         clearTimeout(hideTimeout);
         hideTimeout = setTimeout(() => {
           fullscreenBtn.classList.add('hide');
-        }, 3000); // hide after 3 seconds of inactivity
+        }, 3000);
       }
 
-      fullscreenBtn.addEventListener('click', () => {
-        toggleFullscreen();
-      });
-
-      // Update icon on fullscreen change
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
       document.addEventListener('fullscreenchange', () => {
         setIcon(!!document.fullscreenElement);
         resetHideTimeout();
       });
-
-      // Show button on any mousemove or touch, then reset hide timer
       document.addEventListener('mousemove', resetHideTimeout);
       document.addEventListener('touchstart', resetHideTimeout);
 
-      // Initialize icon and start hide timer
       setIcon(!!document.fullscreenElement);
       resetHideTimeout();
     })();
+
     function tryClose() {
       window.close();
       setTimeout(() => {

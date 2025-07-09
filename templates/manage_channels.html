@@ -117,6 +117,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="block text-sm font-medium text-gray-400 mb-1">Unique Key</label>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <input name="key" placeholder="e.g., citizen-tv" required 
                  class="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:border-cyan-400" />
         </div>

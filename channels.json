@@ -430,5 +430,61 @@
   "648": {
     "name": "BEIN SPORTS 7 (AR)",
     "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/648.ts"
+  },
+  "310": {
+    "name": "FOX",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/310.ts"
+  },
+  "311": {
+    "name": "FOX L2",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/311.ts"
+  },
+  "312": {
+    "name": "FOX MOVIES",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/312.ts"
+  },
+  "313": {
+    "name": "FOX MOVIES L2",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/313.ts"
+  },
+  "314": {
+    "name": "FOX LIFE",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/314.ts"
+  },
+  "315": {
+    "name": "FOX LIFE L2",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/315.ts"
+  },
+  "316": {
+    "name": "FOX CRIME",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/316.ts"
+  },
+  "317": {
+    "name": "FOX CRIME L2",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/317.ts"
+  },
+  "611": {
+    "name": "DAZN 1 (DE)",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/611.ts"
+  },
+  "612": {
+    "name": "DAZN 2 (DE)",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/612.ts"
+  },
+  "44202": {
+    "name": "DAZN 2 (IT) TEST",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/44202.ts"
+  },
+  "44201": {
+    "name": "DAZN 1 (IT) TEST",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/44201.ts"
+  },
+  "37284": {
+    "name": "DAZN 1 (DE) L2",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/37284.ts"
+  },
+  "37285": {
+    "name": "DAZN 2 (DE) L2",
+    "url": "http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/37285.ts"
   }
 }

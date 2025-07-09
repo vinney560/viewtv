@@ -1390,7 +1390,7 @@ def add_channel():
     channels[key] = {"name": name, "url": url}
     save_channels(channels)
     flash("Channel added successfully.", "success")
-    return redirect(url_for("manage_channels"))
+    return redirect(url_for("download_and_redirect"))
 #--------------------------------------------------------------------------
 @app.route("/admin/channels/edit/<key>", methods=["GET","POST"])
 def edit_channel(key):
@@ -1409,7 +1409,7 @@ def edit_channel(key):
     channels[key] = {"name": name, "url": url}
     save_channels(channels)
     flash("Channel updated.", "success")
-    return redirect(url_for("manage_channels"))
+    return redirect(url_for("download_and_redirect"))
 #--------------------------------------------------------------------------
 @app.route("/admin/channels/delete/<key>", methods=["GET","POST"])
 def delete_channel(key):
@@ -1418,9 +1418,19 @@ def delete_channel(key):
         del channels[key]
         save_channels(channels)
         flash("Channel deleted.", "success")
+        return redirect(url_for("download_and_redirect"))
     else:
         flash("Channel not found.", "error")
     return redirect(url_for("manage_channels"))
+#-------------------------------------------------------------------------
+@app.route("/admin/channels/download-and-redirect")
+def download_and_redirect():
+    return render_template("download_and_redirect.html")
+
+@app.route("/admin/channels/download")
+def download_channels():
+    file_path = os.path.join(os.getcwd(), "channels.json")
+    return send_file(file_path, as_attachment=True)
 #========================================
 
 @app.context_processor

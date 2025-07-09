@@ -792,14 +792,29 @@ def play_channel(key):
 import subprocess
 from flask import jsonify
 
+# Disable strict slashes to prevent redirects
+app.url_map.strict_slashes = False
+
+@app.route('/status', methods=['GET'])
+def status():
+    return Response("Proxy active", mimetype='text/plain')
+
 @app.route('/diagnostics', methods=['POST'])
 def diagnostics():
+    if not request.form.get('cmd'):
+        return jsonify({'error': 'Missing command'}), 400
+        
     if request.form.get('cmd') == 'which ffmpeg':
         try:
-            result = subprocess.check_output(['which', 'ffmpeg'], stderr=subprocess.STDOUT)
+            result = subprocess.run(
+                ['which', 'ffmpeg'],
+                capture_output=True,
+                text=True,
+                check=True
+            )
             return jsonify({
                 'success': True,
-                'path': result.decode().strip()
+                'path': result.stdout.strip()
             })
         except subprocess.CalledProcessError:
             return jsonify({
@@ -808,28 +823,23 @@ def diagnostics():
             }), 500
     return jsonify({'error': 'Invalid command'}), 400
 
-# Enhanced HLS Proxy Route
-@app.route('/hls/<int:channel_id>.m3u8')
+@app.route('/hls/<int:channel_id>.m3u8', methods=['GET'])
 def hls_proxy(channel_id):
     ts_url = f"http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/{channel_id}.ts"
     
     try:
-        ffmpeg_cmd = [
-            'ffmpeg',
-            '-i', ts_url,
-            '-c', 'copy',           # No re-encoding
-            '-f', 'hls',            # HLS format
-            '-hls_time', '2',       # 2-second segments
-            '-hls_list_size', '5',  # Store 5 segments
-            '-hls_flags', 'delete_segments+append_list',
-            '-'  # Output to stdout
-        ]
-        
         proc = subprocess.Popen(
-            ffmpeg_cmd,
+            [
+                'ffmpeg',
+                '-i', ts_url,
+                '-c', 'copy',
+                '-f', 'hls',
+                '-hls_time', '2',
+                '-hls_list_size', '5',
+                '-'
+            ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=True
+            stderr=subprocess.PIPE
         )
         
         return Response(
@@ -837,18 +847,12 @@ def hls_proxy(channel_id):
             mimetype='application/vnd.apple.mpegurl',
             headers={
                 'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-cache'
+                'Cache-Control': 'no-cache, no-store'
             }
         )
-    
     except Exception as e:
         app.logger.error(f"FFmpeg failed: {str(e)}")
-        abort(500, description="Stream conversion failed")
-
-# Health Check Route
-@app.route('/status')
-def status():
-    return "Proxy active", 200, {'Content-Type': 'text/plain'}
+        return jsonify({'error': 'Stream conversion failed'}), 500
 #--------------------------------------------------------------------------
 @app.route('/player')
 def player():

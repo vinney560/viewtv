@@ -751,7 +751,10 @@ def save_channels(channels):
 CUSTOM_CHANNELS = load_channels()
 
 # Generate a random sample ONCE when the server starts
-RANDOMIZED_CHANNELS = dict(random.sample(CUSTOM_CHANNELS.items(), min(15, len(CUSTOM_CHANNELS))))
+import random
+
+# Sample 15 random items from CUSTOM_CHANNELS once when the server starts
+RANDOMIZED_CHANNELS = dict(random.sample(list(CUSTOM_CHANNELS.items()), min(15, len(CUSTOM_CHANNELS))))
 
 @app.route('/home_1')
 @login_required

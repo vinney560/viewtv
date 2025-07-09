@@ -1395,7 +1395,7 @@ def add_channel():
 @app.route("/admin/channels/edit/<key>", methods=["GET","POST"])
 def edit_channel(key):
     name = request.form.get("name")
-    url = request.form.get("url").strip()
+    url = request.form.get("url")
 
     if not name or not url:
         flash("All fields are required.", "error")

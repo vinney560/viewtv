@@ -4,56 +4,42 @@
 # Standard Library Imports
 import os
 import base64
-import random
 import json
+import random
 import re
 import subprocess
 from datetime import datetime, timedelta
-from urllib.parse import quote_plus
 from functools import wraps
+from typing import Dict, List, Optional, Union
+from urllib.parse import quote_plus
 
 # Third-Party Imports
 import requests
+from dotenv import load_dotenv
+from flask import (Flask, abort, flash, jsonify, redirect, render_template,
+                   request, Response, send_file, send_from_directory, session,
+                   stream_with_context, url_for)
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_login import (LoginManager, UserMixin, current_user, login_required,
+                        login_user, logout_user)
+from flask_mail import Mail, Message
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFError, CSRFProtect
+from itsdangerous import URLSafeTimedSerializer
 from requests.auth import HTTPBasicAuth
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
-from itsdangerous import URLSafeTimedSerializer
-from dotenv import load_dotenv
+from werkzeug.security import check_password_hash, generate_password_hash
 
-# Flask Core
-from flask import (
-    Flask, request, Response, abort, render_template, 
-    send_from_directory, redirect, url_for, flash, 
-    session, jsonify, stream_with_context, send_file
-)
-
-# Flask Extensions
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from flask_login import (
-    LoginManager, UserMixin, login_user, logout_user, 
-    login_required, current_user
-)
-from flask_mail import Mail, Message
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_wtf.csrf import CSRFProtect, CSRFError
-from flask_cors import CORS
-
-# Security
-from werkzeug.security import generate_password_hash, check_password_hash
-
-# Additional imports for specific functionality
-from typing import Dict, List, Optional, Union  # For type hints (optional but recommended)
 # ============================
 # CONFIGURATION & INIT
 # ============================
 
 app = Flask(__name__)
-
-# Load environment variables manually (optional)
-from dotenv import load_dotenv
 load_dotenv()
 
 def choose_db_uri():
@@ -185,6 +171,7 @@ class Payment(db.Model):
     status = db.Column(db.String(50), default="Pending")
     mpesa_receipt = db.Column(db.String(100))
 
+#----------------------------------------------------------------------
 with app.app_context():
     db.create_all()
 #======================================

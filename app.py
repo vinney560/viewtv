@@ -1214,7 +1214,7 @@ def welcome():
 @app.route('/logout_current_user')
 def logout_current_user():
     session.clear()
-    flask_logout_user()
+    logout_user()
     return redirect(url_for("home"))
 #-------------------------------------------------------------------------  
 @app.route('/services') 

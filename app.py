@@ -1,22 +1,171 @@
 #====================================
 #                     >>>> APP <<<<
 #====================================
-# app.py
+import os
 from flask import Flask
-import modules
-from config import db, init_app
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_login import LoginManager, UserMixin
+from flask_mail import Mail
+from flask_limiter import Limiter
+from flask_wtf.csrf import CSRFProtect
+from flask_cors import CORS
+from flask_limiter.util import get_remote_address
+from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
+from datetime import datetime, timedelta
+
+# ============================
+# CONFIGURATION & INIT
+# ============================
 
 app = Flask(__name__)
-init_app(app)
+
+# Load environment variables manually (optional)
+from dotenv import load_dotenv
+load_dotenv()
+
+def choose_db_uri():
+    new_uri = os.getenv('DATABASE_URL')
+    render_uri = os.getenv('DATABASE_URL_2')
+    if new_uri:
+        try:
+            engine = create_engine(new_uri)
+            engine.connect().close()
+            print("Connected to Render DB (DATABASE_URL)")
+            return new_uri
+        except OperationalError:
+            print("⚠ Failed to connect to Render DB. Trying Render 2 DB...")
+
+    if render_uri:
+        try:
+            engine = create_engine(render_uri)
+            engine.connect().close()
+            print("Connected to Render 2 DB (DATABASE_URL)")
+            return render_uri
+        except OperationalError:
+            print("⚠ Failed to connect to Render 2 DB.")
+
+    print("All remote DBs failed. Falling back to SQLite.")
+    return "sqlite:///default.db"
+
+# App Configuration
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
+app.config['SQLALCHEMY_DATABASE_URI'] = choose_db_uri()
+app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+
+UPLOAD_FOLDER = os.path.join(app.root_path, 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
+app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT") or 0)
+app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == 'True'
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
+app.permanent_session_lifetime = timedelta(days=1)
+
+# Initialize Extensions
+db = SQLAlchemy(app)
+jwt = JWTManager(app)
+login_manager = LoginManager(app)
+mail = Mail(app)
+csrf = CSRFProtect(app)
+limiter = Limiter(app, key_func=get_remote_address)
+CORS(app)
+
+login_manager.login_view = "login"
+
+# ============================
+# MODELS
+# ============================
+
+def nairobi_time():
+    return datetime.utcnow() + timedelta(hours=3)
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(50), default='user', nullable=True)
+    status = db.Column(db.String(50), nullable=True)
+    failed_login_attempts = db.Column(db.Integer, default=0, nullable=True)
+    last_failed_login = db.Column(db.DateTime, nullable=True)
+    email_verified = db.Column(db.Boolean, default=False, nullable=True)
+    agreed = db.Column(db.Boolean, default=False, nullable=True)
+    created_at = db.Column(db.DateTime, default=nairobi_time, nullable=True)
+    plus_type = db.Column(db.String(10), nullable=True, default=None)
+    plus_expires_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.utcnow() - timedelta(seconds=1))
+    last_free_plus = db.Column(db.DateTime, nullable=True, default=None)
+
+    def is_locked(self):
+        if self.failed_login_attempts < 5:
+            return False
+        if not self.last_failed_login:
+            return False
+        unlock_time = self.last_failed_login + timedelta(minutes=5)
+        if datetime.utcnow() > unlock_time:
+            self.failed_login_attempts = 0
+            self.last_failed_login = None
+            db.session.commit()
+            return False
+        return True
+
+    @property
+    def has_plus(self):
+        return self.plus_expires_at and self.plus_expires_at > datetime.utcnow()
+
+    @property
+    def is_plus(self):
+        return (
+            self.plus_type in ['free', 'paid']
+            and self.plus_expires_at
+            and self.plus_expires_at > datetime.utcnow()
+        )
+
+class Streams(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(25), nullable=True, unique=True)
+    name = db.Column(db.String(255), nullable=True)
+    url = db.Column(db.String(2500), nullable=True)
+    category = db.Column(db.String(255), nullable=True)
+    created_at = db.Column(db.DateTime, default=nairobi_time)
+    logo = db.Column(db.String(1255), nullable=True)
+    access = db.Column(db.String(15), nullable=True)
+    status = db.Column(db.Boolean, default=True, nullable=True)
+
+class AdminCode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(500), default="479admin479", nullable=True)
+
+    def __repr__(self):
+        return f"<AdminCode {self.code}>"
+
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    phone = db.Column(db.String(20), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(50), default="Pending")
+    mpesa_receipt = db.Column(db.String(100))
 
 with app.app_context():
     db.create_all()
+# ============================
+# ROUTES
+# ============================
 
 # ✅ Load other logic AFTER app is ready
-import proxy
-import payment
-import admin
-import helper
+from proxy import *
+from payment import *
+from admin import *
+from helper import *
+from modules import *
 #======================================
 @app.route('/robots.txt')
 def robots_txt():

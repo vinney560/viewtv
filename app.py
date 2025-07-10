@@ -4,7 +4,7 @@
 # app.py
 from flask import Flask
 import modules
-from config import init_app
+import config
 import db as models  # load models for db.create_all()
 
 app = Flask(__name__)

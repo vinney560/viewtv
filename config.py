@@ -18,14 +18,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Extensions (global, to be used in app.py)
-db = SQLAlchemy()
-jwt = JWTManager()
-login_manager = LoginManager()
-mail = Mail()
-csrf = CSRFProtect()
-limiter = Limiter(key_func=get_remote_address)
-
 def choose_db_uri():
     new_uri = os.getenv('DATABASE_URL')
     render_uri = os.getenv('DATABASE_URL_2')

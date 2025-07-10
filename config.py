@@ -66,6 +66,15 @@ def init_app(app):
     app.permanent_session_lifetime = timedelta(days=1)
 
     # Init extensions
+    # Extensions (global, to be used in app.py)
+    db = SQLAlchemy()
+    jwt = JWTManager()
+    login_manager = LoginManager()
+    mail = Mail()
+    csrf = CSRFProtect()
+    limiter =
+    Limiter(key_func=get_remote_address)
+    
     db.init_app(app)
     jwt.init_app(app)
     mail.init_app(app)

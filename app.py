@@ -10,14 +10,6 @@ import db as models  # load models for db.create_all()
 app = Flask(__name__)
 init_app(app)
 
-# Extensions (global, to be used in app.py)
-db = SQLAlchemy()
-jwt = JWTManager()
-login_manager = LoginManager()
-mail = Mail()
-csrf = CSRFProtect()
-limiter = Limiter(key_func=get_remote_address)
-
 with app.app_context():
     db.create_all()
 

@@ -880,6 +880,20 @@ def hls_proxy(channel_id):
     except Exception as e:
         app.logger.error(f"Proxy failed: {str(e)}")
         return jsonify({"error": "Stream conversion failed"}), 500
+
+@app.route('/test-ffmpeg')
+def test_ffmpeg():
+    try:
+        result = subprocess.run(['ffmpeg', '-version'], capture_output=True, text=True, check=True)
+        return jsonify({
+            "ffmpeg": "available",
+            "version": result.stdout.split('\n')[0]
+        })
+    except subprocess.CalledProcessError as e:
+        return jsonify({
+            "ffmpeg": "not available",
+            "error": e.stderr
+        }), 500
 #--------------------------------------------------------------------------
 @app.route('/player')
 def player():

@@ -856,35 +856,62 @@ def sports_listing():
     channels = load_sports()
     return render_template('sports.html', channels=channels)
 #=======================================
-from flask import Response, jsonify
+HLS_ROOT = os.path.join(os.getcwd(), "hls_streams")
+
+if not os.path.exists(HLS_ROOT):
+    os.makedirs(HLS_ROOT)
+#----------------------------------------------------------------------
+HLS_ROOT = "/tmp/hls_streams"  # Make sure this exists and is writable
+
+if not os.path.exists(HLS_ROOT):
+    os.makedirs(HLS_ROOT)
 
 @app.route('/hls/<int:channel_id>.m3u8')
-def hls_from_custom_channels(channel_id):
+def hls_playlist(channel_id):
     channel = CUSTOM_CHANNELS.get(str(channel_id))
     if not channel:
-        return jsonify({"error": "Channel not found"}), 404
+        return abort(404, "Channel not found")
 
     ts_url = channel['url']
+    channel_folder = os.path.join(HLS_ROOT, str(channel_id))
 
-    # Build a simple static m3u8 pointing to the TS stream
-    playlist = f"""#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-TARGETDURATION:10
-#EXT-X-MEDIA-SEQUENCE:0
-#EXTINF:10.0,
-{ts_url}
-"""
+    # Check if playlist exists, if not, start ffmpeg to generate it
+    playlist_path = os.path.join(channel_folder, "index.m3u8")
 
-    return Response(
-        playlist,
-        mimetype='application/vnd.apple.mpegurl',
-        headers={
-            'Access-Control-Allow-Origin': '*',
-            'Cache-Control': 'no-cache, no-store',
-            'Content-Disposition': 'inline',
-            'X-Content-Type-Options': 'nosniff'
-        }
-    )
+    if not os.path.exists(playlist_path):
+        os.makedirs(channel_folder, exist_ok=True)
+        
+        # Run FFmpeg to segment the single .ts stream into HLS segments + playlist
+        # The command below grabs input ts_url and outputs HLS segments & playlist in channel_folder
+        ffmpeg_cmd = [
+            "ffmpeg",
+            "-i", ts_url,
+            "-c", "copy",  # copy codec (no re-encoding)
+            "-hls_time", "10",  # segment length seconds
+            "-hls_list_size", "5",  # keep last 5 segments in playlist
+            "-hls_flags", "delete_segments+append_list",
+            "-hls_segment_filename", os.path.join(channel_folder, "segment%03d.ts"),
+            playlist_path
+        ]
+        # Run in background (non-blocking)
+        subprocess.Popen(ffmpeg_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+        # You might want to wait a few seconds for ffmpeg to create playlist and segments,
+        # or return a "loading" page if not ready yet.
+        return "Stream is initializing, please refresh in a moment..."
+
+    # Serve the playlist file when ready
+    return send_from_directory(channel_folder, "index.m3u8", mimetype="application/vnd.apple.mpegurl")
+
+@app.route('/hls/<int:channel_id>/<segment>')
+def hls_segment(channel_id, segment):
+    channel_folder = os.path.join(HLS_ROOT, str(channel_id))
+    segment_path = os.path.join(channel_folder, segment)
+
+    if os.path.exists(segment_path):
+        return send_from_directory(channel_folder, segment, mimetype="video/MP2T")
+    else:
+        return abort(404, "Segment not found")
 #--------------------------------------------------------------------------
 @app.route('/test-ffmpeg')
 def test_ffmpeg():

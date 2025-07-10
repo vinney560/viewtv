@@ -46,25 +46,35 @@
     .video-container {
       aspect-ratio: 16/9;
     }
+    /* Hide back button during playback */
+    .back-btn {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+    .video-playing .back-btn {
+      opacity: 0;
+    }
+    body:hover .back-btn {
+      opacity: 1;
+    }
   </style>
 </head>
 
 <body class="text-white min-h-screen flex flex-col">
 
-  <!-- Back Button -->
-  <button onclick="tryClose()" class="fixed top-6 left-6 z-50 flex items-center text-cyan-300 hover:text-cyan-200 transition-colors duration-200 group">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform">
+  <!-- Back Button - now with dynamic hiding -->
+  <button id="backBtn" onclick="tryClose()" class="back-btn fixed top-6 left-6 z-50 flex items-center text-cyan-300 hover:text-cyan-200 transition-all duration-200 group bg-gray-900/80 rounded-full p-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
-    <span class="font-medium text-sm">BACK</span>
   </button>
 
   <!-- Main Content -->
-  <div class="flex flex-col flex-1">
+  <div class="flex flex-col flex-1 pt-16"> <!-- Added pt-16 to lower the video container -->
 
-    <!-- Video Player Section -->
+    <!-- Video Player Section - now larger -->
     <section class="w-full bg-black">
-      <div class="relative w-full max-w-7xl mx-auto video-container">
+      <div class="relative w-full max-w-7xl mx-auto video-container" style="max-height: 75vh;">
         <video id="video" controls autoplay playsinline class="w-full h-full object-cover bg-black"></video>
         <iframe id="iframe" src="" allowfullscreen class="absolute inset-0 w-full h-full hidden"></iframe>
         <div id="bufferSpinner" class="flex items-center space-x-3">
@@ -142,6 +152,35 @@
     const qualitySelect = document.getElementById("qualitySelect");
     const qualityContainer = document.getElementById("qualityContainer");
     const bufferSpinner = document.getElementById("bufferSpinner");
+    const backBtn = document.getElementById("backBtn");
+    const body = document.body;
+
+    // Handle back button visibility
+    function handlePlaybackState() {
+      if (video.paused) {
+        body.classList.remove("video-playing");
+      } else {
+        body.classList.add("video-playing");
+      }
+    }
+
+    // Set up event listeners for playback state
+    video.addEventListener('play', handlePlaybackState);
+    video.addEventListener('pause', handlePlaybackState);
+    video.addEventListener('playing', handlePlaybackState);
+    video.addEventListener('waiting', handlePlaybackState);
+
+    // Also handle mouse movement to show/hide back button
+    let mouseTimer;
+    body.addEventListener('mousemove', () => {
+      backBtn.style.opacity = '1';
+      clearTimeout(mouseTimer);
+      mouseTimer = setTimeout(() => {
+        if (!video.paused) {
+          backBtn.style.opacity = '0';
+        }
+      }, 2000);
+    });
 
     function tryClose() {
       window.close();

@@ -813,6 +813,7 @@ def status():
     )
 
 @app.route('/diagnostics', methods=['POST'])
+@csrf.exempt
 def diagnostics():
     if not request.form.get('cmd'):
         return jsonify({'error': 'Missing command'}), 400

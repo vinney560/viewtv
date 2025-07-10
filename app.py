@@ -840,69 +840,61 @@ def diagnostics():
 #-------------------------------------------------------------------------
 #      >>>>LATEST SPORTS CHANNELS<<<<
 #========================================
-# Load sports.json once or every request (choose your way)
+# Root directory for all HLS outputs
+HLS_ROOT = "/tmp/hls_streams"
+os.makedirs(HLS_ROOT, exist_ok=True)
+
+# Load sports channels from JSON
 def load_sports():
     with open('sports.json') as f:
         data = json.load(f)
-    # Convert dict to list of dicts with id
-    channels = [
+    return [
         {"id": int(k), "name": v['name'], "url": v['url']}
         for k, v in data.items()
     ]
-    return channels
 
+# Route: List all sports channels
 @app.route('/sports')
 def sports_listing():
     channels = load_sports()
     return render_template('sports.html', channels=channels)
-#=======================================
-HLS_ROOT = os.path.join(os.getcwd(), "hls_streams")
 
-if not os.path.exists(HLS_ROOT):
-    os.makedirs(HLS_ROOT)
-#----------------------------------------------------------------------
-HLS_ROOT = "/tmp/hls_streams"  # Make sure this exists and is writable
-
-if not os.path.exists(HLS_ROOT):
-    os.makedirs(HLS_ROOT)
-
+# Route: Serve .m3u8 playlist
 @app.route('/hls/<int:channel_id>.m3u8')
 def hls_playlist(channel_id):
-    channel = CUSTOM_CHANNELS.get(str(channel_id))
+    channels = load_sports()
+    channel = next((ch for ch in channels if ch["id"] == channel_id), None)
+    
     if not channel:
         return abort(404, "Channel not found")
 
-    ts_url = channel['url']
+    ts_url = channel["url"]
     channel_folder = os.path.join(HLS_ROOT, str(channel_id))
-
-    # Check if playlist exists, if not, start ffmpeg to generate it
     playlist_path = os.path.join(channel_folder, "index.m3u8")
 
     if not os.path.exists(playlist_path):
         os.makedirs(channel_folder, exist_ok=True)
-        
-        # Run FFmpeg to segment the single .ts stream into HLS segments + playlist
-        # The command below grabs input ts_url and outputs HLS segments & playlist in channel_folder
+
         ffmpeg_cmd = [
             "ffmpeg",
             "-i", ts_url,
-            "-c", "copy",  # copy codec (no re-encoding)
-            "-hls_time", "10",  # segment length seconds
-            "-hls_list_size", "5",  # keep last 5 segments in playlist
+            "-c", "copy",
+            "-hls_time", "10",
+            "-hls_list_size", "5",
             "-hls_flags", "delete_segments+append_list",
             "-hls_segment_filename", os.path.join(channel_folder, "segment%03d.ts"),
             playlist_path
         ]
-        # Run in background (non-blocking)
-        subprocess.Popen(ffmpeg_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        log_path = os.path.join(channel_folder, "ffmpeg.log")
+        with open(log_path, "w") as log_file:
+            subprocess.Popen(ffmpeg_cmd, stdout=log_file, stderr=log_file)
 
-        # You might want to wait a few seconds for ffmpeg to create playlist and segments,
-        # or return a "loading" page if not ready yet.
-        return "Stream is initializing, please refresh in a moment..."
+        return f"Stream is initializing. Check log: <a href='/log/{channel_id}'>View FFmpeg Log</a>"
 
-    # Serve the playlist file when ready
     return send_from_directory(channel_folder, "index.m3u8", mimetype="application/vnd.apple.mpegurl")
 
+# Route: Serve HLS segments
 @app.route('/hls/<int:channel_id>/<segment>')
 def hls_segment(channel_id, segment):
     channel_folder = os.path.join(HLS_ROOT, str(channel_id))
@@ -912,6 +904,26 @@ def hls_segment(channel_id, segment):
         return send_from_directory(channel_folder, segment, mimetype="video/MP2T")
     else:
         return abort(404, "Segment not found")
+
+# Route: View FFmpeg log (for debugging)
+@app.route('/log/<int:channel_id>')
+def view_ffmpeg_log(channel_id):
+    log_path = os.path.join(HLS_ROOT, str(channel_id), "ffmpeg.log")
+    if os.path.exists(log_path):
+        with open(log_path) as f:
+            return f"<pre>{f.read()}</pre>"
+    else:
+        return "No log available."
+
+# Optional: Reset a stream (clear segments and playlist)
+@app.route('/reset/<int:channel_id>')
+def reset_stream(channel_id):
+    folder = os.path.join(HLS_ROOT, str(channel_id))
+    if os.path.exists(folder):
+        for file in os.listdir(folder):
+            os.remove(os.path.join(folder, file))
+        return f"Stream {channel_id} reset. Refresh to retry."
+    return "Stream folder not found."
 #--------------------------------------------------------------------------
 @app.route('/test-ffmpeg')
 def test_ffmpeg():

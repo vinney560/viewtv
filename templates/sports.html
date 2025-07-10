@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8" />
     <title>Sports Channels</title>
 </head>
 <body>
-    <h1>Sports Channels</h1>
+    <h1>Available Sports Channels</h1>
     <ul>
-        {% for channel in channels %}
-        <li>
-            <!-- Link to  /stream route, passing the raw .ts url -->
-            <a href="{{ url_for('stream_router') }}?input={{ channel.url | urlencode }}&name={{ channel.name | urlencode }}">
-                {{ channel.name }}
-            </a>
-        </li>
+        {% for ch in channels %}
+            <li>
+                {{ ch.name }} —
+                <a href="/hls/{{ ch.id }}.m3u8">Play</a> |
+                <a href="/log/{{ ch.id }}">Log</a> |
+                <a href="/reset/{{ ch.id }}">Reset</a>
+            </li>
         {% endfor %}
     </ul>
 </body>

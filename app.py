@@ -838,6 +838,8 @@ def diagnostics():
             }), 500
     return jsonify({'error': 'Invalid command'}), 400
 
+import threading
+
 @app.route('/hls/<int:channel_id>.m3u8')
 def hls_proxy(channel_id):
     ts_url = f"http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/{channel_id}.ts"
@@ -858,6 +860,13 @@ def hls_proxy(channel_id):
             stderr=subprocess.PIPE,
             bufsize=10**8
         )
+
+        # Log FFmpeg stderr in a background thread
+        def log_stderr():
+            for line in iter(proc.stderr.readline, b''):
+                app.logger.error(f"[FFmpeg] {line.decode().strip()}")
+
+        threading.Thread(target=log_stderr, daemon=True).start()
 
         def generate():
             while True:

@@ -845,7 +845,7 @@ from tempfile import mkdtemp
 
 @app.route('/hls/<int:channel_id>.m3u8')
 def hls_from_json(channel_id):
-    channel = channels.get(str(channel_id))
+    channel = CUSTOM_CHANNELS.get(str(channel_id))
     if not channel:
         return jsonify({"error": "Channel not found"}), 404
 

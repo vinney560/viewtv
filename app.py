@@ -1,7 +1,7 @@
 #====================================
 #                     >>>>APP<<<<
 #====================================
-from config import app, db  # ✅ Use app & db directly from config.py
+import config
 import modules
 
 import db as models  # ✅ This loads all models for db.create_all()

@@ -838,37 +838,48 @@ def diagnostics():
             }), 500
     return jsonify({'error': 'Invalid command'}), 400
 
-@app.route('/hls/<int:channel_id>.m3u8', methods=['GET'])
+@app.route('/hls/<int:channel_id>.m3u8')
 def hls_proxy(channel_id):
     ts_url = f"http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/{channel_id}.ts"
     
     try:
+        # 1. Use Popen with proper stdout/stderr handling
         proc = subprocess.Popen(
             [
                 'ffmpeg',
                 '-i', ts_url,
-                '-c', 'copy',
-                '-f', 'hls',
-                '-hls_time', '2',
-                '-hls_list_size', '5',
-                '-'
+                '-c', 'copy',           # No re-encoding
+                '-f', 'hls',           # HLS format
+                '-hls_time', '2',      # Segment length
+                '-hls_list_size', '3',  # Segments in playlist
+                '-'                    # Output to stdout
             ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
+            bufsize=10**8              # Larger buffer for TS streams
         )
         
+        # 2. Stream the output incrementally
+        def generate():
+            while True:
+                output = proc.stdout.read(1024)  # Read in chunks
+                if not output:
+                    break
+                yield output
+        
+        # 3. Return streaming response with timeout
         return Response(
-            proc.stdout,
+            generate(),
             mimetype='application/vnd.apple.mpegurl',
             headers={
                 'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-cache, no-store',
-                'X-Accel-Buffering': 'no'
+                'Cache-Control': 'no-cache, no-store'
             }
         )
+        
     except Exception as e:
-        app.logger.error(f"FFmpeg failed: {str(e)}")
-        return jsonify({'error': 'Stream conversion failed'}), 500
+        app.logger.error(f"Proxy failed: {str(e)}")
+        return jsonify({"error": "Stream conversion failed"}), 500
 #--------------------------------------------------------------------------
 @app.route('/player')
 def player():

@@ -62,7 +62,7 @@
 
       <!-- Free Plus Logic -->
       <div class="space-y-4">
-        {% if not user.last_free_plus or (user.last_free_plus + timedelta(hours=24)) <= now %}
+        {% if not user.last_free_plus or (user.last_free_plus + timedelta(hours=24)) <= now and user.plus_type not in [free, paid] %}
           <a href="{{ url_for('claim_free_plus') }}" class="block group">
             <button class="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-glow-green">
               <svg class="w-6 h-6 text-yellow-300 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">

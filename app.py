@@ -1520,47 +1520,79 @@ def fetch_and_save_country_channels(country_code):
 @admin_required
 def save_playlist():
     try:
+        # Path to your JSON playlist file
+        json_path = os.path.join(current_app.root_path, 'channels.json')
+        
         # Load channels from JSON file
-        with open('channels.json', 'r') as f:
+        with open(json_path, 'r') as f:
             channels = json.load(f)
         
-        saved_count = 0
-        existing_count = 0
+        new_channels = 0
+        updated_channels = 0
         
         for key, ch_data in channels.items():
-            # Check if channel already exists
-            stream = Streams.query.filter_by(key=key).first()
-            if not stream:
-                new_stream = Streams(
+            # Check if channel exists
+            existing = Streams.query.filter_by(key=key).first()
+            
+            if existing:
+                # Update existing channel
+                existing.name = ch_data.get('name', existing.name)
+                existing.url = ch_data.get('url', existing.url)
+                existing.category = ch_data.get('category', existing.category)
+                existing.logo = ch_data.get('logo', existing.logo)
+                existing.access = ch_data.get('access', existing.access)
+                existing.status = ch_data.get('status', existing.status)
+                updated_channels += 1
+            else:
+                # Create new channel
+                new_channel = Streams(
                     key=key,
                     name=ch_data.get('name', ''),
                     url=ch_data.get('url', ''),
-                    category=ch_data.get('category', 'Not specified'),
+                    category=ch_data.get('category', 'General'),
                     logo=ch_data.get('logo', ''),
                     access=ch_data.get('access', 'free'),
                     status=ch_data.get('status', True)
                 )
-                db.session.add(new_stream)
-                saved_count += 1
-            else:
-                existing_count += 1
+                db.session.add(new_channel)
+                new_channels += 1
         
         db.session.commit()
         
-        if saved_count > 0:
-            flash(f"Successfully saved {saved_count} new channels", "success")
-        if existing_count > 0:
-            flash(f"{existing_count} channels already existed", "info")
-            
+        flash(f"Playlist saved! {new_channels} new channels added, {updated_channels} existing channels updated.", "success")
+        
     except FileNotFoundError:
-        flash("Channels JSON file not found", "error")
+        flash("Playlist JSON file not found", "error")
     except json.JSONDecodeError:
-        flash("Invalid JSON format in channels file", "error")
+        flash("Invalid JSON format in playlist file", "error")
     except Exception as e:
-        flash(f"Failed to save channels: {str(e)}", "error")
         db.session.rollback()
+        current_app.logger.error(f"Error saving playlist: {str(e)}")
+        flash(f"Failed to save playlist: {str(e)}", "error")
     
-    return redirect(url_for("manage_channels"))       
+    return redirect(url_for('manage_channels'))    
+#------------------------------------------------------------------------
+@app.route("/saved/channels")
+@login_required
+def saved_channels():
+    try:
+        # Get all active channels from database
+        all_channels = Streams.query.filter_by(status=True).order_by(Streams.name).all()
+        
+        # Group by category if you want category sections
+        channels_by_category = {}
+        for channel in all_channels:
+            if channel.category not in channels_by_category:
+                channels_by_category[channel.category] = []
+            channels_by_category[channel.category].append(channel)
+        
+        return render_template("saved_channels.html", 
+                            channels=all_channels,
+                            channels_by_category=channels_by_category)
+    
+    except Exception as e:
+        flash(f"Error loading channels: {str(e)}", "error")
+        return redirect(url_for("home_admin"))
 #------------------------------------------------------------------------
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

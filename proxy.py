@@ -10,15 +10,6 @@ import re
 from urllib.parse import quote_plus
 
 #=======================================
-# Disable all default Flask behaviors that could cause redirects
-app.config.update({
-    'PREFERRED_URL_SCHEME': 'https',
-    'SERVER_NAME': 'viewtv-p2s3.onrender.com',
-    'APPLICATION_ROOT': '/',
-    'SESSION_COOKIE_PATH': '/',
-    'TRAP_HTTP_EXCEPTIONS': True
-})
-#-------------------------------------------------------------------------
 @app.route('/status', methods=['GET'])
 def status():
     return Response(

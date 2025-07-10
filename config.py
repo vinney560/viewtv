@@ -5,6 +5,13 @@
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
 #======================================
+app.config.update({
+    'PREFERRED_URL_SCHEME': 'https',
+    'SERVER_NAME': 'viewtv-p2s3.onrender.com',
+    'APPLICATION_ROOT': '/',
+    'SESSION_COOKIE_PATH': '/',
+    'TRAP_HTTP_EXCEPTIONS': True
+})
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 

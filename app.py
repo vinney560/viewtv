@@ -844,34 +844,23 @@ from flask import send_from_directory
 from tempfile import mkdtemp
 
 @app.route('/hls/<int:channel_id>.m3u8')
-def hls_playlist(channel_id):
-    temp_dir = mkdtemp()
-    ts_url = f"http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/{channel_id}.ts"
-    playlist_path = os.path.join(temp_dir, "playlist.m3u8")
+def hls_from_json(channel_id):
+    channel = channels.get(str(channel_id))
+    if not channel:
+        return jsonify({"error": "Channel not found"}), 404
 
-    # Start ffmpeg to generate HLS segments and playlist
-    cmd = [
-        "ffmpeg",
-        "-i", ts_url,
-        "-c", "copy",
-        "-f", "hls",
-        "-hls_time", "2",
-        "-hls_list_size", "3",
-        "-hls_flags", "delete_segments",
-        playlist_path
-    ]
+    ts_url = channel['url']
 
-    subprocess.Popen(cmd)
+    # Build a basic .m3u8 playlist pointing to the .ts URL
+    playlist = f"""#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXT-X-MEDIA-SEQUENCE:0
+#EXTINF:10.0,
+{ts_url}
+"""
 
-    # Wait a moment for ffmpeg to generate something
-    timeout = time.time() + 5  # 5 seconds max
-    while not os.path.exists(playlist_path):
-        if time.time() > timeout:
-            return jsonify({"error": "Timeout generating playlist"}), 500
-        time.sleep(0.5)
-
-    # Serve playlist from temp folder
-    return send_from_directory(temp_dir, "playlist.m3u8", mimetype="application/vnd.apple.mpegurl")
+    return Response(playlist, mimetype='application/vnd.apple.mpegurl')
 
 @app.route('/hls/segment/<filename>')
 def hls_segment(filename):

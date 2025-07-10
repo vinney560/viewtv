@@ -800,7 +800,7 @@ app.config.update({
     'SESSION_COOKIE_PATH': '/',
     'TRAP_HTTP_EXCEPTIONS': True
 })
-
+#-------------------------------------------------------------------------
 @app.route('/status', methods=['GET'])
 def status():
     return Response(
@@ -811,7 +811,7 @@ def status():
             'Content-Disposition': 'inline'
         }
     )
-
+#--------------------------------------------------------------------------
 @app.route('/diagnostics', methods=['POST'])
 @csrf.exempt
 def diagnostics():
@@ -837,21 +837,36 @@ def diagnostics():
                 'error': 'FFmpeg not found'
             }), 500
     return jsonify({'error': 'Invalid command'}), 400
+#-------------------------------------------------------------------------
+#      >>>>LATEST SPORTS CHANNELS<<<<
+#========================================
+# Load sports.json once or every request (choose your way)
+def load_sports():
+    with open('sports.json') as f:
+        data = json.load(f)
+    # Convert dict to list of dicts with id
+    channels = [
+        {"id": int(k), "name": v['name'], "url": v['url']}
+        for k, v in data.items()
+    ]
+    return channels
 
-import threading
-import os, time
-from flask import send_from_directory
-from tempfile import mkdtemp
+@app.route('/sports')
+def sports_listing():
+    channels = load_sports()
+    return render_template('sports.html', channels=channels)
+#=======================================
+from flask import Response, jsonify
 
 @app.route('/hls/<int:channel_id>.m3u8')
-def hls_from_json(channel_id):
+def hls_from_custom_channels(channel_id):
     channel = CUSTOM_CHANNELS.get(str(channel_id))
     if not channel:
         return jsonify({"error": "Channel not found"}), 404
 
     ts_url = channel['url']
 
-    # Build a basic .m3u8 playlist pointing to the .ts URL
+    # Build a simple static m3u8 pointing to the TS stream
     playlist = f"""#EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-TARGETDURATION:10
@@ -860,12 +875,17 @@ def hls_from_json(channel_id):
 {ts_url}
 """
 
-    return Response(playlist, mimetype='application/vnd.apple.mpegurl')
-
-@app.route('/hls/segment/<filename>')
-def hls_segment(filename):
-    return send_from_directory(temp_dir, filename, mimetype='video/MP2T')
-
+    return Response(
+        playlist,
+        mimetype='application/vnd.apple.mpegurl',
+        headers={
+            'Access-Control-Allow-Origin': '*',
+            'Cache-Control': 'no-cache, no-store',
+            'Content-Disposition': 'inline',
+            'X-Content-Type-Options': 'nosniff'
+        }
+    )
+#--------------------------------------------------------------------------
 @app.route('/test-ffmpeg')
 def test_ffmpeg():
     try:
@@ -880,6 +900,42 @@ def test_ffmpeg():
             "error": e.stderr
         }), 500
 #--------------------------------------------------------------------------
+import re
+
+FFMPEG_PROXY_URL = "https://viewtv-p2s3.onrender.com/hls"
+
+@app.route('/stream')
+def stream_router():
+    input_url = request.args.get('input')
+    name = request.args.get('name', 'Streaming')
+    token = request.args.get('token', '')
+
+    if not input_url:
+        flash("Missing stream input.")
+        return render_template("404.html")
+
+    final_url = ""
+
+    if input_url.endswith('.ts'):
+        match = re.search(r'/(\d+)\.ts$', input_url)
+        if match:
+            channel_id = match.group(1)
+            # Rewrite to your own proxy .m3u8 URL
+            final_url = f"{FFMPEG_PROXY_URL}/{channel_id}.m3u8"
+        else:
+            flash("Invalid TS format.")
+            return render_template("404.html")
+
+    elif input_url.endswith('.m3u8') or input_url.startswith('http'):
+        final_url = input_url
+
+    else:
+        flash("Unsupported stream format.")
+        return render_template("404.html")
+
+    # Redirect to player with final URL
+    return redirect(f"/player?url={final_url}&name={name}&token={token}")
+#-------------------------------------------------------------------------
 @app.route('/player')
 def player():
     name = request.args.get('name', 'Streaming')

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Sports Channels</title>
+</head>
+<body>
+    <h1>Sports Channels</h1>
+    <ul>
+        {% for channel in channels %}
+        <li>
+            <!-- Link to  /stream route, passing the raw .ts url -->
+            <a href="{{ url_for('stream_router') }}?input={{ channel.url | urlencode }}&name={{ channel.name | urlencode }}">
+                {{ channel.name }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

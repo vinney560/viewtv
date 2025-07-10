@@ -905,7 +905,7 @@ def hls_playlist(channel_id):
         return abort(404, "Channel not found")
 
     # Use proxy URL for input to ffmpeg
-    proxied_url = f"http://localhost:5000/proxy?url={quote_plus(channel['url'])}"
+    proxied_url = f"https://viewtv-p2s3.onrender.com/proxy?url={quote_plus(channel['url'])}"
 
     channel_folder = os.path.join(HLS_ROOT, str(channel_id))
     playlist_path = os.path.join(channel_folder, "index.m3u8")

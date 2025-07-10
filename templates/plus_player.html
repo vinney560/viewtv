@@ -80,38 +80,6 @@
       cursor: pointer;
       z-index: 100;
     }
-    .settings-panel {
-      position: absolute;
-      right: 20px;
-      top: 60px;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 15px;
-      border-radius: 8px;
-      z-index: 100;
-      width: 250px;
-      border: 1px solid #334155;
-    }
-    .settings-toggle {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-      z-index: 100;
-      background: transparent;
-      border: none;
-      color: #22d3ee;
-      cursor: pointer;
-    }
-    .stats-panel {
-      position: absolute;
-      left: 20px;
-      bottom: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 8px 12px;
-      border-radius: 4px;
-      z-index: 100;
-      font-size: 12px;
-      color: #ccc;
-    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen bg-black text-white">
@@ -124,57 +92,13 @@
       <span>Back</span>
     </button>
     <h1 class="font-bold text-cyan-400">Now Streaming</h1>
-    <div class="flex items-center space-x-4">
-      <button id="settings-toggle" class="settings-toggle" onclick="toggleSettings()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      </button>
-      <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
-        <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
-        </svg>
-      </button>
-    </div>
+    <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
+      <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
+      </svg>
+    </button>
   </header>
-
-  <div id="settings-panel" class="settings-panel hidden">
-    <h3 class="text-lg font-semibold mb-3 text-cyan-400">Stream Settings</h3>
-    
-    <div class="mb-4">
-      <label class="block text-sm font-medium mb-2">TS Stream Handling</label>
-      <div class="space-y-2">
-        <label class="flex items-center">
-          <input type="radio" name="ts-mode" value="proxy" checked class="mr-2" onclick="setTsMode('proxy')">
-          <span>Proxy Mode (Recommended)</span>
-        </label>
-        <label class="flex items-center">
-          <input type="radio" name="ts-mode" value="direct" class="mr-2" onclick="setTsMode('direct')">
-          <span>Direct TS Playback</span>
-        </label>
-        <label class="flex items-center">
-          <input type="radio" name="ts-mode" value="auto" class="mr-2" onclick="setTsMode('auto')">
-          <span>Auto Detect</span>
-        </label>
-      </div>
-    </div>
-    
-    <div class="mb-4">
-      <label class="block text-sm font-medium mb-2">Max Retries</label>
-      <select id="max-retries" class="bg-gray-800 text-white rounded px-3 py-1 w-full" onchange="updateMaxRetries()">
-        <option value="3">3 (Default)</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="0">No retry</option>
-      </select>
-    </div>
-    
-    <div class="text-xs text-gray-400 mt-4">
-      <p>Current stream: <span id="current-stream-info" class="text-cyan-400">-</span></p>
-      <p>Connection: <span id="connection-stats">-</span></p>
-    </div>
-  </div>
 
   <main class="flex-grow flex flex-col items-center justify-center p-4">
     <div id="player-container">
@@ -189,11 +113,6 @@
       ></video>
       <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
       <button id="retry-button" class="hidden">Retry Connection</button>
-      <div id="stats-panel" class="stats-panel hidden">
-        <div>Buffer: <span id="buffer-level">0</span>s</div>
-        <div>Bitrate: <span id="bitrate">0</span> kbps</div>
-        <div>Latency: <span id="latency">0</span>ms</div>
-      </div>
     </div>
     <p id="error-message" class="mt-4 text-red-500 hidden text-sm sm:text-base"></p>
   </main>
@@ -203,407 +122,252 @@
   </footer>
 
   <script>
-    // Initialize the player with all enhancements
-    document.addEventListener('DOMContentLoaded', function() {
-      // Set current year
-      document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-      // Configuration
-      const FFMPEG_PROXY_URL = "https://viewtv-p2s3.onrender.com/hls";
-      let currentHlsInstance = null;
-      let currentStreamUrl = '';
-      let retryCount = 0;
-      let MAX_RETRIES = 3;
-      let TS_HANDLING_MODE = 'proxy'; // 'proxy', 'direct', or 'auto'
-      let settingsVisible = false;
-      let statsInterval = null;
+    // Configuration
+    const FFMPEG_PROXY_URL = "https://viewtv-p2s3.onrender.com/hls";
+    let currentHlsInstance = null;
+    let currentStreamUrl = '';
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
 
-      // DOM Elements
-      const playerEl = document.getElementById('player');
-      const iframeEl = document.getElementById('iframe-player');
-      const errorMsgEl = document.getElementById('error-message');
-      const retryBtnEl = document.getElementById('retry-button');
-      const settingsPanel = document.getElementById('settings-panel');
-      const currentStreamInfo = document.getElementById('current-stream-info');
-      const statsPanel = document.getElementById('stats-panel');
-      const bufferLevelEl = document.getElementById('buffer-level');
-      const bitrateEl = document.getElementById('bitrate');
-      const latencyEl = document.getElementById('latency');
-      const connectionStatsEl = document.getElementById('connection-stats');
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
 
-      // Initialize settings
-      document.getElementById('max-retries').value = MAX_RETRIES;
+    function getExtension(url) {
+      const path = url.split('?')[0].split('#')[0];
+      const extMatch = path.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv|ts)$/i);
+      return extMatch ? extMatch[1].toLowerCase() : '';
+    }
 
-      // Toggle settings panel
-      function toggleSettings() {
-        settingsVisible = !settingsVisible;
-        settingsPanel.classList.toggle('hidden', !settingsVisible);
+    function showError(msg, showRetry = true) {
+      const errorMsg = document.getElementById('error-message');
+      const retryBtn = document.getElementById('retry-button');
+      
+      errorMsg.textContent = msg;
+      errorMsg.classList.remove('hidden');
+      
+      if (showRetry) {
+        retryBtn.classList.remove('hidden');
+      } else {
+        retryBtn.classList.add('hidden');
+      }
+    }
+
+    function cleanupPreviousStream() {
+      const player = document.getElementById('player');
+      player.src = '';
+      player.style.display = 'none';
+      
+      if (currentHlsInstance) {
+        currentHlsInstance.destroy();
+        currentHlsInstance = null;
+      }
+    }
+
+    function playStream(url, isRetry = false) {
+      if (!isRetry) {
+        retryCount = 0;
+        currentStreamUrl = url;
+      }
+      
+      cleanupPreviousStream();
+      
+      const player = document.getElementById('player');
+      const iframe = document.getElementById('iframe-player');
+      const errorMsg = document.getElementById('error-message');
+      const retryBtn = document.getElementById('retry-button');
+
+      errorMsg.classList.add('hidden');
+      retryBtn.classList.add('hidden');
+      iframe.style.display = 'none';
+
+      const ext = getExtension(url);
+      const isTS = ext === 'ts';
+
+      // Always use FFmpeg proxy for TS streams
+      if (isTS) {
+        const channelId = url.split('/').pop().replace('.ts', '');
+        const proxyUrl = `${FFMPEG_PROXY_URL}/${channelId}.m3u8?t=${Date.now()}`;
+        playHLS(proxyUrl, true);
+        return;
       }
 
-      // Set TS handling mode
-      function setTsMode(mode) {
-        TS_HANDLING_MODE = mode;
-        if (currentStreamUrl && getExtension(currentStreamUrl) === 'ts') {
-          playStream(currentStreamUrl, true);
-        }
+      if (ext === 'm3u8') {
+        playHLS(url, false);
+      } else if (ext === 'mpd') {
+        playDASH(url);
+      } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
+        playDirect(url);
+      } else {
+        playIFrame(url);
       }
+    }
 
-      // Update max retries from settings
-      function updateMaxRetries() {
-        MAX_RETRIES = parseInt(document.getElementById('max-retries').value);
-      }
-
-      // Get URL query parameter
-      function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-      }
-
-      // Get file extension from URL
-      function getExtension(url) {
-        try {
-          const pathname = new URL(url).pathname;
-          const extMatch = pathname.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv|ts)$/i);
-          return extMatch ? extMatch[1].toLowerCase() : '';
-        } catch {
-          const path = url.split('?')[0].split('#')[0];
-          const extMatch = path.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv|ts)$/i);
-          return extMatch ? extMatch[1].toLowerCase() : '';
-        }
-      }
-
-      // Extract channel ID from TS URL
-      function extractChannelId(url) {
-        try {
-          const pathname = new URL(url).pathname;
-          const match = pathname.match(/(\d+)\.ts$/);
-          return match ? match[1] : null;
-        } catch {
-          const match = url.match(/(\d+)\.ts$/);
-          return match ? match[1] : null;
-        }
-      }
-
-      // Build proxy URL with original query parameters
-      function buildProxyUrl(originalUrl, channelId) {
-        try {
-          const urlObj = new URL(originalUrl);
-          const proxyUrl = `${FFMPEG_PROXY_URL}/${channelId}.m3u8?t=${Date.now()}`;
-          
-          // Preserve original query parameters
-          if (urlObj.search) {
-            return proxyUrl + (proxyUrl.includes('?') ? '&' : '?') + urlObj.search.slice(1);
-          }
-          return proxyUrl;
-        } catch {
-          return `${FFMPEG_PROXY_URL}/${channelId}.m3u8?t=${Date.now()}`;
-        }
-      }
-
-      // Show error message
-      function showError(msg, showRetry = true) {
-        errorMsgEl.textContent = msg;
-        errorMsgEl.classList.remove('hidden');
-        
-        if (showRetry) {
-          retryBtnEl.classList.remove('hidden');
-        } else {
-          retryBtnEl.classList.add('hidden');
-        }
-      }
-
-      // Clean up previous stream
-      function cleanupPreviousStream() {
-        playerEl.src = '';
-        playerEl.style.display = 'none';
-        
-        if (currentHlsInstance) {
-          currentHlsInstance.destroy();
-          currentHlsInstance = null;
-        }
-        
-        // Clear stats interval
-        if (statsInterval) {
-          clearInterval(statsInterval);
-          statsInterval = null;
-        }
-      }
-
-      // Update stream information display
-      function updateStreamInfo(url) {
-        const ext = getExtension(url);
-        let info = `Type: ${ext.toUpperCase()}`;
-        
-        if (ext === 'ts') {
-          const channelId = extractChannelId(url);
-          info += ` | Channel: ${channelId || 'N/A'}`;
-          info += ` | Mode: ${TS_HANDLING_MODE}`;
-        }
-        
-        currentStreamInfo.textContent = info;
-      }
-
-      // Start monitoring playback stats
-      function startStatsMonitoring() {
-        statsPanel.classList.remove('hidden');
-        
-        statsInterval = setInterval(() => {
-          // Buffer level
-          if (playerEl.buffered.length > 0) {
-            const bufferEnd = playerEl.buffered.end(playerEl.buffered.length - 1);
-            const bufferStart = playerEl.buffered.start(0);
-            bufferLevelEl.textContent = (bufferEnd - bufferStart).toFixed(1);
-          }
-          
-          // Bitrate (for HLS)
-          if (currentHlsInstance && currentHlsInstance.levels.length > 0) {
-            const level = currentHlsInstance.levels[currentHlsInstance.currentLevel];
-            if (level) {
-              bitrateEl.textContent = Math.round(level.bitrate / 1000);
-            }
-          }
-          
-          // Latency (simplified)
-          if (playerEl.currentTime > 0) {
-            const latency = (playerEl.duration - playerEl.currentTime) * 1000;
-            latencyEl.textContent = Math.max(0, Math.round(latency));
-          }
-          
-          // Connection status
-          const connectionStatus = navigator.onLine ? 'Online' : 'Offline';
-          connectionStatsEl.textContent = connectionStatus;
-        }, 1000);
-      }
-
-      // Play stream with the selected method
-      function playStream(url, isRetry = false) {
-        if (!isRetry) {
-          retryCount = 0;
-          currentStreamUrl = url;
-        }
-        
-        cleanupPreviousStream();
-        updateStreamInfo(url);
-        
-        errorMsgEl.classList.add('hidden');
-        retryBtnEl.classList.add('hidden');
-        iframeEl.style.display = 'none';
-
-        const ext = getExtension(url);
-        const isTS = ext === 'ts';
-
-        // Handle TS streams based on selected mode
-        if (isTS) {
-          const channelId = extractChannelId(url);
-          if (!channelId) {
-            showError("Invalid TS stream URL format", true);
-            return;
-          }
-
-          if (TS_HANDLING_MODE === 'direct' || 
-              (TS_HANDLING_MODE === 'auto' && playerEl.canPlayType('video/mp2t'))) {
-            // Attempt direct TS playback
-            playDirect(url);
-          } else {
-            // Use proxy
-            const proxyUrl = buildProxyUrl(url, channelId);
-            playHLS(proxyUrl, true);
-          }
-          return;
-        }
-
-        // Handle other stream types
-        if (ext === 'm3u8') {
-          playHLS(url, false);
-        } else if (ext === 'mpd') {
-          playDASH(url);
-        } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
-          playDirect(url);
-        } else {
-          playIFrame(url);
-        }
-      }
-
-      // Play HLS stream
-      function playHLS(url, isProxy) {
-        if (Hls.isSupported()) {
-          currentHlsInstance = new Hls({
-            enableWorker: true,
-            lowLatencyMode: true,
-            maxBufferLength: 30,
-            maxMaxBufferLength: 60,
-            maxBufferSize: 60 * 1000 * 1000,
-            maxBufferHole: 0.5,
-            highBufferWatchdogPeriod: 2
-          });
-          
-          currentHlsInstance.loadSource(url);
-          currentHlsInstance.attachMedia(playerEl);
-          
-          currentHlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-            retryCount = 0;
-            playerEl.style.display = 'block';
-            playerEl.muted = false;
-            playerEl.play().catch(e => {
-              showError("Autoplay blocked. Click the player to start.", false);
-            });
-            startStatsMonitoring();
-          });
-          
-          currentHlsInstance.on(Hls.Events.ERROR, (event, data) => {
-            if (data.fatal) {
-              switch(data.type) {
-                case Hls.ErrorTypes.NETWORK_ERROR:
-                  retryCount++;
-                  if (retryCount <= MAX_RETRIES) {
-                    showError(`Network error. Retrying (${retryCount}/${MAX_RETRIES})...`, false);
-                    setTimeout(() => {
-                      if (isProxy && (data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR || 
-                                     data.details === Hls.ErrorDetails.MANIFEST_LOAD_TIMEOUT)) {
-                        // Special handling for proxy failures
-                        if (TS_HANDLING_MODE === 'auto') {
-                          showError("Proxy failed, trying direct TS...");
-                          playDirect(currentStreamUrl);
-                        } else {
-                          playStream(currentStreamUrl, true);
-                        }
-                      } else {
-                        currentHlsInstance.startLoad();
-                      }
-                    }, 2000 * retryCount); // Exponential backoff
-                  } else {
-                    showError("Connection failed. Try again later.", true);
-                  }
-                  break;
-                case Hls.ErrorTypes.MEDIA_ERROR:
-                  currentHlsInstance.recoverMediaError();
-                  break;
-                default:
-                  showError("Stream error. Try refreshing.", true);
-              }
-            }
-          });
-        } else if (playerEl.canPlayType('application/vnd.apple.mpegurl')) {
-          playerEl.src = url;
-          playerEl.style.display = 'block';
-          playerEl.play().catch(e => showError("Autoplay blocked. Click to start.", false));
-          startStatsMonitoring();
-        } else {
-          showError("HLS not supported in this browser", true);
-        }
-      }
-
-      // Play DASH stream
-      function playDASH(url) {
-        try {
-          const dashPlayer = dashjs.MediaPlayer().create();
-          dashPlayer.initialize(playerEl, url, true);
-          playerEl.style.display = 'block';
-          playerEl.play().catch(e => showError("Autoplay blocked. Click to start.", false));
-          startStatsMonitoring();
-        } catch(e) {
-          showError("DASH playback error: " + e.message, true);
-        }
-      }
-
-      // Play direct stream (MP4, WebM, etc.)
-      function playDirect(url) {
-        playerEl.src = url;
-        playerEl.style.display = 'block';
-        playerEl.play().catch(e => showError("Autoplay blocked. Click to start.", false));
-        startStatsMonitoring();
-      }
-
-      // Play in iframe (fallback)
-      function playIFrame(url) {
-        iframeEl.src = url;
-        iframeEl.style.display = 'block';
-        statsPanel.classList.add('hidden');
-      }
-
-      // Fullscreen toggle logic
-      function setupFullscreenToggle() {
-        const fullscreenBtn = document.getElementById('fullscreen-toggle');
-        const fullscreenIcon = document.getElementById('fullscreen-icon');
-        const playerContainer = document.getElementById('player-container');
-        let hideTimeout;
-
-        const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6';
-        const exitFullscreenPath = 'M6 18L18 6M6 6l12 12';
-
-        function setIcon(isFullscreen) {
-          fullscreenIcon.innerHTML = '';
-          if (isFullscreen) {
-            fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${exitFullscreenPath}" />`;
-          } else {
-            fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${enterFullscreenPath}" />`;
-          }
-        }
-
-        function toggleFullscreen() {
-          if (!document.fullscreenElement) {
-            playerContainer.requestFullscreen().catch(err => {
-              console.error(`Error attempting fullscreen: ${err.message}`);
-            });
-          } else {
-            document.exitFullscreen();
-          }
-        }
-
-        function resetHideTimeout() {
-          fullscreenBtn.classList.remove('hide');
-          clearTimeout(hideTimeout);
-          hideTimeout = setTimeout(() => {
-            fullscreenBtn.classList.add('hide');
-          }, 3000);
-        }
-
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-        document.addEventListener('fullscreenchange', () => {
-          setIcon(!!document.fullscreenElement);
-          resetHideTimeout();
+    function playHLS(url, isProxy) {
+      const player = document.getElementById('player');
+      
+      if (Hls.isSupported()) {
+        currentHlsInstance = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          maxBufferSize: 60 * 1000 * 1000,
+          maxBufferHole: 0.5,
+          highBufferWatchdogPeriod: 2
         });
-        document.addEventListener('mousemove', resetHideTimeout);
-        document.addEventListener('touchstart', resetHideTimeout);
+        
+        currentHlsInstance.loadSource(url);
+        currentHlsInstance.attachMedia(player);
+        
+        currentHlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+          retryCount = 0;
+          player.style.display = 'block';
+          player.muted = false;
+          player.play().catch(e => {
+            showError("Autoplay blocked. Click the player to start.", false);
+          });
+        });
+        
+        currentHlsInstance.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            switch(data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                retryCount++;
+                if (retryCount <= MAX_RETRIES) {
+                  showError(`Network error. Retrying (${retryCount}/${MAX_RETRIES})...`, false);
+                  setTimeout(() => {
+                    if (data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR || 
+                        data.details === Hls.ErrorDetails.MANIFEST_LOAD_TIMEOUT) {
+                      // Force fresh manifest load
+                      playStream(currentStreamUrl, true);
+                    } else {
+                      currentHlsInstance.startLoad();
+                    }
+                  }, 2000 * retryCount); // Exponential backoff
+                } else {
+                  showError("Connection failed. Try again later.", true);
+                }
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                currentHlsInstance.recoverMediaError();
+                break;
+              default:
+                showError("Stream error. Try refreshing.", true);
+            }
+          }
+        });
+      } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+        player.src = url;
+        player.style.display = 'block';
+        player.play().catch(e => showError("Autoplay blocked. Click to start.", false));
+      } else {
+        showError("HLS not supported in this browser", true);
+      }
+    }
 
+    function playDASH(url) {
+      const player = document.getElementById('player');
+      try {
+        const dashPlayer = dashjs.MediaPlayer().create();
+        dashPlayer.initialize(player, url, true);
+        player.style.display = 'block';
+        player.play().catch(e => showError("Autoplay blocked. Click to start.", false));
+      } catch(e) {
+        showError("DASH playback error: " + e.message, true);
+      }
+    }
+
+    function playDirect(url) {
+      const player = document.getElementById('player');
+      player.src = url;
+      player.style.display = 'block';
+      player.play().catch(e => showError("Autoplay blocked. Click to start.", false));
+    }
+
+    function playIFrame(url) {
+      const iframe = document.getElementById('iframe-player');
+      iframe.src = url;
+      iframe.style.display = 'block';
+    }
+
+    // Initialize player
+    (function() {
+      const streamUrl = getQueryParam('url');
+      const token = getQueryParam('token');
+      if (!streamUrl) {
+        showError("No stream URL provided", false);
+        return;
+      }
+
+      currentStreamUrl = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
+      
+      // Set up retry button
+      document.getElementById('retry-button').addEventListener('click', () => {
+        playStream(currentStreamUrl, true);
+      });
+
+      playStream(currentStreamUrl);
+    })();
+
+    // Fullscreen toggle logic
+    (function() {
+      const fullscreenBtn = document.getElementById('fullscreen-toggle');
+      const fullscreenIcon = document.getElementById('fullscreen-icon');
+      const playerContainer = document.getElementById('player-container');
+      let hideTimeout;
+
+      const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6';
+      const exitFullscreenPath = 'M6 18L18 6M6 6l12 12';
+
+      function setIcon(isFullscreen) {
+        fullscreenIcon.innerHTML = '';
+        if (isFullscreen) {
+          fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${exitFullscreenPath}" />`;
+        } else {
+          fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${enterFullscreenPath}" />`;
+        }
+      }
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          playerContainer.requestFullscreen().catch(err => {
+            console.error(`Error attempting fullscreen: ${err.message}`);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      }
+
+      function resetHideTimeout() {
+        fullscreenBtn.classList.remove('hide');
+        clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => {
+          fullscreenBtn.classList.add('hide');
+        }, 3000);
+      }
+
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', () => {
         setIcon(!!document.fullscreenElement);
         resetHideTimeout();
-      }
+      });
+      document.addEventListener('mousemove', resetHideTimeout);
+      document.addEventListener('touchstart', resetHideTimeout);
 
-      // Try to close window or go back
-      function tryClose() {
-        window.close();
-        setTimeout(() => {
-          if (!window.closed) history.back();
-        }, 300);
-      }
+      setIcon(!!document.fullscreenElement);
+      resetHideTimeout();
+    })();
 
-      // Initialize player
-      function initPlayer() {
-        const streamUrl = getQueryParam('url');
-        const token = getQueryParam('token');
-        if (!streamUrl) {
-          showError("No stream URL provided", false);
-          return;
-        }
-
-        currentStreamUrl = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
-        
-        // Set up retry button
-        retryBtnEl.addEventListener('click', () => {
-          playStream(currentStreamUrl, true);
-        });
-
-        // Set up fullscreen controls
-        setupFullscreenToggle();
-
-        // Start playback
-        playStream(currentStreamUrl);
-      }
-
-      // Start the player
-      initPlayer();
-    });
+    function tryClose() {
+      window.close();
+      setTimeout(() => {
+        if (!window.closed) history.back();
+      }, 300);
+    }
   </script>
 </body>
 </html>

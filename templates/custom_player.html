@@ -6,76 +6,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
     }
     #bufferSpinner {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #00ff88;
+      color: #22d3ee;
       font-weight: 700;
-      text-shadow: 0 0 8px #00ff88;
+      font-size: 1.25rem;
+      text-shadow: 0 0 12px rgba(34, 211, 238, 0.7);
       display: none;
       pointer-events: none;
       user-select: none;
       z-index: 999;
     }
+    .channel-list {
+      scrollbar-width: thin;
+      scrollbar-color: #22d3ee #0f172a;
+    }
+    .channel-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .channel-list::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    .channel-list::-webkit-scrollbar-thumb {
+      background-color: #22d3ee;
+      border-radius: 3px;
+    }
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+    }
+    .video-container {
+      aspect-ratio: 16/9;
+    }
   </style>
 </head>
 
-<body class="bg-gradient-to-br from-black to-gray-900 text-white min-h-screen flex flex-col items-center p-4">
+<body class="text-white min-h-screen flex flex-col">
 
   <!-- Back Button -->
-  <button onclick="tryClose()" class="fixed top-4 left-4 z-50 flex items-center text-cyan-400 hover:text-cyan-300 transition-colors duration-300">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3 mr-1">
+  <button onclick="tryClose()" class="fixed top-6 left-6 z-50 flex items-center text-cyan-300 hover:text-cyan-200 transition-colors duration-200 group">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
-    <span class="font-medium text-base">Back</span>
+    <span class="font-medium text-sm">BACK</span>
   </button>
 
-  <!-- Video Player Section -->
-  <section class="w-full max-w-5xl mt-20 sm:mt-28 bg-neutral-900 rounded-xl shadow-lg p-4 sm:p-6 border border-cyan-500/20 relative">
-    <h1 class="text-center text-xl sm:text-2xl font-semibold text-cyan-300 mb-4 truncate">{{ name }}</h1>
+  <!-- Main Content -->
+  <div class="flex flex-col flex-1">
 
-    <!-- Enlarged Video Container -->
-    <div class="relative w-full h-[45vh] mb-4 rounded-lg bg-black outline-none overflow-hidden">
-      <video id="video" controls autoplay playsinline class="w-full h-full object-contain rounded-lg bg-black outline-none"></video>
-      <iframe id="iframe" src="" allowfullscreen class="absolute inset-0 w-full h-full rounded-lg border-2 border-cyan-600 hidden"></iframe>
-      <div id="bufferSpinner">Buffering...</div>
-    </div>
-
-    <!-- Quality Selector -->
-    <div id="qualityContainer" class="flex justify-center items-center space-x-3">
-      <label for="qualitySelect" class="text-cyan-400 font-semibold select-none">Quality:</label>
-      <select id="qualitySelect" class="bg-gray-800 border border-cyan-500 text-cyan-400 py-1 px-3 rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-cyan-500"></select>
-    </div>
-  </section>
-
-  <!-- Scrollable Channel List -->
-  <section class="max-w-2xl w-full mt-8 p-4 rounded-2xl bg-[#0a0f1c] shadow-[0_0_12px_rgba(0,255,136,0.1)] max-h-[400px] overflow-y-auto">
-    <h2 class="text-cyan-300 text-xl font-semibold mb-4 select-none">📺 Explore More</h2>
-    {% for ch in channels %}
-      <div class="flex justify-between items-center bg-[#121829] rounded-xl shadow-[0_4px_14px_rgba(0,255,136,0.15)] p-4 mb-4 hover:bg-[#1e2a38] hover:shadow-[0_6px_20px_rgba(0,255,136,0.4)] transition-all duration-300">
-        <div class="flex items-center flex-grow gap-3 min-w-0">
-          <span class="font-semibold text-[#32cd80] flex-shrink-0">{{ loop.index }}.</span>
-          <span class="font-semibold text-white truncate" title="{{ ch.name }}">{{ ch.name }}</span>
+    <!-- Video Player Section -->
+    <section class="w-full bg-black">
+      <div class="relative w-full max-w-7xl mx-auto video-container">
+        <video id="video" controls autoplay playsinline class="w-full h-full object-cover bg-black"></video>
+        <iframe id="iframe" src="" allowfullscreen class="absolute inset-0 w-full h-full hidden"></iframe>
+        <div id="bufferSpinner" class="flex items-center space-x-3">
+          <svg class="animate-spin h-6 w-6 text-cyan-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>Buffering stream...</span>
         </div>
-        <button
-          class="bg-[#00ff88] text-[#0d1117] font-semibold py-2 px-5 rounded-xl transition-colors duration-300 hover:bg-[#00cc6a] hover:text-[#d0f0e6] hover:shadow-[0_0_10px_#00ff88] whitespace-nowrap select-none"
-          onclick="switchChannel('{{ ch.key }}')"
-          type="button"
-        >
-          ▶ Watch
-        </button>
       </div>
-    {% else %}
-      <p class="text-gray-400 italic text-center select-none">No channels available.</p>
-    {% endfor %}
-  </section>
+    </section>
+
+    <!-- Info and Controls Section -->
+    <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+        <h1 class="text-xl sm:text-2xl font-bold text-cyan-100 mb-2 sm:mb-0 truncate max-w-[70%]">{{ name }}</h1>
+        
+        <!-- Quality Selector -->
+        <div id="qualityContainer" class="flex items-center space-x-2 bg-gray-900/80 rounded-lg px-3 py-2 border border-cyan-900/50">
+          <label for="qualitySelect" class="text-cyan-300 text-sm font-medium select-none">QUALITY:</label>
+          <select id="qualitySelect" class="bg-transparent text-cyan-100 text-sm font-medium focus:outline-none focus:ring-0 border-none">
+            <option value="-1" selected>Auto</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Channel List Section -->
+    <section class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+      <div class="bg-gray-900/40 backdrop-blur-sm rounded-xl p-5 border border-gray-800">
+        <h2 class="text-xl font-bold text-cyan-100 mb-5 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          EXPLORE CHANNELS
+        </h2>
+        
+        <div id="channelList" class="channel-list max-h-[400px] overflow-y-auto pr-2">
+          {% for ch in channels %}
+            <div class="group relative mb-3 rounded-lg overflow-hidden transition-all duration-300 hover:bg-gray-800/60">
+              <div class="flex items-center justify-between p-4">
+                <div class="flex items-center min-w-0">
+                  <span class="text-cyan-300 font-semibold mr-3 w-6 text-right">{{ loop.index }}.</span>
+                  <span class="font-medium text-gray-100 truncate" title="{{ ch.name }}">{{ ch.name }}</span>
+                </div>
+                <button
+                  onclick="switchChannel('{{ ch.key }}')"
+                  class="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-4 py-2 rounded-md transition-all duration-200 glow-hover flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Watch
+                </button>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            </div>
+          {% else %}
+            <div class="text-center py-8 text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="font-medium">No channels available</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </div>
 
   <script>
     const video = document.getElementById("video");
@@ -131,7 +190,7 @@
           window.hls.currentLevel = selected;
         };
 
-        hls.on(Hls.Events.BUFFER_STALLED, () => bufferSpinner.style.display = "block");
+        hls.on(Hls.Events.BUFFER_STALLED, () => bufferSpinner.style.display = "flex");
         hls.on(Hls.Events.BUFFER_APPENDED, () => bufferSpinner.style.display = "none");
         hls.on(Hls.Events.BUFFER_EOS, () => bufferSpinner.style.display = "none");
 
@@ -162,7 +221,7 @@
 
     // Switch channel without reload
     async function switchChannel(key) {
-      bufferSpinner.style.display = "block";
+      bufferSpinner.style.display = "flex";
 
       try {
         const response = await fetch(`/api/channel_stream_url?key=${encodeURIComponent(key)}`);

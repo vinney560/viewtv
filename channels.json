@@ -11,10 +11,6 @@
     "name": "Afro Beats",
     "url": "https://stream.ecable.tv/afrobeats/index.m3u8"
   },
-  "akili_kids": {
-    "name": "Akili Kids",
-    "url": "https://www.youtube.com/channel/UCHBIm_ITwYy_FG9iIfIZxGQ"
-  },
   "akilikids": {
     "name": "Akili Kids! TV",
     "url": "https://akilikids.co.ke/live/"
@@ -36,7 +32,7 @@
     "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/c8d16110-566c-4e95-a1df-55d175e9e201/manifest.m3u8"
   },
   "baby_shark": {
-    "name": "Baby Shark",
+    "name": "Baby Shark Kids",
     "url": "https://newidco-babysharktv-1-eu.rakuten.wurl.tv/playlist.m3u8"
   },
   "b3_music": {
@@ -52,7 +48,7 @@
     "url": "https://aegis-cloudfront-1.tubi.video/82c7f2de-f4ea-44a4-8200-069c5c0bb639/playlist.m3u8"
   },
   "bet_her": {
-    "name": "BET HER",
+    "name": "BET her",
     "url": "https://fl3.moveonjoy.com/BET_HER/index.m3u8"
   },
   "biz_tv": {
@@ -63,6 +59,10 @@
     "name": "Bloomberg TV US",
     "url": "https://bloomberg-bloomberg-3-br.samsung.wurl.tv/manifest/playlist.m3u8"
   },
+  "boomerang": {
+    "name": "Boomerang",
+    "url": "https://dai.google.com/linear/hls/event/d4J7lXUyQp2dZQ-pXJ-ItA/master.m3u8"
+  },
   "bollywood_classic": {
     "name": "Bollywood Classic",
     "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-classic/manifest.m3u8"
@@ -71,16 +71,12 @@
     "name": "Bollywood HD",
     "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-hd/manifest.m3u8"
   },
-  "boomerang": {
-    "name": "Boomerang",
-    "url": "https://dai.google.com/linear/hls/event/d4J7lXUyQp2dZQ-pXJ-ItA/master.m3u8"
-  },
   "btn": {
     "name": "BTN",
     "url": "https://2-fss-2.streamhoster.com/pl_138/205510-3094608-1/playlist.m3u8"
   },
   "cbeebies": {
-    "name": "CBeebies (BBC Kids)",
+    "name": "CBeebies Kids",
     "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8"
   },
   "chinola": {
@@ -148,12 +144,8 @@
     "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8"
   },
   "fite_wrestle": {
-    "name": "FITE [wrestle]",
+    "name": "FITE [wrestling]",
     "url": "https://d3d85c7qkywguj.cloudfront.net/scheduler/scheduleMaster/263.m3u8"
-  },
-  "france24": {
-    "name": "France 24 English",
-    "url": "https://www.france24.com/en/live"
   },
   "france24-english": {
     "name": "France 24 English",
@@ -204,7 +196,7 @@
     "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn1uswest/master.m3u8"
   },
   "inoorotv": {
-    "name": "Inooro Tv (Citizen)",
+    "name": "Inooro Tv (CitizenD)",
     "url": "https://citizen.digital/tv/inooro-tv-14"
   },
   "kameme": {
@@ -256,8 +248,12 @@
     "url": "https://cdn3.skygo.mn/live/disk1/Moviebox/HLS-FTA/Moviebox.m3u8"
   },
   "movies_bang": {
-    "name": "Movies!",
+    "name": "Movies! ",
     "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-movies!/index.m3u8"
+  },
+  "pltv-usa-movies": {
+    "name": "Movies HD",
+    "url": "https://i.mjh.nz/PlutoTV/us.m3u8"
   },
   "moviesphere_hd": {
     "name": "MovieSphere HD",
@@ -266,10 +262,6 @@
   "nbc_sports": {
     "name": "NBC Sports",
     "url": "https://www.nbcsports.com/live"
-  },
-  "nhk-world-japan": {
-    "name": "NHK World Japan",
-    "url": "https://nhkwlive-ojp.akamaized.net/hls/live/2003459/nhkwlive-ojp-en/index.m3u8"
   },
   "nick_jr_east": {
     "name": "Nick Jr. East (USA)",
@@ -306,10 +298,6 @@
   "pbs_kids_2": {
     "name": "PBS Kids 2",
     "url": "https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8"
-  },
-  "pltv-usa-movies": {
-    "name": "Movies",
-    "url": "https://i.mjh.nz/PlutoTV/us.m3u8"
   },
   "racing_america": {
     "name": "Racing America",

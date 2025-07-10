@@ -1,49 +1,19 @@
-from flask import Flask, session, abort, render_template, request, flash, url_for, redirect, jsonify, send_from_directory
-from flask_login import login_user, logout_user as flask_logout_user, LoginManager, login_required, UserMixin, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_cors import CORS
-from flask_jwt_extended import JWTManager
-from flask_wtf.csrf import CSRFProtect, CSRFError
-from functools import wraps
-import os
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import event, Index, text, create_engine
-from sqlalchemy.exc import OperationalError, IntegrityError
-from sqlalchemy.orm import joinedload
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_mail import Mail, Message
-from itsdangerous import URLSafeTimedSerializer
-from dotenv import load_dotenv
-from datetime import datetime, timedelta
-import requests
-import base64
-from requests.auth import HTTPBasicAuth 
-import random
-from flask import Response
-#------------------------------------------------------------------
-load_dotenv()
+#====================================
+#                     >>>>APP<<<<
+#====================================
+from config import app, db  # ✅ Use app & db directly from config.py
+import modules
 
-#================================
+import db as models  # ✅ This loads all models for db.create_all()
 
-app = Flask(__name__)
+with app.app_context():
+    db.create_all()
 
-#------------------------------------------------------------------------
-import config # config file
+# ✅ Load other logic AFTER app is ready
 import proxy
 import payment
 import admin
 import helper
-#======================================
-def nairobi_time():
-    return datetime.utcnow() + timedelta(hours=3)  # Converts GMT to Kenyan Local Time
-#======================================
-# database model
-import db    
-#======================================
-with app.app_context():
-    db.create_all()
-
 #======================================
 @app.route('/robots.txt')
 def robots_txt():

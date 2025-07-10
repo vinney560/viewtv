@@ -2,6 +2,10 @@
 #                     >>>>DB MODEL<<<<
 #======================================
 import os
+#======================================
+def nairobi_time():
+    return datetime.utcnow() + timedelta(hours=3)  # Converts GMT to Kenyan Local Time
+#======================================
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)

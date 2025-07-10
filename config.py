@@ -1,19 +1,34 @@
 #=====================================
 #            >>>> CONFIG FILE MODEL<<<<
 #=====================================
+# config.py
 import os
-
-# Secure and fallback-safe config
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
-#======================================
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_login import LoginManager
+from flask_mail import Mail
+from flask_limiter import Limiter
+from flask_wtf.csrf import CSRFProtect
+from flask_cors import CORS
+from flask_limiter.util import get_remote_address
+from datetime import timedelta
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Extensions (global, to be used in app.py)
+db = SQLAlchemy()
+jwt = JWTManager()
+login_manager = LoginManager()
+mail = Mail()
+csrf = CSRFProtect()
+limiter = Limiter(key_func=get_remote_address)
 
 def choose_db_uri():
-    new_uri = os.getenv('DATABASE_URL')     # Prefer this (Old Render)
-    render_uri = os.getenv('DATABASE_URL_2')    # Fallback ( New Render)
-
+    new_uri = os.getenv('DATABASE_URL')
+    render_uri = os.getenv('DATABASE_URL_2')
     if new_uri:
         try:
             engine = create_engine(new_uri)
@@ -35,36 +50,36 @@ def choose_db_uri():
     print("All remote DBs failed. Falling back to SQLite.")
     return "sqlite:///default.db"
 
-# Apply to Flask app
-app.config['SQLALCHEMY_DATABASE_URI'] = choose_db_uri()
-#======================================
-app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
-UPLOAD_FOLDER = os.path.join(app.root_path, 'uploads')
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+def init_app(app):
+    app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
+    app.config['SQLALCHEMY_DATABASE_URI'] = choose_db_uri()
+    app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 
-# Create the upload folder if it doesn't exist
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+    # Uploads
+    UPLOAD_FOLDER = os.path.join(app.root_path, 'uploads')
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
 
-# Persistent session lifetime
-app.permanent_session_lifetime = timedelta(days=1)
+    # Mail
+    app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
+    app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT") or 0)
+    app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == 'True'
+    app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+    app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+    app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
 
-app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
-app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT")) if os.getenv("MAIL_PORT") else None
-app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == 'True'
-app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
-app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
-app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
+    # Session lifetime
+    app.permanent_session_lifetime = timedelta(days=1)
 
-db = SQLAlchemy(app)
-jwt = JWTManager(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login"
-CORS(app)
-csrf = CSRFProtect()
-csrf.init_app(app)
-limiter = Limiter(get_remote_address, app=app, default_limits=["1000 per hour"])
-
-mail = Mail(app)
-#-------------------------------------------------------------------------
+    # Init extensions
+    db.init_app(app)
+    jwt.init_app(app)
+    mail.init_app(app)
+    csrf.init_app(app)
+    limiter.init_app(app)
+    login_manager.init_app(app)
+    login_manager.login_view = "login"
+    CORS(app)
+#----------------------------------------------------------------------

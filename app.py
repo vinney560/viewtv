@@ -5,7 +5,6 @@
 from flask import Flask
 import modules
 import config
-import db as models  # load models for db.create_all()
 
 app = Flask(__name__)
 init_app(app)

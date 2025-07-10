@@ -843,31 +843,29 @@ def hls_proxy(channel_id):
     ts_url = f"http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/{channel_id}.ts"
     
     try:
-        # 1. Use Popen with proper stdout/stderr handling
         proc = subprocess.Popen(
             [
                 'ffmpeg',
                 '-i', ts_url,
-                '-c', 'copy',           # No re-encoding
-                '-f', 'hls',           # HLS format
-                '-hls_time', '2',      # Segment length
-                '-hls_list_size', '3',  # Segments in playlist
-                '-'                    # Output to stdout
+                '-c', 'copy',
+                '-f', 'hls',
+                '-hls_time', '2',
+                '-hls_list_size', '3',
+                '-hls_flags', 'delete_segments',
+                '-'
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            bufsize=10**8              # Larger buffer for TS streams
+            bufsize=10**8
         )
-        
-        # 2. Stream the output incrementally
+
         def generate():
             while True:
-                output = proc.stdout.read(1024)  # Read in chunks
-                if not output:
+                chunk = proc.stdout.read(1024)
+                if not chunk:
                     break
-                yield output
-        
-        # 3. Return streaming response with timeout
+                yield chunk
+
         return Response(
             generate(),
             mimetype='application/vnd.apple.mpegurl',
@@ -876,10 +874,10 @@ def hls_proxy(channel_id):
                 'Cache-Control': 'no-cache, no-store'
             }
         )
-        
+
     except Exception as e:
-        app.logger.error(f"Proxy failed: {str(e)}")
-        return jsonify({"error": "Stream conversion failed"}), 500
+        app.logger.error(f"HLS Proxy failed: {str(e)}")
+        return jsonify({"error": "Failed to stream channel"}), 500
 
 @app.route('/test-ffmpeg')
 def test_ffmpeg():

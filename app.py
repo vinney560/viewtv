@@ -1520,11 +1520,8 @@ def fetch_and_save_country_channels(country_code):
 @admin_required
 def save_playlist():
     try:
-        # Path to your JSON playlist file
-        json_path = os.path.join(current_app.root_path, 'channels.json')
-        
         # Load channels from JSON file
-        with open(json_path, 'r') as f:
+        with open('channels.json', 'r') as f:
             channels = json.load(f)
         
         new_channels = 0

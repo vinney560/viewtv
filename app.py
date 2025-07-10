@@ -839,54 +839,43 @@ def diagnostics():
     return jsonify({'error': 'Invalid command'}), 400
 
 import threading
+import os, time
+from flask import send_from_directory
+from tempfile import mkdtemp
 
 @app.route('/hls/<int:channel_id>.m3u8')
-def hls_proxy(channel_id):
+def hls_playlist(channel_id):
+    temp_dir = mkdtemp()
     ts_url = f"http://balkan-x.net:80/live/3U0BE3nCoy/PE1b9KXPIE/{channel_id}.ts"
-    
-    try:
-        proc = subprocess.Popen(
-            [
-                'ffmpeg',
-                '-i', ts_url,
-                '-c', 'copy',
-                '-f', 'hls',
-                '-hls_time', '2',
-                '-hls_list_size', '3',
-                '-hls_flags', 'delete_segments',
-                '-'
-            ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            bufsize=10**8
-        )
+    playlist_path = os.path.join(temp_dir, "playlist.m3u8")
 
-        # Log FFmpeg stderr in a background thread
-        def log_stderr():
-            for line in iter(proc.stderr.readline, b''):
-                app.logger.error(f"[FFmpeg] {line.decode().strip()}")
+    # Start ffmpeg to generate HLS segments and playlist
+    cmd = [
+        "ffmpeg",
+        "-i", ts_url,
+        "-c", "copy",
+        "-f", "hls",
+        "-hls_time", "2",
+        "-hls_list_size", "3",
+        "-hls_flags", "delete_segments",
+        playlist_path
+    ]
 
-        threading.Thread(target=log_stderr, daemon=True).start()
+    subprocess.Popen(cmd)
 
-        def generate():
-            while True:
-                chunk = proc.stdout.read(1024)
-                if not chunk:
-                    break
-                yield chunk
+    # Wait a moment for ffmpeg to generate something
+    timeout = time.time() + 5  # 5 seconds max
+    while not os.path.exists(playlist_path):
+        if time.time() > timeout:
+            return jsonify({"error": "Timeout generating playlist"}), 500
+        time.sleep(0.5)
 
-        return Response(
-            generate(),
-            mimetype='application/vnd.apple.mpegurl',
-            headers={
-                'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-cache, no-store'
-            }
-        )
+    # Serve playlist from temp folder
+    return send_from_directory(temp_dir, "playlist.m3u8", mimetype="application/vnd.apple.mpegurl")
 
-    except Exception as e:
-        app.logger.error(f"HLS Proxy failed: {str(e)}")
-        return jsonify({"error": "Failed to stream channel"}), 500
+@app.route('/hls/segment/<filename>')
+def hls_segment(filename):
+    return send_from_directory(temp_dir, filename, mimetype='video/MP2T')
 
 @app.route('/test-ffmpeg')
 def test_ffmpeg():

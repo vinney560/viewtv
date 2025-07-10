@@ -14,7 +14,24 @@ from flask_limiter.util import get_remote_address
 from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
 from datetime import datetime, timedelta
-
+#=====================================
+#            >>>> MODULE FILE MODEL<<<<
+#=====================================
+# module.py
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_wtf.csrf import CSRFProtect, CSRFError
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_mail import Mail, Message
+from flask_cors import CORS
+from itsdangerous import URLSafeTimedSerializer
+import requests
+from requests.auth import HTTPBasicAuth
+import base64
+import random
+from datetime import datetime, timedelta
 # ============================
 # CONFIGURATION & INIT
 # ============================
@@ -156,20 +173,6 @@ class Payment(db.Model):
 
 with app.app_context():
     db.create_all()
-# ============================
-# ROUTES
-# ============================
-
-# ✅ Load other logic AFTER app is ready
-from proxy import proxy
-app.register_blueprint(proxy)
-from payment import payment
-app.register_blueprint(payment_bp)
-from admin import admin
-app.register_blueprint(admin)
-from helper import helper
-app.register_blueprint(helper)
-from modules import *
 #======================================
 @app.route('/robots.txt')
 def robots_txt():
@@ -199,6 +202,168 @@ def sitemap():
 @app.route('/googlefd33f833766d41e1.html')
 def google_verification():
     return "google-site-verification: googlefd33f833766d41e1.html"
+#======================================
+#            >>>> HELPER FUNCTIONS<<<<
+#======================================
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+#-----------------------------------------------------------------------
+def is_admin():
+    return session.get('role') == 'admin'
+#----------------------------------------------------------------------
+@app.route('/favicon.ico')
+def favicon():
+    return redirect(url_for('uploaded_file', filename='favicon.ico'))
+#--------------------------------------------------------------------
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)    
+#---------------------------------------------------------------------
+@app.route('/is_authenticated')
+def is_authenticated():
+    return jsonify({'authenticated': current_user.is_authenticated})
+#----------------------------------------------------------------------
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+#-----------------------------------------------------------------------
+@app.before_request
+def auto_logout_user():
+    if current_user.is_authenticated:
+        user = User.query.filter_by(id=current_user.id).first()
+        if user and user.role != current_user.role:
+            logout_current_user()
+            flash("Role has changed. Please log in again.", "error")
+            return redirect(url_for('login'))
+#-----------------------------------------------------------------------
+def generate_email_token(user):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(user.email, salt='email-verification')
+#-----------------------------------------------------------------------
+def verify_email_token(token, expiration=300):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token, salt='email-verification', max_age=expiration)
+    except Exception:
+        return None
+    return email
+#----------------------------------------------------------------------
+def send_verification_email(user):
+    token = generate_email_token(user)
+    verify_link = url_for('verify_registration', token=token, _external=True)
+
+    msg = Message(
+        subject="Check Email to Verify your View Tv account",
+        recipients=[user.email]
+    )
+    msg.html = render_template('verify_email_template.html', verify_link=verify_link)
+
+    try:
+        mail.send(msg)
+    except Exception as e:
+        print(f"Failed to send verification email: {e}")
+#---------------------------------------------------------------------
+@app.route('/verify_registration/<token>')
+def verify_registration(token):
+    email_addr = verify_email_token(token)
+    if not email_addr:
+        flash('Invalid or expired verification link.', 'error')
+        return redirect(url_for('login'))
+
+    user = User.query.filter_by(email=email_addr).first()
+    if not user:
+        flash('User not found.', 'error')
+        return redirect(url_for('login'))
+
+    user.email_verified = True
+    db.session.commit()
+    login_user(user)
+    flash('Email verified! Welcome to View Tv.', 'success')
+    return redirect(url_for('welcome'))
+#----------------------------------------------------------------------
+def create_reset_token(user):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(user.email, salt='password-reset-salt')
+#---------------------------------------------------------------------
+def verify_reset_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email_addr = serializer.loads(token, salt='password-reset-salt', max_age=expiration)
+    except Exception:
+        return None
+    return email_addr
+#----------------------------------------------------------------------
+@app.route('/forgot_password', methods=['GET', 'POST'])
+@limiter.limit("10 per minute")
+def forgot_password():
+    if request.method == 'POST':
+        email_addr = request.form.get('email')
+        user = User.query.filter_by(email=email_addr).first()
+        if user:
+            send_reset_email(user)
+            flash('Password reset email sent!', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Email not found.', 'error')
+            return redirect(url_for('login'))
+
+    return render_template('forgot_password.html')
+#-------------------------------------------------------------------------
+def send_reset_email(user):
+    token = create_reset_token(user)
+    reset_link = url_for('reset_password', token=token, _external=True)
+
+    msg = Message(
+        subject="Password Reset Request",
+        sender=("View Tv", "bot.tgive3nexus@gmail.com"),
+        recipients=[user.email],
+    )
+    msg.html = render_template('forgot_password_email.html', reset_link=reset_link)
+    mail.send(msg)
+#----------------------------------------------------------------------
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    email_addr = verify_reset_token(token)
+    if not email_addr:
+        flash('Invalid or expired token.', 'error')
+        return redirect(url_for('forgot_password'))
+
+    user = User.query.filter_by(email=email_addr).first()
+    if not user:
+        flash('User not found.', 'error')
+        return redirect(url_for('forgot_password'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('password')
+        hashed_password = generate_password_hash(new_password)
+        user.password = hashed_password
+        db.session.commit()
+        flash('Your password has been updated.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('reset_password.html')
+#---------------------------------------------------------------------
+def plus_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            flash("Login required.", "error")
+            return redirect(url_for("login"))
+        if not current_user.is_plus:
+            flash("Plus access required.", "error")
+            return redirect(url_for("get_plus"))
+        return f(*args, **kwargs)
+    return decorated_function
+#------------------------------------------------------------------------
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role not in ['admin', 'superadmin']:
+            return abort(403)
+        return f(*args, **kwargs)
+    return decorated_function
+
 #=====================================
 #        >>>>ACCESS GRANTERS<<<<
 #=====================================
@@ -546,6 +711,219 @@ def test_channels():
     return render_template("channels.html", channels=channels)
 
 #=======================================
+#             >>>> PROXY MODEL<<<<
+#=======================================
+import json
+import subprocess
+from flask import jsonify               
+from flask import Flask, request, Response, abort, render_template, send_from_directory, stream_with_context
+import requests
+import re
+import os
+from urllib.parse import quote_plus
+#=======================================
+@app.route('/status', methods=['GET'])
+def status():
+    return Response(
+        "Proxy active",
+        mimetype='text/plain',
+        headers={
+            'X-Content-Type-Options': 'nosniff',
+            'Content-Disposition': 'inline'
+        }
+    )
+#--------------------------------------------------------------------------
+@app.route('/diagnostics', methods=['POST'])
+@csrf.exempt
+def diagnostics():
+    if not request.form.get('cmd'):
+        return jsonify({'error': 'Missing command'}), 400
+        
+    cmd = request.form.get('cmd')
+    if cmd == 'which ffmpeg':
+        try:
+            result = subprocess.run(
+                ['which', 'ffmpeg'],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            return jsonify({
+                'success': True,
+                'path': result.stdout.strip()
+            })
+        except subprocess.CalledProcessError:
+            return jsonify({
+                'success': False,
+                'error': 'FFmpeg not found'
+            }), 500
+    return jsonify({'error': 'Invalid command'}), 400
+#-----------------------------------------------------------------------
+# Root directory for all HLS outputs
+HLS_ROOT = "/tmp/hls_streams"
+os.makedirs(HLS_ROOT, exist_ok=True)
+
+# Proxy headers for external video sources
+PROXY_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "Referer": "http://balkan-x.net",
+    "Origin": "http://balkan-x.net",
+    "Connection": "keep-alive",
+    "Accept": "*/*",
+    # "Cookie": "SESSIONID=abcd1234;"  # Optional: Add cookies if required
+}
+
+# Load sports channels from JSON
+def load_sports():
+    with open('sports.json') as f:
+        data = json.load(f)
+    return [
+        {"id": int(k), "name": v['name'], "url": v['url']}
+        for k, v in data.items()
+    ]
+#--------------------------------------------------------------------------
+# Proxy route to stream remote content
+@app.route('/proxy')
+def proxy():
+    remote_url = request.args.get('url')
+    if not remote_url:
+        return abort(400, "Missing 'url' parameter")
+
+    try:
+        remote_resp = requests.get(remote_url, headers=PROXY_HEADERS, stream=True, timeout=10)
+        remote_resp.raise_for_status()
+    except requests.RequestException as e:
+        return abort(502, f"Upstream error: {e}")
+
+    return Response(
+        stream_with_context(remote_resp.iter_content(chunk_size=8192)),
+        content_type=remote_resp.headers.get('Content-Type', 'application/octet-stream'),
+        status=remote_resp.status_code
+    )
+
+#-----------------------------------------------------------------------
+# Route: Serve .m3u8 playlist (auto start ffmpeg if needed)
+@app.route('/hls/<int:channel_id>.m3u8')
+def hls_playlist(channel_id):
+    channels = load_sports()
+    channel = next((ch for ch in channels if ch["id"] == channel_id), None)
+
+    if not channel:
+        return abort(404, "Channel not found")
+
+    proxied_url = f"https://viewtv-p2s3.onrender.com/proxy?url={quote_plus(channel['url'])}"
+    channel_folder = os.path.join(HLS_ROOT, str(channel_id))
+    playlist_path = os.path.join(channel_folder, "index.m3u8")
+
+    if not os.path.exists(playlist_path):
+        os.makedirs(channel_folder, exist_ok=True)
+
+        ffmpeg_cmd = [
+            "ffmpeg",
+            "-fflags", "nobuffer",
+            "-flags", "low_delay",
+            "-i", proxied_url,
+            "-c", "copy",
+            "-hls_time", "10",
+            "-hls_list_size", "5",
+            "-hls_flags", "delete_segments+append_list",
+            "-hls_segment_filename", os.path.join(channel_folder, "segment%03d.ts"),
+            playlist_path
+        ]
+
+        log_path = os.path.join(channel_folder, "ffmpeg.log")
+        with open(log_path, "w") as log_file:
+            subprocess.Popen(ffmpeg_cmd, stdout=log_file, stderr=log_file)
+
+        return f"Stream is initializing. Check log: <a href='/log/{channel_id}'>View FFmpeg Log</a>"
+
+    return send_from_directory(channel_folder, "index.m3u8", mimetype="application/vnd.apple.mpegurl")
+#-----------------------------------------------------------------------
+# Route: Serve HLS segments (.ts files)
+@app.route('/hls/<int:channel_id>/<segment>')
+def hls_segment(channel_id, segment):
+    channel_folder = os.path.join(HLS_ROOT, str(channel_id))
+    segment_path = os.path.join(channel_folder, segment)
+
+    if os.path.exists(segment_path):
+        return send_from_directory(channel_folder, segment, mimetype="video/MP2T")
+    else:
+        return abort(404, "Segment not found")
+#--------------------------------------------------------------------------
+@app.route('/test-ffmpeg')
+def test_ffmpeg():
+    try:
+        result = subprocess.run(['ffmpeg', '-version'], capture_output=True, text=True, check=True)
+        return jsonify({
+            "ffmpeg": "available",
+            "version": result.stdout.split('\n')[0]
+        })
+    except subprocess.CalledProcessError as e:
+        return jsonify({
+            "ffmpeg": "not available",
+            "error": e.stderr
+        }), 500
+#-------------------------------------------------------------------------
+# Route: View FFmpeg log (for debugging)
+@app.route('/log/<int:channel_id>')
+def view_ffmpeg_log(channel_id):
+    log_path = os.path.join(HLS_ROOT, str(channel_id), "ffmpeg.log")
+    if os.path.exists(log_path):
+        with open(log_path) as f:
+            return f"<pre>{f.read()}</pre>"
+    else:
+        return "No log available."
+#-------------------------------------------------------------------------
+# Route: Reset stream data (delete all segments and playlist)
+@app.route('/reset/<int:channel_id>')
+def reset_stream(channel_id):
+    folder = os.path.join(HLS_ROOT, str(channel_id))
+    if os.path.exists(folder):
+        for file in os.listdir(folder):
+            os.remove(os.path.join(folder, file))
+        return f"Stream {channel_id} reset. Refresh to retry."
+    return "Stream folder not found."
+#---------------------------------------------------------------------------
+# Route: List all sports channels
+@app.route('/sports')
+def sports_listing():
+    channels = load_sports()
+    return render_template('sports.html', channels=channels)
+#-------------------------------------------------------------------------
+FFMPEG_PROXY_URL = "https://viewtv-p2s3.onrender.com/hls"
+
+@app.route('/stream')
+def stream_router():
+    input_url = request.args.get('input')
+    name = request.args.get('name', 'Streaming')
+    token = request.args.get('token', '')
+
+    if not input_url:
+        flash("Missing stream input.")
+        return render_template("404.html")
+
+    final_url = ""
+
+    if input_url.endswith('.ts'):
+        match = re.search(r'/(\d+)\.ts$', input_url)
+        if match:
+            channel_id = match.group(1)
+            # Rewrite to your own proxy .m3u8 URL
+            final_url = f"{FFMPEG_PROXY_URL}/{channel_id}.m3u8"
+        else:
+            flash("Invalid TS format.")
+            return render_template("404.html")
+
+    elif input_url.endswith('.m3u8') or input_url.startswith('http'):
+        final_url = input_url
+
+    else:
+        flash("Unsupported stream format.")
+        return render_template("404.html")
+
+    # Redirect to player with final URL
+    return redirect(f"/player?url={final_url}&name={name}&token={token}")
+#=======================================
 #           >>>>BASIC USER ENDPOINTS<<<<
 #=======================================
 import json
@@ -661,6 +1039,146 @@ def claim_free_plus():
     flash("🎁 Free Plus activated for 2 hours!", "success")
     return redirect(url_for("dashboard"))
 
+#======================================
+#            >>>>PAYMENT MODEL<<<<
+#======================================
+
+@app.route('/payment')
+def payment():
+    return render_template('pay.html', user=current_user)
+
+# ----------------------------------------------------------------------
+
+@app.route('/api/pay', methods=['POST'])
+def pay():
+    data = request.json
+    phone = data.get('phone')
+    amount = int(data.get('amount'))
+
+    if not phone or not amount:
+        return jsonify({"success": False, "message": "Phone or amount missing"}), 400
+
+    # Convert phone to Safaricom format: 2547XXXXXXX
+    if phone.startswith("0"):
+        phone = "254" + phone[1:]
+    elif phone.startswith("+"):
+        phone = phone.replace("+", "")
+
+    # Save pending payment
+    pending = Payment(
+        user_id=current_user.id,
+        phone=phone,
+        amount=amount,
+        status="Pending",
+        timestamp=datetime.utcnow()
+    )
+    db.session.add(pending)
+    db.session.commit()
+
+    # M-Pesa credentials
+    consumer_key = os.getenv("MPESA_CONSUMER_KEY")
+    consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
+    passkey = os.getenv("MPESA_PASSKEY")
+
+    business_short_code = "174379"  # Use your actual shortcode
+    callback_url = "https://viewtv.onrender.com/callback"
+
+    try:
+        auth_response = requests.get(
+            "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
+            auth=(consumer_key, consumer_secret)
+        )
+        print("Token response:", auth_response.text)
+        auth_response.raise_for_status()
+        access_token = auth_response.json().get("access_token")
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Token error: {str(e)}"}), 500
+
+    timestamp = (datetime.now() + timedelta(hours=3)).strftime('%Y%m%d%H%M%S')
+    password = base64.b64encode((business_short_code + passkey + timestamp).encode()).decode()
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "BusinessShortCode": business_short_code,
+        "Password": password,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": amount,
+        "PartyA": phone,
+        "PartyB": business_short_code,
+        "PhoneNumber": phone,
+        "CallBackURL": callback_url,
+        "AccountReference": "Ref001",
+        "TransactionDesc": "VIP Subscription"
+    }
+
+    try:
+        response = requests.post(
+            "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+            json=payload,
+            headers=headers
+        )
+        print("STK Push response:", response.text)
+        response.raise_for_status()
+        return jsonify({"success": True})
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Push error: {str(e)}"}), 500
+
+# ------------------------------------------------------------------------
+@app.route('/callback', methods=['POST'])
+def callback():
+    data = request.get_json()
+    print("Callback Received:", data)
+
+    try:
+        callback_data = data['Body']['stkCallback']
+        result_code = callback_data['ResultCode']
+        result_desc = callback_data['ResultDesc']
+
+        if result_code == 0:
+            metadata = callback_data['CallbackMetadata']['Item']
+            phone_number = None
+            receipt = None
+
+            for item in metadata:
+                if item['Name'] == 'PhoneNumber':
+                    phone_number = str(item['Value'])
+                elif item['Name'] == 'MpesaReceiptNumber':
+                    receipt = item['Value']
+
+            payment = Payment.query.filter_by(phone=phone_number, status="Pending").order_by(Payment.timestamp.desc()).first()
+
+            if payment:
+                payment.status = "Success"
+                payment.mpesa_receipt = receipt
+                db.session.commit()
+
+                user = User.query.get(payment.user_id)
+                if user:
+                    user.role = "plus"
+                    db.session.commit()
+
+            print("Payment verified and Plus access granted.")
+            return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
+
+        else:
+            print("Payment failed:", result_desc)
+            return jsonify({"ResultCode": 0, "ResultDesc": "Failed transaction"})
+
+    except Exception as e:
+        print("Callback processing error:", str(e))
+        return jsonify({"ResultCode": 1, "ResultDesc": "Error processing callback"})
+# ------------------------------------------------------------------------
+@app.route('/vip-confirm')
+def vip_confirm():
+    flash(" PAYMENT SUCCESSFUL. You are now a VIP. Please log in again.", "success")
+    logout_user(current_user)
+    return redirect(url_for('login'))
+#-------------------------------------------------------------------------
 #================================
 #       >>>>GENERAL ENDPOINTS<<<<
 
@@ -789,7 +1307,362 @@ def account():
             remaining = int(diff.total_seconds())
 
     return render_template("account_stns.html", user=current_user, time_remaining_seconds=remaining)
+#=======================================
+#              >>>>ADMIN ENDPOINT<<<<
+#=======================================
+@app.route('/home_admin')
+@login_required 
+@admin_required
+def home_admin():
+    # Get statistics from database
+    total_users = User.query.count()
+    
+    # Count users marked as 'active'
+    active_today = User.query.filter_by(status='active').count()
+    
+    # Total channels from CUSTOM_CHANNELS dictionary
+    total_channels = len(CUSTOM_CHANNELS)
+    
+    # Plus subscribers
+    plus_users = User.query.filter(
+        User.plus_type == "paid",
+        User.plus_expires_at != None,
+        User.plus_expires_at > datetime.utcnow()
+    ).count()
+    
+    return render_template(
+        'home_admin.html',
+        user=current_user,
+        stats={
+            'total_users': total_users,
+            'active_today': active_today,
+            'total_channels': total_channels,
+            'plus_users': plus_users
+        }
+    )
+#-------------------------------------------------------------------------
+#add || update plus(timer)
 
+@app.route("/admin/manage_plus")
+@login_required
+@admin_required
+def manage_plus():
+    users = User.query.filter(User.plus_expires_at != None).all()
+    
+    now = datetime.utcnow()
+    user_data = []
+    for user in users:
+        remaining = (user.plus_expires_at - now).total_seconds()
+        if remaining < 0:
+            remaining = 0
+        hours = int(remaining // 3600)
+        minutes = int((remaining % 3600) // 60)
+        seconds = int(remaining % 60)
+        user_data.append({
+            "user": user,
+            "remaining_str": f"{hours}h {minutes}m {seconds}s"
+        })
+    
+    return render_template("manage_plus.html", users=user_data)
+#-------------------------------------------------------------------------
+@app.route("/admin/update_plus/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def update_plus(user_id):
+    user = User.query.get_or_404(user_id)
+
+    try:
+        hours = int(request.form.get("hours", 0))
+        minutes = int(request.form.get("minutes", 0))
+        seconds = int(request.form.get("seconds", 0))
+
+        duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        if duration.total_seconds() <= 0:
+            flash("Duration must be greater than 0", "error")
+            return redirect(url_for("manage_plus"))
+
+        user.plus_expires_at = datetime.utcnow() + duration
+        user.plus_type = user.plus_type or "paid"
+        db.session.commit()
+
+        flash(f"Updated Plus time for {user.email}", "success")
+    except Exception as e:
+        flash("Failed to update Plus", "error")
+
+    return redirect(url_for("manage_plus"))
+#-------------------------------------------------------------------    
+@app.route("/admin/delete_plus/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def delete_plus(user_id):
+    user = User.query.get_or_404(user_id)
+    user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
+    user.plus_type = None
+    db.session.commit()
+
+    flash(f"Revoked Plus for {user.email}", "success")
+    return redirect(url_for("manage_plus"))
+#-------------------------------------------------------------------------
+# user management
+
+@app.route("/manage-users")
+@login_required
+@admin_required
+def manage_users():
+
+    users = User.query.filter(User.id != current_user.id).order_by(User.created_at.desc()).all()
+    return render_template("manage_users.html", users=users)
+#--------------------------------------------------------------------------
+@app.route("/toggle-admin/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def toggle_admin(user_id):
+
+    user = User.query.get_or_404(user_id)
+    user.role = "user" if user.role == "admin" else "admin"
+    db.session.commit()
+    flash(f"User role changed to '{user.role}'.", "success")
+    return redirect(url_for("manage_users"))
+#-------------------------------------------------------------------------
+@app.route("/toggle-ban/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def toggle_ban(user_id):
+
+    user = User.query.get_or_404(user_id)
+    if user.status == "Banned":
+        user.status = "Active"
+        flash("User unbanned.", "success")
+    else:
+        user.status = "Banned"
+        flash("User banned.", "warning")
+    db.session.commit()
+    return redirect(url_for("manage_users"))
+#--------------------------------------------------------------------------
+@app.route("/delete-user/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def delete_user(user_id):
+
+    user = User.query.get_or_404(user_id)
+    # Delete associated payments (if any)
+    Payment.query.filter_by(user_id=user.id).delete()
+    db.session.delete(user)
+    db.session.commit()
+    flash("User deleted.", "success")
+    return redirect(url_for("manage_users"))
+#------------------------------------------------------------------------
+@app.route("/admin/update_email/<int:user_id>", methods=["POST"])
+@login_required
+@admin_required
+def update_user_email(user_id):
+
+    new_email = request.form.get("new_email", "").strip()
+
+    # Basic validation
+    if not new_email:
+        flash("Email is required", "error")
+        return redirect(url_for("manage_users"))
+
+    if not (new_email.endswith("@gmail.com") or new_email.endswith("@yahoo.com")):
+        flash("Only Gmail or Yahoo emails allowed.", "error")
+        return redirect(url_for("manage_users"))
+
+    user = User.query.get_or_404(user_id)
+
+    # Ensure email doesn't belong to someone else
+    existing_user = User.query.filter(User.email == new_email, User.id != user.id).first()
+    if existing_user:
+        flash("Email is already taken by another user.", "error")
+        return redirect(url_for("manage_users"))
+
+    user.email = new_email
+    user.email_verified = False  # Set email verification to false
+    db.session.commit()
+
+    # Send verification email
+    send_verification_email(user)
+
+    flash(f"Email updated successfully. Verification sent to {new_email}", "success")
+    return redirect(url_for("manage_users"))
+#---------------------------------------------------------------------------
+# Fetch & Save by Country
+@app.route('/save-channels')
+@login_required
+@admin_required
+def fetch_and_save_country_channels(country_code):
+    url = f"https://iptv-org.github.io/iptv/countries/{country_code}.m3u"
+    try:
+        response = requests.get(url)
+        lines = response.text.strip().splitlines()
+        new_count = 0
+
+        for i in range(len(lines)):
+            if lines[i].startswith("#EXTINF"):
+                name = lines[i].split(",")[-1].strip()
+                if i + 1 < len(lines):
+                    link = lines[i + 1].strip()
+                    if link.endswith(".m3u8"):
+                        # Avoid duplicates
+                        exists = Channel.query.filter_by(name=name, url=link).first()
+                        if not exists:
+                            db.session.add(Streams(name=name, url=link, country=country_code))
+                            new_count += 1
+
+        db.session.commit()
+        print(f"[INFO] Added {new_count} new channels from {country_code}")
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch from {url}: {e}")
+#------------------------------------------------------------------------
+@app.route("/save-playlist")
+@login_required
+@admin_required
+def save_playlist():
+    channels = CUSTOM_CHANNELS.get(key)
+    stream=Streams.query.filter_by(url=url).first()
+    
+    try:
+        for key, ch in channels.items():
+            if not stream:
+                new_stream=Streams(key=key, name=ch.name, url=ch.url, category="Not specified", logo="", access="free", status=True)
+                db.session.add(new_stream)
+                flash("Saved Channels", "success")
+                return redirect(url_for("manage_channels"))
+            flash("Channel exit {stream}", "error")
+            return redirect(url_for("manage_channels"))
+    except Exception as e:
+       flash("Failed to save channels {e}")
+       return redirect(url_for("manage_channels"))
+    return redirect(url_for("manage_channels"))
+       
+#------------------------------------------------------------------------
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
+
+@app.route("/admin/clone_data")
+@login_required
+def clone_data():
+
+    db1_url = os.getenv("DATABASE_URL")
+    db2_url = os.getenv("DATABASE_URL_2")
+
+    if not db1_url or not db2_url:
+        flash("Database URLs not set in environment file.", "error")
+        return redirect(url_for("home_admin"))
+
+    source_engine = create_engine(db1_url)
+    dest_engine = create_engine(db2_url)
+    SourceSession = sessionmaker(bind=source_engine)
+    DestSession = sessionmaker(bind=dest_engine)
+    source_session = SourceSession()
+    dest_session = DestSession()
+
+    try:
+        # Ensure destination DB has the tables
+        db.metadata.create_all(dest_engine)
+
+        # List of models to clone
+        for model in [User, Channel, Payment]:  # add all models you want to migrate
+            rows = source_session.query(model).all()
+            for row in rows:
+                clone = model(**{
+                    col.name: getattr(row, col.name)
+                    for col in model.__table__.columns
+                })
+                dest_session.add(clone)
+
+        dest_session.commit()
+        flash("Cloning completed successfully.", "success")
+
+    except Exception as e:
+        dest_session.rollback()
+        flash(f"Cloning failed: {e}", "error")
+
+    finally:
+        source_session.close()
+        dest_session.close()
+
+    return redirect(url_for("home_admin"))
+#--------------------------------------------------------------------------
+@app.route("/admin/manage_channels")
+@login_required
+@admin_required
+def manage_channels():
+    channels = load_channels()
+    return render_template("manage_channels.html", channels=channels)
+#--------------------------------------------------------------------------
+@app.route("/admin/channels/add", methods=["POST", "GET"])
+def add_channel():
+    key = request.form.get("key").strip()
+    name = request.form.get("name").strip()
+    url = request.form.get("url").strip()
+
+    if not key or not name or not url:
+        flash("All fields are required.", "error")
+        return redirect(url_for("manage_channels"))
+
+    channels = load_channels()
+    if key in channels:
+        flash("Key already exists.", "error")
+        return redirect(url_for("manage_channels"))
+
+    channels[key] = {"name": name, "url": url}
+    save_channels(channels)
+    flash("Channel added successfully.", "success")
+    return redirect(url_for("download_and_redirect"))
+#--------------------------------------------------------------------------
+@app.route("/admin/channels/edit/<key>", methods=["GET", "POST"])
+def edit_channel(key):
+    channels = load_channels()
+
+    if key not in channels:
+        flash("Channel not found.", "error")
+        return redirect(url_for("manage_channels"))
+
+    if request.method == "POST":
+        name = request.form.get("name")
+        url = request.form.get("url")
+
+        if not name or not url:
+            flash("All fields are required.", "error")
+            return redirect(url_for("edit_channel", key=key))
+
+        channels[key] = {"name": name.strip(), "url": url.strip()}
+        save_channels(channels)
+        flash("Channel updated.", "success")
+        return redirect(url_for("download_and_redirect"))
+
+    # GET request
+    return render_template("edit_channel.html", key=key, channel=channels[key])
+#--------------------------------------------------------------------------
+@app.route("/admin/channels/delete/<key>", methods=["GET","POST"])
+def delete_channel(key):
+    channels = load_channels()
+    if key in channels:
+        del channels[key]
+        save_channels(channels)
+        flash("Channel deleted.", "success")
+        return redirect(url_for("download_and_redirect"))
+    else:
+        flash("Channel not found.", "error")
+    return redirect(url_for("manage_channels"))
+#-------------------------------------------------------------------------
+@app.route("/admin/channels/download-and-redirect")
+def download_and_redirect():
+    return render_template("download_and_redirect.html")
+
+from flask import send_file
+@app.route("/admin/channels/download")
+def download_channels():
+    return send_file(
+        'channels.json',
+        as_attachment=True,
+        download_name='channels.json',
+        mimetype='application/json'
+    )
+#---------------------------------------------------------------------------
 #========================================
 
 @app.context_processor

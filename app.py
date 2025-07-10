@@ -21,21 +21,19 @@ import base64
 from requests.auth import HTTPBasicAuth 
 import random
 from flask import Response
-#------------------------------------------------------------------------
-#    IMPORTS FROM OTHER FILES
-import proxy
-import payment
-import admin
-import helper
-#-------------------------------------------------------------------------
+#------------------------------------------------------------------
 load_dotenv()
 
 #================================
 
 app = Flask(__name__)
 
+#------------------------------------------------------------------------
 import config # config file
-
+import proxy
+import payment
+import admin
+import helper
 #======================================
 def nairobi_time():
     return datetime.utcnow() + timedelta(hours=3)  # Converts GMT to Kenyan Local Time

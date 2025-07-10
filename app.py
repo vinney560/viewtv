@@ -4,7 +4,7 @@
 # app.py
 from flask import Flask
 import modules
-import config
+from config import db, init_app
 
 app = Flask(__name__)
 init_app(app)

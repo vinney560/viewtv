@@ -1,37 +1,29 @@
 #====================================
-#                     >>>> APP <<<<
+#                     >>>>MAIN APP <<<<
 #====================================
 import os
+import base64
+import random
+import requests
+from datetime import datetime, timedelta
+from requests.auth import HTTPBasicAuth
+from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
-from flask_login import LoginManager, UserMixin
-from flask_mail import Mail
-from flask_limiter import Limiter
-from flask_wtf.csrf import CSRFProtect
-from flask_cors import CORS
-from flask_limiter.util import get_remote_address
-from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
-from datetime import datetime, timedelta
-#=====================================
-#            >>>> MODULE FILE MODEL<<<<
-#=====================================
-# module.py
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-from flask_wtf.csrf import CSRFProtect, CSRFError
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+from flask_login import (
+    LoginManager, UserMixin, login_user,
+    logout_user, login_required, current_user
+)
 from flask_mail import Mail, Message
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from flask_cors import CORS
 from itsdangerous import URLSafeTimedSerializer
-import requests
-from requests.auth import HTTPBasicAuth
-import base64
-import random
-from datetime import datetime, timedelta
+from functools import wraps
 # ============================
 # CONFIGURATION & INIT
 # ============================

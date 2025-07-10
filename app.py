@@ -1519,23 +1519,48 @@ def fetch_and_save_country_channels(country_code):
 @login_required
 @admin_required
 def save_playlist():
-    channels = CUSTOM_CHANNELS.get(key)
-    stream=Streams.query.filter_by(url=url).first()
-    
     try:
-        for key, ch in channels.items():
+        # Load channels from JSON file
+        with open('channels.json', 'r') as f:
+            channels = json.load(f)
+        
+        saved_count = 0
+        existing_count = 0
+        
+        for key, ch_data in channels.items():
+            # Check if channel already exists
+            stream = Streams.query.filter_by(key=key).first()
             if not stream:
-                new_stream=Streams(key=key, name=ch.name, url=ch.url, category="Not specified", logo="", access="free", status=True)
+                new_stream = Streams(
+                    key=key,
+                    name=ch_data.get('name', ''),
+                    url=ch_data.get('url', ''),
+                    category=ch_data.get('category', 'Not specified'),
+                    logo=ch_data.get('logo', ''),
+                    access=ch_data.get('access', 'free'),
+                    status=ch_data.get('status', True)
+                )
                 db.session.add(new_stream)
-                flash("Saved Channels", "success")
-                return redirect(url_for("manage_channels"))
-            flash("Channel exit {stream}", "error")
-            return redirect(url_for("manage_channels"))
+                saved_count += 1
+            else:
+                existing_count += 1
+        
+        db.session.commit()
+        
+        if saved_count > 0:
+            flash(f"Successfully saved {saved_count} new channels", "success")
+        if existing_count > 0:
+            flash(f"{existing_count} channels already existed", "info")
+            
+    except FileNotFoundError:
+        flash("Channels JSON file not found", "error")
+    except json.JSONDecodeError:
+        flash("Invalid JSON format in channels file", "error")
     except Exception as e:
-       flash("Failed to save channels {e}")
-       return redirect(url_for("manage_channels"))
-    return redirect(url_for("manage_channels"))
-       
+        flash(f"Failed to save channels: {str(e)}", "error")
+        db.session.rollback()
+    
+    return redirect(url_for("manage_channels"))       
 #------------------------------------------------------------------------
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker

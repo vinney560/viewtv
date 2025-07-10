@@ -72,8 +72,7 @@ def init_app(app):
     login_manager = LoginManager()
     mail = Mail()
     csrf = CSRFProtect()
-    limiter =
-    Limiter(key_func=get_remote_address)
+    limiter = Limiter(key_func=get_remote_address)
     
     db.init_app(app)
     jwt.init_app(app)

@@ -1,6 +1,7 @@
 #=====================================
 #            >>>> CONFIG FILE MODEL<<<<
 #=====================================
+import os
 # Secure and fallback-safe config
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")

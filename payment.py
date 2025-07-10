@@ -1,6 +1,7 @@
 #======================================
 #            >>>>PAYMENT MODEL<<<<
 #======================================
+import os
 @app.route('/payment')
 def payment():
     return render_template('pay.html', user=current_user)

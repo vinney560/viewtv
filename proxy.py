@@ -9,7 +9,9 @@ import requests
 import re
 import os
 from urllib.parse import quote_plus
+from flask import Blueprint
 
+proxy = Blueprint("proxy", __name__)
 #=======================================
 @app.route('/status', methods=['GET'])
 def status():

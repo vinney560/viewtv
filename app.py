@@ -161,10 +161,14 @@ with app.app_context():
 # ============================
 
 # ✅ Load other logic AFTER app is ready
-from proxy import *
-from payment import *
-from admin import *
-from helper import *
+from proxy import proxy
+app.register_blueprint(proxy)
+from payment import payment
+app.register_blueprint(payment_bp)
+from admin import admin
+app.register_blueprint(admin)
+from helper import helper
+app.register_blueprint(helper)
 from modules import *
 #======================================
 @app.route('/robots.txt')

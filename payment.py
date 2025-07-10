@@ -2,7 +2,9 @@
 #            >>>>PAYMENT MODEL<<<<
 #======================================
 import os
+from flask import Blueprint
 
+payment = Blueprint("payment", __name__)
 @app.route('/payment')
 def payment():
     return render_template('pay.html', user=current_user)

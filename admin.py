@@ -2,7 +2,9 @@
 #              >>>>ADMIN ENDPOINT<<<<
 #=======================================
 import os
+from flask import Blueprint
 
+admin = Blueprint("admin", __name__)
 @app.route('/home_admin')
 @login_required 
 @admin_required

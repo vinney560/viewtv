@@ -864,7 +864,7 @@ def sports_listing():
 def hls_playlist(channel_id):
     channels = load_sports()
     channel = next((ch for ch in channels if ch["id"] == channel_id), None)
-    
+
     if not channel:
         return abort(404, "Channel not found")
 
@@ -875,8 +875,18 @@ def hls_playlist(channel_id):
     if not os.path.exists(playlist_path):
         os.makedirs(channel_folder, exist_ok=True)
 
+        # Inject headers dynamically (no sports.json change required)
+        headers = (
+            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n"
+            "Referer: http://balkan-x.net\r\n"
+            "Origin: http://balkan-x.net\r\n"
+            "Connection: keep-alive\r\n"
+            "Accept: */*\r\n"
+        )
+
         ffmpeg_cmd = [
             "ffmpeg",
+            "-headers", headers,
             "-i", ts_url,
             "-c", "copy",
             "-hls_time", "10",
@@ -885,7 +895,7 @@ def hls_playlist(channel_id):
             "-hls_segment_filename", os.path.join(channel_folder, "segment%03d.ts"),
             playlist_path
         ]
-        
+
         log_path = os.path.join(channel_folder, "ffmpeg.log")
         with open(log_path, "w") as log_file:
             subprocess.Popen(ffmpeg_cmd, stdout=log_file, stderr=log_file)

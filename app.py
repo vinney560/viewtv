@@ -841,10 +841,25 @@ def diagnostics():
 #      >>>>LATEST SPORTS CHANNELS<<<<
 #========================================
 # Root directory for all HLS outputs
+from flask import stream_with_context
+from urllib.parse import quote_plus
+
+# Root directory for all HLS outputs
 HLS_ROOT = "/tmp/hls_streams"
 os.makedirs(HLS_ROOT, exist_ok=True)
 
-# Load sports channels from JSON
+# Your required headers (add session cookies here if you have them)
+PROXY_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "Referer": "http://balkan-x.net",
+    "Origin": "http://balkan-x.net",
+    "Connection": "keep-alive",
+    "Accept": "*/*",
+    # Example for cookies - update this line with your actual cookies if needed:
+    # "Cookie": "SESSIONID=abcd1234; other_cookie=xyz"
+}
+
+# Load sports channels from JSON (no changes here)
 def load_sports():
     with open('sports.json') as f:
         data = json.load(f)
@@ -853,13 +868,34 @@ def load_sports():
         for k, v in data.items()
     ]
 
+# Proxy route to fetch remote URLs with headers injected
+@app.route('/proxy')
+def proxy():
+    remote_url = request.args.get('url')
+    if not remote_url:
+        return abort(400, "Missing 'url' parameter")
+
+    try:
+        # Stream remote response with headers injected
+        remote_resp = requests.get(remote_url, headers=PROXY_HEADERS, stream=True, timeout=10)
+        remote_resp.raise_for_status()
+    except requests.RequestException as e:
+        return abort(502, f"Upstream error: {e}")
+
+    # Stream response back to client preserving content type
+    return Response(
+        stream_with_context(remote_resp.iter_content(chunk_size=8192)),
+        content_type=remote_resp.headers.get('Content-Type', 'application/octet-stream'),
+        status=remote_resp.status_code,
+    )
+
 # Route: List all sports channels
 @app.route('/sports')
 def sports_listing():
     channels = load_sports()
     return render_template('sports.html', channels=channels)
 
-# Route: Serve .m3u8 playlist
+# Route: Serve .m3u8 playlist (via ffmpeg streaming with proxy URL)
 @app.route('/hls/<int:channel_id>.m3u8')
 def hls_playlist(channel_id):
     channels = load_sports()
@@ -868,26 +904,18 @@ def hls_playlist(channel_id):
     if not channel:
         return abort(404, "Channel not found")
 
-    ts_url = channel["url"]
+    # Use proxy URL for input to ffmpeg
+    proxied_url = f"http://localhost:5000/proxy?url={quote_plus(channel['url'])}"
+
     channel_folder = os.path.join(HLS_ROOT, str(channel_id))
     playlist_path = os.path.join(channel_folder, "index.m3u8")
 
     if not os.path.exists(playlist_path):
         os.makedirs(channel_folder, exist_ok=True)
 
-        # Inject headers dynamically (no sports.json change required)
-        headers = (
-            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n"
-            "Referer: http://balkan-x.net\r\n"
-            "Origin: http://balkan-x.net\r\n"
-            "Connection: keep-alive\r\n"
-            "Accept: */*\r\n"
-        )
-
         ffmpeg_cmd = [
             "ffmpeg",
-            "-headers", headers,
-            "-i", ts_url,
+            "-i", proxied_url,
             "-c", "copy",
             "-hls_time", "10",
             "-hls_list_size", "5",

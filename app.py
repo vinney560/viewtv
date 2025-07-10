@@ -74,8 +74,8 @@ jwt = JWTManager(app)
 login_manager = LoginManager(app)
 mail = Mail(app)
 csrf = CSRFProtect(app)
-limiter = Limiter(app, key_func=get_remote_address)
-CORS(app)
+limiter = Limiter(key_func=get_remote_address)
+limiter.init_app(app)
 
 login_manager.login_view = "login"
 

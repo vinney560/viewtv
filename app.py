@@ -1178,7 +1178,13 @@ def callback():
 
                 user = User.query.get(payment.user_id)
                 if user:
-                    user.role = "plus"
+                    user.plus_type = "paid"
+                    hours_to_add = int(payment.amount)
+                    now = datetime.utcnow()
+                    if user.plus_expires_at and user.plus_expires_at > now:
+                        user.plus_expires_at += timedelta(hours=hours_to_add)
+                    else:
+                        user.plus_expires_at = now + timedelta(hours=hours_to_add)
                     db.session.commit()
 
             print("Payment verified and Plus access granted.")

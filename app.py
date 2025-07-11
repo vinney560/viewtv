@@ -1370,7 +1370,7 @@ def home_admin():
 @login_required
 @admin_required
 def manage_plus():
-    users = User.query.filter(User.plus_expires_at != None).all().order_by(User.id.asc()).all()
+    users = User.query.filter(User.plus_expires_at != None).order_by(User.id.asc()).all()
     
     now = datetime.utcnow()
     user_data = []

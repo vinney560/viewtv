@@ -327,7 +327,7 @@
   "nbc_sports": {
     "name": "NBC Sports",
     "url": "https://www.nbcsports.com/live",
-    
+    "group-title": "Sports"
   },
   "nick_jr_east": {
     "name": "Nick Jr. East (USA)",

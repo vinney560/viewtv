@@ -576,12 +576,28 @@ def sports_playlist():
 @plus_required
 def plus_playlist():
     return redirect(url_for('custom_list'))
+from collections import defaultdict
+
 @app.route("/plus-channels")
 @login_required
 @plus_required
 def custom_list():
-    sorted_channels = sorted(CUSTOM_CHANNELS.values(), key=lambda c: c['name'].lower())
-    return render_template("custom_list.html", channels=sorted_channels)
+    raw_channels = CUSTOM_CHANNELS
+
+    # Group channels by group-title
+    grouped = defaultdict(list)
+    for ch in raw_channels:
+        group = ch.get('group-title', 'Uncategorized')
+        grouped[group].append(ch)
+
+    # Sort channels inside each group
+    for group in grouped:
+        grouped[group] = sorted(grouped[group], key=lambda x: x.get('name', '').lower())
+
+    # Sort the entire group dictionary by group title
+    categorized_channels = dict(sorted(grouped.items(), key=lambda x: x[0].lower()))
+
+    return render_template('custom_list.html', categorized_channels=categorized_channels)
 #-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required

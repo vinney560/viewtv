@@ -659,42 +659,11 @@
     "name": "T Sports 7",
     "url": "https://lb1-live-mv.v2h-cdn.com/hls/ffef/tsport/tsport.m3u8"
   },
-  "alfa_dramas": {
-    "name": "Alfa Dramas",
-    "url": "https://www.hellasnet.tv/rest2.live.hn/w2r.alf/playlist.m3u8",
-    "logo": "https://i.imgur.com/wnVEvRM.png",
-    "group-title": "Movies"
-  },
-  "amedia_premium": {
-    "name": "Amedia Premium",
-    "url": "http://ott-cdn.ucom.am/s64/index.m3u8",
-    "logo": "https://i.imgur.com/UUjehw9.png",
-    "group-title": "Movies;Series",
-    "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML,like Gecko) Mobile/15E148"
-  },
-  "bolt": {
-    "name": "Bolt",
-    "url": "http://95.142.88.250:80/Bolt/index.m3u8",
-    "logo": "https://i.imgur.com/YdIHXOR.png",
-    "group-title": "Movies;Series"
-  },
-  "cinema_world": {
-    "name": "CinemaWorld",
-    "url": "http://210.210.155.35/dr9445/h/h04/index.m3u8",
-    "logo": "https://i.imgur.com/D2qNVZ7.png",
-    "group-title": "Movies"
-  },
   "cosmos_tv_sd": {
     "name": "Cosmos Tv SD",
     "url": "https://tv.mediacp.eu:19360/cosmos/cosmos.m3u8",
     "logo": "https://i0.wp.com/fmcosmos.com/wp-content/uploads/2021/11/COSMOS-TV.png",
     "group-title": "Movies;News"
-  },
-  "crave_1": {
-    "name": "Crave 1",
-    "url": "https://fl3.moveonjoy.com/CRAVE_1/index.m3u8",
-    "logo": "https://i.imgur.com/ZkRQ0r1.png",
-    "group-title": "Movies"
   },
   "crave_2": {
     "name": "Crave 2",
@@ -702,30 +671,11 @@
     "logo": "https://i.imgur.com/e1qJ5Bp.png",
     "group-title": "Movies"
   },
-  "crave_3": {
-    "name": "Crave 3",
-    "url": "https://fl3.moveonjoy.com/CRAVE_3/index.m3u8",
-    "logo": "https://i.imgur.com/kOi0Adn.png",
-    "group-title": "Movies"
-  },
   "crave_4": {
     "name": "Crave 4",
     "url": "https://fl3.moveonjoy.com/CRAVE_4/index.m3u8",
     "logo": "https://i.imgur.com/MyH3Q2p.png",
     "group-title": "Movies"
-  },
-  "cs_film": {
-    "name": "CS Film",
-    "url": "https://live.cdn.joj.sk/live/andromeda/cs_film-720.m3u8",
-    "logo": "https://i.imgur.com/BAAuBB2.png",
-    "group-title": "Movies",
-    "referrer": "https://media.joj.sk/"
-  },
-  "9go_sydney": {
-    "name": "9Go! Sydney",
-    "url": "https://9now-livestreams.akamaized.net/hls/live/2008312/go-syd/master.m3u8",
-    "logo": "https://i.imgur.com/RLijQI8.png",
-    "group-title": "Entertainment;Kids"
   },
   "abc_me_sydney": {
     "name": "ABC ME Sydney",
@@ -745,22 +695,10 @@
     "logo": "https://i.imgur.com/ZVO8GVI.png",
     "group-title": "Movies"
   },
-  "illusion_plus_sd": {
-    "name": "Illusion+ SD",
-    "url": "http://31.148.48.15/Illusion_plus/index.m3u8",
-    "logo": "https://i.imgur.com/9GvuHQ5.png",
-    "group-title": "Movies"
-  },
   "kika": {
     "name": "KiKA",
     "url": "https://kikageohls.akamaized.net/hls/live/2022693/livetvkika_de/master.m3u8",
     "logo": "https://i.imgur.com/vZdNp5S.png",
-    "group-title": "Kids"
-  },
-  "lovetoons_tv": {
-    "name": "Lovetoons TV",
-    "url": "https://kali1.everestcast.com:3674/stream/play.m3u8",
-    "logo": "https://i.imgur.com/omsvAEM.png",
     "group-title": "Kids"
   },
   "mytime_movie_network": {
@@ -769,28 +707,10 @@
     "logo": "https://i.imgur.com/aiGQtzI.png",
     "group-title": "Movies"
   },
-  "nickelodeon_es": {
-    "name": "Nickelodeon",
-    "url": "http://185.189.225.150:85/nickelodeon/index.m3u8",
-    "logo": "https://i.imgur.com/E84jnP8.png",
-    "group-title": "Kids"
-  },
-  "nickelodeon_asia": {
-    "name": "Nickelodeon Asia",
-    "url": "http://178.128.214.60:1234/stream/astro/nickelodeon/master.m3u8",
-    "logo": "https://i.imgur.com/E84jnP8.png",
-    "group-title": "Kids"
-  },
   "rai_movie": {
     "name": "Rai Movie",
     "url": "http://188.60.179.180:8000/play/xxRaiMOviexx",
     "logo": "https://i.imgur.com/0FjxXU9.png",
-    "group-title": "Movies"
-  },
-  "servus_tv": {
-    "name": "ServusTV",
-    "url": "https://stv-live.akamaized.net/hls/live/2031011/lingeoSTVATwebPri/master.m3u8",
-    "logo": "https://i.imgur.com/6W637Gn.png",
     "group-title": "Movies"
   },
   "smile_tv": {
@@ -803,18 +723,6 @@
     "name": "TNT Kids TV",
     "url": "https://restreamer1.tnt.ba/hls/tntkids.m3u8",
     "logo": "https://i.imgur.com/irTDbpn.png",
-    "group-title": "Kids"
-  },
-  "tv2_kids": {
-    "name": "TV2 Kids",
-    "url": "http://146.59.85.40:89/tv2kids/index.m3u8",
-    "logo": "https://i.imgur.com/Zltlezm.png",
-    "group-title": "Kids"
-  },
-  "tvokids": {
-    "name": "TVOKids",
-    "url": "https://bcovlive-a.akamaihd.net/rf86f817779524249abf842af6d16f55f/us-east-1/15364602001/playlist.m3u8",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tvokids-logo.svg/512px-Tvokids-logo.svg.png",
     "group-title": "Kids"
   }
 }

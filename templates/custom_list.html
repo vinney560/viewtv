@@ -50,17 +50,17 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
-        {% for category, channels in channels_by_category.items() %}
+        {% for ch, in channels.items() %}
         <section class="mb-12">
             <div class="category-header border-l-4 border-cyan-400 pl-4 py-2 mb-6">
                 <h2 class="text-xl font-bold text-cyan-100 flex items-center">
                     <i class="fas fa-tag mr-2 text-cyan-400"></i>
-                    {{ category or 'Uncategorized' }}
+                    {{ ch.group-title or 'Uncategorized' }}
                 </h2>
             </div>
             
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                {% for channel in channels %}
+                {% for ch, channel in channels %}
                 <div class="channel-card bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
                     <a href="{{ url_for('player') }}?{{ {'url': channel.url, 'token': channel.token}|urlencode }}" target="_blank"  class="block">
                         <div class="relative pt-[56.25%] bg-gray-900/30">
@@ -74,13 +74,12 @@
                             {% endif %}
                             <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
                                 <span class="text-xs font-medium text-cyan-400">
-                                    {{ channel.access }}
+                                    {{ channel.access or 'free' }}
                                 </span>
                             </div>
                         </div>
                         <div class="p-3">
                             <h3 class="font-semibold text-sm truncate">{{ channel.name }}</h3>
-                            <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.url }}</p>
                         </div>
                     </a>
                 </div>
@@ -93,7 +92,7 @@
     <!-- Footer -->
     <footer class="bg-gray-900/50 border-t border-cyan-900/20 py-6">
         <div class="container mx-auto px-4 text-center text-gray-400 text-sm">
-            <p>© 2025 ViewTv | StreamTV • All channels are provided for demonstration purposes.</p>
+            <p>© 2025 ViewTv | StreamTV • All channels are provided for streaming <span class='text-red-600'>ONLY</span>.</p>
         </div>
     </footer>
 

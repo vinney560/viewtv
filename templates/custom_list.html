@@ -5,15 +5,62 @@
     <title>ViewTv | StreamTv</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .toast {
+            animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-in 3.5s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        .channel-card {
+            transition: all 0.3s ease;
+        }
+        .channel-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1);
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-white">
 
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 w-full max-w-xs">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white
+                        {% if category == 'success' %} bg-green-600
+                        {% elif category == 'error' %} bg-red-600
+                        {% elif category == 'warning' %} bg-yellow-600
+                        {% else %} bg-blue-600 {% endif %}">
+                        <div class="flex items-center">
+                            {% if category == 'success' %}
+                                <i class="fas fa-check-circle mr-2"></i>
+                            {% elif category == 'error' %}
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                            {% elif category == 'warning' %}
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle mr-2"></i>
+                            {% endif %}
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
     <!-- Header -->
-    <header class="bg-gray-950 border-b border-cyan-900/20 p-4 flex items-center justify-between">
+    <header class="bg-gray-950 border-b border-cyan-900/20 p-4 flex items-center justify-between sticky top-0 z-40">
         <h1 class="text-2xl font-bold text-cyan-400">ViewTv | StreamTv</h1>
         <div class="relative w-full max-w-xs">
             <input type="text" id="searchInput" placeholder="Search channels..."
-                class="search-box w-full bg-gray-800/80 border border-cyan-900/30 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 transition-all duration-200">
+                class="search-box w-full bg-gray-800/80 border border-cyan-900/30 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
             <i class="fas fa-search absolute left-3 top-2.5 text-cyan-900/60"></i>
         </div>
     </header>
@@ -103,6 +150,49 @@
                 this.style.zIndex = '1';
             });
         });
+
+        // Auto-dismiss toasts
+        document.addEventListener('DOMContentLoaded', () => {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    toast.remove();
+                }, 4000);
+            });
+        });
+
+        // Function to show new toasts (can be called from other scripts)
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const colors = {
+                success: 'bg-green-600',
+                error: 'bg-red-600',
+                warning: 'bg-yellow-600',
+                info: 'bg-blue-600'
+            };
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white ${colors[type]}`;
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${icons[type]} mr-2"></i>
+                    ${message}
+                </div>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.5s ease-in forwards';
+                setTimeout(() => toast.remove(), 500);
+            }, 3500);
+        }
     </script>
 </body>
 </html>

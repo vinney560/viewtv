@@ -58,7 +58,7 @@ def choose_db_uri():
         try:
             engine = create_engine(render_uri)
             engine.connect().close()
-            print("Connected to Render 2 DB (DATABASE_URL)")
+            print("Connected to Render 2 DB (DATABASE_URL_2)")
             return render_uri
         except OperationalError:
             print("⚠ Failed to connect to Render 2 DB.")

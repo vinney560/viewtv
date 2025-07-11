@@ -68,12 +68,12 @@
       {% for key, info in channels.items() %}
       <div class="bg-gray-800 rounded-xl p-3 shadow hover:shadow-cyan-500/50 transition flex gap-4 items-center h-28 sm:h-32">
         <div class="w-24 h-full bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 text-sm select-none">
-          <img src="{{ url_for('uploaded_file', filename=info.image or 'default_tv_icon.png') }}" alt="TV Icon" class="w-24 h-16 rounded object-contain" />
+          <img src="{{ info.logo or url_for('uploaded_file', filename='default_tv_icon.png') }}" alt="TV Icon" class="w-24 h-16 rounded object-contain" />
         </div>
         <div class="flex flex-col justify-between flex-1">
           <div>
             <h2 class="text-base sm:text-lg font-semibold text-white mb-1">{{ info.name }}</h2>
-            <p class="text-xs sm:text-sm text-gray-400">{{ info.description or 'No description' }}</p>
+            <p class="text-xs sm:text-sm text-gray-400">{{ info.get('group-title', 'No description') }}</p>
           </div>
           <a href="{{ url_for('play_channel', key=key) }}" class="mt-2 w-fit bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-1 rounded text-xs">▶ Play</a>
         </div>

@@ -22,12 +22,14 @@
   "al-jazeera-english": {
     "name": "Al Jazeera English",
     "url": "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8",
-    "group-title": "Entertainment;Family;General"
+    "logo": "https://i.imgur.com/7bRVpnu.png",
+    "group-title": "Entertainmentl"
   },
   "al_jazeera": {
     "name": "Al Jazeera English",
     "url": "https://www.aljazeera.com/live",
-    "group-title": "Entertainment;Family;General"
+    "logo": "https://i.imgur.com/7bRVpnu.png",
+    "group-title": "Entertainment"
   },
   "animax": {
     "name": "Animax",
@@ -52,22 +54,23 @@
   "bbc_doctor_who": {
     "name": "BBC Doctor Who",
     "url": "https://amg00793-amg00793c15-rakuten-es-5359.playouts.now.amagi.tv/playlist.m3u8",
-    "group-title": "Entertainment;Family;General"
+    "group-title": "General"
   },
   "bein_sports": {
     "name": "beIN SPORTS",
     "url": "https://aegis-cloudfront-1.tubi.video/82c7f2de-f4ea-44a4-8200-069c5c0bb639/playlist.m3u8",
+    "logo": "https://i.imgur.com/QWo0x7S.jpg",
     "group-title": "Sports"
   },
   "bet_her": {
     "name": "BET her",
     "url": "https://fl3.moveonjoy.com/BET_HER/index.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "biz_tv": {
     "name": "Biz Tv",
     "url": "https://thegateway.app/BizAndYou/BizTV/playlist.m3u8",
-    "group-title": "Entertainment;Family;General"
+    "group-title": "Entertainment"
   },
   "bloomberg_tv_us": {
     "name": "Bloomberg TV US",
@@ -82,12 +85,14 @@
   "bollywood_classic": {
     "name": "Bollywood Classic",
     "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-classic/manifest.m3u8",
-    "group-title": "Movies;News"
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "group-title": "Movies"
   },
   "bollywood_hd": {
     "name": "Bollywood HD",
     "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-hd/manifest.m3u8",
-    "group-title": "Movies;News"
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "group-title": "Movies"
   },
   "btn": {
     "name": "BTN",
@@ -117,7 +122,7 @@
   "classic_movie": {
     "name": "Classic Movie",
     "url": "https://30a-tv.com/feeds/pzaz/30atvmovies.m3u8",
-    "group-title": "Movies;News"
+    "group-title": "Movies"
   },
   "clan_hevc": {
     "name": "Clan HEVC",
@@ -157,12 +162,12 @@
   "emmanuel_tv": {
     "name": "Emmanuel Tv",
     "url": "https://live20.bozztv.com/dvrfl06/astv/astv-emmanuel/index.m3u8",
-    "group-title": "Religion"
+    "group-title": "Religious"
   },
   "entertainment_tonight": {
     "name": "Entertainment Tonight",
     "url": "https://cbsta49f-cbsta49f-ms.global.ssl.fastly.net/amagi7b98-AmagiMixible/master/amagi7b98-AmagiMixible.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "espn_plus": {
     "name": "ESPN+",
@@ -173,11 +178,6 @@
     "name": "Fasion Find",
     "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
     "group-title": "Fashion"
-  },
-  "fifa": {
-    "name": "Fifa +",
-    "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8",
-    "group-title": "Sports"
   },
   "fite_wrestle": {
     "name": "FITE [wrestling]",
@@ -212,37 +212,37 @@
   "gem_drama": {
     "name": "Gem Drama",
     "url": "https://ca-rt.onetv.app/gemdrama/index-0.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "gem_jr": {
     "name": "GEM JR",
     "url": "https://ca-rt.onetv.app/gemjunior/index-0.m3u8",
-   "group-title": "Entertainment, General" 
+   "group-title": "Entertainment" 
   },
   "gem_kids": {
     "name": "GEM Kids",
     "url": "https://ca-rt.onetv.app/gemkids/index-0.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "great_movies": {
     "name": "Great Movies",
     "url": "https://amg01753-narrativeuk-amg01753c3-lg-gb-1833.playouts.now.amagi.tv/playlist/amg01753-narrativeuk-greatmovies-lggb/playlist.m3u8",
-    "group-title": "Movies;News"
+    "group-title": "Movies"
   },
   "great_mystery": {
     "name": "Great Mystery",
     "url": "https://linear-861.frequency.stream/dist/lg-uk/861/hls/master/playlist.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "hells_kitchen": {
     "name": "Hell's Kitchen",
     "url": "https://itv-hellskitchen-rakuten.amagi.tv/playlist.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "hsn_east": {
     "name": "HSN East",
     "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn1uswest/master.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "inoorotv": {
     "name": "Inooro Tv (CitizenD)",
@@ -267,7 +267,7 @@
   "ketchap": {
     "name": "Ketchup",
     "url": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=13171",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "kidsflix": {
     "name": "KidsFlix",
@@ -277,7 +277,7 @@
   "kiss_tv": {
     "name": "Kiss Tv",
     "url": "https://tv.broadcasting.ro/kisstv/a629c031-2170-4ee9-a36d-87a891aa3131.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "k24-tv": {
     "name": "K24 TV",
@@ -292,22 +292,22 @@
   "life_end_time": {
     "name": "Life! End Time",
     "url": "https://2-fss-1.streamhoster.com/pl_122/200226-1427780-1/playlist.m3u8",
-    "group-title": "Entertainment;Family;General"
+    "group-title": "Entertainment"
   },
   "lol_network": {
     "name": "LOL! Network",
     "url": "https://lol-lolnetwork-2-nl.samsung.wurl.tv/playlist.m3u8",
-    "group-title": "Entertainment;Family;General"
+    "group-title": "Entertainment"
   },
   "military_history": {
     "name": "Military History",
     "url": "https://fl3.moveonjoy.com/Military_History/index.m3u8",
-    "group-title": "Entertainment;Family;General"
+    "group-title": "Entertainment"
   },
   "movie_box": {
     "name": "Movie Box",
     "url": "https://cdn3.skygo.mn/live/disk1/Moviebox/HLS-FTA/Moviebox.m3u8",
-    "group-title": "Movies;News"
+    "group-title": "Movies"
   },
   "movies_bang": {
     "name": "Movies! ",
@@ -317,12 +317,12 @@
   "pltv-usa-movies": {
     "name": "Movies HD",
     "url": "https://i.mjh.nz/PlutoTV/us.m3u8",
-    "group-title": "Movies;News"
+    "group-title": "Movies"
   },
   "moviesphere_hd": {
     "name": "MovieSphere HD",
     "url": "https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8",
-    "group-title": "Movies;News"
+    "group-title": "Movies"
   },
   "nbc_sports": {
     "name": "NBC Sports",
@@ -381,7 +381,8 @@
   },
   "ramogifmtv": {
     "name": "Ramogi Fm Tv",
-    "url": "https://citizen.digital/tv/ramogi-fm-audio-visual-24"
+    "url": "https://citizen.digital/tv/ramogi-fm-audio-visual-24",
+    "group-title": "News"
   },
   "ramogitv": {
     "name": "Ramogi Tv",
@@ -391,7 +392,7 @@
   "red_plus": {
     "name": "RED +",
     "url": "https://inforedvos.lcdn.claro.net.co/Content/HLS_HLS_DIR/Live/channel(REDMASHDWEB)/master.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "tennis_channel": {
     "name": "Tennis Channel",
@@ -411,28 +412,28 @@
   "tv_mana_english": {
     "name": "Tv Mana [English]",
     "url": "https://w1.manasat.com/tvmana-english/smil:tvmana-english.smil/playlist.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "twenty_four_hour_movies": {
     "name": "24 Hour Free Movie",
     "url": "https://d1j2u714xk898n.cloudfront.net/scheduler/scheduleMaster/145.m3u8",
-    "group-title": "Movie, News"
+    "group-title": "Movies"
   },
   "whole_world_tv": {
     "name": "Whole World Tv [Gospel]",
     "url": "https://mn-nl.mncdn.com/wholewordtv/wholewordtv/index.m3u8",
-    "group-title": "Entertainment, General"
+    "group-title": "Entertainment"
   },
   "zee_one": {
     "name": "Zee One",
     "url": "https://ef56ef401101403a8b06f1dec29ef1eb.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/Samsung-de_ZeeOne/playlist.m3u8",
-    "group-title": "Entertainment;Family;General"
+    "group-title": "Entertainment"
   },
   "hh": {
     "name": "1KZN TV",
     "url": "https://cdn.freevisiontv.co.za/sttv/smil:1kzn.stream.smil/playlist.m3u8",
     "logo": "https://admango.cdn.mangomolo.com/analytics/uploads/188/6544bebaae.jpg",
-    "group-title": "Entertainment;Family;General"
+    "group-title": "Entertainment"
   },
   "yw": {
     "name": "Al Jazeera English",
@@ -549,7 +550,7 @@
     "group-title": "Lifestyle"
   },
   "bbb": {
-    "name": "FIFA+",
+    "name": "FIFA +",
     "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8",
     "logo": "https://i.imgur.com/l5iax42.png",
     "group-title": "Sports"
@@ -576,19 +577,19 @@
     "name": "Fresh",
     "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/freshtv/playlist.m3u8",
     "logo": "https://i.imgur.com/2ig8jUH.png",
-    "group-title": ""
+    "group-title": "General"
   },
   "bsbs": {
     "name": "Hard Knocks Fighting Championship",
     "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/2ee2b8d4-acc4-4296-9dc8-66f1ffd0fff8/5.m3u8",
     "logo": "https://images-1.rakuten.tv/storage/global-live-channel/translation/artwork/13b0a6c7-4307-4c8d-9fc4-df2a4f8e8b38-hard-knocks-fighting-1602077398-width200-quality90.jpeg",
-    "group-title": ""
+    "group-title": "General"
   },
   "enbs": {
     "name": "Kordia TV",
     "url": "https://ptvlive.kordia.net.nz/out/v1/3fc2254c865a457c8d7fbbce227a2aae/index.m3u8",
     "logo": "https://i.imgur.com/BQ0qWzX.png",
-    "group-title": ""
+    "group-title": "General"
   },
   "ebhs": {
     "name": "Kozoom TV",
@@ -612,7 +613,7 @@
     "name": "NHK World-Japan SD",
     "url": "https://cdn4.skygo.mn/live/disk1/NHK_World/HLSv3-FTA/NHK_World.m3u8",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/NHK_World-Japan_TV.svg/512px-NHK_World-Japan_TV.svg.png",
-    "group-title": "Culture;News"
+    "group-title": "Culture"
   },
   "ywtw": {
     "name": "NRT Mexico Internacional",
@@ -634,115 +635,144 @@
   },
   "arena_sport_1_sd": {
     "name": "Arena Sport 1 SD",
-    "url": "http://91.132.74.5:8000/play/a00k"
+    "url": "http://91.132.74.5:8000/play/a00k",
+    "group-title": "Sports"
   },
   "campuslore": {
     "name": "CampusLore",
-    "url": "https://linear-235.frequency.stream/dist/glewedtv/235/hls/master/playlist.m3u8"
+    "url": "https://linear-235.frequency.stream/dist/glewedtv/235/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle"
   },
   "canal_do_inter": {
     "name": "Canal do Inter",
-    "url": "https://video01.soultv.com.br/internacional/internacional/playlist.m3u8"
+    "url": "https://video01.soultv.com.br/internacional/internacional/playlist.m3u8",
+    "group-title": "General"
   },
   "colimdo_tv": {
     "name": "Colimdo TV",
-    "url": "https://cnn.livestreaminggroup.info:3132/live/colimdotvlive.m3u8"
-  },
-  "fifa_plus": {
-    "name": "FIFA+",
-    "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8"
+    "url": "https://cnn.livestreaminggroup.info:3132/live/colimdotvlive.m3u8",
+    "group-title": "Entertainment"
   },
   "fight_network": {
     "name": "Fight Network",
-    "url": "https://d12a2vxqkkh1bo.cloudfront.net/hls/main.m3u8"
+    "url": "https://d12a2vxqkkh1bo.cloudfront.net/hls/main.m3u8",
+    "group-title": "Sports"
   },
   "fuel_tv": {
     "name": "FUEL TV",
-    "url": "https://amg01074-fueltv-amg01074c1-firetv-us-3150.playouts.now.amagi.tv/playlist.m3u8"
+    "url": "https://amg01074-fueltv-amg01074c1-firetv-us-3150.playouts.now.amagi.tv/playlist.m3u8",
+    "group-title": "Sports"
   },
   "game_plus": {
     "name": "Game+",
-    "url": "https://a-cdn.klowdtv.com/live2/fntsy_720p/playlist.m3u8"
+    "url": "https://a-cdn.klowdtv.com/live2/fntsy_720p/playlist.m3u8",
+    "group-title": "Sports"
   },
   "gem_fit": {
     "name": "GEM Fit",
-    "url": "https://ca-rt.onetv.app/gemfit/index-0.m3u8"
+    "url": "https://ca-rt.onetv.app/gemfit/index-0.m3u8",
+    "group-title": "Fashion"
   },
   "hard_knocks": {
     "name": "Hard Knocks",
-    "url": "https://d3uyzhwvmemdyf.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/Hard-Knocks-DistroTV/109.m3u8"
+    "url": "https://d3uyzhwvmemdyf.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/Hard-Knocks-DistroTV/109.m3u8",
+    "group-title": "General"
   },
   "k19": {
     "name": "K19",
-    "url": "https://1853185335.rsc.cdn77.org/K192/tv/playlist.m3u8"
+    "url": "https://1853185335.rsc.cdn77.org/K192/tv/playlist.m3u8",
+    "group-title": "General"
   },
   "ktv_sport": {
     "name": "KTV Sport",
-    "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8"
+    "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8",
+    "logo": "https://i.imgur.com/R1hGX1d.png",
+    "group-title": "Sports"
   },
   "ktv_sport_plus": {
     "name": "KTV Sport Plus",
-    "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8"
+    "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8",
+    "logo": "https://i.imgur.com/R1hGX1d.png",
+    "group-title": "Sports"
   },
   "more_than_sports_tv": {
     "name": "More Than Sports TV",
-    "url": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8"
+    "url": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8",
+    "logo": "https://i.imgur.com/hRNUo9n.png",
+    "group-title": "Sports"
   },
   "racing_com": {
     "name": "Racing.com",
-    "url": "https://racingvic-i.akamaized.net/hls/live/598695/racingvic/index1500.m3u8"
+    "url": "https://racingvic-i.akamaized.net/hls/live/598695/racingvic/index1500.m3u8",
+    "group-title": "Sports"
   },
   "red_bull_tv": {
     "name": "Red Bull TV",
-    "url": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8"
+    "url": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8",
+    "logo": "https://i.imgur.com/7NeBmWX.jpg",
+    "group-title": "Sports"
   },
   "rta_sport": {
     "name": "RTA Sport",
-    "url": "https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/index.m3u8"
+    "url": "https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/index.m3u8",
+    "logo": "",
+    "group-title": "Sports"
   },
   "sport_en_france": {
     "name": "Sport en France",
-    "url": "https://sp1564435593.mytvchain.info/live/sp1564435593/index.m3u8"
+    "url": "https://sp1564435593.mytvchain.info/live/sp1564435593/index.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/a/ad/Logo_of_French_sports_television_channel_Sport_en_France.png",
+    "group-title": "Sports"
   },
   "ssc_action_waleed": {
     "name": "SSC Action Waleed",
-    "url": "https://shls-live-event2-prod-dub.shahid.net/out/v1/0456ede1a39145d98b3d8c8062ddc998/index.m3u8"
+    "url": "https://shls-live-event2-prod-dub.shahid.net/out/v1/0456ede1a39145d98b3d8c8062ddc998/index.m3u8",
+    "group-title": "Movies"
   },
   "talksport": {
     "name": "talkSPORT",
-    "url": "https://af7a8b4e.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfdGFsa1NQT1JUX0hMUw/playlist.m3u8"
+    "url": "https://af7a8b4e.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfdGFsa1NQT1JUX0hMUw/playlist.m3u8",
+    "group-title": "Sports"
   },
   "trace_sport_stars": {
     "name": "Trace Sport Stars",
-    "url": "https://trace-sportstars-samsungnz.amagi.tv/playlist.m3u8"
+    "url": "https://trace-sportstars-samsungnz.amagi.tv/playlist.m3u8",
+    "group-title": "Sports"
   },
   "tsn1": {
     "name": "TSN1",
-    "url": "https://fl5.moveonjoy.com/TSN_1/index.m3u8"
+    "url": "https://fl5.moveonjoy.com/TSN_1/index.m3u8",
+    "group-title": "Sports"
   },
   "tsn2": {
     "name": "TSN2",
-    "url": "https://fl5.moveonjoy.com/TSN_2/index.m3u8"
+    "url": "https://fl5.moveonjoy.com/TSN_2/index.m3u8",
+    "group-title": "Sports"
   },
   "tsn3": {
     "name": "TSN3",
-    "url": "https://fl5.moveonjoy.com/TSN_3/index.m3u8"
+    "url": "https://fl5.moveonjoy.com/TSN_3/index.m3u8",
+    "group-title": "Sports"
   },
   "tsn4": {
     "name": "TSN4",
-    "url": "https://fl5.moveonjoy.com/TSN_4/index.m3u8"
+    "url": "https://fl5.moveonjoy.com/TSN_4/index.m3u8",
+    "group-title": "Sports"
   },
   "tsn5": {
     "name": "TSN5",
-    "url": "https://fl5.moveonjoy.com/TSN_5/index.m3u8"
+    "url": "https://fl5.moveonjoy.com/TSN_5/index.m3u8",
+    "group-title": "Sports"
   },
   "tsn_the_ocho_sd": {
     "name": "TSN The Ocho SD",
-    "url": "https://d3pnbvng3bx2nj.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-rds8g35qfqrnv/TSN_The_Ocho.m3u8"
+    "url": "https://d3pnbvng3bx2nj.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-rds8g35qfqrnv/TSN_The_Ocho.m3u8",
+    "group-title": "General"
   },
   "t_sports_7": {
     "name": "T Sports 7",
-    "url": "https://lb1-live-mv.v2h-cdn.com/hls/ffef/tsport/tsport.m3u8"
+    "url": "https://lb1-live-mv.v2h-cdn.com/hls/ffef/tsport/tsport.m3u8",
+    "group-title": "Sports"
   },
   "cosmos_tv_sd": {
     "name": "Cosmos Tv SD",
@@ -766,13 +796,13 @@
     "name": "ABC ME Sydney",
     "url": "https://c.mjh.nz/abc-me.m3u8",
     "logo": "https://i.imgur.com/6NyFLAm.png",
-    "group-title": "Education;Kids"
+    "group-title": "Kids"
   },
   "etv_2": {
     "name": "ETV 2",
     "url": "https://sb.err.ee/live/etv2.m3u8",
     "logo": "https://i.imgur.com/fUjGHDa.png",
-    "group-title": "Culture;Kids"
+    "group-title": "Culture"
   },
   "ghost_tv": {
     "name": "Ghost TV",

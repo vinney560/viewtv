@@ -545,5 +545,358 @@
     "name": "Red Bull TV",
     "url": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8",
     "logo": "https://i.postimg.cc/8c78JM28/image.png",
-    "group-title": "Sports" }
+    "group-title": "Sports"
+  },
+  "aci_sport_tv": {
+    "name": "ACI Sport TV",
+    "url": "https://g4wlk6xpy23a-hls-live.mariatvcdn.it/acisporttv/b7a3464f8e2001314de9fefebf11229d.sdp/playlist.m3u8"
+  },
+  "action_sports_germany": {
+    "name": "Action Sports Germany",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5be1be871843b56328bc3ef1/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=84ac0870-4b92-11ef-aece-533610f1ea34&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=a89100a8-8115-4b28-9869-072164526f31"
+  },
+  "alfa_sport": {
+    "name": "Alfa Sport",
+    "url": "https://dev.aftermind.xyz/edge-hls/unitrust/alfasports/index.m3u8?token=8TXWzhY3h6jrzqEqx"
+  },
+  "alkass_five": {
+    "name": "Alkass Five",
+    "url": "https://liveakgr.alkassdigital.net/hls/live/2097037/Alkass5azq/master.m3u8"
+  },
+  "alkass_four": {
+    "name": "Alkass Four",
+    "url": "https://liveakgr.alkassdigital.net/hls/live/2097037/Alkass4azq/master.m3u8"
+  },
+  "alkass_one": {
+    "name": "Alkass One",
+    "url": "https://liveakgr.alkassdigital.net/hls/live/2097037/Alkass1muytrdc/master.m3u8"
+  },
+  "alkass_shoof": {
+    "name": "Alkass SHOOF",
+    "url": "https://liveakgr.alkassdigital.net/hls/live/2097037/Alkass6Shoof1ab/master.m3u8"
+  },
+  "alkass_six": {
+    "name": "Alkass Six",
+    "url": "https://liveakgr.alkassdigital.net/hls/live/2097037/Alkass6buzay/master.m3u8"
+  },
+  "alkass_three": {
+    "name": "Alkass Three",
+    "url": "https://liveakgr.alkassdigital.net/hls/live/2097037/Alkass3vakazq/master.m3u8"
+  },
+  "alkass_two": {
+    "name": "Alkass Two",
+    "url": "https://liveakgr.alkassdigital.net/hls/live/2097037/Alkass2hefazq/master.m3u8"
+  },
+  "arena_sport_1_sd": {
+    "name": "Arena Sport 1 SD",
+    "url": "http://91.132.74.5:8000/play/a00k"
+  },
+  "atg": {
+    "name": "ATG",
+    "url": "https://httpcache0-00688-cacheliveedge0.dna.qbrick.com/00688-cacheliveedge0/out/u/atg_sdi_1_free.m3u8"
+  },
+  "barca_tv_sd": {
+    "name": "Barca TV SD",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-barca/index.m3u8"
+  },
+  "bein_sports_haber": {
+    "name": "beIN Sports Haber",
+    "url": "https://canlitvulusal3.xyz/live/beinsportshaber/index.m3u8"
+  },
+  "bein_sports_xtra": {
+    "name": "beIN SPORTS XTRA",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5df975e2b27cf5000921c102/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c26f5a4-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=cb932046-e001-4189-a871-1376aa2ec340"
+  },
+  "bein_sports_xtra_en_espanol": {
+    "name": "beIN SPORTS XTRA en Espanol",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/60492fdd9989d30007ccd30a/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c26f5a5-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=5f89b39e-273a-43e4-8664-6b0d3d3b0fef"
+  },
+  "bek_sports_west": {
+    "name": "BEK Sports West",
+    "url": "https://cdn3.wowza.com/5/ZWQ1K2NYTmpFbGsr/BEK-WOWZA-1/smil:BEKPRIMEW.smil/playlist.m3u8"
+  },
+  "billiard_tv_sd": {
+    "name": "Billiard TV SD",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/65df0cff66eec8000897b3a4/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=1b1cc775-4b81-11ef-a8ac-e146e4e7be02&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=36e4c683-680e-486f-91f0-ce1f0f88c4b6"
+  },
+  "campuslore": {
+    "name": "CampusLore",
+    "url": "https://linear-235.frequency.stream/dist/glewedtv/235/hls/master/playlist.m3u8"
+  },
+  "canal_do_inter": {
+    "name": "Canal do Inter",
+    "url": "https://video01.soultv.com.br/internacional/internacional/playlist.m3u8"
+  },
+  "cbc_sport": {
+    "name": "CBC Sport",
+    "url": "https://mn-nl.mncdn.com/cbcsports_live/cbcsports/playlist.m3u8"
+  },
+  "colimdo_tv": {
+    "name": "Colimdo TV",
+    "url": "https://cnn.livestreaminggroup.info:3132/live/colimdotvlive.m3u8"
+  },
+  "combate": {
+    "name": "Combate",
+    "url": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=960"
+  },
+  "crtv_sports_and_entertainment_sd": {
+    "name": "CRTV Sports and Entertainment SD",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-crtvsport/index.m3u8"
+  },
+  "df1": {
+    "name": "DF1",
+    "url": "https://dbjwcot8t7nyd.cloudfront.net/out/v1/9d068a9428444b458324ad77b5a0a4b8/index.m3u8"
+  },
+  "dunia_games_tv": {
+    "name": "Dunia Games TV",
+    "url": "https://cdn01-telkomsel-01.akamaized.net/Content/HLS/Live/channel(6854467f-52fe-48ee-9822-00233c678709)/index.m3u8"
+  },
+  "edgesport": {
+    "name": "EDGEsport",
+    "url": "https://edgesports-sportstribal.amagi.tv/playlist.m3u8"
+  },
+  "eleven_sports_1": {
+    "name": "Eleven Sports 1",
+    "url": "http://9b129915.akadatel.com/iptv/83GA6FAV4DPTPQ/20068/index.m3u8"
+  },
+  "eleven_sports_2": {
+    "name": "Eleven Sports 2",
+    "url": "https://windnew.iosplayer.ru/wind/premium72/mono.m3u8"
+  },
+  "eleven_sports_3": {
+    "name": "Eleven Sports 3",
+    "url": "https://ddy6new.iosplayer.ru/ddy6/premium428/mono.m3u8"
+  },
+  "ert_sports_1": {
+    "name": "ERT Sports 1",
+    "url": "http://cbd537474fbad4634b64787657ff6456.msvdn.net/sports1/ert_sports1_main/mainabr/playlist.m3u8"
+  },
+  "ert_sports_2": {
+    "name": "ERT Sports 2",
+    "url": "http://cbd537474fbad4634b64787657ff6456.msvdn.net/sports2/ert_sports2_main/mainabr/playlist.m3u8"
+  },
+  "esport3": {
+    "name": "Esport3",
+    "url": "https://directes-tv-cat.3catdirectes.cat/live-origin/esport3-hls/master.m3u8"
+  },
+  "fast_sports": {
+    "name": "Fast Sports",
+    "url": "http://stream01.vnet.am/Channel_131/index.m3u8"
+  },
+  "fb_tv_sd": {
+    "name": "FB TV SD",
+    "url": "http://1hskrdto.rocketcdn.com/fenerbahcetv.smil/playlist.m3u8"
+  },
+  "fifa_plus": {
+    "name": "FIFA+",
+    "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8"
+  },
+  "fight_network": {
+    "name": "Fight Network",
+    "url": "https://d12a2vxqkkh1bo.cloudfront.net/hls/main.m3u8"
+  },
+  "fight_night": {
+    "name": "Fight Night",
+    "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/fightnight/playlist.m3u8"
+  },
+  "fl_sport": {
+    "name": "FL Sport",
+    "url": "https://tvsw5-hls.secdn.net/tvsw5-chorigin/play/prod-8ce1fcb47fa7474d84640eb766f0ef38/playlist.m3u8"
+  },
+  "fuel_tv": {
+    "name": "FUEL TV",
+    "url": "https://amg01074-fueltv-amg01074c1-firetv-us-3150.playouts.now.amagi.tv/playlist.m3u8"
+  },
+  "futv": {
+    "name": "FUTV",
+    "url": "http://45.190.187.226:58092/play/a00q"
+  },
+  "game_plus": {
+    "name": "Game+",
+    "url": "https://a-cdn.klowdtv.com/live2/fntsy_720p/playlist.m3u8"
+  },
+  "gem_fit": {
+    "name": "GEM Fit",
+    "url": "https://ca-rt.onetv.app/gemfit/index-0.m3u8"
+  },
+  "hard_knocks": {
+    "name": "Hard Knocks",
+    "url": "https://d3uyzhwvmemdyf.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/Hard-Knocks-DistroTV/109.m3u8"
+  },
+  "htspor_tv": {
+    "name": "HTSpor TV",
+    "url": "http://185.234.111.229:8000/play/a016"
+  },
+  "k19": {
+    "name": "K19",
+    "url": "https://1853185335.rsc.cdn77.org/K192/tv/playlist.m3u8"
+  },
+  "ktv_sport": {
+    "name": "KTV Sport",
+    "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8"
+  },
+  "ktv_sport_plus": {
+    "name": "KTV Sport Plus",
+    "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8"
+  },
+  "m4_sport": {
+    "name": "M4 Sport",
+    "url": "http://146.59.85.40:89/m4hd/index.m3u8"
+  },
+  "match4": {
+    "name": "Match4",
+    "url": "http://194.76.186.33:8000/play/a04d/index.m3u8"
+  },
+  "mnb_sport": {
+    "name": "MNB Sport",
+    "url": "https://cdn3.skygo.mn/live/disk1/MNBSport/DASH-FTA/MNBSport.mpd"
+  },
+  "more_than_sports_tv": {
+    "name": "More Than Sports TV",
+    "url": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8"
+  },
+  "nba_tv_canada_sd": {
+    "name": "NBA TV Canada SD",
+    "url": "http://user.scalecdn.co:8080/live/54706135/09221986/3092.m3u8"
+  },
+  "persiana_sports": {
+    "name": "Persiana Sports",
+    "url": "https://edge06.776740.ir.cdn.ir/hls2/persiana.m3u8"
+  },
+  "racing_com": {
+    "name": "Racing.com",
+    "url": "https://racingvic-i.akamaized.net/hls/live/598695/racingvic/index1500.m3u8"
+  },
+  "radio_turrialba_tv_sports": {
+    "name": "Radio Turrialba TV Sports",
+    "url": "https://acceso.radiosportstv.online:3723/live/radioturrialbatvlive.m3u8"
+  },
+  "real_madrid_tv": {
+    "name": "Real Madrid TV",
+    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01201-cinedigmenterta-realmadrid-cineverse/playlist.m3u8"
+  },
+  "red_bull_tv": {
+    "name": "Red Bull TV",
+    "url": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8"
+  },
+  "rta_sport": {
+    "name": "RTA Sport",
+    "url": "https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/index.m3u8"
+  },
+  "rti_la_3": {
+    "name": "RTI La 3",
+    "url": "https://www.enovativecdn.com/rticdn/smil:rti3.smil/playlist.m3u8"
+  },
+  "sky_racing_1": {
+    "name": "Sky Racing 1",
+    "url": "https://skylivetab-new.akamaized.net/hls/live/2038780/sky1/index.m3u8"
+  },
+  "sky_racing_2": {
+    "name": "Sky Racing 2",
+    "url": "https://skylivetab-new.akamaized.net/hls/live/2038781/sky2/index.m3u8"
+  },
+  "sky_thoroughbred_central": {
+    "name": "Sky Thoroughbred Central",
+    "url": "https://skylivetab-new.akamaized.net/hls/live/2038782/stcsd/index.m3u8"
+  },
+  "sony_sports_ten_5": {
+    "name": "Sony Sports Ten 5",
+    "url": "http://103.81.104.118/hls/stream10.m3u8"
+  },
+  "sport": {
+    "name": "Sport",
+    "url": "http://88.212.15.27/live/test_rtvs_sport_hevc/playlist.m3u8"
+  },
+  "sport_en_france": {
+    "name": "Sport en France",
+    "url": "https://sp1564435593.mytvchain.info/live/sp1564435593/index.m3u8"
+  },
+  "sports_connect": {
+    "name": "Sports Connect",
+    "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/sportsconnect/playlist.m3u8"
+  },
+  "spotv_2": {
+    "name": "SPOTV 2",
+    "url": "https://cdn09jtedge.indihometv.com/joss/133/beib2/index.m3u8"
+  },
+  "spotv": {
+    "name": "SPOTV",
+    "url": "https://cdn09jtedge.indihometv.com/joss/133/beib1/index.m3u8"
+  },
+  "ssc_action_waleed": {
+    "name": "SSC Action Waleed",
+    "url": "https://shls-live-event2-prod-dub.shahid.net/out/v1/0456ede1a39145d98b3d8c8062ddc998/index.m3u8"
+  },
+  "star_sports_1_tamil_hd": {
+    "name": "Star Sports 1 Tamil HD",
+    "url": "https://live20.bozztv.com/akamaissh101/ssh101/crisungosttamil/playlist.m3u8"
+  },
+  "supersport_rugby_sd": {
+    "name": "SuperSport Rugby SD",
+    "url": "https://live20.bozztv.com/trn03/gin-ssrugby/index.m3u8"
+  },
+  "talksport": {
+    "name": "talkSPORT",
+    "url": "https://af7a8b4e.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfdGFsa1NQT1JUX0hMUw/playlist.m3u8"
+  },
+  "ten_sports_pakistan": {
+    "name": "Ten Sports Pakistan",
+    "url": "http://121.91.61.106:8000/play/a04h/index.m3u8"
+  },
+  "tigo_sports": {
+    "name": "Tigo Sports",
+    "url": "https://acceso.radiosportstv.online:3795/stream/play.m3u8"
+  },
+  "tigo_sports_sv": {
+    "name": "Tigo Sports",
+    "url": "https://channel03.tigosports.com.sv/out/v1/31f36d52d558475ca18799d8ca5e4b40/index.m3u8"
+  },
+  "trace_sport_stars": {
+    "name": "Trace Sport Stars",
+    "url": "https://trace-sportstars-samsungnz.amagi.tv/playlist.m3u8"
+  },
+  "tsn1": {
+    "name": "TSN1",
+    "url": "https://fl5.moveonjoy.com/TSN_1/index.m3u8"
+  },
+  "tsn2": {
+    "name": "TSN2",
+    "url": "https://fl5.moveonjoy.com/TSN_2/index.m3u8"
+  },
+  "tsn3": {
+    "name": "TSN3",
+    "url": "https://fl5.moveonjoy.com/TSN_3/index.m3u8"
+  },
+  "tsn4": {
+    "name": "TSN4",
+    "url": "https://fl5.moveonjoy.com/TSN_4/index.m3u8"
+  },
+  "tsn5": {
+    "name": "TSN5",
+    "url": "https://fl5.moveonjoy.com/TSN_5/index.m3u8"
+  },
+  "tsn_the_ocho_sd": {
+    "name": "TSN The Ocho SD",
+    "url": "https://d3pnbvng3bx2nj.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-rds8g35qfqrnv/TSN_The_Ocho.m3u8"
+  },
+  "t_sports_7": {
+    "name": "T Sports 7",
+    "url": "https://lb1-live-mv.v2h-cdn.com/hls/ffef/tsport/tsport.m3u8"
+  },
+  "tv_2_sport_1": {
+    "name": "TV 2 Sport 1",
+    "url": "https://ws31-hls-live.akamaized.net/out/u/1416253.m3u8"
+  },
+  "tvmatic_fight": {
+    "name": "TVMatic Fight",
+    "url": "http://cdn.tvmatic.net/fight.m3u8"
+  },
+  "vinx_tv": {
+    "name": "Vinx TV",
+    "url": "https://tv.radiocast.es:5443/vinxtv/streams/vinxtvlive.m3u8"
+  },
+  "zoy_tv_sports_1": {
+    "name": "Zoy TV Sports 1",
+    "url": "https://ssh101stream.ssh101.com/akamaissh101/ssh101/zoytvsports/playlist.m3u8"
+  }
 }

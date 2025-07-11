@@ -1228,7 +1228,7 @@ def terms():
 @app.route("/privacy")
 def privacy():
     return render_template("privacy.html", current_year=datetime.now().year)
-
+#-----------------------------------------------------------------------
 @app.route("/assistance")
 def assistance():
     return render_template("assistance.html", current_year=datetime.now().year)

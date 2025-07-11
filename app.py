@@ -776,7 +776,7 @@ PROXY_HEADERS = {
 
 # Load sports channels from JSON
 def load_sports():
-    with open('sports.json') as f:
+    with open('streamtv.json') as f:
         data = json.load(f)
     return [
         {"id": int(k), "name": v['name'], "url": v['url']}

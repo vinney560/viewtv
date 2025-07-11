@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <title>ViewTv | StreamTv</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
         .toast {
             animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-in 3.5s forwards;
         }
@@ -23,9 +27,21 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1);
         }
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .channels-container {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .search-box:focus {
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
+        }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="bg-gray-900 text-white flex flex-col">
 
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 w-full max-w-xs">
@@ -66,52 +82,54 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        {% for group_title, group_channels in categorized_channels.items() %}
-        <section class="mb-12 channel-group" data-category="{{ group_title | lower }}">
-            <div class="category-header border-l-4 border-cyan-400 pl-4 py-2 mb-6">
-                <h2 class="text-xl font-bold text-cyan-100 flex items-center">
-                    <i class="fas fa-tag mr-2 text-cyan-400"></i>
-                    {{ group_title or 'Uncategorized' }}
-                </h2>
-            </div>
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                {% for channel in group_channels %}
-                <div class="channel-card bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
-                     data-name="{{ channel.name | lower }}"
-                     data-access="{{ channel.get('access', 'free') | lower }}">
-                    <a href="{{ url_for('player') }}?{{ {'url': channel.url}|urlencode }}" target="_blank" class="block">
-                        <div class="relative pt-[56.25%] bg-gray-900/30">
-                            {% if channel.logo %}
-                            <img src="{{ channel.logo }}" alt="{{ channel.name }}"
-                                 class="absolute inset-0 w-full h-full object-contain p-4">
-                            {% else %}
-                            <div class="absolute inset-0 flex items-center justify-center text-cyan-400/30">
-                                <i class="fas fa-tv text-5xl"></i>
-                            </div>
-                            {% endif %}
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                                <span class="text-xs font-medium text-cyan-400">
-                                    {{ channel.get('access', 'Free') }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm truncate">{{ channel.name }}</h3>
-                        </div>
-                    </a>
+    <main class="channels-container">
+        <div class="container mx-auto px-4 py-4">
+            {% for group_title, group_channels in categorized_channels.items() %}
+            <section class="mb-8 channel-group" data-category="{{ group_title | lower }}">
+                <div class="category-header border-l-4 border-cyan-400 pl-4 py-2 mb-4">
+                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
+                        <i class="fas fa-tag mr-2 text-cyan-400"></i>
+                        {{ group_title or 'Uncategorized' }}
+                    </h2>
                 </div>
-                {% endfor %}
-            </div>
-        </section>
-        {% endfor %}
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                    {% for channel in group_channels %}
+                    <div class="channel-card bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+                         data-name="{{ channel.name | lower }}"
+                         data-access="{{ channel.get('access', 'free') | lower }}">
+                        <a href="{{ url_for('player') }}?{{ {'url': channel.url}|urlencode }}" target="_blank" class="block h-full">
+                            <div class="relative pt-[56.25%] bg-gray-900/30">
+                                {% if channel.logo %}
+                                <img src="{{ channel.logo }}" alt="{{ channel.name }}"
+                                     class="absolute inset-0 w-full h-full object-contain p-4">
+                                {% else %}
+                                <div class="absolute inset-0 flex items-center justify-center text-cyan-400/30">
+                                    <i class="fas fa-tv text-5xl"></i>
+                                </div>
+                                {% endif %}
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                                    <span class="text-xs font-medium text-cyan-400">
+                                        {{ channel.get('access', 'Free') }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-2">
+                                <h3 class="font-semibold text-sm truncate">{{ channel.name }}</h3>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+        </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900/50 border-t border-cyan-900/20 py-6">
-        <div class="container mx-auto px-4 text-center text-gray-400 text-sm">
-            <p>© 2025 ViewTv | StreamTV • All channels are provided for streaming <span class='text-red-600'>ONLY</span>.</p>
+    <footer class="bg-gray-900/50 border-t border-cyan-900/20 py-3">
+        <div class="container mx-auto px-4 text-center text-gray-400 text-xs">
+            <p>© 2025 ViewTv | StreamTV • All channels are provided for streaming <span class='text-red-500'>ONLY</span>.</p>
         </div>
     </footer>
 
@@ -161,7 +179,7 @@
             });
         });
 
-        // Function to show new toasts (can be called from other scripts)
+        // Function to show new toasts
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const colors = {

@@ -580,7 +580,8 @@ def plus_playlist():
 @login_required
 @plus_required
 def custom_list():
-    return render_template("custom_list.html", channels=CUSTOM_CHANNELS)
+    sorted_channels = sorted(CUSTOM_CHANNELS.values(), key=lambda c: c['name'].lower())
+    return render_template("custom_list.html", channels=sorted_channels)
 #-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required

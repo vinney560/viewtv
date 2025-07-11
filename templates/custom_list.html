@@ -2,6 +2,7 @@
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ViewTv | StreamTv</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,6 +40,29 @@
         .search-box:focus {
             box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
         }
+        .logo-svg {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+        }
+        @media (max-width: 640px) {
+            .logo-svg {
+                width: 24px;
+                height: 24px;
+                margin-right: 8px;
+            }
+            .header-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .header-title {
+                width: 100%;
+                justify-content: center;
+            }
+            .search-container {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white flex flex-col">
@@ -72,12 +96,22 @@
     </div>
 
     <!-- Header -->
-    <header class="bg-gray-950 border-b border-cyan-900/20 p-4 flex items-center justify-between sticky top-0 z-40">
-        <h1 class="text-2xl font-bold text-cyan-400">ViewTv | StreamTv</h1>
-        <div class="relative w-full max-w-xs">
-            <input type="text" id="searchInput" placeholder="Search channels..."
-                class="search-box w-full bg-gray-800/80 border border-cyan-900/30 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
-            <i class="fas fa-search absolute left-3 top-2.5 text-cyan-900/60"></i>
+    <header class="bg-gray-950 border-b border-cyan-900/20 p-4 sticky top-0 z-40">
+        <div class="container mx-auto header-content flex flex-wrap items-center justify-between gap-4">
+            <div class="header-title flex items-center">
+                <svg class="logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 11H21V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V11Z" fill="#06B6D4" fill-opacity="0.8"/>
+                    <path d="M3 11L12 3L21 11" stroke="#06B6D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7.5 15H9.5M11.5 15H9.5M9.5 15V17.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M14.5 15H16.5V17.5H14.5V15Z" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <h1 class="text-xl md:text-2xl font-bold text-cyan-400">ViewTv | StreamTv</h1>
+            </div>
+            <div class="search-container relative w-full max-w-xs">
+                <input type="text" id="searchInput" placeholder="Search channels..."
+                    class="search-box w-full bg-gray-800/80 border border-cyan-900/30 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
+                <i class="fas fa-search absolute left-3 top-2.5 text-cyan-900/60"></i>
+            </div>
         </div>
     </header>
 
@@ -87,7 +121,7 @@
             {% for group_title, group_channels in categorized_channels.items() %}
             <section class="mb-8 channel-group" data-category="{{ group_title | lower }}">
                 <div class="category-header border-l-4 border-cyan-400 pl-4 py-2 mb-4">
-                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
+                    <h2 class="text-lg md:text-xl font-bold text-cyan-100 flex items-center">
                         <i class="fas fa-tag mr-2 text-cyan-400"></i>
                         {{ group_title or 'Uncategorized' }}
                     </h2>

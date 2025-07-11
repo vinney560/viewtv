@@ -343,208 +343,207 @@
     "name": "Zee One",
     "url": "https://ef56ef401101403a8b06f1dec29ef1eb.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/Samsung-de_ZeeOne/playlist.m3u8"
   },
-  "1": {
+  "hh": {
     "name": "1KZN TV",
     "url": "https://cdn.freevisiontv.co.za/sttv/smil:1kzn.stream.smil/playlist.m3u8",
     "logo": "https://admango.cdn.mangomolo.com/analytics/uploads/188/6544bebaae.jpg",
     "group-title": "Entertainment;Family;General"
   },
-  "6": {
+  "yw": {
     "name": "Al Jazeera English",
     "url": "https://d1cy85syyhvqz5.cloudfront.net/v1/master/7b67fbda7ab859400a821e9aa0deda20ab7ca3d2/aljazeeraLive/AJE/index.m3u8",
     "logo": "https://i.imgur.com/7bRVpnu.png",
     "group-title": "News"
   },
-  "7": {
+  "ne": {
     "name": "Anytime TV",
     "url": "https://tv.anytimemedia.co.za:3673/hybrid/play.m3u8",
     "logo": "https://i.imgur.com/LloHzi4.png",
     "group-title": "Travel"
   },
-  "10": {
+  "qm": {
     "name": "BOKTV",
     "url": "https://livestream2.bokradio.co.za/hls/Bok5c.m3u8",
     "logo": "https://i.imgur.com/mcNjuuO.png",
     "group-title": "Music"
   },
-  "11": {
+  "jw": {
     "name": "Bollywood HD SD",
     "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-hd/manifest.m3u8",
     "logo": "https://i.imgur.com/scDKOLS.png",
     "group-title": "Movies"
   },
-  "12": {
+  "aa": {
     "name": "B+ TV",
     "url": "https://tv.btnrwanda.com:3432/live/bpluslive.m3u8",
     "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
     "group-title": "Entertainment"
   },
-  "14": {
+  "wwe": {
     "name": "Cable 14 Hamilton",
     "url": "https://flowcaster1-ch.cdn.clearcable.net/C14/smil:C14.smil/playlist.m3u8?iimae0UC2aendtime=1665196120&iimae0UC2ahash=NzcDbuotaJAVf1DsNxuGHBlfCXSvHDIt5sqMUMgrRMU=&iimae0UC2astarttime=1665181720",
     "logo": "https://i.imgur.com/bJ7ygTq.png",
     "group-title": ""
   },
-  "17": {
+  "jee": {
     "name": "CAtv",
     "url": "https://video2.getstreamhosting.com:19360/8216/8216.m3u8",
     "logo": "https://caribbeanadvantage.com/images/CAtv-logo-512.png",
     "group-title": "General"
   },
-  "19": {
+  "iu": {
     "name": "CBN Gospel",
     "url": "https://59d39900ebfb8.streamlock.net/ccbn/ccbn/playlist.m3u8",
     "logo": "https://i.imgur.com/SHBAblV.png",
     "group-title": "Religious"
   },
-  "20": {
+  "iop": {
     "name": "CBN TV",
     "url": "https://5790d294af2dc.streamlock.net/CBNVI/CBNVI/playlist.m3u8",
     "logo": "https://i.imgur.com/SHBAblV.png",
     "group-title": "General"
   },
-  "21": {
+  "yuh": {
     "name": "CeeJay TV",
     "url": "https://asiakwa.com/ceejaytv/index.fmp4.m3u8",
     "logo": "https://i.imgur.com/YgLMMOr.png",
     "group-title": "Entertainment"
   },
-  "22": {
+  "nh": {
     "name": "Channel 44",
     "url": "https://d1k6kax80wecy5.cloudfront.net/WFqZJc/index.m3u8",
     "logo": "https://i.imgur.com/P2wUGh9.png",
     "group-title": "General"
   },
-  "23": {
+  "ppo": {
     "name": "Channel 82 SD",
     "url": "https://service.webvideocore.net/CL1olYogIrDWvwqiIKK7eBmnWbRkKKsu3nqabm9GlX02JOj3CDNXzodJMDEN2dk3/a_bq9clxfbupwg.m3u8",
     "logo": "https://i.imgur.com/8Ff5b3e.png",
     "group-title": "Entertainment"
   },
-  "34": {
+  "qer": {
     "name": "Deluxe Dance",
     "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/64733/64733_264_live.m3u8",
     "logo": "https://i.imgur.com/Qu7t15Y.png",
     "group-title": "Music"
   },
-  "35": {
+  "bbb": {
     "name": "Deluxe Rap",
     "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/65183/65183_264_live.m3u8",
     "logo": "https://i.imgur.com/s3h67hx.png",
     "group-title": "Music"
   },
-  "39": {
+  "nd": {
     "name": "DW English",
     "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
     "logo": "https://i.imgur.com/8MRNFb9.png",
     "group-title": "News"
   },
-  "41": {
+  "yyj": {
     "name": "EbS",
     "url": "https://streams.prd.commavservices.eu/live/ebs/index.m3u8",
     "logo": "https://i.imgur.com/DIIRPNN.png",
     "group-title": "Legislative"
   },
-  "42": {
+  "uojn": {
     "name": "EbS+",
     "url": "https://streams.prd.commavservices.eu/live/ebsplus/index.m3u8",
     "logo": "https://i.imgur.com/7V012zQ.png",
     "group-title": "Legislative"
   },
-  "47": {
+  "bsb": {
     "name": "Expo Channel",
     "url": "https://tvsnhlslivetest.akamaized.net/hls/live/2034711/EXPO-MSL4/master.m3u8",
     "logo": "https://i.imgur.com/2KzCShW.png",
     "group-title": "Shop"
   },
-  "48": {
+  "tyu": {
     "name": "FashionTV Europe",
     "url": "https://fashiontv-fashiontv-5-nl.samsung.wurl.tv/playlist.m3u8",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Fashion_TV_logo.svg/512px-Fashion_TV_logo.svg.png",
     "group-title": "Lifestyle"
   },
-  "49": {
+  "bbb": {
     "name": "FIFA+",
     "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8",
     "logo": "https://i.imgur.com/l5iax42.png",
     "group-title": "Sports"
   },
-  "50": {
+  "yuig": {
     "name": "Firstlight",
     "url": "https://uni01rtmp.tulix.tv/firstlight/firstlight.smil/playlist.m3u8",
     "logo": "https://i.imgur.com/gtDROeT.png",
     "group-title": "Religious"
   },
-  "51": {
+  "jhu": {
     "name": "Fish TV",
     "url": "https://tv.localstreamgh.com/fishtv/index.m3u8",
     "logo": "https://i.imgur.com/A4VeRnS.png",
     "group-title": "General"
   },
-  "53": {
+  "uiipi": {
     "name": "For You TV",
     "url": "https://stream.az-multimedia.com:3793/live/foryoutvlive.m3u8",
     "logo": "https://i.imgur.com/1oMboXL.png",
     "group-title": "News"
   },
-  "54": {
+  "gsgs": {
     "name": "Fresh",
     "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/freshtv/playlist.m3u8",
     "logo": "https://i.imgur.com/2ig8jUH.png",
     "group-title": ""
   }
-  "58": {
+  "bsbs": {
     "name": "Hard Knocks Fighting Championship",
     "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/2ee2b8d4-acc4-4296-9dc8-66f1ffd0fff8/5.m3u8",
     "logo": "https://images-1.rakuten.tv/storage/global-live-channel/translation/artwork/13b0a6c7-4307-4c8d-9fc4-df2a4f8e8b38-hard-knocks-fighting-1602077398-width200-quality90.jpeg",
     "group-title": ""
   },
-  "65": {
+  "enbs": {
     "name": "Kordia TV",
     "url": "https://ptvlive.kordia.net.nz/out/v1/3fc2254c865a457c8d7fbbce227a2aae/index.m3u8",
     "logo": "https://i.imgur.com/BQ0qWzX.png",
     "group-title": ""
   },
-  "66": {
+  "ebhs": {
     "name": "Kozoom TV",
     "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/fdd6f243-f971-4a1a-9510-97ac01d6b37f/manifest.m3u8",
     "logo": "https://i.imgur.com/M1Ee79b.png",
     "group-title": "Sports"
   },
-  "68": {
+  "nebe": {
     "name": "Lolwe TV",
     "url": "https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8",
     "logo": "https://i.imgur.com/tjZ1cOP.png",
     "group-title": "News"
   },
-  "82": {
+  "enhs": {
     "name": "My Righteous TV SD",
     "url": "https://live20.bozztv.com/ssh101/ssh101/myrighteous/playlist.m3u8",
     "logo": "https://i.imgur.com/wKSLNHB.png",
     "group-title": "Religious"
   },
-  "83": {
+  "seh": {
     "name": "NHK World-Japan SD",
     "url": "https://cdn4.skygo.mn/live/disk1/NHK_World/HLSv3-FTA/NHK_World.m3u8",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/NHK_World-Japan_TV.svg/512px-NHK_World-Japan_TV.svg.png",
     "group-title": "Culture;News"
   },
-  "90": {
+  "ywtw": {
     "name": "NRT Mexico Internacional",
     "url": "https://59e88b197fb16.streamlock.net:4443/live/canal24/playlist.m3u8",
     "logo": "https://i.imgur.com/W2E0fSy.png",
     "group-title": "News"
   },
-  "93": {
+  "bssb": {
     "name": "POP STAR",
     "url": "https://muzzik-live.morescreens.com/mts-3/playlist.m3u8",
     "logo": "https://i.imgur.com/E9ha9Or.png",
     "group-title": "Music"
   },
-  "95": {
+  "snbb": {
     "name": "Red Bull TV",
     "url": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8",
     "logo": "https://i.postimg.cc/8c78JM28/image.png",
-    "group-title": "Sports"
-  }
+    "group-title": "Sports" }
 }

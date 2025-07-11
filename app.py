@@ -1098,13 +1098,17 @@ def pay():
     consumer_key = os.getenv("MPESA_CONSUMER_KEY")
     consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
     passkey = os.getenv("MPESA_PASSKEY")
-
-    business_short_code = "174379"  # Use your actual shortcode
+    business_short_code = "174379"  # Your actual shortcode
     callback_url = "https://viewtv.onrender.com/callback"
 
+    # Choose environment: sandbox or live
+    is_live = os.getenv("MPESA_ENV", "sandbox").lower() == "live"
+    base_url = "https://api.safaricom.co.ke" if is_live else "https://sandbox.safaricom.co.ke"
+
+    # Step 1: Generate access token
     try:
         auth_response = requests.get(
-            "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
+            f"{base_url}/oauth/v1/generate?grant_type=client_credentials",
             auth=(consumer_key, consumer_secret)
         )
         print("Token response:", auth_response.text)
@@ -1113,6 +1117,7 @@ def pay():
     except Exception as e:
         return jsonify({"success": False, "message": f"Token error: {str(e)}"}), 500
 
+    # Step 2: Build STK push request
     timestamp = (datetime.now() + timedelta(hours=3)).strftime('%Y%m%d%H%M%S')
     password = base64.b64encode((business_short_code + passkey + timestamp).encode()).decode()
 
@@ -1135,9 +1140,10 @@ def pay():
         "TransactionDesc": "VIP Subscription"
     }
 
+    # Step 3: Send STK Push
     try:
         response = requests.post(
-            "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+            f"{base_url}/mpesa/stkpush/v1/processrequest",
             json=payload,
             headers=headers
         )

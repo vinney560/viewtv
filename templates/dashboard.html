@@ -81,7 +81,7 @@
         {% if user.plus_type == 'free' and time_remaining_seconds > 0 or user.plus_type=='paid' %}
           <p class="text-green-400 mt-4 text-sm">Plus is currently active</p>
         {% elif user.last_free_plus and (user.last_free_plus + timedelta(hours=24)) > now %}
-          <p class="text-gray-400 mt-4 text-sm">You’ve already used Free Plus today</p>
+          <p class="text-gray-400 mt-4 text-sm">You've already used Free Plus today</p>
         {% else %}
           <a href="{{ url_for('claim_free_plus') }}"
              class="mt-6 glow-hover bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded-xl shadow-lg text-sm">
@@ -124,6 +124,22 @@
         <a href="/account" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14a5 5 0 100-10 5 5 0 000 10zm0 2c-3.314 0-6 2.686-6 6h12c0-3.314-2.686-6-6-6z"/></svg>
           Account Settings
+        </a>
+
+        <!-- New Developer Button -->
+        <a href="/developer" class="glow-hover bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+          Developer
+        </a>
+
+        <!-- New Assistance Button -->
+        <a href="/assistance" class="glow-hover bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+          </svg>
+          Assistance
         </a>
 
         <a href="{{ url_for('logout_current_user') }}" class="glow-hover bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 col-span-full">

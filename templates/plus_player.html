@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Player | View Tv</title>
-  <script src="https://cdn.tailwindcss.com"></script>  <!-- hls.js for HLS playback -->  
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>  <!-- dash.js for DASH playback -->  
-  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>  <!-- video.js CSS & JS -->  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
   <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
-  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>  
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
   <style>
     html, body {
       margin: 0; padding: 0; height: 100%;
@@ -41,7 +41,7 @@
       }
     }
 
-    /* Fullscreen styles to stretch container to full screen */
+    /* Fullscreen styles */
     :fullscreen #player-container,
     :-webkit-full-screen #player-container {
       width: 100vw !important;
@@ -51,32 +51,73 @@
       border-radius: 0 !important;
     }
 
-    /* Fullscreen toggle button styles */
+    /* Button styles */
     #fullscreen-toggle, #data-saver-toggle {
       background: transparent;
       border: none;
       cursor: pointer;
-      transition: opacity 0.3s ease;
+      transition: all 0.3s ease;
       outline: none;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #22d3ee; /* Tailwind cyan-400 */
+      color: #22d3ee;
+      position: relative;
     }
     #fullscreen-toggle:hover, #data-saver-toggle:hover {
       color: #ffffff;
     }
 
-    /* Auto-hide logic - hidden by adding 'hide' class */
+    /* Auto-hide logic */
     #fullscreen-toggle.hide, #data-saver-toggle.hide {
       opacity: 0;
       pointer-events: none;
     }
     
-    /* Data saver active state */
-    #data-saver-toggle.active {
-      color: #ffffff;
+    /* Enhanced Data Saver Button */
+    #data-saver-icon {
+      transition: all 0.3s ease;
+    }
+    #data-saver-toggle.active #data-saver-icon {
+      transform: scale(1.1);
+      color: #10b981;
+    }
+    #data-saver-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 12px;
+      height: 12px;
+      background-color: #10b981;
+      border-radius: 50%;
+      border: 2px solid #000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #data-saver-toggle.active #data-saver-badge {
+      opacity: 1;
+    }
+    #data-saver-toggle.active:hover #data-saver-icon {
+      transform: scale(1.15);
+    }
+    
+    /* Data usage indicator */
+    #data-usage-display {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      background: rgba(0,0,0,0.7);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    #data-saver-toggle:hover #data-usage-display {
+      opacity: 1;
     }
   </style>
 </head>
@@ -91,17 +132,20 @@
     </button>
     <h1 class="font-bold text-cyan-400">Now Streaming</h1>
     <div class="flex space-x-4">
-      <!-- Data Saver Toggle Button -->
+      <!-- Enhanced Data Saver Toggle Button -->
       <button id="data-saver-toggle" title="Toggle Data Saver" aria-label="Toggle data saver">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-        </svg>
+        <div class="relative">
+          <svg id="data-saver-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+          </svg>
+          <div id="data-saver-badge"></div>
+          <div id="data-usage-display">Data Saver: OFF</div>
+        </div>
       </button>
       <!-- Fullscreen Toggle Button -->
       <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
         <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
         </svg>
       </button>
     </div>
@@ -130,6 +174,15 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
+    // Data usage tracking
+    let bytesLoaded = 0;
+    let dataUsageInterval;
+    let isDataSaverEnabled = false;
+    let originalQuality = null;
+    const player = document.getElementById('player');
+    const dataSaverBtn = document.getElementById('data-saver-toggle');
+    const dataUsageDisplay = document.getElementById('data-usage-display');
+
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
@@ -141,14 +194,19 @@
       return extMatch ? extMatch[1].toLowerCase() : '';
     }
 
-    // Data saver state and functions
-    let isDataSaverEnabled = false;
-    let originalQuality = null;
-    const player = document.getElementById('player');
-    
+    function startTrackingDataUsage() {
+      bytesLoaded = 0;
+      clearInterval(dataUsageInterval);
+      
+      dataUsageInterval = setInterval(() => {
+        const mbUsed = (bytesLoaded / (1024 * 1024)).toFixed(2);
+        const ratePerHour = (mbUsed / (player.currentTime || 1) * 3600).toFixed(2);
+        dataUsageDisplay.textContent = `Data: ${mbUsed}MB (${ratePerHour}MB/h) | Saver: ${isDataSaverEnabled ? 'ON' : 'OFF'}`;
+      }, 1000);
+    }
+
     function toggleDataSaver() {
       isDataSaverEnabled = !isDataSaverEnabled;
-      const dataSaverBtn = document.getElementById('data-saver-toggle');
       
       if (isDataSaverEnabled) {
         dataSaverBtn.classList.add('active');
@@ -157,18 +215,19 @@
         dataSaverBtn.classList.remove('active');
         disableDataSaver();
       }
+      
+      updateDataUsageDisplay();
     }
     
     function enableDataSaver() {
-      // For HLS streams
       if (window.hls) {
-        window.hls.currentLevel = -1; // Auto quality based on bandwidth
-        window.hls.config.maxMaxBufferLength = 30; // Reduce buffer size
-        window.hls.config.maxBufferSize = 6000000; // 6MB buffer
-        window.hls.config.maxBufferLength = 30; // 30 seconds buffer
+        originalQuality = window.hls.currentLevel;
+        window.hls.currentLevel = -1;
+        window.hls.config.maxMaxBufferLength = 30;
+        window.hls.config.maxBufferSize = 6000000;
+        window.hls.config.maxBufferLength = 30;
       }
       
-      // For DASH streams
       if (window.dashPlayer) {
         window.dashPlayer.updateSettings({
           streaming: {
@@ -184,14 +243,12 @@
         window.dashPlayer.setQualityFor('video', 'auto');
       }
       
-      // For regular video elements
       if (player.src && !window.hls && !window.dashPlayer) {
-        player.playbackRate = 0.9; // Slightly reduce playback speed
+        player.playbackRate = 0.9;
       }
     }
     
     function disableDataSaver() {
-      // For HLS streams
       if (window.hls) {
         window.hls.currentLevel = originalQuality;
         window.hls.config.maxMaxBufferLength = 600;
@@ -199,7 +256,6 @@
         window.hls.config.maxBufferLength = 600;
       }
       
-      // For DASH streams
       if (window.dashPlayer) {
         window.dashPlayer.updateSettings({
           streaming: {
@@ -214,13 +270,18 @@
         });
       }
       
-      // For regular video elements
       if (player.src && !window.hls && !window.dashPlayer) {
         player.playbackRate = 1.0;
       }
     }
 
-    (function() {
+    function updateDataUsageDisplay() {
+      const mbUsed = (bytesLoaded / (1024 * 1024)).toFixed(2);
+      const ratePerHour = player.currentTime ? (mbUsed / player.currentTime * 3600).toFixed(2) : '0.00';
+      dataUsageDisplay.textContent = `Data: ${mbUsed}MB (${ratePerHour}MB/h) | Saver: ${isDataSaverEnabled ? 'ON' : 'OFF'}`;
+    }
+
+    (function initializePlayer() {
       const streamUrl = getQueryParam('url');
       const token = getQueryParam('token');
       if (!streamUrl) {
@@ -243,6 +304,13 @@
       player.style.display = 'none';
       iframe.style.display = 'none';
 
+      // Track data usage
+      player.addEventListener('progress', () => {
+        if (player.buffered.length > 0) {
+          bytesLoaded += player.buffered.end(0) - player.buffered.start(0);
+        }
+      });
+
       if (ext === 'm3u8') {
         if (Hls.isSupported()) {
           const hls = new Hls({
@@ -250,7 +318,7 @@
             maxBufferSize: 60000000,
             maxBufferLength: 600
           });
-          window.hls = hls; // Store for data saver
+          window.hls = hls;
           originalQuality = hls.currentLevel;
           hls.loadSource(urlWithToken);
           hls.attachMedia(player);
@@ -259,18 +327,18 @@
           });
           player.style.display = 'block';
           player.muted = false;
-          player.play();
+          player.play().then(startTrackingDataUsage);
         } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
           player.src = urlWithToken;
           player.style.display = 'block';
-          player.play();
+          player.play().then(startTrackingDataUsage);
         } else {
           showError("HLS not supported on this browser");
         }
       } else if (ext === 'mpd') {
         try {
           const dashPlayer = dashjs.MediaPlayer().create();
-          window.dashPlayer = dashPlayer; // Store for data saver
+          window.dashPlayer = dashPlayer;
           dashPlayer.updateSettings({
             streaming: {
               buffer: {
@@ -284,38 +352,36 @@
           });
           dashPlayer.initialize(player, urlWithToken, true);
           player.style.display = 'block';
+          startTrackingDataUsage();
         } catch(e) {
           showError("DASH playback error: " + e.message);
         }
       } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
         player.src = urlWithToken;
         player.style.display = 'block';
-        player.play().catch(() => {});
+        player.play().then(startTrackingDataUsage).catch(() => {});
       } else {
         iframe.src = urlWithToken;
         iframe.style.display = 'block';
       }
     })();
 
-    // Fullscreen toggle logic with icon switch and auto-hide
-    (function() {
+    // UI Controls
+    (function setupUIControls() {
       const fullscreenBtn = document.getElementById('fullscreen-toggle');
-      const dataSaverBtn = document.getElementById('data-saver-toggle');
       const fullscreenIcon = document.getElementById('fullscreen-icon');
       const playerContainer = document.getElementById('player-container');
       let hideTimeout;
 
       // SVG paths for icons
-      const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6'; // square [ ]
-      const exitFullscreenPath = 'M6 18L18 6M6 6l12 12'; // X icon
+      const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6';
+      const exitFullscreenPath = 'M6 18L18 6M6 6l12 12';
 
       function setIcon(isFullscreen) {
         fullscreenIcon.innerHTML = '';
         if (isFullscreen) {
-          // X icon
           fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${exitFullscreenPath}" />`;
         } else {
-          // Square icon
           fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${enterFullscreenPath}" />`;
         }
       }
@@ -337,32 +403,24 @@
         hideTimeout = setTimeout(() => {
           fullscreenBtn.classList.add('hide');
           dataSaverBtn.classList.add('hide');
-        }, 3000); // hide after 3 seconds of inactivity
+        }, 3000);
       }
 
-      fullscreenBtn.addEventListener('click', () => {
-        toggleFullscreen();
-      });
-      
-      dataSaverBtn.addEventListener('click', () => {
-        toggleDataSaver();
-        resetHideTimeout();
-      });
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+      dataSaverBtn.addEventListener('click', toggleDataSaver);
 
-      // Update icon on fullscreen change
       document.addEventListener('fullscreenchange', () => {
         setIcon(!!document.fullscreenElement);
         resetHideTimeout();
       });
 
-      // Show button on any mousemove or touch, then reset hide timer
       document.addEventListener('mousemove', resetHideTimeout);
       document.addEventListener('touchstart', resetHideTimeout);
 
-      // Initialize icon and start hide timer
       setIcon(!!document.fullscreenElement);
       resetHideTimeout();
     })();
+
     function tryClose() {
       window.close();
       setTimeout(() => {

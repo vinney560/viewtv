@@ -92,7 +92,6 @@ next_midnight_eat = datetime.combine(now_eat.date() + timedelta(days=1), time.mi
 # Get seconds until that midnight (back in UTC)
 seconds_until_midnight = (next_midnight_eat - now_eat).total_seconds()
 # Apply session expiration
-session.permanent = True
 app.permanent_session_lifetime = timedelta(seconds=seconds_until_midnight)
 
 # Initialize Extensions
@@ -216,6 +215,10 @@ def google_verification():
 #======================================
 #            >>>> HELPER FUNCTIONS<<<<
 #======================================
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+#------------------------------------------------------------------------
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))

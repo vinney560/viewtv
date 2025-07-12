@@ -249,7 +249,7 @@
   "inooro-tv": {
     "name": "Inooro Tv",
     "url": "https://kenyalivetv.co.ke/tv/inooro-tv-live",
-    "logo": "https://www.pngkey.com/png/detail/16-166874_inooro-tv-television.png",
+    "logo": "https://view-p2s3.onrender.com/uploads/inooro.png",
     "group-title": "News"
   },
   "kameme-tv": {
@@ -266,7 +266,7 @@
   "kass-tv": {
     "name": "Kass TV",
     "url": "https://www.youtube.com/embed/4smx4SyYMbc",
-    "logo": "https://kassfm.co.ke/wp-content/uploads/2022/07/kasslogo.png",
+    "logo": "https://view-p2s3.onrender.com/uploads/kass.png",
     "group-title": "News"
   },
   "ketchap": {
@@ -287,19 +287,19 @@
   "k24-tv": {
     "name": "K24 TV",
     "url": "https://www.youtube.com/embed/_lB9oSok1FM?controls=1&modestbranding=1&rel=0&fs=1&disablekb=0&iv_load_policy=3",
-    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/K24_TV_Logo.png/220px-K24_TV_Logo.png",
+    "logo": "https://view-p2s3.onrender.com/uploads/K24.png",
     "group-title": "News"
   },
   "ktn-news": {
     "name": "KTN News",
     "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
-    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/KTN_News_logo.png/220px-KTN_News_logo.png",
+    "logo": "https://view-p2s3.onrender.com/uploads/ktn-news.png",
     "group-title": "News"
   },
   "ktn": {
     "name": "KTN Home",
     "url": "https://kenyalivetv.co.ke/embed/ktn-home-live",
-    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Ktn_logo.png/220px-Ktn_logo.png",
+    "logo": "https://view-p2s3.onrender.com/uploads/ktn.png",
     "group-title": "News"
   },
   "kbc": {
@@ -403,7 +403,7 @@
   "ramogifmtv": {
     "name": "Ramogi Fm Tv",
     "url": "https://citizen.digital/tv/ramogi-fm-audio-visual-24",
-    "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogi.png",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogifm.png",
     "group-title": "News"
   },
   "ramogi-tv": {
@@ -415,13 +415,13 @@
   "ebru-tv": {
     "name": "Ebru Tv",
     "url": "https://kenyalivetv.co.ke/embed/ebru-tv-live",
-    "logo": "",
+    "logo": "https://view-p2s3.onrender.com/uploads/ebru.png",
     "group-title": "News"
   },
   "kyeni-tv": {
     "name": "Kyeni Tv",
     "url": "https://vip.worldlivetv.stream/channel/KyeniTV_ke",
-    "logo": "",
+    "logo": "https://view-p2s3.onrender.com/uploads/Kyeni.png",
     "group-title": "News"
   },
   "red_plus": {
@@ -635,7 +635,7 @@
   "lolwe-tv": {
     "name": "Lolwe TV",
     "url": "https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8",
-    "logo": "https://lolwetv.co.ke/wp-content/uploads/2021/08/lolwe-tv-logo.png",
+    "logo": "https://view-p2s3.onrender.com/uploads/lolwe.png",
     "group-title": "News"
   },
   "enhs": {

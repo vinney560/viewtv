@@ -1010,9 +1010,8 @@ def play_channel(key):
         current_key=key          # Pass current key for highlighting
     )
 #-------------------------------------------------------------------------
-@app.route('/plus-player/<key>')
-def plus_player(key):
-    channel = CUSTOM_CHANNELS.get(key)
+@app.route('/plus-player')
+def plus_player():
     if not channel:
         abort(404)
 

@@ -112,13 +112,13 @@
   "citizen-tv": {
     "name": "Citizen TV",
     "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
-    "logo": "/uploads/citizen.png",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/citizen.png",
     "group-title": "News"
   },
   "citizen-tv-extra": {
     "name": "Citizen Extra",
     "url": "https://www.youtube.com/embed/MDA0XHrnNl4",
-    "logo": "/uploads/citizen.png",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/citizen.png",
     "group-title": "News"
   },
   "classic_movie": {
@@ -352,13 +352,13 @@
   "ntv": {
     "name": "NTV Digital",
     "url": "https://ntvkenya.co.ke/live/",
-    "logo": "/uploads/ntv.png",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ntv.png",
     "group-title": "News"
   },
   "ntv-kenya": {
     "name": "NTV",
     "url": "https://www.youtube.com/embed/p4BWnK2xeHw",
-    "logo": "/uploads/ntv.png",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ntv.png",
     "group-title": "News"
   },
   "outdoor_channel": {
@@ -389,13 +389,13 @@
   "ramogifmtv": {
     "name": "Ramogi Fm Tv",
     "url": "https://citizen.digital/tv/ramogi-fm-audio-visual-24",
-    "logo": "/uploads/ramogi.png",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogi.png",
     "group-title": "News"
   },
   "ramogi-tv": {
     "name": "Ramogi Tv",
     "url": "https://citizen.digital/tv/ramogi-tv-19",
-    "logo": "/uploads/ramogi.png",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogi.png",
     "group-title": "News"
   },
   "ebru-tv": {

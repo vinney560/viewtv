@@ -112,13 +112,13 @@
   "citizen-tv": {
     "name": "Citizen TV",
     "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
-    "logo": "https://logos.fandom.com/wiki/Citizen_TV_%28Kenya%29",
+    "logo": "/uploads/citizen.png",
     "group-title": "News"
   },
   "citizen-tv-extra": {
     "name": "Citizen Extra",
     "url": "https://www.youtube.com/embed/MDA0XHrnNl4",
-    "logo": "https://logos.fandom.com/wiki/Citizen_TV_%28Kenya%29",
+    "logo": "/uploads/citizen.png",
     "group-title": "News"
   },
   "classic_movie": {
@@ -201,47 +201,47 @@
     "url": "https://live.field59.com/kbsi/kbsi1/playlist.m3u8",
     "group-title": "General"
   },
-  "fuel_tv_sports": {
+  "fuel-tv-sports": {
     "name": "Fuel Tv [sports]",
     "url": "https://amg01074-fueltv-fueltvemeaen-rakuten-b6j62.amagi.tv/hls/amagi_hls_data_rakutenAA-fueltvemeaen/CDN/master.m3u8",
     "group-title": "Sports"
   },
-  "game_plus": {
+  "game-plus": {
     "name": "Game +",
     "url": "https://a-cdn.klowdtv.com/live2/fntsy_720p/playlist.m3u8",
     "group-title": "Sports"
   },
-  "gem_drama": {
+  "gem-drama": {
     "name": "Gem Drama",
     "url": "https://ca-rt.onetv.app/gemdrama/index-0.m3u8",
     "group-title": "Entertainment"
   },
-  "gem_jr": {
+  "gem-jr": {
     "name": "GEM JR",
     "url": "https://ca-rt.onetv.app/gemjunior/index-0.m3u8",
    "group-title": "Entertainment" 
   },
-  "gem_kids": {
+  "gem-kids": {
     "name": "GEM Kids",
     "url": "https://ca-rt.onetv.app/gemkids/index-0.m3u8",
     "group-title": "Entertainment"
   },
-  "great_movies": {
+  "great-movies": {
     "name": "Great Movies",
     "url": "https://amg01753-narrativeuk-amg01753c3-lg-gb-1833.playouts.now.amagi.tv/playlist/amg01753-narrativeuk-greatmovies-lggb/playlist.m3u8",
     "group-title": "Movies"
   },
-  "great_mystery": {
+  "great-mystery": {
     "name": "Great Mystery",
     "url": "https://linear-861.frequency.stream/dist/lg-uk/861/hls/master/playlist.m3u8",
     "group-title": "Entertainment"
   },
-  "hells_kitchen": {
+  "hells-kitchen": {
     "name": "Hell's Kitchen",
     "url": "https://itv-hellskitchen-rakuten.amagi.tv/playlist.m3u8",
     "group-title": "Entertainment"
   },
-  "hsn_east": {
+  "hsn-east": {
     "name": "HSN East",
     "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn1uswest/master.m3u8",
     "group-title": "Entertainment"
@@ -286,7 +286,7 @@
   "k24-tv": {
     "name": "K24 TV",
     "url": "https://www.youtube.com/embed/_lB9oSok1FM?controls=1&modestbranding=1&rel=0&fs=1&disablekb=0&iv_load_policy=3",
-    "logo": "https://play.google.com/store/apps/details?id=com.k24plus.app",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/YourLogoHere/K24_TV_Logo_Variant.jpg",
     "group-title": "News"
   },
   "ktn-news": {
@@ -309,12 +309,12 @@
     "url": "https://fl3.moveonjoy.com/Military_History/index.m3u8",
     "group-title": "Entertainment"
   },
-  "movie_box": {
+  "movie-box": {
     "name": "Movie Box",
     "url": "https://cdn3.skygo.mn/live/disk1/Moviebox/HLS-FTA/Moviebox.m3u8",
     "group-title": "Movies"
   },
-  "movies_bang": {
+  "movies-bang": {
     "name": "Movies! ",
     "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-movies!/index.m3u8",
     "group-title": "Movies"
@@ -324,18 +324,18 @@
     "url": "https://i.mjh.nz/PlutoTV/us.m3u8",
     "group-title": "Movies"
   },
-  "moviesphere_hd": {
+  "moviesphere-hd": {
     "name": "MovieSphere HD",
     "url": "https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8",
     "group-title": "Movies"
   },
-  "nbc_sports": {
+  "nbc-sports": {
     "name": "NBC Sports",
     "url": "https://www.nbcsports.com/live",
     "group-title": "Sports"
   },
-  "nick_jr_east": {
-    "name": "Nick Jr. East (USA)",
+  "nick-jr-east": {
+    "name": "Nick Jr.",
     "url": "https://fl3.moveonjoy.com/NICK_JR/index.m3u8",
     "group-title": "Kids"
   },
@@ -344,7 +344,7 @@
     "url": "https://nickelodeon-rakuten.amagi.tv/playlist.m3u8",
     "group-title": "Kids"
   },
-  "ninja_kidz_tv": {
+  "ninja-kidz-tv": {
     "name": "Ninja Kidz TV",
     "url": "https://playworksdigital-ninjakidztv-1-us.xumo.wurl.tv/playlist.m3u8",
     "group-title": "Kids"
@@ -352,13 +352,13 @@
   "ntv": {
     "name": "NTV Digital",
     "url": "https://ntvkenya.co.ke/live/",
-    "logo": "https://logos.fandom.com/wiki/NTV_Kenya",
+    "logo": "/uploads/ntv.png",
     "group-title": "News"
   },
   "ntv-kenya": {
     "name": "NTV",
     "url": "https://www.youtube.com/embed/p4BWnK2xeHw",
-    "logo": "https://logos.fandom.com/wiki/NTV_Kenya",
+    "logo": "/uploads/ntv.png",
     "group-title": "News"
   },
   "outdoor_channel": {
@@ -389,13 +389,13 @@
   "ramogifmtv": {
     "name": "Ramogi Fm Tv",
     "url": "https://citizen.digital/tv/ramogi-fm-audio-visual-24",
-    "logo": "https://royalmedia.co.ke/brands/ramogi-tv/",
+    "logo": "/uploads/ramogi.png",
     "group-title": "News"
   },
   "ramogi-tv": {
     "name": "Ramogi Tv",
     "url": "https://citizen.digital/tv/ramogi-tv-19",
-    "logo": "https://royalmedia.co.ke/brands/ramogi-tv/",
+    "logo": "/uploads/ramogi.png",
     "group-title": "News"
   },
   "ebru-tv": {

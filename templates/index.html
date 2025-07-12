@@ -140,7 +140,7 @@
               </div>
               <div>
                 <h3 class="text-lg font-semibold text-gray-100">{{ ch.name }}</h3>
-                <p class="text-sm text-gray-400">{{ ch.category or 'Not Specified' }}</p>
+                <p class="text-sm text-gray-400">{{ ch.get('group-title', 'Not Specified') }}</p>
               </div>
             </div>
 

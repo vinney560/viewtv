@@ -107,7 +107,24 @@
       position: relative;
       display: inline-block;
     }
-    #data-usage-display { position: absolute; bottom: calc(100% + 2py); right: 0; background: rgba(0,0,0,0.8); padding: 6px 10px; border-radius: 4px; font-size: 12px; white-space: nowrap; opacity: 0; transition: all 0.3s ease; pointer-events: none; border: 1px solid #334155; min-width: 180px; text-align: center;btransform: translateY(-5px); z-index: 100; }
+    #data-usage-display {
+      position: absolute;
+      bottom: calc(100% + 2py); /* Lowered display position */
+      right: 0;
+      background: rgba(0,0,0,0.8);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      border: 1px solid #334155;
+      min-width: 220px; /* Wider to accommodate more data */
+      text-align: center;
+      transform: translateY(-5px);
+      z-index: 100;
+    }
     #data-saver-toggle:hover #data-usage-display:not(.persistent),
     #data-usage-display.persistent {
       opacity: 1;
@@ -188,8 +205,9 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Data usage tracking
-    let bytesLoaded = 0;
+    // Enhanced Data Tracking Variables
+    let totalBytesLoaded = 0;
+    let segmentBytesLoaded = 0;
     let dataUsageInterval;
     let isDataSaverEnabled = false;
     let isPersistentDisplay = false;
@@ -211,13 +229,49 @@
     }
 
     function startTrackingDataUsage() {
-      bytesLoaded = 0;
+      totalBytesLoaded = 0;
+      segmentBytesLoaded = 0;
       clearInterval(dataUsageInterval);
-      
+
+      // HLS.js specific tracking
+      if (window.hls) {
+        window.hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+          const bytes = data.stats.total;
+          segmentBytesLoaded += bytes;
+          totalBytesLoaded += bytes;
+        });
+      }
+
+      // DASH.js specific tracking
+      if (window.dashPlayer) {
+        window.dashPlayer.on('fragmentLoaded', (e) => {
+          if (e.bytes) {
+            segmentBytesLoaded += e.bytes;
+            totalBytesLoaded += e.bytes;
+          }
+        });
+      }
+
+      // Regular video element tracking
+      player.addEventListener('progress', () => {
+        if (!window.hls && !window.dashPlayer && player.buffered.length > 0) {
+          const duration = player.duration || 1;
+          const buffered = player.buffered.end(0) - player.buffered.start(0);
+          const estimatedBytes = (buffered / duration) * (player.videoBytesTotal || 0);
+          segmentBytesLoaded = estimatedBytes;
+          totalBytesLoaded = estimatedBytes;
+        }
+      });
+
+      // Update display every second
       dataUsageInterval = setInterval(() => {
-        const mbUsed = (bytesLoaded / (1024 * 1024)).toFixed(2);
-        const ratePerHour = player.currentTime ? (mbUsed / player.currentTime * 3600).toFixed(2) : '0.00';
-        dataUsageDisplay.textContent = `Data: ${mbUsed}MB (${ratePerHour}MB/h) | Saver: ${isDataSaverEnabled ? 'ON' : 'OFF'}`;
+        const currentMB = (segmentBytesLoaded / (1024 * 1024)).toFixed(2);
+        const totalMB = (totalBytesLoaded / (1024 * 1024)).toFixed(2);
+        const ratePerHour = player.currentTime ? 
+          (segmentBytesLoaded / player.currentTime * 3600 / (1024 * 1024)).toFixed(2) : '0.00';
+        
+        dataUsageDisplay.textContent = `Current: ${currentMB}MB | Total: ${totalMB}MB | Rate: ${ratePerHour}MB/h`;
+        segmentBytesLoaded = 0; // Reset for next interval
       }, 1000);
     }
 
@@ -238,14 +292,12 @@
         dataSaverBtn.classList.remove('active');
         disableDataSaver();
       }
-      
-      updateDataUsageDisplay();
     }
     
     function enableDataSaver() {
       if (window.hls) {
         originalQuality = window.hls.currentLevel;
-        window.hls.currentLevel = -1;
+        window.hls.currentLevel = -1; // Auto quality
         window.hls.config.maxMaxBufferLength = 30;
         window.hls.config.maxBufferSize = 6000000;
         window.hls.config.maxBufferLength = 30;
@@ -298,12 +350,6 @@
       }
     }
 
-    function updateDataUsageDisplay() {
-      const mbUsed = (bytesLoaded / (1024 * 1024)).toFixed(2);
-      const ratePerHour = player.currentTime ? (mbUsed / player.currentTime * 3600).toFixed(2) : '0.00';
-      dataUsageDisplay.textContent = `Data: ${mbUsed}MB (${ratePerHour}MB/h) | Saver: ${isDataSaverEnabled ? 'ON' : 'OFF'}`;
-    }
-
     (function initializePlayer() {
       const streamUrl = getQueryParam('url');
       const token = getQueryParam('token');
@@ -326,13 +372,6 @@
       errorMsg.classList.add('hidden');
       player.style.display = 'none';
       iframe.style.display = 'none';
-
-      // Track data usage
-      player.addEventListener('progress', () => {
-        if (player.buffered.length > 0) {
-          bytesLoaded += player.buffered.end(0) - player.buffered.start(0);
-        }
-      });
 
       if (ext === 'm3u8') {
         if (Hls.isSupported()) {

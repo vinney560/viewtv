@@ -650,15 +650,15 @@
       if (ext === 'm3u8') {
         if (Hls.isSupported()) {
           const hls = new Hls({
-            maxMaxBufferLength: 120,
-            maxBufferSize: 45000000,
-            maxBufferLength: 100,
+            maxMaxBufferLength: 160,
+            maxBufferSize: 55000000,
+            maxBufferLength: 120,
             abrEwmaDefaultEstimate: 300000,
             abrBandWidthFactor: 0.8,
             abrBandWidthUpFactor: 0.7,
             abrMaxWithRealBitrate: true,
             lowLatencyMode: false,
-            backBufferLength: 30
+            backBufferLength: 60
           });
           window.hls = hls;
           originalQuality = hls.currentLevel;

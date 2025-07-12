@@ -398,6 +398,18 @@
     "logo": "https://royalmedia.co.ke/brands/ramogi-tv/",
     "group-title": "News"
   },
+  "ebru-tv": {
+    "name": "Ebru Tv",
+    "url": "https://kenyalivetv.co.ke/embed/ebru-tv-live",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/6/63/Ebru_TV_Kenya_Logo.png/220px-Ebru_TV_Kenya_Logo.png",
+    "group-title": "News"
+  },
+  "kyeni-tv": {
+    "name": "Kyeni Tv",
+    "url": "https://vip.worldlivetv.stream/channel/KyeniTV_ke",
+    "logo": "https://uzamart.com/listing/kyeni-tv/Kyeni-logo.png",
+    "group-title": "News"
+  },
   "red_plus": {
     "name": "RED +",
     "url": "https://inforedvos.lcdn.claro.net.co/Content/HLS_HLS_DIR/Live/channel(REDMASHDWEB)/master.m3u8",

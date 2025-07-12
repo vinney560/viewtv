@@ -104,12 +104,12 @@ document.getElementById("paymentForm").addEventListener("submit", async function
         const result = await res.json();
 
         if (result.success) {
-            alert("✅ STK Push sent! Check your phone to complete payment.");
+            alert("Sent! Check your phone to complete payment.");
         } else {
-            alert("❌ Error: " + result.message);
+            alert("Error: request payment Failed ");
         }
     } catch (err) {
-        alert("❌ Network or server error.");
+        alert("Network or server error.");
     }
 
     payBtn.disabled = false;

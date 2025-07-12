@@ -170,7 +170,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
           </svg>
           <div id="data-saver-badge"></div>
-          <div id="data-usage-display">Loading data usage...</div>
+          <div id="data-usage-display">Data: 0MB | Total: 0MB | Rate: 0MB/h</div>
         </div>
       </button>
       <!-- Fullscreen Toggle Button -->
@@ -239,6 +239,17 @@
       segmentBytesLoaded = 0;
       clearInterval(dataUsageInterval);
 
+      // Track progress events for all media types
+      const trackProgress = () => {
+        if (player.buffered.length > 0) {
+          const duration = player.duration || 1;
+          const buffered = player.buffered.end(0) - player.buffered.start(0);
+          const bytesEstimate = (buffered / duration) * (player.videoBytesTotal || 5000000); // Default 5MB estimate
+          segmentBytesLoaded = bytesEstimate;
+          totalBytesLoaded = bytesEstimate;
+        }
+      };
+
       // HLS.js specific tracking
       if (window.hls) {
         window.hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
@@ -258,17 +269,6 @@
         });
       }
 
-      // Regular video element tracking
-      player.addEventListener('progress', () => {
-        if (!window.hls && !window.dashPlayer && player.buffered.length > 0) {
-          const duration = player.duration || 1;
-          const buffered = player.buffered.end(0) - player.buffered.start(0);
-          const estimatedBytes = (buffered / duration) * (player.videoBytesTotal || 0);
-          segmentBytesLoaded = estimatedBytes;
-          totalBytesLoaded = estimatedBytes;
-        }
-      });
-
       // Update display every second
       dataUsageInterval = setInterval(() => {
         const currentMB = (segmentBytesLoaded / (1024 * 1024)).toFixed(2);
@@ -279,6 +279,9 @@
         dataUsageDisplay.textContent = `Current: ${currentMB}MB | Total: ${totalMB}MB | Rate: ${ratePerHour}MB/h`;
         segmentBytesLoaded = 0; // Reset for next interval
       }, 1000);
+
+      // Also track progress events
+      player.addEventListener('progress', trackProgress);
     }
 
     function togglePersistentDisplay() {
@@ -307,18 +310,11 @@
     
     function enableDataSaver() {
       if (window.hls) {
-        // Store current level if not already stored
-        if (originalQuality === null) {
-          originalQuality = window.hls.currentLevel;
-        }
-        // Enable auto quality
-        window.hls.currentLevel = -1;
-        // Reduce buffer sizes
+        originalQuality = window.hls.currentLevel;
+        window.hls.currentLevel = -1; // Auto quality
         window.hls.config.maxMaxBufferLength = 30;
         window.hls.config.maxBufferSize = 6000000;
         window.hls.config.maxBufferLength = 30;
-        // Apply config changes
-        window.hls.config = {...window.hls.config};
       }
       
       if (window.dashPlayer) {
@@ -343,16 +339,10 @@
     
     function disableDataSaver() {
       if (window.hls) {
-        // Restore original quality if available
-        if (originalQuality !== null) {
-          window.hls.currentLevel = originalQuality;
-        }
-        // Restore buffer sizes
+        window.hls.currentLevel = originalQuality;
         window.hls.config.maxMaxBufferLength = 600;
         window.hls.config.maxBufferSize = 60000000;
         window.hls.config.maxBufferLength = 600;
-        // Apply config changes
-        window.hls.config = {...window.hls.config};
       }
       
       if (window.dashPlayer) {
@@ -397,10 +387,10 @@
             maxMaxBufferLength: 600,
             maxBufferSize: 60000000,
             maxBufferLength: 600,
-            abrEwmaDefaultEstimate: 500000, // Default bandwidth estimate (500kbps)
-            abrBandWidthFactor: 0.8, // Conservative bandwidth factor
-            abrBandWidthUpFactor: 0.7, // More conservative when moving up
-            abrMaxWithRealBitrate: true // Use real bitrate measurements
+            abrEwmaDefaultEstimate: 500000,
+            abrBandWidthFactor: 0.8,
+            abrBandWidthUpFactor: 0.7,
+            abrMaxWithRealBitrate: true
           });
           window.hls = hls;
           originalQuality = hls.currentLevel;

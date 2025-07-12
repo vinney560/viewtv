@@ -470,8 +470,8 @@
         originalQuality = window.hls.currentLevel;
         window.hls.currentLevel = -1; // Auto quality
         window.hls.config.maxMaxBufferLength = 30;
-        window.hls.config.maxBufferSize = 6000000;
-        window.hls.config.maxBufferLength = 30;
+        window.hls.config.maxBufferSize = 3500000;
+        window.hls.config.maxBufferLength = 15;
       }
       
       if (window.dashPlayer) {
@@ -650,13 +650,15 @@
       if (ext === 'm3u8') {
         if (Hls.isSupported()) {
           const hls = new Hls({
-            maxMaxBufferLength: 600,
-            maxBufferSize: 60000000,
-            maxBufferLength: 600,
-            abrEwmaDefaultEstimate: 500000,
+            maxMaxBufferLength: 120,
+            maxBufferSize: 45000000,
+            maxBufferLength: 100,
+            abrEwmaDefaultEstimate: 300000,
             abrBandWidthFactor: 0.8,
             abrBandWidthUpFactor: 0.7,
-            abrMaxWithRealBitrate: true
+            abrMaxWithRealBitrate: true,
+            lowLatencyMode: false,
+            backBufferLength: 30
           });
           window.hls = hls;
           originalQuality = hls.currentLevel;

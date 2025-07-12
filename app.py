@@ -1012,8 +1012,6 @@ def play_channel(key):
 #-------------------------------------------------------------------------
 @app.route('/plus-player')
 def plus_player():
-    if not channel:
-        abort(404)
 
     url = channel.get('url')
     name = channel.get('name', 'Streaming')

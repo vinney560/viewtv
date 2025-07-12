@@ -9,7 +9,7 @@
     "url": "https://abcnews.go.com/Live",
     "group-title": "News"
   },
-  "afro_beats": {
+  "afro-beats": {
     "name": "Afro Beats",
     "url": "https://stream.ecable.tv/afrobeats/index.m3u8",
     "group-title": "Music"
@@ -151,7 +151,7 @@
     "url": "https://fl5.moveonjoy.com/DISNEY/index.m3u8",
     "group-title": "kids"
   },
-  "disney_jr": {
+  "disney-jr": {
     "name": "Disney JR",
     "url": "https://fl3.moveonjoy.com/DISNEY_JR/index.m3u8",
     "group-title": "kids"
@@ -161,7 +161,7 @@
     "url": "https://disneynow-lh.akamaihd.net/i/disneyjr_1@356032/master.m3u8",
     "group-title": "kids"
   },
-  "emmanuel_tv": {
+  "emmanuel-tv": {
     "name": "Emmanuel Tv",
     "url": "https://live20.bozztv.com/dvrfl06/astv/astv-emmanuel/index.m3u8",
     "group-title": "Religious"
@@ -176,7 +176,7 @@
     "url": "https://plus.espn.com/live",
     "group-title": "Sports"
   },
-  "fashion_find": {
+  "fashion-find": {
     "name": "Fasion Find",
     "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
     "group-title": "Fashion"
@@ -246,13 +246,13 @@
     "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn1uswest/master.m3u8",
     "group-title": "Entertainment"
   },
-  "inoorotv": {
+  "inooro-tv": {
     "name": "Inooro Tv",
     "url": "https://kenyalivetv.co.ke/tv/inooro-tv-live",
     "logo": "https://www.pngkey.com/png/detail/16-166874_inooro-tv-television.png",
     "group-title": "News"
   },
-  "kameme": {
+  "kameme-tv": {
     "name": "Kameme TV",
     "url": "https://kamemetv.co.ke/live/",
     "logo": "https://iptv-org.github.io/channels/ke/KamemeTV.png",
@@ -263,7 +263,7 @@
     "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-kartoonchannel-samsungnz/playlist.m3u8",
     "group-title": "Kids"
   },
-  "kasstv": {
+  "kass-tv": {
     "name": "Kass TV",
     "url": "https://www.youtube.com/embed/4smx4SyYMbc",
     "group-title": "News"
@@ -278,7 +278,7 @@
     "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=50",
     "group-title": "Kids"
   },
-  "kiss_tv": {
+  "kiss-tv": {
     "name": "Kiss Tv",
     "url": "https://tv.broadcasting.ro/kisstv/a629c031-2170-4ee9-a36d-87a891aa3131.m3u8",
     "group-title": "Entertainment"
@@ -392,7 +392,7 @@
     "logo": "https://royalmedia.co.ke/brands/ramogi-tv/",
     "group-title": "News"
   },
-  "ramogitv": {
+  "ramogi-tv": {
     "name": "Ramogi Tv",
     "url": "https://citizen.digital/tv/ramogi-tv-19",
     "logo": "https://royalmedia.co.ke/brands/ramogi-tv/",
@@ -425,7 +425,7 @@
     "url": "https://amg01753-narrativeuk-amg01753c1-lg-gb-1830.playouts.now.amagi.tv/playlist/amg01753-narrativeuk-tinypop-lggb/playlist.m3u8",
     "group-title": "Kids"
   },
-  "tom_and_jerry": {
+  "tom-and-jerry": {
     "name": "Tom and Jerry",
     "url": "https://live20.bozztv.com/giatvplayout7/giatv-208314/playlist.m3u8",
     "group-title": "Kids"
@@ -474,7 +474,7 @@
     "logo": "https://i.imgur.com/mcNjuuO.png",
     "group-title": "Music"
   },
-  "jw": {
+  "bollywood": {
     "name": "Bollywood HD SD",
     "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-hd/manifest.m3u8",
     "logo": "https://i.imgur.com/scDKOLS.png",
@@ -570,7 +570,7 @@
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Fashion_TV_logo.svg/512px-Fashion_TV_logo.svg.png",
     "group-title": "Lifestyle"
   },
-  "bbb": {
+  "fifa-a": {
     "name": "FIFA +",
     "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8",
     "logo": "https://i.imgur.com/l5iax42.png",
@@ -618,7 +618,7 @@
     "logo": "https://i.imgur.com/M1Ee79b.png",
     "group-title": "Sports"
   },
-  "nebe": {
+  "lolwe-tv": {
     "name": "Lolwe TV",
     "url": "https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8",
     "logo": "https://i.imgur.com/tjZ1cOP.png",
@@ -674,7 +674,7 @@
     "url": "https://cnn.livestreaminggroup.info:3132/live/colimdotvlive.m3u8",
     "group-title": "Entertainment"
   },
-  "fight_network": {
+  "fight-network": {
     "name": "Fight Network",
     "url": "https://d12a2vxqkkh1bo.cloudfront.net/hls/main.m3u8",
     "group-title": "Sports"
@@ -722,7 +722,7 @@
     "logo": "https://i.imgur.com/hRNUo9n.png",
     "group-title": "Sports"
   },
-  "racing_com": {
+  "racing-com": {
     "name": "Racing.com",
     "url": "https://racingvic-i.akamaized.net/hls/live/598695/racingvic/index1500.m3u8",
     "group-title": "Sports"

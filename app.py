@@ -965,8 +965,14 @@ CUSTOM_CHANNELS = load_channels()
 # Generate a random sample ONCE when the server starts
 import random
 
-# Sample 15 random items from CUSTOM_CHANNELS once when the server starts
-RANDOMIZED_CHANNELS = dict(random.sample(list(CUSTOM_CHANNELS.items()), min(17, len(CUSTOM_CHANNELS))))
+# 17 channels from CUSTOM_CHANNELS
+selected_keys = ["citizen-tv", "ntv-kenya", "k24-tv", "inooro-tv", "kameme-tv", "ramogi-tv", "ktn-news", "kass-tv", "kyeni-tv", "ebru-tv", "tom-and-jerry", "bollywood", "fifa-a", "lolwe-tv", "figth-network", "racing-com", "disney-jr", "emmanual-tv", "afro-beats"]
+
+RANDOMIZED_CHANNELS = {
+    key: CUSTOM_CHANNELS[key]
+    for key in selected_keys
+    if key in CUSTOM_CHANNELS
+}
 
 @app.route('/home_1')
 @login_required

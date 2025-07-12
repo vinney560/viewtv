@@ -305,7 +305,7 @@
   "kbc": {
     "name": "KBC channel 1",
     "url": "https://kenyalivetv.co.ke/embed/kbc-channel-1-live",
-    "logo": "https://iptv-org.github.io/channels/ke/KBCChannel1.png",
+    "logo": "https://kbc.co.ke/wp-content/uploads/2024/11/KBC-LOGO.png",
     "group-title": "News"
   },
   "life_end_time": {
@@ -409,7 +409,7 @@
   "ramogi-tv": {
     "name": "Ramogi Tv",
     "url": "https://citizen.digital/tv/ramogi-tv-19",
-    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/2/2b/Ramogi_TV_Logo.png/220px-Ramogi_TV_Logo.png",
+    "logo": "https://i.imgur.com/URgUGLo.png",
     "group-title": "News"
   },
   "ebru-tv": {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Player | ViewTv</title>
+  <title>Player | View Tv</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
@@ -107,24 +107,7 @@
       position: relative;
       display: inline-block;
     }
-    #data-usage-display {
-      position: absolute;
-      bottom: 100%;
-      right: 0;
-      background: rgba(0,0,0,0.8);
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 12px;
-      white-space: nowrap;
-      opacity: 0;
-      transition: all 0.3s ease;
-      pointer-events: none;
-      border: 1px solid #334155;
-      min-width: 180px;
-      text-align: center;
-      transform: translateY(-10px);
-      z-index: 10;
-    }
+    #data-usage-display { position: absolute; bottom: calc(100% + 8px); right: 0; background: rgba(0,0,0,0.8); padding: 6px 10px; border-radius: 4px; font-size: 12px; white-space: nowrap; opacity: 0; transition: all 0.3s ease; pointer-events: none; border: 1px solid #334155; min-width: 180px; text-align: center;btransform: translateY(-5px); z-index: 100; }
     #data-saver-toggle:hover #data-usage-display:not(.persistent),
     #data-usage-display.persistent {
       opacity: 1;

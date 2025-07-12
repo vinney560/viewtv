@@ -1010,8 +1010,29 @@ def play_channel(key):
         current_key=key          # Pass current key for highlighting
     )
 #-------------------------------------------------------------------------
-@app.route('/player/<key>')
-def player(key):
+@app.route('/plus-player/<key>')
+def plus_player(key):
+    channel = CUSTOM_CHANNELS.get(key)
+    if not channel:
+        abort(404)
+
+    url = channel.get('url')
+    name = channel.get('name', 'Streaming')
+
+    if not url:
+        flash("Missing streaming URL.")
+        return render_template("404.html")
+
+    return render_template(
+        'plus_player.html',
+        name=name,
+        url=url,
+        token=request.args.get('token', ''),
+        current_year=datetime.now().year
+    )
+
+@app.route('/player')
+def player():
     name = request.args.get('name', 'Streaming')
     url = request.args.get('url')
     token = request.args.get('token', '')

@@ -583,15 +583,17 @@ from collections import defaultdict
 @login_required
 @plus_required
 def custom_list():
-
     raw_channels = CUSTOM_CHANNELS  # dict of dicts
     grouped = defaultdict(list)
 
-    for ch in raw_channels.values():  # ✅ Use .values() here
+    for key, ch in raw_channels.items():  # Iterate with keys too
         group = ch.get('group-title', 'Uncategorized')
-        grouped[group].append(ch)
+        # Include the key inside each channel dict
+        ch_with_key = ch.copy()
+        ch_with_key['key'] = key
+        grouped[group].append(ch_with_key)
 
-    # Optional: Sort channels in each group alphabetically
+    # Optional: Sort channels in each group alphabetically by name
     for group in grouped:
         grouped[group] = sorted(grouped[group], key=lambda x: x.get('name', '').lower())
 

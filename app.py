@@ -1007,7 +1007,7 @@ def play_channel(key):
         channel_name=channel["name"],
         stream_url=channel["url"],
         channels=channels,       # Now a list of dicts with name, url, key
-        current_key=key          # Pass current key for highlighting
+        current_key=key 
     )
 #-------------------------------------------------------------------------
 @app.route('/plus-player')
@@ -1025,6 +1025,7 @@ def plus_player():
         url=url,
         token=token,
         current_year=datetime.now().year
+    )
 
 @app.route('/player')
 def player():

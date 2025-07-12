@@ -83,7 +83,17 @@ app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == 'True'
 app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
-app.permanent_session_lifetime = timedelta(days=1)
+# Current UTC time
+now_utc = datetime.utcnow()
+# Nairobi is UTC+3
+now_eat = now_utc + timedelta(hours=3)
+# Calculate next midnight in EAT
+next_midnight_eat = datetime.combine(now_eat.date() + timedelta(days=1), time.min)
+# Get seconds until that midnight (back in UTC)
+seconds_until_midnight = (next_midnight_eat - now_eat).total_seconds()
+# Apply session expiration
+session.permanent = True
+app.permanent_session_lifetime = timedelta(seconds=seconds_until_midnight)
 
 # Initialize Extensions
 db = SQLAlchemy(app)

@@ -1251,7 +1251,7 @@ import random
 def home():
     all_channels = list(CUSTOM_CHANNELS.items())
     random_channels = dict(random.sample(all_channels, min(15, len(all_channels))))
-    return render_template('index.html', channels=random_channels, current_year=datetime.now().year)
+    return render_template('index.html', channels=random_channels, current_year=datetime.now().year) 
 #--------------------------------------------------------------------------
 @app.route("/about")
 def about():

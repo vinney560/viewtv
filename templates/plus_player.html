@@ -52,7 +52,7 @@
     }
 
     /* Fullscreen toggle button styles */
-    #fullscreen-toggle {
+    #fullscreen-toggle, #data-saver-toggle {
       background: transparent;
       border: none;
       cursor: pointer;
@@ -64,14 +64,19 @@
       justify-content: center;
       color: #22d3ee; /* Tailwind cyan-400 */
     }
-    #fullscreen-toggle:hover {
+    #fullscreen-toggle:hover, #data-saver-toggle:hover {
       color: #ffffff;
     }
 
     /* Auto-hide logic - hidden by adding 'hide' class */
-    #fullscreen-toggle.hide {
+    #fullscreen-toggle.hide, #data-saver-toggle.hide {
       opacity: 0;
       pointer-events: none;
+    }
+    
+    /* Data saver active state */
+    #data-saver-toggle.active {
+      color: #ffffff;
     }
   </style>
 </head>
@@ -85,14 +90,21 @@
       <span>Back</span>
     </button>
     <h1 class="font-bold text-cyan-400">Now Streaming</h1>
-    <!-- Fullscreen Toggle Button here -->
-    <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
-      <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <!-- Enter fullscreen icon: a square [ ] -->
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
-      </svg>
-    </button>
+    <div class="flex space-x-4">
+      <!-- Data Saver Toggle Button -->
+      <button id="data-saver-toggle" title="Toggle Data Saver" aria-label="Toggle data saver">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+        </svg>
+      </button>
+      <!-- Fullscreen Toggle Button -->
+      <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
+        <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
+        </svg>
+      </button>
+    </div>
   </header>
 
   <main class="flex-grow flex flex-col items-center justify-center p-4">
@@ -129,6 +141,85 @@
       return extMatch ? extMatch[1].toLowerCase() : '';
     }
 
+    // Data saver state and functions
+    let isDataSaverEnabled = false;
+    let originalQuality = null;
+    const player = document.getElementById('player');
+    
+    function toggleDataSaver() {
+      isDataSaverEnabled = !isDataSaverEnabled;
+      const dataSaverBtn = document.getElementById('data-saver-toggle');
+      
+      if (isDataSaverEnabled) {
+        dataSaverBtn.classList.add('active');
+        enableDataSaver();
+      } else {
+        dataSaverBtn.classList.remove('active');
+        disableDataSaver();
+      }
+    }
+    
+    function enableDataSaver() {
+      // For HLS streams
+      if (window.hls) {
+        window.hls.currentLevel = -1; // Auto quality based on bandwidth
+        window.hls.config.maxMaxBufferLength = 30; // Reduce buffer size
+        window.hls.config.maxBufferSize = 6000000; // 6MB buffer
+        window.hls.config.maxBufferLength = 30; // 30 seconds buffer
+      }
+      
+      // For DASH streams
+      if (window.dashPlayer) {
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 30,
+              bufferTimeAtTopQualityLongForm: 30,
+              bufferAheadToKeep: 30,
+              bufferBehindToKeep: 30,
+              initialBufferLevel: 30
+            }
+          }
+        });
+        window.dashPlayer.setQualityFor('video', 'auto');
+      }
+      
+      // For regular video elements
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 0.9; // Slightly reduce playback speed
+      }
+    }
+    
+    function disableDataSaver() {
+      // For HLS streams
+      if (window.hls) {
+        window.hls.currentLevel = originalQuality;
+        window.hls.config.maxMaxBufferLength = 600;
+        window.hls.config.maxBufferSize = 60000000;
+        window.hls.config.maxBufferLength = 600;
+      }
+      
+      // For DASH streams
+      if (window.dashPlayer) {
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 600,
+              bufferTimeAtTopQualityLongForm: 600,
+              bufferAheadToKeep: 600,
+              bufferBehindToKeep: 600,
+              initialBufferLevel: 600
+            }
+          }
+        });
+      }
+      
+      // For regular video elements
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 1.0;
+      }
+    }
+
     (function() {
       const streamUrl = getQueryParam('url');
       const token = getQueryParam('token');
@@ -140,7 +231,6 @@
       const urlWithToken = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
       const ext = getExtension(urlWithToken);
 
-      const player = document.getElementById('player');
       const iframe = document.getElementById('iframe-player');
       const errorMsg = document.getElementById('error-message');
 
@@ -155,7 +245,13 @@
 
       if (ext === 'm3u8') {
         if (Hls.isSupported()) {
-          const hls = new Hls();
+          const hls = new Hls({
+            maxMaxBufferLength: 600,
+            maxBufferSize: 60000000,
+            maxBufferLength: 600
+          });
+          window.hls = hls; // Store for data saver
+          originalQuality = hls.currentLevel;
           hls.loadSource(urlWithToken);
           hls.attachMedia(player);
           hls.on(Hls.Events.ERROR, function(event, data) {
@@ -174,6 +270,18 @@
       } else if (ext === 'mpd') {
         try {
           const dashPlayer = dashjs.MediaPlayer().create();
+          window.dashPlayer = dashPlayer; // Store for data saver
+          dashPlayer.updateSettings({
+            streaming: {
+              buffer: {
+                bufferTimeAtTopQuality: 600,
+                bufferTimeAtTopQualityLongForm: 600,
+                bufferAheadToKeep: 600,
+                bufferBehindToKeep: 600,
+                initialBufferLevel: 600
+              }
+            }
+          });
           dashPlayer.initialize(player, urlWithToken, true);
           player.style.display = 'block';
         } catch(e) {
@@ -192,6 +300,7 @@
     // Fullscreen toggle logic with icon switch and auto-hide
     (function() {
       const fullscreenBtn = document.getElementById('fullscreen-toggle');
+      const dataSaverBtn = document.getElementById('data-saver-toggle');
       const fullscreenIcon = document.getElementById('fullscreen-icon');
       const playerContainer = document.getElementById('player-container');
       let hideTimeout;
@@ -223,14 +332,21 @@
 
       function resetHideTimeout() {
         fullscreenBtn.classList.remove('hide');
+        dataSaverBtn.classList.remove('hide');
         clearTimeout(hideTimeout);
         hideTimeout = setTimeout(() => {
           fullscreenBtn.classList.add('hide');
+          dataSaverBtn.classList.add('hide');
         }, 3000); // hide after 3 seconds of inactivity
       }
 
       fullscreenBtn.addEventListener('click', () => {
         toggleFullscreen();
+      });
+      
+      dataSaverBtn.addEventListener('click', () => {
+        toggleDataSaver();
+        resetHideTimeout();
       });
 
       // Update icon on fullscreen change

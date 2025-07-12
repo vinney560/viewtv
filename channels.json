@@ -266,6 +266,7 @@
   "kass-tv": {
     "name": "Kass TV",
     "url": "https://www.youtube.com/embed/4smx4SyYMbc",
+    "logo": "https://kassfm.co.ke/wp-content/uploads/2022/07/kasslogo.png",
     "group-title": "News"
   },
   "ketchap": {
@@ -286,12 +287,13 @@
   "k24-tv": {
     "name": "K24 TV",
     "url": "https://www.youtube.com/embed/_lB9oSok1FM?controls=1&modestbranding=1&rel=0&fs=1&disablekb=0&iv_load_policy=3",
-    "logo": "https://upload.wikimedia.org/wikipedia/en/YourLogoHere/K24_TV_Logo_Variant.jpg",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/f/f3/K24_TV_Logo.png/220px-K24_TV_Logo.png",
     "group-title": "News"
   },
   "ktn-news": {
     "name": "KTN News",
     "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/KTN_News_logo.png/220px-KTN_News_logo.png",
     "group-title": "News"
   },
   "life_end_time": {
@@ -395,7 +397,7 @@
   "ramogi-tv": {
     "name": "Ramogi Tv",
     "url": "https://citizen.digital/tv/ramogi-tv-19",
-    "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogi.png",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/2/2b/Ramogi_TV_Logo.png/220px-Ramogi_TV_Logo.png",
     "group-title": "News"
   },
   "ebru-tv": {
@@ -407,7 +409,7 @@
   "kyeni-tv": {
     "name": "Kyeni Tv",
     "url": "https://vip.worldlivetv.stream/channel/KyeniTV_ke",
-    "logo": "https://uzamart.com/listing/kyeni-tv/Kyeni-logo.png",
+    "logo": "https://tvkyeni.co.ke/wp-content/uploads/2021/08/TV-KYENI-LOGO.png",
     "group-title": "News"
   },
   "red_plus": {
@@ -621,7 +623,7 @@
   "lolwe-tv": {
     "name": "Lolwe TV",
     "url": "https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8",
-    "logo": "https://i.imgur.com/tjZ1cOP.png",
+    "logo": "https://lolwetv.co.ke/wp-content/uploads/2021/08/lolwe-tv-logo.png",
     "group-title": "News"
   },
   "enhs": {

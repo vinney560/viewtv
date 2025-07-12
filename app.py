@@ -1259,7 +1259,7 @@ def about():
 #------------------------------------------------------------------------
 @app.route("/developer")
 def developer():
-    return render_template("developer.html", current_year=datetime.utcnow().year) 
+    return render_template("developer.html", current_year=datetime.utcnow().year)
 #------------------------------------------------------------------------
 @app.route("/data-saver/info")
 def data_saver():

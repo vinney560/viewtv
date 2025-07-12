@@ -290,15 +290,9 @@
     "logo": "https://viewtv-p2s3.onrender.com/uploads/K24.png",
     "group-title": "News"
   },
-  "ktn-news": {
-    "name": "KTN News",
-    "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
-    "logo": "https://viewtv-p2s3.onrender.com/uploads/ktn-news.png",
-    "group-title": "News"
-  },
   "ktn": {
     "name": "KTN Home",
-    "url": "https://kenyalivetv.co.ke/embed/ktn-home-live",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/ktn.png",
     "group-title": "News"
   },

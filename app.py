@@ -965,7 +965,12 @@ CUSTOM_CHANNELS = load_channels()
 import random
 
 # 17 channels from CUSTOM_CHANNELS
-selected_keys = ["citizen-tv", "ntv-kenya", "k24-tv", "inooro-tv", "kameme-tv", "ramogi-tv", "ktn-news", "kass-tv", "kyeni-tv", "ebru-tv", "tom-and-jerry", "bollywood", "fifa-a", "lolwe-tv", "figth-network", "racing-com", "disney-jr", "emmanual-tv", "afro-beats", "movie-box", "ktn", "kbc"]
+selected_keys = [
+    "afro-beats", "bollywood", "citizen-tv", "disney-jr", "ebru-tv", "emmanual-tv",
+    "figth-network", "fifa-a", "inooro-tv", "kameme-tv", "k24-tv", "kass-tv", "kbc",
+    "ktn", "kyeni-tv", "lolwe-tv", "movie-box", "nick-jr-east", "ntv-kenya",
+    "ramogi-tv", "racing-com", "tom-and-jerry"
+]
 
 RANDOMIZED_CHANNELS = {
     key: CUSTOM_CHANNELS[key]

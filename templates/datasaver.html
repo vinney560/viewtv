@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plus Player - Data Usage Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .gradient-border {
+            position: relative;
+            border-radius: 0.5rem;
+        }
+        .gradient-border::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 0.6rem;
+            background: linear-gradient(45deg, #0ea5e9, #6366f1);
+            z-index: -1;
+        }
+        .data-bar {
+            height: 24px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #0ea5e9 0%, #6366f1 100%);
+            transition: all 0.3s ease;
+        }
+        .toggle-container {
+            background: #1e293b;
+        }
+        .toggle-switch {
+            background: #0ea5e9;
+            transform: translateX(0);
+            transition: all 0.3s ease;
+        }
+        .toggle-active .toggle-switch {
+            transform: translateX(100%);
+            background: #10b981;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-200 font-sans">
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">PLUS PLAYER</h1>
+            <h2 class="text-2xl font-semibold">Data Usage Optimization Guide</h2>
+            <div class="w-24 h-1 bg-cyan-400 mx-auto mt-4 rounded-full"></div>
+        </div>
+
+        <!-- Optimization Cards -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+            <div class="gradient-border p-0.5 rounded-lg">
+                <div class="bg-slate-800 p-6 rounded-lg h-full">
+                    <div class="text-cyan-400 text-2xl mb-3">🔍</div>
+                    <h3 class="text-xl font-bold mb-2">Adaptive Streaming</h3>
+                    <p class="text-slate-300">Automatically selects optimal resolution based on network conditions, prioritizing 360p/480p in Data Saver mode.</p>
+                </div>
+            </div>
+            
+            <div class="gradient-border p-0.5 rounded-lg">
+                <div class="bg-slate-800 p-6 rounded-lg h-full">
+                    <div class="text-cyan-400 text-2xl mb-3">⏱️</div>
+                    <h3 class="text-xl font-bold mb-2">Buffer Control</h3>
+                    <p class="text-slate-300">Reduces pre-loaded content from 60s to 30s buffer in Data Saver mode, minimizing wasted bandwidth.</p>
+                </div>
+            </div>
+            
+            <div class="gradient-border p-0.5 rounded-lg">
+                <div class="bg-slate-800 p-6 rounded-lg h-full">
+                    <div class="text-cyan-400 text-2xl mb-3">⚡</div>
+                    <h3 class="text-xl font-bold mb-2">Playback Efficiency</h3>
+                    <p class="text-slate-300">Optimized network requests and slight playback adjustments to reduce data consumption.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Usage Visualization -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12 border border-slate-700">
+            <h3 class="text-xl font-bold mb-6 text-center">Expected Data Consumption (Per Hour)</h3>
+            
+            <div class="mb-8">
+                <div class="flex justify-between mb-2">
+                    <span>HLS/DASH (Adaptive)</span>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-slate-400">Data Saver OFF</span>
+                        <span class="text-sm text-slate-400">Data Saver ON</span>
+                    </div>
+                </div>
+                <div class="flex h-10 bg-slate-700 rounded-lg overflow-hidden">
+                    <div class="w-3/4 bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-end pr-2 text-xs font-medium">
+                        2.5-7.5 GB
+                    </div>
+                    <div class="w-1/4 bg-gradient-to-r from-cyan-500 to-emerald-500 flex items-center justify-end pr-2 text-xs font-medium">
+                        0.4-1.5 GB
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-8">
+                <div class="flex justify-between mb-2">
+                    <span>MP4/WebM (Fixed)</span>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-slate-400">Data Saver OFF</span>
+                        <span class="text-sm text-slate-400">Data Saver ON</span>
+                    </div>
+                </div>
+                <div class="flex h-10 bg-slate-700 rounded-lg overflow-hidden">
+                    <div class="w-2/3 bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-end pr-2 text-xs font-medium">
+                        1-6 GB
+                    </div>
+                    <div class="w-1/3 bg-gradient-to-r from-cyan-500 to-emerald-500 flex items-center justify-end pr-2 text-xs font-medium">
+                        0.7-1.5 GB
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-slate-400 text-sm">Lowest possible consumption: <span class="text-cyan-400">0.3-0.7 GB/hour</span> (360p with strong optimization)</p>
+            </div>
+        </div>
+
+        <!-- Savings Calculator -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12 border border-slate-700">
+            <h3 class="text-xl font-bold mb-6 text-center">Savings Calculator</h3>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Stream Type</label>
+                    <select class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                        <option>HLS/DASH (Adaptive)</option>
+                        <option>MP4/WebM (Fixed)</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Original Quality</label>
+                    <select class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                        <option>1080p (3-6 GB/hour)</option>
+                        <option>720p (1.5-3 GB/hour)</option>
+                        <option>480p (0.7-1.5 GB/hour)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex items-center justify-between">
+                <span>Data Saver</span>
+                <div class="toggle-container w-16 h-8 rounded-full p-1 cursor-pointer flex items-center toggle-active">
+                    <div class="toggle-switch w-6 h-6 rounded-full shadow-md"></div>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-4 bg-slate-700 rounded-lg">
+                <div class="flex justify-between mb-2">
+                    <span>Estimated Savings:</span>
+                    <span class="font-bold text-cyan-400">~65% reduction</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Projected Usage:</span>
+                    <span class="font-bold">1.2 GB/hour → <span class="text-emerald-400">0.42 GB/hour</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitoring Guide -->
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h3 class="text-xl font-bold mb-6 text-center">How To Monitor Your Data Usage</h3>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-cyan-400 mb-3">Browser Testing</h4>
+                    <ol class="list-decimal list-inside text-sm space-y-2 text-slate-300">
+                        <li>Press <kbd class="bg-slate-700 px-2 py-1 rounded">F12</kbd> to open Dev Tools</li>
+                        <li>Go to the <span class="font-medium">Network</span> tab</li>
+                        <li>Filter by <code class="bg-slate-700 px-1 rounded">media</code> requests</li>
+                        <li>Check <span class="font-medium">Transferred</span> column</li>
+                        <li>Calculate: <code class="bg-slate-700 px-1 rounded">(MB ÷ minutes) × 60</code></li>
+                    </ol>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-cyan-400 mb-3">Mobile Devices</h4>
+                    <ul class="list-disc list-inside text-sm space-y-2 text-slate-300">
+                        <li><span class="font-medium">Android:</span> Settings → Network & Internet → Data Usage</li>
+                        <li><span class="font-medium">iOS:</span> Settings → Cellular → Cellular Data</li>
+                        <li>Look for your browser/app in the list</li>
+                        <li>Reset statistics before testing for accurate results</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center text-sm text-slate-400">
+                <p>Note: Actual savings depend on network conditions and content type.</p>
+                <p class="mt-2">For support contact: <a href="mailto:vincentkipngetich479@gmail.com" class="text-cyan-400 hover:underline">Email us</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle switch interaction
+        document.querySelector('.toggle-container').addEventListener('click', function() {
+            this.classList.toggle('toggle-active');
+            const savings = this.classList.contains('toggle-active') ? '65%' : '0%';
+            document.querySelector('.text-cyan-400').textContent = `~${savings} reduction`;
+        });
+    </script>
+</body>
+</html>

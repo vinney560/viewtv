@@ -1261,6 +1261,10 @@ def about():
 def developer():
     return render_template("developer.html", current_year=datetime.utcnow().year)
 #------------------------------------------------------------------------
+@app.route("/data-saver/info")
+def data_saver():
+    return render_template("datasaver.html", current_year=datetime.utcnow().year)
+#------------------------------------------------------------------------
 @app.route('/copyright')
 def copyright():
     return render_template('copyright.html')

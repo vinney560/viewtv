@@ -52,7 +52,7 @@
     }
 
     /* Button styles */
-    #fullscreen-toggle, #data-saver-toggle {
+    #fullscreen-toggle, #data-saver-toggle, #audio-only-toggle {
       background: transparent;
       border: none;
       cursor: pointer;
@@ -65,25 +65,26 @@
       color: #22d3ee;
       position: relative;
     }
-    #fullscreen-toggle:hover, #data-saver-toggle:hover {
+    #fullscreen-toggle:hover, #data-saver-toggle:hover, #audio-only-toggle:hover {
       color: #ffffff;
     }
 
     /* Auto-hide logic */
-    #fullscreen-toggle.hide, #data-saver-toggle.hide {
+    #fullscreen-toggle.hide, #data-saver-toggle.hide, #audio-only-toggle.hide {
       opacity: 0;
       pointer-events: none;
     }
     
     /* Enhanced Data Saver Button */
-    #data-saver-icon {
+    #data-saver-icon, #audio-only-icon {
       transition: all 0.3s ease;
     }
-    #data-saver-toggle.active #data-saver-icon {
+    #data-saver-toggle.active #data-saver-icon,
+    #audio-only-toggle.active #audio-only-icon {
       transform: scale(1.1);
       color: #10b981;
     }
-    #data-saver-badge {
+    #data-saver-badge, #audio-only-badge {
       position: absolute;
       top: -2px;
       right: -2px;
@@ -95,10 +96,12 @@
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    #data-saver-toggle.active #data-saver-badge {
+    #data-saver-toggle.active #data-saver-badge,
+    #audio-only-toggle.active #audio-only-badge {
       opacity: 1;
     }
-    #data-saver-toggle.active:hover #data-saver-icon {
+    #data-saver-toggle.active:hover #data-saver-icon,
+    #audio-only-toggle.active:hover #audio-only-icon {
       transform: scale(1.15);
     }
     
@@ -109,7 +112,7 @@
     }
     #data-usage-display {
       position: absolute;
-      bottom: calc(100% + 2py);
+      bottom: calc(100% + 2px);
       right: 0;
       background: rgba(0,0,0,0.8);
       padding: 6px 10px;
@@ -149,6 +152,35 @@
     #data-usage-toggle:hover {
       background: #475569;
     }
+    
+    /* Data saver level indicator */
+    #data-saver-level {
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 0 4px;
+      border-radius: 3px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #data-saver-toggle:hover #data-saver-level {
+      opacity: 1;
+    }
+    
+    /* Audio-only mode visual indicator */
+    .audio-only-mode {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      z-index: 10;
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen bg-black text-white">
@@ -162,6 +194,14 @@
     </button>
     <h1 class="font-bold text-cyan-400">Now Streaming</h1>
     <div class="flex space-x-4">
+      <!-- Audio-only Toggle Button -->
+      <button id="audio-only-toggle" title="Toggle Audio Only Mode" aria-label="Toggle audio only mode">
+        <svg id="audio-only-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
+        </svg>
+        <div id="audio-only-badge"></div>
+      </button>
+      
       <!-- Enhanced Data Saver Toggle Button -->
       <button id="data-saver-toggle" title="Toggle Data Saver" aria-label="Toggle data saver">
         <div id="data-usage-container">
@@ -170,9 +210,11 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
           </svg>
           <div id="data-saver-badge"></div>
+          <div id="data-saver-level">Level: 0</div>
           <div id="data-usage-display">Data: 0MB | Total: 0MB | Rate: 0MB/h</div>
         </div>
       </button>
+      
       <!-- Fullscreen Toggle Button -->
       <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
         <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -184,6 +226,7 @@
 
   <main class="flex-grow flex flex-col items-center justify-center p-4">
     <div id="player-container">
+      <div id="audio-only-indicator" class="audio-only-mode hidden">Audio Only Mode</div>
       <video
         id="player"
         class="video-js vjs-default-skin"
@@ -209,14 +252,28 @@
     let totalBytesLoaded = 0;
     let segmentBytesLoaded = 0;
     let dataUsageInterval;
-    let isDataSaverEnabled = false;
     let isPersistentDisplay = false;
-    let originalQuality = null;
     const player = document.getElementById('player');
     const dataSaverBtn = document.getElementById('data-saver-toggle');
+    const audioOnlyBtn = document.getElementById('audio-only-toggle');
     const dataUsageDisplay = document.getElementById('data-usage-display');
     const dataUsageToggle = document.getElementById('data-usage-toggle');
     const errorMsg = document.getElementById('error-message');
+    const audioOnlyIndicator = document.getElementById('audio-only-indicator');
+
+    // Data Saver Configuration
+    const DATA_SAVER_LEVELS = {
+      OFF: 0,
+      LIGHT: 1,     // Auto quality, slightly reduced buffers
+      MEDIUM: 2,    // Lower quality, smaller buffers
+      HIGH: 3,      // Lowest quality, minimal buffers
+      EXTREME: 4    // Audio-only when possible
+    };
+    
+    let currentDataSaverLevel = DATA_SAVER_LEVELS.OFF;
+    let originalQuality = null;
+    let originalVideoEnabled = true;
+    let isAudioOnlyMode = false;
 
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -291,24 +348,124 @@
       dataUsageToggle.title = isPersistentDisplay ? 'Hide persistent display' : 'Show persistent display';
     }
 
-    function toggleDataSaver() {
-      isDataSaverEnabled = !isDataSaverEnabled;
+    function toggleAudioOnlyMode() {
+      isAudioOnlyMode = !isAudioOnlyMode;
       
       try {
-        if (isDataSaverEnabled) {
-          dataSaverBtn.classList.add('active');
-          enableDataSaver();
+        if (isAudioOnlyMode) {
+          audioOnlyBtn.classList.add('active');
+          enableAudioOnlyMode();
         } else {
-          dataSaverBtn.classList.remove('active');
-          disableDataSaver();
+          audioOnlyBtn.classList.remove('active');
+          disableAudioOnlyMode();
         }
       } catch (e) {
-        console.error("Error toggling data saver:", e);
-        showError("Failed to toggle data saver mode");
+        console.error("Error toggling audio-only mode:", e);
+        showError("Failed to toggle audio-only mode");
       }
     }
     
-    function enableDataSaver() {
+    function enableAudioOnlyMode() {
+      originalVideoEnabled = true;
+      audioOnlyIndicator.classList.remove('hidden');
+      
+      if (window.hls) {
+        // Try to find an audio-only rendition
+        const audioOnlyLevel = window.hls.levels.findIndex(level => level.videoCodec === undefined);
+        if (audioOnlyLevel !== -1) {
+          originalQuality = window.hls.currentLevel;
+          window.hls.currentLevel = audioOnlyLevel;
+          originalVideoEnabled = false;
+        } else {
+          // If no audio-only stream, hide video element
+          player.style.opacity = '0';
+        }
+      }
+      
+      if (window.dashPlayer) {
+        const audioTracks = window.dashPlayer.getTracksFor('audio');
+        if (audioTracks && audioTracks.length > 0) {
+          originalVideoEnabled = window.dashPlayer.getEnabled('video');
+          window.dashPlayer.setEnabled('video', false);
+        } else {
+          player.style.opacity = '0';
+        }
+      }
+      
+      // For regular video, hide the video element
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.style.opacity = '0';
+      }
+    }
+    
+    function disableAudioOnlyMode() {
+      audioOnlyIndicator.classList.add('hidden');
+      
+      if (window.hls) {
+        if (!originalVideoEnabled && originalQuality !== null) {
+          window.hls.currentLevel = originalQuality;
+        }
+        player.style.opacity = '1';
+      }
+      
+      if (window.dashPlayer) {
+        window.dashPlayer.setEnabled('video', originalVideoEnabled);
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.style.opacity = '1';
+      }
+    }
+
+    function setDataSaverLevel(level) {
+      currentDataSaverLevel = level;
+      document.getElementById('data-saver-level').textContent = `Level: ${level}`;
+      
+      // Reset all features first
+      if (window.hls) {
+        window.hls.currentLevel = originalQuality;
+        window.hls.config.maxMaxBufferLength = 600;
+        window.hls.config.maxBufferSize = 60000000;
+        window.hls.config.maxBufferLength = 600;
+      }
+      
+      if (window.dashPlayer) {
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 600,
+              bufferTimeAtTopQualityLongForm: 600,
+              bufferAheadToKeep: 600,
+              bufferBehindToKeep: 600,
+              initialBufferLevel: 600
+            }
+          }
+        });
+        window.dashPlayer.setQualityFor('video', 'auto');
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 1.0;
+      }
+      
+      // Apply level-specific optimizations
+      switch(level) {
+        case DATA_SAVER_LEVELS.LIGHT:
+          enableLightDataSaving();
+          break;
+        case DATA_SAVER_LEVELS.MEDIUM:
+          enableMediumDataSaving();
+          break;
+        case DATA_SAVER_LEVELS.HIGH:
+          enableHighDataSaving();
+          break;
+        case DATA_SAVER_LEVELS.EXTREME:
+          enableExtremeDataSaving();
+          break;
+      }
+    }
+    
+    function enableLightDataSaving() {
       if (window.hls) {
         originalQuality = window.hls.currentLevel;
         window.hls.currentLevel = -1; // Auto quality
@@ -337,30 +494,139 @@
       }
     }
     
-    function disableDataSaver() {
+    function enableMediumDataSaving() {
       if (window.hls) {
-        window.hls.currentLevel = originalQuality;
-        window.hls.config.maxMaxBufferLength = 600;
-        window.hls.config.maxBufferSize = 60000000;
-        window.hls.config.maxBufferLength = 600;
+        originalQuality = window.hls.currentLevel;
+        // Find the middle quality level
+        const levels = window.hls.levels;
+        if (levels && levels.length > 1) {
+          const midLevel = Math.floor(levels.length / 3); // Lower third
+          window.hls.currentLevel = midLevel;
+        }
+        window.hls.config.maxMaxBufferLength = 20;
+        window.hls.config.maxBufferSize = 3000000;
+        window.hls.config.maxBufferLength = 20;
       }
       
       if (window.dashPlayer) {
+        const bitrates = window.dashPlayer.getBitrateInfoListFor('video');
+        if (bitrates && bitrates.length > 1) {
+          const sortedBitrates = bitrates.map(b => b.bitrate).sort((a, b) => a - b);
+          const midBitrate = sortedBitrates[Math.floor(sortedBitrates.length / 3)];
+          window.dashPlayer.setQualityFor('video', midBitrate);
+        }
+        
         window.dashPlayer.updateSettings({
           streaming: {
             buffer: {
-              bufferTimeAtTopQuality: 600,
-              bufferTimeAtTopQualityLongForm: 600,
-              bufferAheadToKeep: 600,
-              bufferBehindToKeep: 600,
-              initialBufferLevel: 600
+              bufferTimeAtTopQuality: 20,
+              bufferTimeAtTopQualityLongForm: 20,
+              bufferAheadToKeep: 20,
+              bufferBehindToKeep: 10,
+              initialBufferLevel: 10
             }
           }
         });
       }
       
       if (player.src && !window.hls && !window.dashPlayer) {
-        player.playbackRate = 1.0;
+        player.playbackRate = 0.85;
+      }
+    }
+    
+    function enableHighDataSaving() {
+      if (window.hls) {
+        originalQuality = window.hls.currentLevel;
+        // Force lowest quality level
+        const levels = window.hls.levels;
+        if (levels && levels.length > 0) {
+          window.hls.currentLevel = levels.reduce((minIndex, level, index) => 
+            level.bitrate < levels[minIndex].bitrate ? index : minIndex, 0
+          );
+        }
+        window.hls.config.maxMaxBufferLength = 10;
+        window.hls.config.maxBufferSize = 2000000;
+        window.hls.config.maxBufferLength = 10;
+      }
+      
+      if (window.dashPlayer) {
+        const bitrates = window.dashPlayer.getBitrateInfoListFor('video');
+        if (bitrates && bitrates.length > 0) {
+          const minBitrate = Math.min(...bitrates.map(b => b.bitrate));
+          window.dashPlayer.setQualityFor('video', minBitrate);
+        }
+        
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 10,
+              bufferTimeAtTopQualityLongForm: 10,
+              bufferAheadToKeep: 10,
+              bufferBehindToKeep: 5,
+              initialBufferLevel: 5
+            }
+          }
+        });
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 0.8;
+      }
+    }
+    
+    function enableExtremeDataSaving() {
+      // First try to enable audio-only mode
+      if (!isAudioOnlyMode) {
+        toggleAudioOnlyMode();
+      }
+      
+      // Then apply the most aggressive settings
+      if (window.hls) {
+        originalQuality = window.hls.currentLevel;
+        window.hls.config.maxMaxBufferLength = 5;
+        window.hls.config.maxBufferSize = 1000000;
+        window.hls.config.maxBufferLength = 5;
+      }
+      
+      if (window.dashPlayer) {
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 5,
+              bufferTimeAtTopQualityLongForm: 5,
+              bufferAheadToKeep: 5,
+              bufferBehindToKeep: 2,
+              initialBufferLevel: 2
+            }
+          }
+        });
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 0.75;
+      }
+    }
+    
+    function toggleDataSaver() {
+      // Cycle through data saver levels
+      const nextLevel = (currentDataSaverLevel + 1) % (Object.keys(DATA_SAVER_LEVELS).length);
+      setDataSaverLevel(nextLevel);
+      
+      // Update UI
+      if (nextLevel === DATA_SAVER_LEVELS.OFF) {
+        dataSaverBtn.classList.remove('active');
+      } else {
+        dataSaverBtn.classList.add('active');
+      }
+      
+      // If going to extreme mode, ensure audio-only is enabled
+      if (nextLevel === DATA_SAVER_LEVELS.EXTREME && !isAudioOnlyMode) {
+        toggleAudioOnlyMode();
+      }
+      
+      // If turning off data saver, ensure audio-only is disabled
+      if (nextLevel === DATA_SAVER_LEVELS.OFF && isAudioOnlyMode) {
+        toggleAudioOnlyMode();
       }
     }
 
@@ -463,6 +729,21 @@
         iframe.src = urlWithToken;
         iframe.style.display = 'block';
       }
+      
+      // Check for slow connection and enable data saver automatically
+      if (navigator.connection) {
+        const connection = navigator.connection;
+        if (connection.effectiveType.includes('2g') || connection.saveData) {
+          setDataSaverLevel(DATA_SAVER_LEVELS.EXTREME);
+          dataSaverBtn.classList.add('active');
+        } else if (connection.effectiveType.includes('3g')) {
+          setDataSaverLevel(DATA_SAVER_LEVELS.HIGH);
+          dataSaverBtn.classList.add('active');
+        } else if (connection.downlink < 1.5) { // < 1.5 Mbps
+          setDataSaverLevel(DATA_SAVER_LEVELS.MEDIUM);
+          dataSaverBtn.classList.add('active');
+        }
+      }
     })();
 
     // UI Controls
@@ -498,15 +779,18 @@
       function resetHideTimeout() {
         fullscreenBtn.classList.remove('hide');
         dataSaverBtn.classList.remove('hide');
+        audioOnlyBtn.classList.remove('hide');
         clearTimeout(hideTimeout);
         hideTimeout = setTimeout(() => {
           fullscreenBtn.classList.add('hide');
           dataSaverBtn.classList.add('hide');
+          audioOnlyBtn.classList.add('hide');
         }, 3000);
       }
 
       fullscreenBtn.addEventListener('click', toggleFullscreen);
       dataSaverBtn.addEventListener('click', toggleDataSaver);
+      audioOnlyBtn.addEventListener('click', toggleAudioOnlyMode);
       dataUsageToggle.addEventListener('click', (e) => {
         e.stopPropagation();
         togglePersistentDisplay();

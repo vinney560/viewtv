@@ -255,7 +255,7 @@
   "kameme-tv": {
     "name": "Kameme TV",
     "url": "https://kamemetv.co.ke/live/",
-    "logo": "https://iptv-org.github.io/channels/ke/KamemeTV.png",
+    "logo": "",
     "group-title": "News"
   },
   "kartoon_channel": {
@@ -409,19 +409,19 @@
   "ramogi-tv": {
     "name": "Ramogi Tv",
     "url": "https://citizen.digital/tv/ramogi-tv-19",
-    "logo": "https://i.imgur.com/URgUGLo.png",
+    "logo": "https:/viewtv-p2s3.onrender.com/uploads/ramogi.png",
     "group-title": "News"
   },
   "ebru-tv": {
     "name": "Ebru Tv",
     "url": "https://kenyalivetv.co.ke/embed/ebru-tv-live",
-    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/6/63/Ebru_TV_Kenya_Logo.png/220px-Ebru_TV_Kenya_Logo.png",
+    "logo": "",
     "group-title": "News"
   },
   "kyeni-tv": {
     "name": "Kyeni Tv",
     "url": "https://vip.worldlivetv.stream/channel/KyeniTV_ke",
-    "logo": "https://tvkyeni.co.ke/wp-content/uploads/2021/08/TV-KYENI-LOGO.png",
+    "logo": "",
     "group-title": "News"
   },
   "red_plus": {

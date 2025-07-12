@@ -962,7 +962,6 @@ def save_channels(channels):
 # Expose as alias
 CUSTOM_CHANNELS = load_channels()
 
-# Generate a random sample ONCE when the server starts
 import random
 
 # 17 channels from CUSTOM_CHANNELS

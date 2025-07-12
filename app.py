@@ -1008,8 +1008,8 @@ def play_channel(key):
         current_key=key          # Pass current key for highlighting
     )
 #-------------------------------------------------------------------------
-@app.route('/player')
-def player():
+@app.route('/player/<key>')
+def player(key):
     name = request.args.get('name', 'Streaming')
     url = request.args.get('url')
     token = request.args.get('token', '')

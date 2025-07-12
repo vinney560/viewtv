@@ -1012,21 +1012,19 @@ def play_channel(key):
 #-------------------------------------------------------------------------
 @app.route('/plus-player')
 def plus_player():
-
-    url = channel.get('url')
-    name = channel.get('name', 'Streaming')
+    name = request.args.get('name', 'Streaming')
+    url = request.args.get('url')
+    token = request.args.get('token', '')
 
     if not url:
         flash("Missing streaming URL.")
         return render_template("404.html")
-
     return render_template(
         'plus_player.html',
         name=name,
         url=url,
-        token=request.args.get('token', ''),
+        token=token,
         current_year=datetime.now().year
-    )
 
 @app.route('/player')
 def player():

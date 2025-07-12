@@ -23,7 +23,7 @@
     "name": "Al Jazeera English",
     "url": "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8",
     "logo": "https://i.imgur.com/7bRVpnu.png",
-    "group-title": "Entertainmentl"
+    "group-title": "Entertainment"
   },
   "al_jazeera": {
     "name": "Al Jazeera English",
@@ -415,7 +415,7 @@
   "kyeni-tv": {
     "name": "Kyeni Tv",
     "url": "https://vip.worldlivetv.stream/channel/KyeniTV_ke",
-    "logo": "https://viewtv-p2s3.onrender.com/uploads/Kyeni.png",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/kyeni.png",
     "group-title": "News"
   },
   "red_plus": {
@@ -885,7 +885,7 @@
     "name": "TG4",
     "url": "https://dx4452e0qv6r9.cloudfront.net/tg4_vod_national.m3u8",
     "logo": "https://i.imgur.com/XiAKb4E.png",
-    "group-title": "kids"
+    "group-title": "Sports"
   },
   "yryegg": {
     "name": "TVM",
@@ -897,7 +897,7 @@
     "name": "World Billiards",
     "url": "https://9a81dd4ee3884d0dbcacafaf0d81327a.mediatailor.us-east-1.amazonaws.com/v1/master/04fd913bb278d8775298c26fdca9d9841f37601f/RakutenTV-eu_BilliardsTV/playlist.m3u8",
     "logo": "https://images-3.rakuten.tv/storage/global-live-channel/translation/artwork/80af06f2-a12e-4406-bd13-b932fd69fffe-width200-quality90.png",
-    "group-title": ""
+    "group-title": "Sports"
   },
   "yeyeg": {
     "name": "World of Freesports SD",

@@ -112,11 +112,13 @@
   "citizen-tv": {
     "name": "Citizen TV",
     "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+    "logo": "https://logos.fandom.com/wiki/Citizen_TV_%28Kenya%29",
     "group-title": "News"
   },
   "citizen-tv-extra": {
     "name": "Citizen Extra",
     "url": "https://www.youtube.com/embed/MDA0XHrnNl4",
+    "logo": "https://logos.fandom.com/wiki/Citizen_TV_%28Kenya%29",
     "group-title": "News"
   },
   "classic_movie": {
@@ -245,13 +247,15 @@
     "group-title": "Entertainment"
   },
   "inoorotv": {
-    "name": "Inooro Tv (CitizenD)",
-    "url": "https://citizen.digital/tv/inooro-tv-14",
+    "name": "Inooro Tv",
+    "url": "https://kenyalivetv.co.ke/tv/inooro-tv-live",
+    "logo": "https://www.pngkey.com/png/detail/16-166874_inooro-tv-television.png",
     "group-title": "News"
   },
   "kameme": {
     "name": "Kameme TV",
     "url": "https://kamemetv.co.ke/live/",
+    "logo": "https://iptv-org.github.io/channels/ke/KamemeTV.png",
     "group-title": "News"
   },
   "kartoon_channel": {
@@ -282,6 +286,7 @@
   "k24-tv": {
     "name": "K24 TV",
     "url": "https://www.youtube.com/embed/_lB9oSok1FM?controls=1&modestbranding=1&rel=0&fs=1&disablekb=0&iv_load_policy=3",
+    "logo": "https://play.google.com/store/apps/details?id=com.k24plus.app",
     "group-title": "News"
   },
   "ktn-news": {
@@ -347,11 +352,13 @@
   "ntv": {
     "name": "NTV Digital",
     "url": "https://ntvkenya.co.ke/live/",
+    "logo": "https://logos.fandom.com/wiki/NTV_Kenya",
     "group-title": "News"
   },
   "ntv-kenya": {
     "name": "NTV",
     "url": "https://www.youtube.com/embed/p4BWnK2xeHw",
+    "logo": "https://logos.fandom.com/wiki/NTV_Kenya",
     "group-title": "News"
   },
   "outdoor_channel": {
@@ -382,11 +389,13 @@
   "ramogifmtv": {
     "name": "Ramogi Fm Tv",
     "url": "https://citizen.digital/tv/ramogi-fm-audio-visual-24",
+    "logo": "https://royalmedia.co.ke/brands/ramogi-tv/",
     "group-title": "News"
   },
   "ramogitv": {
     "name": "Ramogi Tv",
     "url": "https://citizen.digital/tv/ramogi-tv-19",
+    "logo": "https://royalmedia.co.ke/brands/ramogi-tv/",
     "group-title": "News"
   },
   "red_plus": {

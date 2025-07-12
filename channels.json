@@ -302,6 +302,12 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Ktn_logo.png/220px-Ktn_logo.png",
     "group-title": "News"
   },
+  "kbc": {
+    "name": "KBC channel 1",
+    "url": "https://kenyalivetv.co.ke/embed/kbc-channel-1-live",
+    "logo": "https://iptv-org.github.io/channels/ke/KBCChannel1.png",
+    "group-title": "News"
+  },
   "life_end_time": {
     "name": "Life! End Time",
     "url": "https://2-fss-1.streamhoster.com/pl_122/200226-1427780-1/playlist.m3u8",

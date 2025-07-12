@@ -296,6 +296,12 @@
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e3/KTN_News_logo.png/220px-KTN_News_logo.png",
     "group-title": "News"
   },
+  "ktn": {
+    "name": "KTN Home",
+    "url": "https://kenyalivetv.co.ke/embed/ktn-home-live",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Ktn_logo.png/220px-Ktn_logo.png",
+    "group-title": "News"
+  },
   "life_end_time": {
     "name": "Life! End Time",
     "url": "https://2-fss-1.streamhoster.com/pl_122/200226-1427780-1/playlist.m3u8",

@@ -62,7 +62,7 @@
 
       <!-- Free Plus Logic -->
       <div class="space-y-4">
-        {% if not user.last_free_plus or (user.last_free_plus + timedelta(hours=24)) <= now and user.plus_type not in [free, paid] %}
+        {% if (not user.last_free_plus or (user.last_free_plus + timedelta(hours=24)) <= now) and user.plus_type not in ['free', 'paid'] %}
           <a href="{{ url_for('claim_free_plus') }}" class="block group">
             <button class="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-glow-green">
               <svg class="w-6 h-6 text-yellow-300 group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@
         </button>
       </a>
 
-      <!-- Payment Support Information -->
+      <!-- Payment Help -->
       <div class="bg-gray-700/20 border border-gray-600 rounded-lg p-4">
         <h3 class="text-sm font-medium text-cyan-400 mb-2 flex items-center">
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,11 +113,10 @@
         <div class="text-sm text-gray-300 space-y-2">
           <p>If you face any payment issues:</p>
           <ul class="list-disc list-inside space-y-1 pl-2">
-            <li>Contact us on WhatsApp/Telegram: <span class="text-cyan-300">+254740694312</span></li>
+            <li>WhatsApp/Telegram: <span class="text-cyan-300">+254740694312</span></li>
             <li>Email: <span class="text-cyan-300">vincentkipngetich479@gmail.com</span></li>
-            <li>Send payment to: <span class="text-cyan-300">+254740694312 (Annah Rono)</span></li>
+            <li>Pay to: <span class="text-cyan-300">+254740694312 (Annah Rono)</span></li>
           </ul>
-          <p class="pt-2 text-xs text-gray-400">After payment, send us the transaction details along with your registered email address for verification.</p>
         </div>
       </div>
 
@@ -131,11 +130,12 @@
         </h3>
         <div class="flex items-center justify-between">
           <span class="text-gray-300">Plus Active:</span>
-          <span class="font-medium {% if user.has_plus %}text-green-400{% else %}text-red-400{% endif %}">
-            {% if user.plus_type!=None %}Yes{% else %}No{% endif %}
+          <span class="font-medium {% if user.plus_type %}text-green-400{% else %}text-red-400{% endif %}">
+            {% if user.plus_type %}Yes{% else %}No{% endif %}
           </span>
         </div>
-        {% if user.plus_type!=None %}
+
+        {% if user.plus_type %}
           <div class="flex items-center justify-between mt-1">
             <span class="text-gray-300">Type:</span>
             <span class="font-medium {% if user.plus_type == 'paid' %}text-green-400{% else %}text-cyan-400{% endif %}">
@@ -146,6 +146,7 @@
             <span class="text-gray-300">Expires in:</span>
             <span class="font-medium text-cyan-300">{{ user.plus_expires_at }}</span>
           </div>
+
           {% if user.plus_type == "paid" %}
             <div class="mt-2 p-2 bg-green-600/20 rounded text-sm text-green-300 flex items-center">
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,12 +154,12 @@
               </svg>
               Plus is currently active (Paid)
             </div>
-          {% else %}
+          {% elif user.plus_type == "free" %}
             <div class="mt-2 p-2 bg-cyan-600/20 rounded text-sm text-cyan-300 flex items-center">
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Free Plus trial active
+              Free Plus trial is active
             </div>
           {% endif %}
         {% endif %}

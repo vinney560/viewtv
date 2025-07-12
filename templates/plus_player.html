@@ -109,7 +109,7 @@
     }
     #data-usage-display {
       position: absolute;
-      bottom: calc(100% + 2py); /* Lowered display position */
+      bottom: calc(100% + 2py);
       right: 0;
       background: rgba(0,0,0,0.8);
       padding: 6px 10px;
@@ -120,7 +120,7 @@
       transition: all 0.3s ease;
       pointer-events: none;
       border: 1px solid #334155;
-      min-width: 220px; /* Wider to accommodate more data */
+      min-width: 220px;
       text-align: center;
       transform: translateY(-5px);
       z-index: 100;
@@ -216,6 +216,7 @@
     const dataSaverBtn = document.getElementById('data-saver-toggle');
     const dataUsageDisplay = document.getElementById('data-usage-display');
     const dataUsageToggle = document.getElementById('data-usage-toggle');
+    const errorMsg = document.getElementById('error-message');
 
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -226,6 +227,11 @@
       const path = url.split('?')[0].split('#')[0];
       const extMatch = path.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv)$/i);
       return extMatch ? extMatch[1].toLowerCase() : '';
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.remove('hidden');
     }
 
     function startTrackingDataUsage() {
@@ -285,22 +291,34 @@
     function toggleDataSaver() {
       isDataSaverEnabled = !isDataSaverEnabled;
       
-      if (isDataSaverEnabled) {
-        dataSaverBtn.classList.add('active');
-        enableDataSaver();
-      } else {
-        dataSaverBtn.classList.remove('active');
-        disableDataSaver();
+      try {
+        if (isDataSaverEnabled) {
+          dataSaverBtn.classList.add('active');
+          enableDataSaver();
+        } else {
+          dataSaverBtn.classList.remove('active');
+          disableDataSaver();
+        }
+      } catch (e) {
+        console.error("Error toggling data saver:", e);
+        showError("Failed to toggle data saver mode");
       }
     }
     
     function enableDataSaver() {
       if (window.hls) {
-        originalQuality = window.hls.currentLevel;
-        window.hls.currentLevel = -1; // Auto quality
+        // Store current level if not already stored
+        if (originalQuality === null) {
+          originalQuality = window.hls.currentLevel;
+        }
+        // Enable auto quality
+        window.hls.currentLevel = -1;
+        // Reduce buffer sizes
         window.hls.config.maxMaxBufferLength = 30;
         window.hls.config.maxBufferSize = 6000000;
         window.hls.config.maxBufferLength = 30;
+        // Apply config changes
+        window.hls.config = {...window.hls.config};
       }
       
       if (window.dashPlayer) {
@@ -325,10 +343,16 @@
     
     function disableDataSaver() {
       if (window.hls) {
-        window.hls.currentLevel = originalQuality;
+        // Restore original quality if available
+        if (originalQuality !== null) {
+          window.hls.currentLevel = originalQuality;
+        }
+        // Restore buffer sizes
         window.hls.config.maxMaxBufferLength = 600;
         window.hls.config.maxBufferSize = 60000000;
         window.hls.config.maxBufferLength = 600;
+        // Apply config changes
+        window.hls.config = {...window.hls.config};
       }
       
       if (window.dashPlayer) {
@@ -362,13 +386,7 @@
       const ext = getExtension(urlWithToken);
 
       const iframe = document.getElementById('iframe-player');
-      const errorMsg = document.getElementById('error-message');
-
-      function showError(msg) {
-        errorMsg.textContent = msg;
-        errorMsg.classList.remove('hidden');
-      }
-
+      
       errorMsg.classList.add('hidden');
       player.style.display = 'none';
       iframe.style.display = 'none';
@@ -378,22 +396,41 @@
           const hls = new Hls({
             maxMaxBufferLength: 600,
             maxBufferSize: 60000000,
-            maxBufferLength: 600
+            maxBufferLength: 600,
+            abrEwmaDefaultEstimate: 500000, // Default bandwidth estimate (500kbps)
+            abrBandWidthFactor: 0.8, // Conservative bandwidth factor
+            abrBandWidthUpFactor: 0.7, // More conservative when moving up
+            abrMaxWithRealBitrate: true // Use real bitrate measurements
           });
           window.hls = hls;
           originalQuality = hls.currentLevel;
           hls.loadSource(urlWithToken);
           hls.attachMedia(player);
           hls.on(Hls.Events.ERROR, function(event, data) {
-            showError("Playback error: " + data.details);
+            if (data.fatal) {
+              switch(data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  showError("Network Error: " + data.details);
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  showError("Media Error: " + data.details);
+                  break;
+                default:
+                  showError("Playback Error: " + data.details);
+              }
+            }
           });
           player.style.display = 'block';
           player.muted = false;
-          player.play().then(startTrackingDataUsage);
+          player.play().then(startTrackingDataUsage).catch(e => {
+            showError("Playback failed: " + e.message);
+          });
         } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
           player.src = urlWithToken;
           player.style.display = 'block';
-          player.play().then(startTrackingDataUsage);
+          player.play().then(startTrackingDataUsage).catch(e => {
+            showError("Playback failed: " + e.message);
+          });
         } else {
           showError("HLS not supported on this browser");
         }
@@ -403,6 +440,14 @@
           window.dashPlayer = dashPlayer;
           dashPlayer.updateSettings({
             streaming: {
+              abr: {
+                limitBitrateByPortal: true,
+                useDefaultABRRules: true,
+                autoSwitchBitrate: {
+                  audio: true,
+                  video: true
+                }
+              },
               buffer: {
                 bufferTimeAtTopQuality: 600,
                 bufferTimeAtTopQualityLongForm: 600,
@@ -421,7 +466,9 @@
       } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
         player.src = urlWithToken;
         player.style.display = 'block';
-        player.play().then(startTrackingDataUsage).catch(() => {});
+        player.play().then(startTrackingDataUsage).catch(e => {
+          showError("Playback failed: " + e.message);
+        });
       } else {
         iframe.src = urlWithToken;
         iframe.style.display = 'block';

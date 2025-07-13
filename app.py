@@ -44,8 +44,8 @@ load_dotenv()
 
 
 def choose_db_uri():
-    render_uri = os.getenv('DATABASE_URL')        # Render DB (primary)
-    supabase_uri = os.getenv('DATABASE_URL_3')    # Supabase DB (secondary)
+    render_uri = os.getenv('DATABASE_URL_3')        # Render DB (primary)
+    supabase_uri = os.getenv('DATABASE_URL')    # Supabase DB (secondary)
 
     if render_uri:
         try:

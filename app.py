@@ -616,17 +616,48 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #-------------------------------------------------------------------------
 import json
+import os
+import string
 
-MOVIES_FILE = 'movies.json'  # Your exact filename
+MOVIES_FILE = 'movies.json'
 
-def load_movies():
+def clean_key(key):
+    # Remove standalone numeric segments and lowercase everything
+    parts = key.strip('_').split('_')
+    clean_parts = [part for part in parts if not part.isdigit()]
+    return '_'.join(clean_parts).lower()
+
+def get_next_suffix(existing_keys, base_key):
+    for suffix in string.ascii_lowercase:
+        candidate = f"{base_key}_{suffix}"
+        if candidate not in existing_keys:
+            return candidate
+    raise ValueError(f"Too many duplicates for base key: {base_key}")
+
+def load_and_fix_movies():
     if not os.path.exists(MOVIES_FILE):
         return {}
 
     with open(MOVIES_FILE, 'r', encoding='utf-8') as f:
-        return json.load(f)
+        data = json.load(f)
 
-MOVIES = load_movies()
+    new_data = {}
+    for old_key, value in data.items():
+        base_key = clean_key(old_key)
+        new_key = base_key
+
+        if new_key in new_data:
+            new_key = get_next_suffix(new_data, base_key)
+
+        new_data[new_key] = value
+
+    with open(MOVIES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(new_data, f, indent=2)
+
+    return new_data
+
+# Load and fix the movies
+MOVIES = load_and_fix_movies()
 
 @app.route("/plus-movies")
 @login_required

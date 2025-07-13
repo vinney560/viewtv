@@ -16,7 +16,7 @@
   },
   "cnbc": {
     "name": "CNBC Sport",
-    "url": "https://www.youtube.com/embed/lKn-AcsRECs?rel=0&modestbranding=1&showinfo=0&controls=0&vq=hd1080",
+    "url": "https://www.youtube.com/embed/lKn-AcsRECs?rel=0&modestbranding=1&showinfo=0&controls=1&vq=hd1080",
     "group-title": "Sports"
   },
   "afro-beats": {

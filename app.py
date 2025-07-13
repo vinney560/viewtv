@@ -391,7 +391,7 @@ def register():
         email_addr = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
-        code_input = request.form.get('code')
+        code_input = request.form.get('secret_code')
 
         if not name or not password or not confirm_password or not email_addr:
             flash('All fields are required', "error")
@@ -434,7 +434,7 @@ def register():
         db.session.commit()
 
         send_verification_email(new_user)
-        flash("Check you Email to verify your Account.", "success")
+        flash(f"Account created as {role}. Check your email to verify.", "success")
 
         return redirect(url_for('home'))
 

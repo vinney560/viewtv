@@ -1291,6 +1291,7 @@ def welcome():
 def logout_current_user():
     session.clear()
     logout_user()
+    flash("Logout success!", "success")
     return redirect(url_for("home"))
 #-------------------------------------------------------------------------  
 @app.route('/services') 

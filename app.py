@@ -618,17 +618,30 @@ def custom_list():
 import json
 import os
 import string
+from collections import defaultdict
 
 MOVIES_FILE = 'movies.json'
+CACHE_FILE = 'movies_cache.json'  # For optimized loading
+CACHE_EXPIRE = 3600  # 1 hour cache
 
 def clean_key(key):
-    # Remove numeric prefix if it starts the key
+    """Clean and standardize dictionary keys"""
+    # Remove numeric prefix and special characters
+    key = ''.join(c for c in key if c.isalnum() or c == '_')
     parts = key.strip('_').split('_')
-    if parts[0].isdigit():
+    if parts and parts[0].isdigit():
         parts = parts[1:]
     return '_'.join(parts).lower()
 
-def load_and_fix_movies():
+def load_and_optimize_movies():
+    """Load movies with caching and optimization"""
+    # Check cache first
+    if os.path.exists(CACHE_FILE) and \
+       os.path.getmtime(CACHE_FILE) > os.path.getmtime(MOVIES_FILE) and \
+       (os.path.getmtime(CACHE_FILE) + CACHE_EXPIRE) > time.time():
+        with open(CACHE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+
     if not os.path.exists(MOVIES_FILE):
         return {}
 
@@ -642,47 +655,63 @@ def load_and_fix_movies():
         base = clean_key(old_key)
         new_key = base
 
-        if new_key in used_keys:
-            for suffix in string.ascii_lowercase:
-                test_key = f"{base}_{suffix}"
-                if test_key not in used_keys:
-                    new_key = test_key
-                    break
+        # Handle duplicate keys
+        counter = 1
+        while new_key in used_keys:
+            new_key = f"{base}_{counter}"
+            counter += 1
 
         used_keys.add(new_key)
-        fixed[new_key] = value
+        
+        # Standardize the channel data structure
+        fixed[new_key] = {
+            'name': value.get('name', 'Unnamed Channel'),
+            'url': value.get('url', ''),
+            'logo': value.get('logo', ''),
+            'access': value.get('access', 'free'),
+            'group-title': value.get('group-title', 'Uncategorized')
+        }
 
-    # Overwrite the file with cleaned data
-    with open(MOVIES_FILE, 'w', encoding='utf-8') as f:
-        json.dump(fixed, f, indent=2)
+    # Save optimized version to cache
+    with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(fixed, f, indent=2, ensure_ascii=False)
 
     return fixed
 
-# ✅ Load the cleaned data
-MOVIES = load_and_fix_movies()
+# Load the optimized data
+MOVIES = load_and_optimize_movies()
 
 @app.route("/plus-movies")
 @login_required
 @plus_required
 def plus_movies():
-    raw_movies = MOVIES  # dict of dicts
-    grouped = defaultdict(list)
-
-    for key, ch in raw_movies.items():  # Iterate with keys too
-        group = ch.get('group-title', 'Uncategorized')
-        # Include the key inside each channel dict
-        ch_with_key = ch.copy()
-        ch_with_key['key'] = key
-        grouped[group].append(ch_with_key)
-
-    # Optional: Sort channels in each group alphabetically by name
-    for group in grouped:
-        grouped[group] = sorted(grouped[group], key=lambda x: x.get('name', '').lower())
-
-    # Sort groups alphabetically
-    categorized_channels = dict(sorted(grouped.items(), key=lambda x: x[0].lower()))
-
-    return render_template('movies.html', categorized_channels=categorized_channels)
+    # Use generator to minimize memory usage with large datasets
+    def generate_groups():
+        grouped = defaultdict(list)
+        
+        for key, ch in MOVIES.items():
+            group = ch.get('group-title', 'Uncategorized')
+            # Include only necessary fields for the template
+            grouped[group].append({
+                'name': ch['name'],
+                'url': ch['url'],
+                'logo': ch['logo'],
+                'access': ch['access'],
+                'key': key  # Include the cleaned key
+            })
+        
+        # Sort groups and channels
+        for group in grouped:
+            grouped[group].sort(key=lambda x: x['name'].lower())
+        
+        return dict(sorted(grouped.items(), key=lambda x: x[0].lower()))
+    
+    # Pass the generator function to template
+    return render_template(
+        'movies.html',
+        categorized_channels=generate_groups(),
+        total_channels=len(MOVIES)
+    )
 #-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required

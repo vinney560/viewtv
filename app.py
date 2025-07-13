@@ -44,8 +44,8 @@ load_dotenv()
 
 
 def choose_db_uri():
-    render_uri = os.getenv('DATABASE_URL_3')        # Render DB (primary)
-    supabase_uri = os.getenv('DATABASE_URL')    # Supabase DB (secondary)
+    render_uri = os.getenv('DATABASE_URL')        # Render DB (primary)
+    supabase_uri = os.getenv('DATABASE_URL_3')    # Supabase DB (secondary)
 
     if render_uri:
         try:
@@ -1826,15 +1826,14 @@ def saved_channels():
         flash(f"Error loading channels: {str(e)}", "error")
         return redirect(url_for("home_admin"))
 #------------------------------------------------------------------------
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
 from sqlalchemy.exc import OperationalError
+
 
 @app.route("/admin/clone_data")
 @login_required
 def clone_data():
-
     db1_url = os.getenv("DATABASE_URL")
     db2_url = os.getenv("DATABASE_URL_3")
 
@@ -1850,11 +1849,16 @@ def clone_data():
     dest_session = DestSession()
 
     try:
-        # Ensure destination DB has the tables
+        # Ensure destination DB has tables
         db.metadata.create_all(dest_engine)
 
-        # List of models to clone
-        for model in [User]:  # add all models you want to migrate
+        # Wipe destination tables
+        for model in [User]:  # Add all models here
+            dest_session.execute(text(f"DELETE FROM {model.__tablename__}"))
+            dest_session.commit()  # Commit after each truncate to avoid FK errors
+
+        # Clone source data into destination
+        for model in [User]:
             rows = source_session.query(model).all()
             for row in rows:
                 clone = model(**{

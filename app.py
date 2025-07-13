@@ -622,17 +622,11 @@ import string
 MOVIES_FILE = 'movies.json'
 
 def clean_key(key):
-    # Remove standalone numeric segments and lowercase everything
+    # Remove numeric prefix if it starts the key
     parts = key.strip('_').split('_')
-    clean_parts = [part for part in parts if not part.isdigit()]
-    return '_'.join(clean_parts).lower()
-
-def get_next_suffix(existing_keys, base_key):
-    for suffix in string.ascii_lowercase:
-        candidate = f"{base_key}_{suffix}"
-        if candidate not in existing_keys:
-            return candidate
-    raise ValueError(f"Too many duplicates for base key: {base_key}")
+    if parts[0].isdigit():
+        parts = parts[1:]
+    return '_'.join(parts).lower()
 
 def load_and_fix_movies():
     if not os.path.exists(MOVIES_FILE):
@@ -641,22 +635,30 @@ def load_and_fix_movies():
     with open(MOVIES_FILE, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
-    new_data = {}
+    fixed = {}
+    used_keys = set()
+
     for old_key, value in data.items():
-        base_key = clean_key(old_key)
-        new_key = base_key
+        base = clean_key(old_key)
+        new_key = base
 
-        if new_key in new_data:
-            new_key = get_next_suffix(new_data, base_key)
+        if new_key in used_keys:
+            for suffix in string.ascii_lowercase:
+                test_key = f"{base}_{suffix}"
+                if test_key not in used_keys:
+                    new_key = test_key
+                    break
 
-        new_data[new_key] = value
+        used_keys.add(new_key)
+        fixed[new_key] = value
 
+    # Overwrite the file with cleaned data
     with open(MOVIES_FILE, 'w', encoding='utf-8') as f:
-        json.dump(new_data, f, indent=2)
+        json.dump(fixed, f, indent=2)
 
-    return new_data
+    return fixed
 
-# Load and fix the movies
+# ✅ Load the cleaned data
 MOVIES = load_and_fix_movies()
 
 @app.route("/plus-movies")

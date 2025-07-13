@@ -44,8 +44,8 @@ load_dotenv()
 
 
 def choose_db_uri():
-    render_uri = os.getenv('DATABASE_URL_3')        # Render DB (primary)
-    supabase_uri = os.getenv('DATABASE_URL')    # Supabase DB (secondary)
+    render_uri = os.getenv('DATABASE_URL')        # Render DB (primary)
+    supabase_uri = os.getenv('DATABASE_URL_3')    # Supabase DB (secondary)
 
     if render_uri:
         try:
@@ -1854,7 +1854,7 @@ def clone_data():
         db.metadata.create_all(dest_engine)
 
         # List of models to clone
-        for model in [User, Channel, Payment]:  # add all models you want to migrate
+        for model in [User, Payment]:  # add all models you want to migrate
             rows = source_session.query(model).all()
             for row in rows:
                 clone = model(**{

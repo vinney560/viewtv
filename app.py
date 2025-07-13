@@ -270,7 +270,7 @@ def send_verification_email(user):
     verify_link = url_for('verify_registration', token=token, _external=True)
 
     msg = Message(
-        subject="Check Email to Verify your View Tv account",
+        subject="Verify your View Tv account",
         recipients=[user.email]
     )
     msg.html = render_template('verify_email_template.html', verify_link=verify_link)

@@ -1836,7 +1836,7 @@ from sqlalchemy.exc import OperationalError
 def clone_data():
 
     db1_url = os.getenv("DATABASE_URL")
-    db2_url = os.getenv("DATABASE_URL_2")
+    db2_url = os.getenv("DATABASE_URL_3")
 
     if not db1_url or not db2_url:
         flash("Database URLs not set in environment file.", "error")

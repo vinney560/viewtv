@@ -45,7 +45,7 @@ load_dotenv()
 
 def choose_db_uri():
     render_uri = os.getenv('DATABASE_URL')        # Render DB (primary)
-    supabase_uri = os.getenv('DATABASE_URL_2')    # Supabase DB (secondary)
+    supabase_uri = os.getenv('DATABASE_URL_3')    # Supabase DB (secondary)
 
     if render_uri:
         try:
@@ -60,7 +60,7 @@ def choose_db_uri():
         try:
             engine = create_engine(supabase_uri)
             engine.connect().close()
-            print("✅ Connected to Supabase DB (DATABASE_URL_2)")
+            print("✅ Connected to Supabase DB (DATABASE_URL_3)")
             return supabase_uri
         except OperationalError:
             print("⚠️ Failed to connect to Supabase DB.")

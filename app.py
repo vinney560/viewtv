@@ -1854,7 +1854,7 @@ def clone_data():
 
         # Wipe destination tables
         for model in [User]:  # Add all models here
-            dest_session.execute(text(f"DELETE FROM {model.__tablename__}"))
+            dest_session.execute(text(f"TRUNCATE TABLE {model.__tablename__} RESTART IDENTITY CASCADE"))
             dest_session.commit()  # Commit after each truncate to avoid FK errors
 
         # Clone source data into destination

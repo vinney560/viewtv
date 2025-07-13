@@ -255,7 +255,7 @@
                     </div>
                     <div class="channel-grid grid gap-4" id="movie-grid-${category.id}">
                         ${Array(12).fill().map(() => `
-                            <div class="channel-card bg-gray-800/50 rounded-xl h-60 animate-pulse"></div>
+                            <div class="channel-card bg-gray-800/50 rounded-xl h-48 animate-pulse"></div>
                         `).join('')}
                     </div>
                 </section>
@@ -340,7 +340,7 @@
                             ${movie.logo ? `
                                 <img src="${movie.logo}" alt="${movie.name}" 
                                      class="absolute inset-0 w-full h-full object-cover group-hover:opacity-90 transition-opacity"
-                                     loading="lazy" width="320" height="180">
+                                     loading="lazy" width="320" height="220">
                             ` : `
                                 <div class="absolute inset-0 flex items-center justify-center text-cyan-400/30">
                                     <span class="icon icon-tv w-12 h-12"></span>

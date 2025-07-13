@@ -616,7 +616,6 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #-------------------------------------------------------------------------
 import json
-import os
 import time
 from collections import defaultdict
 
@@ -627,8 +626,12 @@ def clean_key(key):
     """Clean and standardize dictionary keys while preserving original key structure"""
     if not isinstance(key, str):
         key = str(key)
-    # Remove trailing underscores but keep internal ones
-    return key.strip('_').lower()
+    # Remove numeric prefix and special characters
+    key = ''.join(c for c in key if c.isalnum() or c == '_').strip('_')
+    parts = key.split('_')
+    if parts and parts[0].isdigit():
+        parts = parts[1:]
+    return '_'.join(parts).lower() if parts else 'unnamed'
 
 def load_movies_data():
     """Load and validate movies data with caching"""
@@ -637,9 +640,9 @@ def load_movies_data():
         current_app.logger.error(f"Movies file not found at {os.path.abspath(MOVIES_FILE)}")
         return {}
 
-    # Check cache freshness
-    use_cache = (os.path.exists(CACHE_FILE) and \
-                (os.path.getmtime(CACHE_FILE) > os.path.getmtime(MOVIES_FILE))
+    # Check cache freshness with proper parentheses
+    use_cache = (os.path.exists(CACHE_FILE) and 
+                (os.path.getmtime(CACHE_FILE) > os.path.getmtime(MOVIES_FILE)))
 
     if use_cache:
         try:
@@ -659,6 +662,7 @@ def load_movies_data():
     processed = {}
     for original_key, movie in raw_data.items():
         if not isinstance(movie, dict):
+            current_app.logger.warning(f"Skipping invalid movie entry: {original_key}")
             continue
 
         try:
@@ -673,6 +677,7 @@ def load_movies_data():
             
             # Validate required fields
             if not clean_movie['url']:
+                current_app.logger.warning(f"Skipping movie with empty URL: {original_key}")
                 continue
                 
             processed[clean_key(original_key)] = clean_movie
@@ -696,12 +701,25 @@ MOVIES_DATA = load_movies_data()
 @login_required
 @plus_required
 def plus_movies():
+    if not MOVIES_DATA:
+        return render_template('error.html', message="No movies data available"), 500
+
     # Group movies by category
     categories = defaultdict(list)
     
     for movie_key, movie in MOVIES_DATA.items():
-        category = movie['group-title'] if movie['group-title'] else 'Uncategorized'
-        categories[category].append(movie)
+        try:
+            category = movie['group-title'] if movie.get('group-title') else 'Uncategorized'
+            categories[category].append({
+                'name': movie['name'],
+                'url': movie['url'],
+                'logo': movie['logo'],
+                'access': movie['access'],
+                'key': movie_key
+            })
+        except Exception as e:
+            current_app.logger.error(f"Error processing movie {movie_key}: {e}")
+            continue
     
     # Sort categories alphabetically
     sorted_categories = sorted(categories.items(), key=lambda x: x[0].lower())
@@ -717,6 +735,7 @@ def plus_movies():
         categorized_channels=categorized_movies,
         total_movies=len(MOVIES_DATA),
         total_categories=len(categorized_movies)
+    )
 #-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required

@@ -107,7 +107,7 @@
 
     <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
-        <div id="categories-container" class="container mx-auto px-4 py-6">
+        <div id="categories-container" class="container mx-auto px-4 py-4">
             <!-- Initial loading state -->
             <div id="initial-loading" class="flex flex-col items-center justify-center py-12 space-y-4">
                 <div class="animate-pulse rounded-full h-12 w-12 bg-cyan-400/20"></div>
@@ -255,7 +255,7 @@
                     </div>
                     <div class="channel-grid grid gap-4" id="movie-grid-${category.id}">
                         ${Array(12).fill().map(() => `
-                            <div class="channel-card bg-gray-800/50 rounded-xl h-48 animate-pulse"></div>
+                            <div class="channel-card bg-gray-800/50 rounded-xl h-60 animate-pulse"></div>
                         `).join('')}
                     </div>
                 </section>

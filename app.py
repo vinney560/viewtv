@@ -615,6 +615,41 @@ def custom_list():
 
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #-------------------------------------------------------------------------
+import json
+
+MOVIES_FILE = 'movies.json'
+
+def load_movies():
+    if not os.path.exists(MOVIES_FILE):
+        return {}
+    with open(MOVIES_FILE, 'r') as f:
+        return json.load(f)
+
+MOVIES = load_movies()
+
+@app.route("/plus-movies")
+@login_required
+@plus_required
+def plus_movies():
+    raw_movies = MOVIES  # dict of dicts
+    grouped = defaultdict(list)
+
+    for key, ch in raw_movies.items():  # Iterate with keys too
+        group = ch.get('group-title', 'Uncategorized')
+        # Include the key inside each channel dict
+        ch_with_key = ch.copy()
+        ch_with_key['key'] = key
+        grouped[group].append(ch_with_key)
+
+    # Optional: Sort channels in each group alphabetically by name
+    for group in grouped:
+        grouped[group] = sorted(grouped[group], key=lambda x: x.get('name', '').lower())
+
+    # Sort groups alphabetically
+    categorized_channels = dict(sorted(grouped.items(), key=lambda x: x[0].lower()))
+
+    return render_template('movies.html', categorized_channels=categorized_channels)
+#-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required
 @plus_required

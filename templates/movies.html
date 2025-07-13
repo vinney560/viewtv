@@ -3,67 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stream TV channels online with ViewTv">
     <title>ViewTv | StreamTv</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/solid.min.css" as="style">
+    <link rel="preload" href="https://cdn.tailwindcss.com" as="script">
+    
+    <!-- Minimal font awesome (only icons used) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/solid.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/fontawesome.min.css" crossorigin="anonymous">
+    
+    <!-- Inline critical CSS -->
     <style>
-        html, body {
-            height: 100%;
-            overflow: hidden;
+        html,body{height:100%;overflow-x:hidden}
+        .toast{animation:slideIn .3s ease-out forwards,fadeOut .5s ease-in 3.5s forwards}
+        @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        @keyframes fadeOut{to{opacity:0;transform:translateY(-20px)}}
+        .channel-card{transition:transform .3s ease,box-shadow .3s ease}
+        .channel-card:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(0,255,255,.1)}
+        .content-wrapper{display:flex;flex-direction:column;height:100vh}
+        .channels-container{flex:1;overflow-y:auto}
+        .search-box:focus{box-shadow:0 0 0 3px rgba(34,211,238,.3)}
+        .logo-svg{width:32px;height:32px;margin-right:12px}
+        @media (max-width:640px){
+            .logo-svg{width:24px;height:24px;margin-right:8px}
+            .header-content{flex-direction:column;gap:12px}
+            .header-title{width:100%;justify-content:center}
+            .search-container{width:100%}
         }
-        .toast {
-            animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-in 3.5s forwards;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateY(-20px); }
-        }
-        .channel-card {
-            transition: all 0.3s ease;
-        }
-        .channel-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1);
-        }
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        .channels-container {
-            flex: 1;
-            overflow-y: auto;
-        }
-        .search-box:focus {
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
-        }
-        .logo-svg {
-            width: 32px;
-            height: 32px;
-            margin-right: 12px;
-        }
-        @media (max-width: 640px) {
-            .logo-svg {
-                width: 24px;
-                height: 24px;
-                margin-right: 8px;
-            }
-            .header-content {
-                flex-direction: column;
-                gap: 12px;
-            }
-            .header-title {
-                width: 100%;
-                justify-content: center;
-            }
-            .search-container {
-                width: 100%;
-            }
-        }
+        .bg-gradient-text{background-clip:text;-webkit-background-clip:text;color:transparent}
     </style>
+    
+    <!-- Defer non-critical CSS -->
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
 </head>
 <body class="bg-gray-900 text-white flex flex-col">
 
@@ -99,13 +73,14 @@
     <header class="bg-gray-950 border-b border-cyan-900/20 p-4 sticky top-0 z-40">
         <div class="container mx-auto header-content flex flex-wrap items-center justify-between gap-4">
             <div class="header-title flex items-center space-x-2">
-                <i class="fas fa-tv text-cyan-400 text-2xl"></i>
-                <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">ViewTv | StreamTv</h1>
+                <i class="fas fa-tv text-cyan-400 text-2xl" aria-hidden="true"></i>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-gradient-text">ViewTv | StreamTv</h1>
             </div>
             <div class="search-container relative w-full max-w-xs">
+                <label for="searchInput" class="sr-only">Search channels</label>
                 <input type="text" id="searchInput" placeholder="Search channels..."
                     class="search-box w-full bg-gray-800/80 border border-cyan-900/30 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
-                <i class="fas fa-search absolute left-3 top-2.5 text-cyan-900/60"></i>
+                <i class="fas fa-search absolute left-3 top-2.5 text-cyan-900/60" aria-hidden="true"></i>
             </div>
         </div>
     </header>
@@ -117,7 +92,7 @@
             <section class="mb-8 channel-group" data-category="{{ group_title | lower }}">
                 <div class="category-header border-l-4 border-cyan-400 pl-4 py-2 mb-4">
                     <h2 class="text-lg md:text-xl font-bold text-cyan-100 flex items-center">
-                        <i class="fas fa-tag mr-2 text-cyan-400"></i>
+                        <i class="fas fa-tag mr-2 text-cyan-400" aria-hidden="true"></i>
                         {{ group_title or 'Uncategorized' }}
                     </h2>
                 </div>
@@ -127,14 +102,15 @@
                     <div class="channel-card bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
                          data-name="{{ channel.name | lower }}"
                          data-access="{{ channel.get('access', 'free') | lower }}">
-                        <a href="{{ channel.url }}" target="_blank" class="block h-full">
+                        <a href="{{ channel.url }}" target="_blank" class="block h-full" aria-label="Watch {{ channel.name }}">
                             <div class="relative pt-[56.25%] bg-gray-900/30">
                                 {% if channel.logo %}
-                                <img src="{{ channel.logo }}" alt="{{ channel.name }}"
-                                     class="absolute inset-0 w-full h-full object-contain p-4">
+                                <img src="{{ channel.logo }}" alt="{{ channel.name }} logo"
+                                     class="absolute inset-0 w-full h-full object-contain p-4" 
+                                     loading="lazy" width="200" height="112">
                                 {% else %}
                                 <div class="absolute inset-0 flex items-center justify-center text-cyan-400/30">
-                                    <i class="fas fa-tv text-5xl"></i>
+                                    <i class="fas fa-tv text-5xl" aria-hidden="true"></i>
                                 </div>
                                 {% endif %}
                                 <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
@@ -162,55 +138,79 @@
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- Deferred JavaScript -->
     <script>
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase();
-            const channelGroups = document.querySelectorAll('.channel-group');
+        // Load Tailwind CSS asynchronously
+        if (!window.tailwindCSS) {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.tailwindcss.com';
+            script.async = true;
+            script.onload = initApp;
+            document.head.appendChild(script);
+        } else {
+            initApp();
+        }
 
-            channelGroups.forEach(group => {
-                const category = group.getAttribute('data-category');
-                let matchFoundInGroup = false;
+        function initApp() {
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const channelGroups = document.querySelectorAll('.channel-group');
 
-                const cards = group.querySelectorAll('.channel-card');
-                cards.forEach(card => {
-                    const name = card.getAttribute('data-name');
-                    const access = card.getAttribute('data-access');
+                    channelGroups.forEach(group => {
+                        const category = group.getAttribute('data-category');
+                        let matchFoundInGroup = false;
 
-                    const match = name.includes(searchTerm) || access.includes(searchTerm) || category.includes(searchTerm);
-                    card.style.display = match ? 'block' : 'none';
+                        const cards = group.querySelectorAll('.channel-card');
+                        cards.forEach(card => {
+                            const name = card.getAttribute('data-name');
+                            const access = card.getAttribute('data-access');
+                            const match = name.includes(searchTerm) || access.includes(searchTerm) || category.includes(searchTerm);
+                            card.style.display = match ? 'block' : 'none';
+                            if (match) matchFoundInGroup = true;
+                        });
 
-                    if (match) matchFoundInGroup = true;
+                        group.style.display = matchFoundInGroup ? 'block' : 'none';
+                    });
+                }, 200));
+            }
+
+            // Hover effect
+            document.querySelectorAll('.channel-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = '10';
                 });
-
-                group.style.display = matchFoundInGroup ? 'block' : 'none';
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '1';
+                });
             });
-        });
 
-        // Hover effect
-        document.querySelectorAll('.channel-card').forEach(card => {
-            card.addEventListener('mouseenter', function () {
-                this.style.zIndex = '10';
-            });
-            card.addEventListener('mouseleave', function () {
-                this.style.zIndex = '1';
-            });
-        });
-
-        // Auto-dismiss toasts
-        document.addEventListener('DOMContentLoaded', () => {
+            // Auto-dismiss toasts
             const toasts = document.querySelectorAll('.toast');
             toasts.forEach(toast => {
                 setTimeout(() => {
                     toast.remove();
                 }, 4000);
             });
-        });
+        }
+
+        // Debounce function for search
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
 
         // Function to show new toasts
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
+            if (!container) return;
+            
             const colors = {
                 success: 'bg-green-600',
                 error: 'bg-red-600',
@@ -228,7 +228,7 @@
             toast.className = `toast px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white ${colors[type]}`;
             toast.innerHTML = `
                 <div class="flex items-center">
-                    <i class="fas ${icons[type]} mr-2"></i>
+                    <i class="fas ${icons[type]} mr-2" aria-hidden="true"></i>
                     ${message}
                 </div>
             `;
@@ -239,6 +239,23 @@
                 toast.style.animation = 'fadeOut 0.5s ease-in forwards';
                 setTimeout(() => toast.remove(), 500);
             }, 3500);
+        }
+    </script>
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    
+    <!-- Service worker registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
         }
     </script>
 </body>

@@ -617,12 +617,13 @@ def custom_list():
 #-------------------------------------------------------------------------
 import json
 
-MOVIES_FILE = 'movies.json'
+MOVIES_FILE = 'movies.json'  # Your exact filename
 
 def load_movies():
     if not os.path.exists(MOVIES_FILE):
         return {}
-    with open(MOVIES_FILE, 'r') as f:
+
+    with open(MOVIES_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 MOVIES = load_movies()

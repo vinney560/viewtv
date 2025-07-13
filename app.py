@@ -617,101 +617,106 @@ def custom_list():
 #-------------------------------------------------------------------------
 import json
 import os
-import string
+import time
 from collections import defaultdict
 
 MOVIES_FILE = 'movies.json'
-CACHE_FILE = 'movies_cache.json'  # For optimized loading
-CACHE_EXPIRE = 3600  # 1 hour cache
+CACHE_FILE = 'movies_cache.json'
 
 def clean_key(key):
-    """Clean and standardize dictionary keys"""
-    # Remove numeric prefix and special characters
-    key = ''.join(c for c in key if c.isalnum() or c == '_')
-    parts = key.strip('_').split('_')
-    if parts and parts[0].isdigit():
-        parts = parts[1:]
-    return '_'.join(parts).lower()
+    """Clean and standardize dictionary keys while preserving original key structure"""
+    if not isinstance(key, str):
+        key = str(key)
+    # Remove trailing underscores but keep internal ones
+    return key.strip('_').lower()
 
-def load_and_optimize_movies():
-    """Load movies with caching and optimization"""
-    # Check cache first
-    if os.path.exists(CACHE_FILE) and \
-       os.path.getmtime(CACHE_FILE) > os.path.getmtime(MOVIES_FILE) and \
-       (os.path.getmtime(CACHE_FILE) + CACHE_EXPIRE) > time.time():
-        with open(CACHE_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-
+def load_movies_data():
+    """Load and validate movies data with caching"""
+    # Check if movies file exists
     if not os.path.exists(MOVIES_FILE):
+        current_app.logger.error(f"Movies file not found at {os.path.abspath(MOVIES_FILE)}")
         return {}
 
-    with open(MOVIES_FILE, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    # Check cache freshness
+    use_cache = (os.path.exists(CACHE_FILE) and \
+                (os.path.getmtime(CACHE_FILE) > os.path.getmtime(MOVIES_FILE))
 
-    fixed = {}
-    used_keys = set()
+    if use_cache:
+        try:
+            with open(CACHE_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            current_app.logger.warning(f"Cache load failed: {e}")
 
-    for old_key, value in data.items():
-        base = clean_key(old_key)
-        new_key = base
+    # Load and process original file
+    try:
+        with open(MOVIES_FILE, 'r', encoding='utf-8') as f:
+            raw_data = json.load(f)
+    except Exception as e:
+        current_app.logger.error(f"Failed to load movies: {e}")
+        return {}
 
-        # Handle duplicate keys
-        counter = 1
-        while new_key in used_keys:
-            new_key = f"{base}_{counter}"
-            counter += 1
+    processed = {}
+    for original_key, movie in raw_data.items():
+        if not isinstance(movie, dict):
+            continue
 
-        used_keys.add(new_key)
-        
-        # Standardize the channel data structure
-        fixed[new_key] = {
-            'name': value.get('name', 'Unnamed Channel'),
-            'url': value.get('url', ''),
-            'logo': value.get('logo', ''),
-            'access': value.get('access', 'free'),
-            'group-title': value.get('group-title', 'Uncategorized')
-        }
+        try:
+            clean_movie = {
+                'name': str(movie.get('name', '')).strip() or f"Unnamed Movie ({original_key})",
+                'url': str(movie.get('url', '')).strip(),
+                'logo': str(movie.get('logo', '')).strip(),
+                'group-title': str(movie.get('group-title', 'Uncategorized')).strip(),
+                'access': str(movie.get('access', 'free')).lower(),
+                'original_key': original_key  # Keep reference to original key
+            }
+            
+            # Validate required fields
+            if not clean_movie['url']:
+                continue
+                
+            processed[clean_key(original_key)] = clean_movie
+        except Exception as e:
+            current_app.logger.warning(f"Error processing movie {original_key}: {e}")
+            continue
 
-    # Save optimized version to cache
-    with open(CACHE_FILE, 'w', encoding='utf-8') as f:
-        json.dump(fixed, f, indent=2, ensure_ascii=False)
+    # Save to cache
+    try:
+        with open(CACHE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(processed, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        current_app.logger.warning(f"Failed to save cache: {e}")
 
-    return fixed
+    return processed
 
-# Load the optimized data
-MOVIES = load_and_optimize_movies()
+# Load data at startup
+MOVIES_DATA = load_movies_data()
 
 @app.route("/plus-movies")
 @login_required
 @plus_required
 def plus_movies():
-    # Use generator to minimize memory usage with large datasets
-    def generate_groups():
-        grouped = defaultdict(list)
-        
-        for key, ch in MOVIES.items():
-            group = ch.get('group-title', 'Uncategorized')
-            # Include only necessary fields for the template
-            grouped[group].append({
-                'name': ch['name'],
-                'url': ch['url'],
-                'logo': ch['logo'],
-                'access': ch['access'],
-                'key': key  # Include the cleaned key
-            })
-        
-        # Sort groups and channels
-        for group in grouped:
-            grouped[group].sort(key=lambda x: x['name'].lower())
-        
-        return dict(sorted(grouped.items(), key=lambda x: x[0].lower()))
+    # Group movies by category
+    categories = defaultdict(list)
     
-    # Pass the generator function to template
+    for movie_key, movie in MOVIES_DATA.items():
+        category = movie['group-title'] if movie['group-title'] else 'Uncategorized'
+        categories[category].append(movie)
+    
+    # Sort categories alphabetically
+    sorted_categories = sorted(categories.items(), key=lambda x: x[0].lower())
+    
+    # Sort movies within each category by name
+    categorized_movies = {
+        category: sorted(movies, key=lambda x: x['name'].lower())
+        for category, movies in sorted_categories
+    }
+    
     return render_template(
         'movies.html',
-        categorized_channels=generate_groups(),
-        total_channels=len(MOVIES)
-    )
+        categorized_channels=categorized_movies,
+        total_movies=len(MOVIES_DATA),
+        total_categories=len(categorized_movies)
 #-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required

@@ -9,6 +9,11 @@
     "url": "https://abcnews.go.com/Live",
     "group-title": "News"
   },
+  "sporty": {
+    "name": "Sporty Tv",
+    "url": "https://www.youtube.com/embed/bUAWcYT3KoQ",
+    "group-title": "Sports"
+  },
   "afro-beats": {
     "name": "Afro Beats",
     "url": "https://stream.ecable.tv/afrobeats/index.m3u8",

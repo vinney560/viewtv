@@ -743,7 +743,7 @@ def get_categories():
 def get_movies():
     category = request.args.get('category', '').lower()
     page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', 48))
+    limit = int(request.args.get('limit', 100))
     
     # Filter by category if specified
     movies = [

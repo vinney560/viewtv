@@ -42,28 +42,30 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 load_dotenv()
 
+
 def choose_db_uri():
-    new_uri = os.getenv('DATABASE_URL')
-    render_uri = os.getenv('DATABASE_URL_2')
-    if new_uri:
-        try:
-            engine = create_engine(new_uri)
-            engine.connect().close()
-            print("Connected to Render DB (DATABASE_URL)")
-            return new_uri
-        except OperationalError:
-            print("⚠ Failed to connect to Render DB. Trying Render 2 DB...")
+    render_uri = os.getenv('DATABASE_URL')        # Render DB (primary)
+    supabase_uri = os.getenv('DATABASE_URL_2')    # Supabase DB (secondary)
 
     if render_uri:
         try:
             engine = create_engine(render_uri)
             engine.connect().close()
-            print("Connected to Render 2 DB (DATABASE_URL_2)")
+            print("✅ Connected to Render DB (DATABASE_URL)")
             return render_uri
         except OperationalError:
-            print("⚠ Failed to connect to Render 2 DB.")
+            print("⚠️ Failed to connect to Render DB. Trying Supabase DB...")
 
-    print("All remote DBs failed. Falling back to SQLite.")
+    if supabase_uri:
+        try:
+            engine = create_engine(supabase_uri)
+            engine.connect().close()
+            print("✅ Connected to Supabase DB (DATABASE_URL_2)")
+            return supabase_uri
+        except OperationalError:
+            print("⚠️ Failed to connect to Supabase DB.")
+
+    print("❌ All remote DBs failed. Falling back to SQLite.")
     return "sqlite:///default.db"
 
 # App Configuration

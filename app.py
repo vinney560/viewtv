@@ -616,6 +616,7 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #-------------------------------------------------------------------------
 import json
+import os
 import time
 from collections import defaultdict
 
@@ -640,7 +641,7 @@ def load_movies_data():
         current_app.logger.error(f"Movies file not found at {os.path.abspath(MOVIES_FILE)}")
         return {}
 
-    # Check cache freshness with proper parentheses
+    # Check cache freshness
     use_cache = (os.path.exists(CACHE_FILE) and 
                 (os.path.getmtime(CACHE_FILE) > os.path.getmtime(MOVIES_FILE)))
 
@@ -667,20 +668,20 @@ def load_movies_data():
 
         try:
             clean_movie = {
+                'id': clean_key(original_key),  # Added ID field for API
                 'name': str(movie.get('name', '')).strip() or f"Unnamed Movie ({original_key})",
                 'url': str(movie.get('url', '')).strip(),
                 'logo': str(movie.get('logo', '')).strip(),
                 'group-title': str(movie.get('group-title', 'Uncategorized')).strip(),
                 'access': str(movie.get('access', 'free')).lower(),
-                'original_key': original_key  # Keep reference to original key
+                'original_key': original_key
             }
             
-            # Validate required fields
             if not clean_movie['url']:
                 current_app.logger.warning(f"Skipping movie with empty URL: {original_key}")
                 continue
                 
-            processed[clean_key(original_key)] = clean_movie
+            processed[clean_movie['id']] = clean_movie
         except Exception as e:
             current_app.logger.warning(f"Error processing movie {original_key}: {e}")
             continue
@@ -704,30 +705,16 @@ def plus_movies():
     if not MOVIES_DATA:
         return render_template('error.html', message="No movies data available"), 500
 
-    # Group movies by category
+    # Group movies by category for the template
     categories = defaultdict(list)
+    for movie in MOVIES_DATA.values():
+        category = movie['group-title'] if movie.get('group-title') else 'Uncategorized'
+        categories[category].append(movie)
     
-    for movie_key, movie in MOVIES_DATA.items():
-        try:
-            category = movie['group-title'] if movie.get('group-title') else 'Uncategorized'
-            categories[category].append({
-                'name': movie['name'],
-                'url': movie['url'],
-                'logo': movie['logo'],
-                'access': movie['access'],
-                'key': movie_key
-            })
-        except Exception as e:
-            current_app.logger.error(f"Error processing movie {movie_key}: {e}")
-            continue
-    
-    # Sort categories alphabetically
-    sorted_categories = sorted(categories.items(), key=lambda x: x[0].lower())
-    
-    # Sort movies within each category by name
+    # Sort for the template
     categorized_movies = {
         category: sorted(movies, key=lambda x: x['name'].lower())
-        for category, movies in sorted_categories
+        for category, movies in sorted(categories.items(), key=lambda x: x[0].lower())
     }
     
     return render_template(
@@ -736,6 +723,49 @@ def plus_movies():
         total_movies=len(MOVIES_DATA),
         total_categories=len(categorized_movies)
     )
+
+# API Endpoints for the template
+@app.route('/api/categories')
+@login_required
+def get_categories():
+    categories = defaultdict(list)
+    for movie in MOVIES_DATA.values():
+        category = movie['group-title'] if movie.get('group-title') else 'Uncategorized'
+        categories[category] = 1  # Just counting
+    
+    return jsonify([
+        {'id': clean_key(cat), 'name': cat, 'count': count} 
+        for cat, count in categories.items()
+    ])
+
+@app.route('/api/movies')
+@login_required
+def get_movies():
+    category = request.args.get('category', '').lower()
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 48))
+    
+    # Filter by category if specified
+    movies = [
+        m for m in MOVIES_DATA.values() 
+        if not category or clean_key(m.get('group-title', '')) == category
+    ]
+    
+    # Paginate
+    start = (page - 1) * limit
+    end = start + limit
+    paginated = movies[start:end]
+    
+    return jsonify({
+        'movies': paginated,
+        'hasMore': end < len(movies),
+        'total': len(movies)
+    })
+
+@app.route('/api/movies/count')
+@login_required
+def get_movie_count():
+    return jsonify({'count': len(MOVIES_DATA)})
 #-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required

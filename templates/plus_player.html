@@ -41,7 +41,6 @@
       }
     }
 
-    /* Fullscreen styles */
     :fullscreen #player-container,
     :-webkit-full-screen #player-container {
       width: 100vw !important;
@@ -51,7 +50,6 @@
       border-radius: 0 !important;
     }
 
-    /* Button styles */
     #fullscreen-toggle, #data-saver-toggle, #audio-only-toggle {
       background: transparent;
       border: none;
@@ -69,13 +67,11 @@
       color: #ffffff;
     }
 
-    /* Auto-hide logic */
     #fullscreen-toggle.hide, #data-saver-toggle.hide, #audio-only-toggle.hide {
       opacity: 0;
       pointer-events: none;
     }
     
-    /* Enhanced Data Saver Button */
     #data-saver-icon, #audio-only-icon {
       transition: all 0.3s ease;
     }
@@ -105,7 +101,6 @@
       transform: scale(1.15);
     }
     
-    /* Data usage display */
     #data-usage-container {
       position: relative;
       display: inline-block;
@@ -153,7 +148,6 @@
       background: #475569;
     }
     
-    /* Data saver level indicator */
     #data-saver-level {
       position: absolute;
       bottom: -5px;
@@ -170,7 +164,6 @@
       opacity: 1;
     }
     
-    /* Audio-only mode visual indicator */
     .audio-only-mode {
       position: absolute;
       top: 10px;
@@ -194,7 +187,6 @@
     </button>
     <h1 class="font-bold text-cyan-400">Now Streaming</h1>
     <div class="flex space-x-4">
-      <!-- Audio-only Toggle Button -->
       <button id="audio-only-toggle" title="Toggle Audio Only Mode" aria-label="Toggle audio only mode">
         <svg id="audio-only-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
@@ -202,7 +194,6 @@
         <div id="audio-only-badge"></div>
       </button>
       
-      <!-- Enhanced Data Saver Toggle Button -->
       <button id="data-saver-toggle" title="Toggle Data Saver" aria-label="Toggle data saver">
         <div id="data-usage-container">
           <div id="data-usage-toggle" title="Toggle persistent display">P</div>
@@ -215,7 +206,6 @@
         </div>
       </button>
       
-      <!-- Fullscreen Toggle Button -->
       <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
         <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
@@ -264,10 +254,10 @@
     // Data Saver Configuration
     const DATA_SAVER_LEVELS = {
       OFF: 0,
-      LIGHT: 1,     // Auto quality, slightly reduced buffers
-      MEDIUM: 2,    // Lower quality, smaller buffers
-      HIGH: 3,      // Lowest quality, minimal buffers
-      EXTREME: 4    // Audio-only when possible
+      LIGHT: 1,
+      MEDIUM: 2,
+      HIGH: 3,
+      EXTREME: 4
     };
     
     let currentDataSaverLevel = DATA_SAVER_LEVELS.OFF;
@@ -296,18 +286,16 @@
       segmentBytesLoaded = 0;
       clearInterval(dataUsageInterval);
 
-      // Track progress events for all media types
       const trackProgress = () => {
         if (player.buffered.length > 0) {
           const duration = player.duration || 1;
           const buffered = player.buffered.end(0) - player.buffered.start(0);
-          const bytesEstimate = (buffered / duration) * (player.videoBytesTotal || 5000000); // Default 5MB estimate
+          const bytesEstimate = (buffered / duration) * (player.videoBytesTotal || 5000000);
           segmentBytesLoaded = bytesEstimate;
           totalBytesLoaded = bytesEstimate;
         }
       };
 
-      // HLS.js specific tracking
       if (window.hls) {
         window.hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
           const bytes = data.stats.total;
@@ -316,7 +304,6 @@
         });
       }
 
-      // DASH.js specific tracking
       if (window.dashPlayer) {
         window.dashPlayer.on('fragmentLoaded', (e) => {
           if (e.bytes) {
@@ -326,7 +313,6 @@
         });
       }
 
-      // Update display every second
       dataUsageInterval = setInterval(() => {
         const currentMB = (segmentBytesLoaded / (1024 * 1024)).toFixed(2);
         const totalMB = (totalBytesLoaded / (1024 * 1024)).toFixed(2);
@@ -334,10 +320,9 @@
           (segmentBytesLoaded / player.currentTime * 3600 / (1024 * 1024)).toFixed(2) : '0.00';
         
         dataUsageDisplay.textContent = `Current: ${currentMB}MB | Total: ${totalMB}MB | Rate: ${ratePerHour}MB/h`;
-        segmentBytesLoaded = 0; // Reset for next interval
+        segmentBytesLoaded = 0;
       }, 1000);
 
-      // Also track progress events
       player.addEventListener('progress', trackProgress);
     }
 
@@ -370,14 +355,12 @@
       audioOnlyIndicator.classList.remove('hidden');
       
       if (window.hls) {
-        // Try to find an audio-only rendition
         const audioOnlyLevel = window.hls.levels.findIndex(level => level.videoCodec === undefined);
         if (audioOnlyLevel !== -1) {
           originalQuality = window.hls.currentLevel;
           window.hls.currentLevel = audioOnlyLevel;
           originalVideoEnabled = false;
         } else {
-          // If no audio-only stream, hide video element
           player.style.opacity = '0';
         }
       }
@@ -392,7 +375,6 @@
         }
       }
       
-      // For regular video, hide the video element
       if (player.src && !window.hls && !window.dashPlayer) {
         player.style.opacity = '0';
       }
@@ -421,7 +403,6 @@
       currentDataSaverLevel = level;
       document.getElementById('data-saver-level').textContent = `Level: ${level}`;
       
-      // Reset all features first
       if (window.hls) {
         window.hls.currentLevel = originalQuality;
         window.hls.config.maxMaxBufferLength = 600;
@@ -448,7 +429,6 @@
         player.playbackRate = 1.0;
       }
       
-      // Apply level-specific optimizations
       switch(level) {
         case DATA_SAVER_LEVELS.LIGHT:
           enableLightDataSaving();
@@ -468,7 +448,7 @@
     function enableLightDataSaving() {
       if (window.hls) {
         originalQuality = window.hls.currentLevel;
-        window.hls.currentLevel = -1; // Auto quality
+        window.hls.currentLevel = -1;
         window.hls.config.maxMaxBufferLength = 30;
         window.hls.config.maxBufferSize = 3500000;
         window.hls.config.maxBufferLength = 15;
@@ -497,10 +477,9 @@
     function enableMediumDataSaving() {
       if (window.hls) {
         originalQuality = window.hls.currentLevel;
-        // Find the middle quality level
         const levels = window.hls.levels;
         if (levels && levels.length > 1) {
-          const midLevel = Math.floor(levels.length / 3); // Lower third
+          const midLevel = Math.floor(levels.length / 3);
           window.hls.currentLevel = midLevel;
         }
         window.hls.config.maxMaxBufferLength = 20;
@@ -537,7 +516,6 @@
     function enableHighDataSaving() {
       if (window.hls) {
         originalQuality = window.hls.currentLevel;
-        // Force lowest quality level
         const levels = window.hls.levels;
         if (levels && levels.length > 0) {
           window.hls.currentLevel = levels.reduce((minIndex, level, index) => 
@@ -575,12 +553,10 @@
     }
     
     function enableExtremeDataSaving() {
-      // First try to enable audio-only mode
       if (!isAudioOnlyMode) {
         toggleAudioOnlyMode();
       }
       
-      // Then apply the most aggressive settings
       if (window.hls) {
         originalQuality = window.hls.currentLevel;
         window.hls.config.maxMaxBufferLength = 5;
@@ -608,23 +584,19 @@
     }
     
     function toggleDataSaver() {
-      // Cycle through data saver levels
       const nextLevel = (currentDataSaverLevel + 1) % (Object.keys(DATA_SAVER_LEVELS).length);
       setDataSaverLevel(nextLevel);
       
-      // Update UI
       if (nextLevel === DATA_SAVER_LEVELS.OFF) {
         dataSaverBtn.classList.remove('active');
       } else {
         dataSaverBtn.classList.add('active');
       }
       
-      // If going to extreme mode, ensure audio-only is enabled
       if (nextLevel === DATA_SAVER_LEVELS.EXTREME && !isAudioOnlyMode) {
         toggleAudioOnlyMode();
       }
       
-      // If turning off data saver, ensure audio-only is disabled
       if (nextLevel === DATA_SAVER_LEVELS.OFF && isAudioOnlyMode) {
         toggleAudioOnlyMode();
       }
@@ -732,7 +704,6 @@
         iframe.style.display = 'block';
       }
       
-      // Check for slow connection and enable data saver automatically
       if (navigator.connection) {
         const connection = navigator.connection;
         if (connection.effectiveType.includes('2g') || connection.saveData) {
@@ -741,21 +712,19 @@
         } else if (connection.effectiveType.includes('3g')) {
           setDataSaverLevel(DATA_SAVER_LEVELS.HIGH);
           dataSaverBtn.classList.add('active');
-        } else if (connection.downlink < 1.5) { // < 1.5 Mbps
+        } else if (connection.downlink < 1.5) {
           setDataSaverLevel(DATA_SAVER_LEVELS.MEDIUM);
           dataSaverBtn.classList.add('active');
         }
       }
     })();
 
-    // UI Controls
     (function setupUIControls() {
       const fullscreenBtn = document.getElementById('fullscreen-toggle');
       const fullscreenIcon = document.getElementById('fullscreen-icon');
       const playerContainer = document.getElementById('player-container');
       let hideTimeout;
 
-      // SVG paths for icons
       const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6';
       const exitFullscreenPath = 'M6 18L18 6M6 6l12 12';
 

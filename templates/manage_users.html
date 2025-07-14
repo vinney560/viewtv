@@ -163,8 +163,8 @@
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <span class="status-badge {{ 'bg-green-600 text-green-100' if user.status != 'Banned' else 'bg-red-600 text-red-100' }}">
-                {{ user.status or 'Active' }}
+              <span class="status-badge {{ 'bg-green-600 text-green-100' if user.status != 'Banned' or user.status != "off" else 'bg-red-600 text-red-100' }}">
+                {{ user.status or 'Untitled' }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">

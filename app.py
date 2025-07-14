@@ -481,7 +481,7 @@ def login():
                 session.clear()
 
                 session['role'] = user.role
-                session['active'] = user.status
+                user.status == "active"
                 login_user(user)
                 flash("♻️ Welcome back!", "success")
 

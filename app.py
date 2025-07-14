@@ -912,42 +912,51 @@ import re
 import os
 from urllib.parse import quote_plus
 #=======================================
-from flask import Blueprint
 from flask import jsonify
+import requests
 
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
 CATEGORY_QUERIES = {
-    "all":       "live football match",
-    "fifa":      "FIFA live match",
-    "uefa":      "UEFA live match",
-    "epl":       "EPL live match"
+    "all":  "live football match",
+    "fifa": "FIFA live match",
+    "uefa": "UEFA live match",
+    "epl":  "EPL live match"
 }
 
 def fetch_live_streams(query, max_results=25):
     url = "https://www.googleapis.com/youtube/v3/search"
     params = {
-        "part":      "snippet",
-        "type":      "video",
-        "eventType": "live",
-        "q":         query,
+        "part":       "snippet",
+        "type":       "video",
+        "eventType":  "live",
+        "q":          query,
         "maxResults": max_results,
-        "key":       YOUTUBE_API_KEY
+        "key":        YOUTUBE_API_KEY
     }
-    resp = requests.get(url, params=params)
-    items = resp.json().get("items", [])
-    streams = []
-    for item in items:
-        vid = item["id"].get("videoId")
-        if not vid: continue
-        snip = item["snippet"]
-        streams.append({
-            "title":        snip["title"],
-            "video_id":     vid,
-            "channel":      snip["channelTitle"],
-            "published_at": snip["publishedAt"]
-        })
-    return streams
+
+    try:
+        resp = requests.get(url, params=params)
+        items = resp.json().get("items", [])
+        streams = []
+
+        for item in items:
+            vid = item["id"].get("videoId")
+            if not vid:
+                continue
+            snip = item["snippet"]
+            streams.append({
+                "title":        snip["title"],
+                "video_id":     vid,
+                "channel":      snip["channelTitle"],
+                "published_at": snip["publishedAt"]
+            })
+
+        return streams
+
+    except Exception as e:
+        print(f"Error fetching streams: {e}")
+        return []
 
 @app.route("/live_matches")
 def live_matches():

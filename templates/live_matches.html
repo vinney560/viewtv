@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Live | StreamTv</title>
+  <title>Live Football | StreamTv</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -44,8 +44,12 @@
     .updating-indicator {
       animation: pulse 1.5s infinite;
     }
-    .user-watching {
-      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.5);
+    .refresh-spin {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -61,29 +65,23 @@
                 d="M12 2l3 7h7l-5.5 4 2.5 7L12 16l-7 4 2.5-7L2 9h7l3-7z" />
         </svg>
         <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-          Football | StreamTv
+          Live Football
         </h1>
       </div>
 
-      <!-- Search + Categories -->
-      <div class="w-full md:w-auto flex flex-col md:flex-row gap-3 items-center">
-        <div class="relative w-full md:w-64">
-          <input
-            id="searchInput"
-            type="text"
-            placeholder="Search teams or keywords…"
-            class="w-full px-4 py-2 rounded-lg bg-gray-700/80 border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all"
-          />
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute right-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
+      <!-- Categories and Refresh -->
+      <div class="flex items-center gap-3">
         <div id="categories" class="flex flex-wrap justify-center gap-2">
           <button data-cat="all" class="category-btn px-4 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-sm font-medium">All</button>
           <button data-cat="fifa" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">FIFA</button>
           <button data-cat="uefa" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">UEFA</button>
           <button data-cat="epl" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">EPL</button>
         </div>
+        <button id="refreshBtn" class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors" title="Refresh streams">
+          <svg id="refreshIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+        </button>
       </div>
     </div>
   </header>
@@ -103,62 +101,24 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        No live streams found. Try a different search or category.
+        No live streams found for this category.
       </p>
     </div>
   </main>
 
   <!-- Footer -->
   <footer class="bg-gray-800/50 border-t border-gray-700/30 p-3 text-center text-gray-500 text-sm">
-    <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+    <div class="container mx-auto">
       <div>Powered by YouTube Data API v3</div>
-      <div class="mt-2 md:mt-0 flex items-center justify-center space-x-2">
-        <span class="flex items-center">
-          <span class="w-2 h-2 rounded-full bg-green-400 mr-1 animate-pulse-slow"></span>
-          <span id="streamCount">0</span> live streams
-        </span>
-        <span>•</span>
-        <span>Last updated: <span id="lastUpdated">just now</span></span>
-      </div>
+      <div class="mt-1">Showing <span id="streamCount">0</span> live streams | Last updated: <span id="lastUpdated">never</span></div>
     </div>
   </footer>
 
-  <!-- JavaScript with Client-Side Caching -->
+  <!-- JavaScript -->
   <script>
-    // Cache implementation
-    const streamCache = {
-      data: null,
-      lastUpdated: 0,
-      cacheDuration: 30000, // 30 seconds cache validity
-      
-      get: function() {
-        if (this.data && Date.now() - this.lastUpdated < this.cacheDuration) {
-          return this.data;
-        }
-        return null;
-      },
-      
-      set: function(data) {
-        this.data = data;
-        this.lastUpdated = Date.now();
-      }
-    };
-
-    // App state
     let currentCat = 'all';
-    let debounceTimeout;
-    let activeStreams = new Map();
-    let userIsWatching = false;
-
-    // DOM elements
-    const elements = {
-      searchInput: document.getElementById('searchInput'),
-      streamsContainer: document.getElementById('streamsContainer'),
-      noResults: document.getElementById('noResults'),
-      updatingIndicator: document.getElementById('updatingIndicator'),
-      streamCount: document.getElementById('streamCount'),
-      lastUpdated: document.getElementById('lastUpdated')
-    };
+    const POLL_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+    let pollTimeout;
 
     // Format time for display
     function formatTime(date) {
@@ -169,20 +129,10 @@
       return new Date(date).toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
 
-    // Check if user is interacting with any iframe
-    function checkIfUserIsWatching() {
-      const iframes = document.querySelectorAll('iframe');
-      return Array.from(iframes).some(iframe => {
-        return iframe.classList.contains('user-active') || 
-               document.activeElement === iframe;
-      });
-    }
-
     // Create a stream card element
     function createStreamCard(s) {
       const card = document.createElement('div');
       card.className = 'stream-card bg-gray-800/80 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30 transition-all animate-fade-in';
-      card.dataset.videoId = s.video_id;
       card.innerHTML = `
         <div class="relative">
           <iframe 
@@ -218,140 +168,51 @@
       return card;
     }
 
-    // Update stream cards with minimal disruption
-    function updateStreams(newStreams) {
-      const container = elements.streamsContainer;
-      const currentStreams = new Map();
-      
-      // Mark all existing streams
-      container.querySelectorAll('.stream-card').forEach(card => {
-        const videoId = card.dataset.videoId;
-        currentStreams.set(videoId, card);
-      });
-
-      // Update existing or add new streams
-      newStreams.forEach(s => {
-        if (currentStreams.has(s.video_id)) {
-          // Update existing card if needed
-          const existingCard = currentStreams.get(s.video_id);
-          // Preserve the iframe state if user is watching
-          const iframe = existingCard.querySelector('iframe');
-          if (userIsWatching && (iframe.classList.contains('user-active') || document.activeElement === iframe)) {
-            return; // Skip updating this card
-          }
-          // Otherwise update the card content
-          const newCard = createStreamCard(s);
-          existingCard.replaceWith(newCard);
-        } else {
-          // Add new stream card
-          const card = createStreamCard(s);
-          container.appendChild(card);
-        }
-      });
-
-      // Remove ended streams (only if user isn't watching them)
-      currentStreams.forEach((card, videoId) => {
-        if (!newStreams.some(s => s.video_id === videoId)) {
-          const iframe = card.querySelector('iframe');
-          if (!iframe.classList.contains('user-active') && document.activeElement !== iframe) {
-            card.remove();
-          }
-        }
-      });
-
-      // Update footer stats
-      elements.streamCount.textContent = newStreams.length;
-      elements.lastUpdated.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      
-      // Update empty state
-      if (newStreams.length === 0) {
-        elements.noResults.classList.remove('hidden');
-      } else {
-        elements.noResults.classList.add('hidden');
-      }
-    }
-
-    // Load streams with caching
+    // Load streams for current category
     async function loadStreams() {
       try {
-        elements.updatingIndicator.classList.remove('hidden');
+        // Show loading state
+        document.getElementById('updatingIndicator').classList.remove('hidden');
+        document.getElementById('refreshIcon').classList.add('refresh-spin');
         
-        const q = elements.searchInput.value;
-        const cacheKey = `${currentCat}-${q}`;
+        const response = await fetch(`/api/live_streams?cat=${currentCat}`);
+        const streams = await response.json();
+        const container = document.getElementById('streamsContainer');
         
-        // Check cache first
-        const cachedData = streamCache.get();
-        if (cachedData && cachedData.key === cacheKey) {
-          updateStreams(cachedData.streams);
-          return;
+        // Clear existing streams
+        container.innerHTML = '';
+        
+        if (streams.length === 0) {
+          document.getElementById('noResults').classList.remove('hidden');
+        } else {
+          // Add new streams
+          streams.forEach(stream => {
+            container.appendChild(createStreamCard(stream));
+          });
+          document.getElementById('noResults').classList.add('hidden');
         }
         
-        // Fetch fresh data
-        const res = await fetch(`/api/live_streams?cat=${currentCat}&q=${encodeURIComponent(q)}`);
-        const streams = await res.json();
-        
-        // Update cache
-        streamCache.set({
-          key: cacheKey,
-          streams: streams
+        // Update counters
+        document.getElementById('streamCount').textContent = streams.length;
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString([], { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          second: '2-digit'
         });
-        
-        // Check if user is watching any stream
-        userIsWatching = checkIfUserIsWatching();
-        
-        // Update streams with minimal disruption
-        updateStreams(streams);
         
       } catch (error) {
         console.error('Error loading streams:', error);
-        // Fallback to cache if available
-        const cachedData = streamCache.get();
-        if (cachedData) {
-          updateStreams(cachedData.streams);
-        }
+        document.getElementById('noResults').classList.remove('hidden');
       } finally {
-        elements.updatingIndicator.classList.add('hidden');
+        // Hide loading state
+        document.getElementById('updatingIndicator').classList.add('hidden');
+        document.getElementById('refreshIcon').classList.remove('refresh-spin');
+        
+        // Schedule next poll (1 hour)
+        clearTimeout(pollTimeout);
+        pollTimeout = setTimeout(loadStreams, POLL_INTERVAL);
       }
     }
-
-    // Track if user is interacting with any iframe
-    document.addEventListener('mouseover', (e) => {
-      if (e.target.tagName === 'IFRAME') {
-        e.target.classList.add('user-active');
-        userIsWatching = true;
-        e.target.closest('.stream-card').classList.add('user-watching');
-      }
-    });
-
-    document.addEventListener('mouseout', (e) => {
-      if (e.target.tagName === 'IFRAME') {
-        e.target.classList.remove('user-active');
-        userIsWatching = checkIfUserIsWatching();
-        e.target.closest('.stream-card').classList.remove('user-watching');
-      }
-    });
-
-    document.addEventListener('focusin', (e) => {
-      if (e.target.tagName === 'IFRAME') {
-        e.target.classList.add('user-active');
-        userIsWatching = true;
-        e.target.closest('.stream-card').classList.add('user-watching');
-      }
-    });
-
-    document.addEventListener('focusout', (e) => {
-      if (e.target.tagName === 'IFRAME') {
-        e.target.classList.remove('user-active');
-        userIsWatching = checkIfUserIsWatching();
-        e.target.closest('.stream-card').classList.remove('user-watching');
-      }
-    });
-
-    // Debounced live search
-    elements.searchInput.addEventListener('input', () => {
-      clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(loadStreams, 500);
-    });
 
     // Category buttons
     document.querySelectorAll('.category-btn').forEach(btn => {
@@ -367,9 +228,14 @@
       });
     });
 
-    // Initial load + polling
+    // Manual refresh button
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      clearTimeout(pollTimeout);
+      loadStreams();
+    });
+
+    // Initial load + start polling
     loadStreams();
-    setInterval(loadStreams, 60_000);  // refresh every 60s
   </script>
 </body>
 </html>

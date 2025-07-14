@@ -9,21 +9,6 @@
     "url": "https://abcnews.go.com/Live",
     "group-title": "News"
   },
-  "sporty": {
-    "name": "Sporty Tv",
-    "url": "https://www.youtube.com/embed/bUAWcYT3KoQ?rel=0&modestbranding=1&showinfo=0&controls=1",
-    "group-title": "Sports"
-  },
-  "cnbc": {
-    "name": "CNBC Sport",
-    "url": "https://www.youtube.com/embed/lKn-AcsRECs?rel=0&modestbranding=1&showinfo=0&controls=1&vq=hd1080",
-    "group-title": "Sports"
-  },  
-  "football-tv": {
-    "name": "Football Tv",
-    "url": "https://www.youtube.com/embed/75OA_UkSgF4?rel=0&modestbranding=1&showinfo=0&controls=1",
-    "group-title": "Sports"
-  },
   "afro-beats": {
     "name": "Afro Beats",
     "url": "https://stream.ecable.tv/afrobeats/index.m3u8",

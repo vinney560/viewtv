@@ -914,6 +914,7 @@ from urllib.parse import quote_plus
 #=======================================
 from flask import jsonify
 import requests
+import time
 
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
@@ -923,6 +924,9 @@ CATEGORY_QUERIES = {
     "uefa": "UEFA live match",
     "epl":  "EPL live match"
 }
+
+CACHE = {}
+CACHE_DURATION = 1 * 60 * 60  # 1 hours in seconds
 
 def fetch_live_streams(query, max_results=25):
     url = "https://www.googleapis.com/youtube/v3/search"
@@ -958,17 +962,29 @@ def fetch_live_streams(query, max_results=25):
         print(f"Error fetching streams: {e}")
         return []
 
+def fetch_live_streams_cached(category):
+    now = time.time()
+    cached = CACHE.get(category)
+
+    if cached and now - cached["timestamp"] < CACHE_DURATION:
+        return cached["data"]
+
+    query = CATEGORY_QUERIES.get(category, CATEGORY_QUERIES["all"])
+    fresh = fetch_live_streams(query)
+    CACHE[category] = {
+        "data": fresh,
+        "timestamp": now
+    }
+    return fresh
+
 @app.route("/live_matches")
 def live_matches():
     return render_template("live_matches.html")
 
 @app.route("/api/live_streams")
 def api_live_streams():
-    q = request.args.get("q", "").strip()
     cat = request.args.get("cat", "all")
-    base_q = CATEGORY_QUERIES.get(cat, CATEGORY_QUERIES["all"])
-    query = f"{base_q} {q}" if q else base_q
-    streams = fetch_live_streams(query)
+    streams = fetch_live_streams_cached(cat)
     return jsonify(streams)
 #=======================================
 @app.route('/status', methods=['GET'])

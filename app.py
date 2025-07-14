@@ -223,7 +223,11 @@ def make_session_permanent():
 #------------------------------------------------------------------------
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    try:
+        return db.session.get(User, int(user_id))
+    except OperationalError:
+        app.logger.warning("Database connection failed during user load.")
+        return None
 #-----------------------------------------------------------------------
 def is_admin():
     return session.get('role') == 'admin'
@@ -240,9 +244,7 @@ def uploaded_file(filename):
 def is_authenticated():
     return jsonify({'authenticated': current_user.is_authenticated})
 #----------------------------------------------------------------------
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
+
 #-----------------------------------------------------------------------
 @app.before_request
 def auto_logout_user():

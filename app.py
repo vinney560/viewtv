@@ -1140,7 +1140,7 @@ selected_keys = [
     "afro-beats", "bollywood", "citizen-tv", "disney-jr", "ebru-tv", "emmanual-tv",
     "figth-network", "fifa-a", "inooro-tv", "kameme-tv", "k24-tv", "kass-tv", "kbc",
     "ktn", "kyeni-tv", "lolwe-tv", "movie-box", "nick-jr-east", "ntv-kenya",
-    "ramogi-tv", "racing-com", "tom-and-jerry"
+    "ramogi-tv", "racing-com", "sporty", "tom-and-jerry"
 ]
 
 RANDOMIZED_CHANNELS = {

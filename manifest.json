@@ -1,11 +1,11 @@
 {
-  "name": "View Tv",
-  "short_name": "VTV",
-  "description": "Stream your favorite movies, shows and football anytime, anywhere.",
+  "name": "View Tv Streamer",
+  "short_name": "View Tv",
+  "description": "Stream your favorite movies, shows, news, locals, kids shows, music and, sports anytime, anywhere.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "landscape",
+  "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#1e1e1e",
   "icons": [
@@ -24,6 +24,23 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/uploads/screenshot_1.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    },
+    {
+      "src": "/uploads/screenshot_2.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    },
+    {
+      "src": "/uploads/screenshot_3.png",
+      "type": "image/png",
+      "sizes": "1280x720"
     }
   ]
 }

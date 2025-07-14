@@ -1988,8 +1988,13 @@ def internal_error(error):
 @app.errorhandler(CSRFError)
 @csrf.exempt
 def handle_csrf_error(e):
-    flash("CSRF token missing or invalid", "error")
-    return redirect(request.referrer or url_for('home')), 400
+    app.logger.warning(f"CSRF Error: {e.description}", exc_info=True)
+    flash("CSRF token missing or invalid. Please try again.", "error")
+
+    try:
+        return redirect(request.referrer), 400
+    except Exception:
+        return redirect(url_for('home')), 400
 
 #========================================
 if __name__ == '__main__':

@@ -444,7 +444,7 @@ def register():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and current_user.status = "active":
         if current_user.role == 'admin':
             return redirect(url_for('home_admin'))
         if current_user.is_plus:
@@ -1443,6 +1443,7 @@ def welcome():
 #--------------------------------------------------------------------------
 @app.route('/logout_current_user')
 def logout_current_user():
+    current_user.status = "off"
     session.clear()
     logout_user()
     flash("Logout success!", "success")

@@ -1974,8 +1974,14 @@ def forbidden_error(error):
 @csrf.exempt
 def internal_error(error):
     app.logger.error(f'Internal Server Error: {error}', exc_info=True)
-    flash('Request cannot be completed', 'error')
-    return redirect(request.referrer or url_for('home')), 500
+    flash('Oops! Something went wrong. Try again.', 'error')
+
+    # Fallback to home if referrer is not available
+    referrer = request.referrer
+    if referrer:
+        return redirect(referrer), 302
+    else:
+        return redirect(url_for('home')), 302
 
 @app.errorhandler(CSRFError)
 @csrf.exempt

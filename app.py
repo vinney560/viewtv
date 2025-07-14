@@ -481,7 +481,7 @@ def login():
                 session.clear()
 
                 session['role'] = user.role
-                user.status == "active"
+                session['active'] = user.status
                 login_user(user)
                 flash("♻️ Welcome back!", "success")
 
@@ -1444,6 +1444,7 @@ def welcome():
 @app.route('/logout_current_user')
 def logout_current_user():
     current_user.status = "off"
+    db.session.commit()
     session.clear()
     logout_user()
     flash("Logout success!", "success")

@@ -444,7 +444,7 @@ def register():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    if current_user.is_authenticated and current_user.status = "active":
+    if current_user.is_authenticated and current_user.status == "active":
         if current_user.role == 'admin':
             return redirect(url_for('home_admin'))
         if current_user.is_plus:
@@ -1668,7 +1668,7 @@ def toggle_ban(user_id):
 
     user = User.query.get_or_404(user_id)
     if user.status == "Banned":
-        user.status = "Active"
+        user.status = "active"
         flash("User unbanned.", "success")
     else:
         user.status = "Banned"

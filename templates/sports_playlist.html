@@ -6,28 +6,55 @@
   <title>Sports Playlist</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .channel-card { display: block; }
+    .channel-card { 
+      display: block;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(74, 222, 128, 0.1);
+    }
+    .channel-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(34, 211, 238, 0.3);
+      box-shadow: 0 4px 6px -1px rgba(6, 182, 212, 0.1), 0 2px 4px -1px rgba(6, 182, 212, 0.06);
+    }
     .hidden-card { display: none; }
     .hidden-section { display: none; }
+    .live-btn {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
   </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-black">
 
   <!-- Header -->
-  <header class="flex items-center justify-between px-4 py-6">
-    <a href="javascript:history.back()" class="text-cyan-400 hover:text-white">
+  <header class="flex items-center justify-between px-4 py-6 bg-black/80 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-10">
+    <a href="javascript:history.back()" class="text-cyan-400 hover:text-white transition-colors">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
       </svg>
     </a>
-    <h1 class="text-3xl font-bold text-cyan-400 text-center flex-grow">Sports | StreamTv</h1>
-    <div class="w-6"></div> <!-- Placeholder -->
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent text-center flex-grow">Sports | StreamTv</h1>
+    <a href="/live_matches" class="text-white hover:text-cyan-400 transition-colors relative group">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+      </svg>
+      <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full live-btn"></span>
+      <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Live Matches</span>
+    </a>
   </header>
 
   <!-- Filters -->
   <div class="px-4 mb-6 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-    <input id="searchInput" type="text" placeholder="Search channels..." class="flex-1 p-3 rounded-lg bg-gray-800 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400">
-    <select id="groupFilter" class="p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+    <div class="relative flex-1">
+      <input id="searchInput" type="text" placeholder="Search channels..." class="w-full p-3 pl-10 rounded-lg bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all">
+      <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <select id="groupFilter" class="p-3 rounded-lg bg-gray-800/50 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all">
       <option value="">All Groups</option>
       {% for label in channels_by_group.keys() %}
       <option value="{{ label }}">{{ label }}</option>
@@ -39,43 +66,51 @@
   <main class="flex-grow overflow-y-auto px-4 space-y-12 pb-28">
     {% for group, channels in channels_by_group.items() %}
       <section class="channel-section" data-group="{{ group }}">
-        <h2 class="text-2xl font-semibold text-cyan-300 mb-4 border-l-4 border-cyan-400 pl-3">{{ group }}</h2>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <h2 class="text-2xl font-semibold text-cyan-300 mb-4 border-l-4 border-cyan-400 pl-3 flex items-center">
+          {{ group }}
+          <span class="ml-2 text-sm font-normal text-cyan-400/70">({{ channels|length }} channels)</span>
+        </h2>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {% for ch in channels %}
-          <div class="bg-gray-800 rounded-xl p-4 flex items-center justify-between shadow-md channel-card">
-            <div class="flex items-center space-x-3">
-              <img src="{{ ch.logo }}" alt="{{ ch.name }}" class="h-12 w-12 rounded bg-gray-700 object-contain" onerror="this.src='{{ url_for('uploaded_file', filename='default_tv_icon.png') }}'">
-              <div>
-                <p class="font-semibold channel-name">{{ ch.name }}</p>
-                <p class="text-xs text-gray-400">{{ ch.country }}</p>
+          <div class="bg-gray-800/50 hover:bg-gray-800/70 rounded-xl p-4 flex items-center justify-between shadow-md channel-card">
+            <div class="flex items-center space-x-3 min-w-0">
+              <img src="{{ ch.logo }}" alt="{{ ch.name }}" class="h-12 w-12 rounded bg-gray-700/50 object-contain flex-shrink-0" onerror="this.src='{{ url_for('uploaded_file', filename='default_tv_icon.png') }}'">
+              <div class="min-w-0">
+                <p class="font-semibold channel-name truncate">{{ ch.name }}</p>
+                <p class="text-xs text-gray-400 truncate">{{ ch.country }}</p>
               </div>
             </div>
-            <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" class="bg-cyan-500 hover:bg-cyan-600 text-white px-3 py-1 rounded-full text-sm font-medium">▶ Play</a>
+            <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors">▶ Play</a>
           </div>
           {% endfor %}
         </div>
       </section>
     {% else %}
-      <p class="text-center text-gray-500">No channels found.</p>
+      <div class="text-center py-12">
+        <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-gray-500">No channels found.</p>
+      </div>
     {% endfor %}
   </main>
 
   <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 text-white flex justify-around items-center h-16 z-50">
-    <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center text-xs hover:text-cyan-400">
-      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+  <nav class="fixed bottom-0 left-0 right-0 bg-gray-900/80 backdrop-blur-sm border-t border-gray-700 text-white flex justify-around items-center h-16 z-50">
+    <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center text-xs hover:text-cyan-400 transition-colors px-2">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
         <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>
       </svg>
       Dashboard
     </a>
-    <a href="{{ url_for('get_plus') }}" class="flex flex-col items-center text-xs hover:text-cyan-400">
-      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <a href="{{ url_for('get_plus') }}" class="flex flex-col items-center text-xs hover:text-cyan-400 transition-colors px-2">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
         <path d="M12 4v16m8-8H4"/>
       </svg>
       Plus
     </a>
-    <a href="{{ url_for('account') }}" class="flex flex-col items-center text-xs hover:text-cyan-400">
-      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <a href="{{ url_for('account') }}" class="flex flex-col items-center text-xs hover:text-cyan-400 transition-colors px-2">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
         <path d="M5.121 17.804A9 9 0 1118.88 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
       </svg>
       Account

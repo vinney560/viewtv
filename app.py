@@ -249,7 +249,7 @@ def auto_logout_user():
     if current_user.is_authenticated:
         user = User.query.filter_by(id=current_user.id).first()
         if user and user.status != current_user.status:
-            logout_current_user()
+            logout_user(user)
             flash("Status changed. Please log in again.", "error")
             return redirect(url_for('login'))
 #-----------------------------------------------------------------------

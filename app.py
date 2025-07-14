@@ -1830,7 +1830,6 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 
-
 @app.route("/admin/clone_data")
 @login_required
 def clone_data():
@@ -1843,30 +1842,25 @@ def clone_data():
 
     source_engine = create_engine(db1_url)
     dest_engine = create_engine(db2_url)
+
     SourceSession = sessionmaker(bind=source_engine)
     DestSession = sessionmaker(bind=dest_engine)
     source_session = SourceSession()
     dest_session = DestSession()
 
     try:
-        # Ensure destination DB has tables
-        db.metadata.create_all(dest_engine)
+        # Drop all tables in destination DB
+        db.metadata.drop_all(bind=dest_engine)
 
-        # Wipe destination tables
-        for model in [User]:  # Add all models here
-            dest_session.execute(text(f"TRUNCATE TABLE {model.__tablename__} RESTART IDENTITY CASCADE"))
-            dest_session.commit()  # Commit after each truncate to avoid FK errors
+        # Recreate tables
+        db.metadata.create_all(bind=dest_engine)
 
-        # Clone source data into destination
-        for model in [User]:
+        # Now clone data
+        for model in [User]:  # add your models here
             rows = source_session.query(model).all()
             for row in rows:
-                clone = model(**{
-                    col.name: getattr(row, col.name)
-                    for col in model.__table__.columns
-                })
+                clone = model(**{col.name: getattr(row, col.name) for col in model.__table__.columns})
                 dest_session.add(clone)
-
         dest_session.commit()
         flash("Cloning completed successfully.", "success")
 

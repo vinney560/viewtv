@@ -912,6 +912,40 @@ import re
 import os
 from urllib.parse import quote_plus
 #=======================================
+from flask import Blueprint
+
+YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
+
+@app.route("/live_matches")
+def live_matches():
+    url = "https://www.googleapis.com/youtube/v3/search"
+    params = {
+        "part": "snippet",
+        "type": "video",
+        "eventType": "live",
+        "q": "football match",  # You can change to "live sports" etc.
+        "maxResults": 10,
+        "key": YOUTUBE_API_KEY
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        data = response.json()
+        live_streams = []
+
+        for item in data.get("items", []):
+            live_streams.append({
+                "title": item["snippet"]["title"],
+                "video_id": item["id"]["videoId"],
+                "channel": item["snippet"]["channelTitle"],
+                "published_at": item["snippet"]["publishedAt"]
+            })
+
+        return render_template("live_matches.html", streams=live_streams)
+
+    except Exception as e:
+        return f"Failed to fetch live data: {str(e)}", 500
+#=======================================
 @app.route('/status', methods=['GET'])
 def status():
     return Response(

@@ -497,7 +497,7 @@ def login():
                 db.session.commit()
 
         flash('Invalid Credentials', "error")
-        return redirect(url_for('login'))
+        return render_template('login.html', email=email, password=password)
 
     return render_template('login.html')
 

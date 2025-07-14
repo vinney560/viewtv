@@ -913,38 +913,54 @@ import os
 from urllib.parse import quote_plus
 #=======================================
 from flask import Blueprint
+from flask import jsonify
 
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
-@app.route("/live_matches")
-def live_matches():
+CATEGORY_QUERIES = {
+    "all":       "live football match",
+    "fifa":      "FIFA live match",
+    "uefa":      "UEFA live match",
+    "epl":       "EPL live match"
+}
+
+def fetch_live_streams(query, max_results=25):
     url = "https://www.googleapis.com/youtube/v3/search"
     params = {
-        "part": "snippet",
-        "type": "video",
+        "part":      "snippet",
+        "type":      "video",
         "eventType": "live",
-        "q": "football match",  # You can change to "live sports" etc.
-        "maxResults": 10,
-        "key": YOUTUBE_API_KEY
+        "q":         query,
+        "maxResults": max_results,
+        "key":       YOUTUBE_API_KEY
     }
+    resp = requests.get(url, params=params)
+    items = resp.json().get("items", [])
+    streams = []
+    for item in items:
+        vid = item["id"].get("videoId")
+        if not vid: continue
+        snip = item["snippet"]
+        streams.append({
+            "title":        snip["title"],
+            "video_id":     vid,
+            "channel":      snip["channelTitle"],
+            "published_at": snip["publishedAt"]
+        })
+    return streams
 
-    try:
-        response = requests.get(url, params=params)
-        data = response.json()
-        live_streams = []
+@app.route("/live_matches")
+def live_matches():
+    return render_template("live_matches.html")
 
-        for item in data.get("items", []):
-            live_streams.append({
-                "title": item["snippet"]["title"],
-                "video_id": item["id"]["videoId"],
-                "channel": item["snippet"]["channelTitle"],
-                "published_at": item["snippet"]["publishedAt"]
-            })
-
-        return render_template("live_matches.html", streams=live_streams)
-
-    except Exception as e:
-        return f"Failed to fetch live data: {str(e)}", 500
+@app.route("/api/live_streams")
+def api_live_streams():
+    q = request.args.get("q", "").strip()
+    cat = request.args.get("cat", "all")
+    base_q = CATEGORY_QUERIES.get(cat, CATEGORY_QUERIES["all"])
+    query = f"{base_q} {q}" if q else base_q
+    streams = fetch_live_streams(query)
+    return jsonify(streams)
 #=======================================
 @app.route('/status', methods=['GET'])
 def status():

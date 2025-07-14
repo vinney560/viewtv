@@ -44,6 +44,9 @@
     .updating-indicator {
       animation: pulse 1.5s infinite;
     }
+    .user-watching {
+      box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.5);
+    }
   </style>
 </head>
 <body class="flex flex-col h-full text-gray-100">
@@ -120,12 +123,51 @@
     </div>
   </footer>
 
-  <!-- JS: polling, search, categories -->
+  <!-- JavaScript with Client-Side Caching -->
   <script>
+    // Cache implementation
+    const streamCache = {
+      data: null,
+      lastUpdated: 0,
+      cacheDuration: 30000, // 30 seconds cache validity
+      
+      get: function() {
+        if (this.data && Date.now() - this.lastUpdated < this.cacheDuration) {
+          return this.data;
+        }
+        return null;
+      },
+      
+      set: function(data) {
+        this.data = data;
+        this.lastUpdated = Date.now();
+      }
+    };
+
+    // App state
     let currentCat = 'all';
     let debounceTimeout;
-    let activeStreams = new Map(); // Track currently displayed streams
-    let userIsWatching = false; // Flag to check if user is watching a stream
+    let activeStreams = new Map();
+    let userIsWatching = false;
+
+    // DOM elements
+    const elements = {
+      searchInput: document.getElementById('searchInput'),
+      streamsContainer: document.getElementById('streamsContainer'),
+      noResults: document.getElementById('noResults'),
+      updatingIndicator: document.getElementById('updatingIndicator'),
+      streamCount: document.getElementById('streamCount'),
+      lastUpdated: document.getElementById('lastUpdated')
+    };
+
+    // Format time for display
+    function formatTime(date) {
+      return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function formatDate(date) {
+      return new Date(date).toLocaleDateString([], { month: 'short', day: 'numeric' });
+    }
 
     // Check if user is interacting with any iframe
     function checkIfUserIsWatching() {
@@ -134,16 +176,6 @@
         return iframe.classList.contains('user-active') || 
                document.activeElement === iframe;
       });
-    }
-
-    // Format time for display
-    function formatTime(date) {
-      return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    // Format date for display
-    function formatDate(date) {
-      return new Date(date).toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
 
     // Create a stream card element
@@ -187,8 +219,8 @@
     }
 
     // Update stream cards with minimal disruption
-    async function updateStreams(newStreams) {
-      const container = document.getElementById('streamsContainer');
+    function updateStreams(newStreams) {
+      const container = elements.streamsContainer;
       const currentStreams = new Map();
       
       // Mark all existing streams
@@ -203,7 +235,8 @@
           // Update existing card if needed
           const existingCard = currentStreams.get(s.video_id);
           // Preserve the iframe state if user is watching
-          if (checkIfUserIsWatching() && existingCard.querySelector('iframe') === document.activeElement) {
+          const iframe = existingCard.querySelector('iframe');
+          if (userIsWatching && (iframe.classList.contains('user-active') || document.activeElement === iframe)) {
             return; // Skip updating this card
           }
           // Otherwise update the card content
@@ -219,43 +252,65 @@
       // Remove ended streams (only if user isn't watching them)
       currentStreams.forEach((card, videoId) => {
         if (!newStreams.some(s => s.video_id === videoId)) {
-          if (!card.querySelector('iframe').classList.contains('user-active')) {
+          const iframe = card.querySelector('iframe');
+          if (!iframe.classList.contains('user-active') && document.activeElement !== iframe) {
             card.remove();
           }
         }
       });
 
       // Update footer stats
-      document.getElementById('streamCount').textContent = newStreams.length;
-      document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      elements.streamCount.textContent = newStreams.length;
+      elements.lastUpdated.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       
       // Update empty state
       if (newStreams.length === 0) {
-        document.getElementById('noResults').classList.remove('hidden');
+        elements.noResults.classList.remove('hidden');
       } else {
-        document.getElementById('noResults').classList.add('hidden');
+        elements.noResults.classList.add('hidden');
       }
     }
 
-    // Load streams with state preservation
+    // Load streams with caching
     async function loadStreams() {
       try {
-        document.getElementById('updatingIndicator').classList.remove('hidden');
+        elements.updatingIndicator.classList.remove('hidden');
         
-        const q = document.getElementById('searchInput').value;
+        const q = elements.searchInput.value;
+        const cacheKey = `${currentCat}-${q}`;
+        
+        // Check cache first
+        const cachedData = streamCache.get();
+        if (cachedData && cachedData.key === cacheKey) {
+          updateStreams(cachedData.streams);
+          return;
+        }
+        
+        // Fetch fresh data
         const res = await fetch(`/api/live_streams?cat=${currentCat}&q=${encodeURIComponent(q)}`);
         const streams = await res.json();
+        
+        // Update cache
+        streamCache.set({
+          key: cacheKey,
+          streams: streams
+        });
         
         // Check if user is watching any stream
         userIsWatching = checkIfUserIsWatching();
         
         // Update streams with minimal disruption
-        await updateStreams(streams);
+        updateStreams(streams);
         
       } catch (error) {
         console.error('Error loading streams:', error);
+        // Fallback to cache if available
+        const cachedData = streamCache.get();
+        if (cachedData) {
+          updateStreams(cachedData.streams);
+        }
       } finally {
-        document.getElementById('updatingIndicator').classList.add('hidden');
+        elements.updatingIndicator.classList.add('hidden');
       }
     }
 
@@ -264,6 +319,15 @@
       if (e.target.tagName === 'IFRAME') {
         e.target.classList.add('user-active');
         userIsWatching = true;
+        e.target.closest('.stream-card').classList.add('user-watching');
+      }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+      if (e.target.tagName === 'IFRAME') {
+        e.target.classList.remove('user-active');
+        userIsWatching = checkIfUserIsWatching();
+        e.target.closest('.stream-card').classList.remove('user-watching');
       }
     });
 
@@ -271,18 +335,20 @@
       if (e.target.tagName === 'IFRAME') {
         e.target.classList.add('user-active');
         userIsWatching = true;
+        e.target.closest('.stream-card').classList.add('user-watching');
       }
     });
 
     document.addEventListener('focusout', (e) => {
       if (e.target.tagName === 'IFRAME') {
         e.target.classList.remove('user-active');
-        userIsWatching = false;
+        userIsWatching = checkIfUserIsWatching();
+        e.target.closest('.stream-card').classList.remove('user-watching');
       }
     });
 
     // Debounced live search
-    document.getElementById('searchInput').addEventListener('input', () => {
+    elements.searchInput.addEventListener('input', () => {
       clearTimeout(debounceTimeout);
       debounceTimeout = setTimeout(loadStreams, 500);
     });

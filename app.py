@@ -248,9 +248,9 @@ def make_session_permanent():
 def auto_logout_user():
     if current_user.is_authenticated:
         user = User.query.filter_by(id=current_user.id).first()
-        if user and user.role != current_user.role:
+        if user and user.status != current_user.status:
             logout_current_user()
-            flash("Role has changed. Please log in again.", "error")
+            flash("Status changed. Please log in again.", "error")
             return redirect(url_for('login'))
 #-----------------------------------------------------------------------
 def generate_email_token(user):

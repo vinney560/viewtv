@@ -921,6 +921,7 @@ YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 CATEGORY_QUERIES = {
     "all":        "live football match",
     "fifa":       "FIFA live match",
+    "sporty":       "Sporty live",
     "uefa":       "UEFA live match",
     "epl":        "EPL live match",
     "laliga":     "La Liga live match",

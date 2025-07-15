@@ -919,10 +919,17 @@ import time
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
 CATEGORY_QUERIES = {
-    "all":  "live football match",
-    "fifa": "FIFA live match",
-    "uefa": "UEFA live match",
-    "epl":  "EPL live match"
+    "all":      "live football match",
+    "fifa":     "FIFA live match",
+    "uefa":     "UEFA live match",
+    "epl":      "EPL live match",
+    "laliga":   "La Liga live match",
+    "maisha":   "Maisha Magic East live",
+    "nickelodeon": "Nickelodeon live OR Nickelodeon live stream",
+    "bein":     "Bein Sports live OR Bein Sports live stream",
+    "dazn":     "DAZN live OR DAZN live sports OR DAZN streaming",
+    "tnt":      "TNT live OR TNT live stream OR TNT sports live",
+    "fox":      "FOX live OR FOX live stream OR FOX sports live"
 }
 
 CACHE = {}
@@ -989,8 +996,17 @@ def fetch_live_streams_cached(category):
     if cached and now - cached["timestamp"] < CACHE_DURATION:
         return cached["data"]
 
-    query = CATEGORY_QUERIES.get(category, CATEGORY_QUERIES["all"])
-    fresh = fetch_live_streams(query)
+    raw_query = CATEGORY_QUERIES.get(category, CATEGORY_QUERIES["all"])
+    # Split queries by ' OR ' to get separate queries
+    queries = [q.strip() for q in raw_query.split("OR")]
+
+    all_streams = {}
+    for query in queries:
+        results = fetch_live_streams(query)
+        for stream in results:
+            all_streams[stream["video_id"]] = stream  # deduplicate by video_id
+
+    fresh = list(all_streams.values())
 
     CACHE[category] = {
         "data": fresh,

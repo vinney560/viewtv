@@ -55,7 +55,10 @@
             <!-- User Column -->
             <td class="px-4 py-2 align-top">
               <p class="font-semibold">{{ user.email }}</p>
-              <p class="text-xs text-gray-400 mt-1">⏳ {{ item.remaining_str }}</p>
+              <p class="text-xs text-gray-400 mt-1 countdown-timer" 
+                 data-expires="{{ user.plus_expires_at.timestamp() if user.plus_expires_at else '' }}">
+                ⏳ {{ item.remaining_str }}
+              </p>
 
               <form method="POST" action="{{ url_for('update_plus', user_id=user.id) }}"
                     onsubmit="submitPlusForm(event, this)">
@@ -176,6 +179,11 @@
 
       const data = await res.json();
       showToast(data.message, data.status);
+      
+      // Refresh the page to update all timers after successful update
+      if (data.status === 'success') {
+        setTimeout(() => window.location.reload(), 1500);
+      }
     }
 
     async function submitDeleteForm(event, form, userId) {
@@ -195,6 +203,45 @@
         if (row) row.remove();
       }
     }
+
+    function updateAllCountdowns() {
+      const timers = document.querySelectorAll('.countdown-timer');
+      const now = Math.floor(Date.now() / 1000);
+      
+      timers.forEach(timer => {
+        const expires = parseFloat(timer.dataset.expires);
+        if (!expires || isNaN(expires)) {
+          timer.textContent = '⏳ N/A';
+          return;
+        }
+        
+        const remaining = expires - now;
+        
+        if (remaining <= 0) {
+          timer.textContent = '⏳ Expired';
+          timer.classList.add('text-red-400');
+          return;
+        }
+        
+        // Calculate time components
+        const hours = Math.floor(remaining / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+        const seconds = Math.floor(remaining % 60);
+        
+        // Format with leading zeros
+        const hh = hours.toString().padStart(2, '0');
+        const mm = minutes.toString().padStart(2, '0');
+        const ss = seconds.toString().padStart(2, '0');
+        
+        timer.textContent = `⏳ ${hh}h ${mm}m ${ss}s`;
+      });
+    }
+
+    // Initialize and update every second
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAllCountdowns();
+      setInterval(updateAllCountdowns, 1000);
+    });
   </script>
 </body>
 </html>

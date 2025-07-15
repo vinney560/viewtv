@@ -912,24 +912,24 @@ import re
 import os
 from urllib.parse import quote_plus
 #=======================================
-from flask import jsonify
-import requests
 import time
+import requests
+from flask import jsonify
 
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
 CATEGORY_QUERIES = {
-    "all":      "live football match",
-    "fifa":     "FIFA live match",
-    "uefa":     "UEFA live match",
-    "epl":      "EPL live match",
-    "laliga":   "La Liga live match",
-    "maisha":   "Maisha Magic East live",
-    "nickelodeon": "Nickelodeon live OR Nickelodeon live stream",
-    "bein":     "Bein Sports live OR Bein Sports live stream",
-    "dazn":     "DAZN live OR DAZN live sports OR DAZN streaming",
-    "tnt":      "TNT live OR TNT live stream OR TNT sports live",
-    "fox":      "FOX live OR FOX live stream OR FOX sports live"
+    "all":        "live football match",
+    "fifa":       "FIFA live match",
+    "uefa":       "UEFA live match",
+    "epl":        "EPL live match",
+    "laliga":     "La Liga live match",
+    "maisha":     "Maisha Magic East live",
+    "nickelodeon":"Nickelodeon live OR Nickelodeon live stream",
+    "bein":       "Bein Sports live OR Bein Sports live stream",
+    "dazn":       "DAZN live OR DAZN live sports OR DAZN streaming",
+    "tnt":        "TNT live OR TNT live stream OR TNT sports live",
+    "fox":        "FOX live OR FOX live stream OR FOX sports live"
 }
 
 CACHE = {}
@@ -955,7 +955,7 @@ def save_cache_to_file():
     except Exception as e:
         print(f"Error saving cache: {e}")
 
-def fetch_live_streams(query, max_results=25):
+def fetch_live_streams(query, max_results=50):
     url = "https://www.googleapis.com/youtube/v3/search"
     params = {
         "part":       "snippet",
@@ -997,8 +997,8 @@ def fetch_live_streams_cached(category):
         return cached["data"]
 
     raw_query = CATEGORY_QUERIES.get(category, CATEGORY_QUERIES["all"])
-    # Split queries by ' OR ' to get separate queries
-    queries = [q.strip() for q in raw_query.split("OR")]
+    # Split queries by ' OR ' with exact spacing to handle multi-term queries properly
+    queries = [q.strip() for q in raw_query.split(" OR ")]
 
     all_streams = {}
     for query in queries:

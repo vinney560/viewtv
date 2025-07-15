@@ -9,6 +9,11 @@
     "url": "https://abcnews.go.com/Live",
     "group-title": "News"
   },
+  "kids-soccer": {
+    "name": "Kids Soccer",
+    "url": "https://www.youtube.com/embed/YKlMmvkw66M?rel=0&autoplay=1&modestbranding=1&controls=1&showinfo=0",
+    "group-title": "Kids"
+  },
   "afro-beats": {
     "name": "Afro Beats",
     "url": "https://stream.ecable.tv/afrobeats/index.m3u8",

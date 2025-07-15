@@ -926,7 +926,27 @@ CATEGORY_QUERIES = {
 }
 
 CACHE = {}
-CACHE_DURATION = 1 * 60 * 60  # 1 hours in seconds
+CACHE_FILE = "cache.json"
+CACHE_DURATION = 1 * 60 * 60  # 1 hour in seconds
+
+# Load cache from file on startup
+if os.path.exists(CACHE_FILE):
+    try:
+        with open(CACHE_FILE, "r") as f:
+            CACHE = json.load(f)
+            # Convert timestamps back to float
+            for k in CACHE:
+                CACHE[k]["timestamp"] = float(CACHE[k]["timestamp"])
+    except Exception as e:
+        print(f"Error loading cache from file: {e}")
+        CACHE = {}
+
+def save_cache_to_file():
+    try:
+        with open(CACHE_FILE, "w") as f:
+            json.dump(CACHE, f)
+    except Exception as e:
+        print(f"Error saving cache: {e}")
 
 def fetch_live_streams(query, max_results=25):
     url = "https://www.googleapis.com/youtube/v3/search"
@@ -971,10 +991,13 @@ def fetch_live_streams_cached(category):
 
     query = CATEGORY_QUERIES.get(category, CATEGORY_QUERIES["all"])
     fresh = fetch_live_streams(query)
+
     CACHE[category] = {
         "data": fresh,
         "timestamp": now
     }
+
+    save_cache_to_file()
     return fresh
 
 @app.route("/live_matches")

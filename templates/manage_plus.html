@@ -20,27 +20,8 @@
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-6 relative">
 
-  <!-- Flash Toast -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
-        {% for category, message in messages %}
-          <div class="px-4 py-2 rounded shadow-md text-sm text-white
-                      {% if category == 'success' %} bg-green-600
-                      {% elif category == 'error' %} bg-red-600
-                      {% else %} bg-blue-600 {% endif %}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-      <script>
-        setTimeout(() => {
-          const toast = document.getElementById("toast");
-          if (toast) toast.remove();
-        }, 4000);
-      </script>
-    {% endif %}
-  {% endwith %}
+  <!-- Toast container -->
+  <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2"></div>
 
   <div class="max-w-7xl mx-auto">
 
@@ -65,10 +46,10 @@
             <th class="px-4 py-3 text-center">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-800">
+        <tbody class="divide-y divide-gray-800" id="userTable">
           {% for item in users %}
           {% set user = item.user %}
-          <tr class="hover:bg-gray-700">
+          <tr id="user-row-{{ user.id }}" class="hover:bg-gray-700">
             <td class="px-4 py-2 align-top">{{ loop.index }}</td>
 
             <!-- User Column -->
@@ -77,7 +58,7 @@
               <p class="text-xs text-gray-400 mt-1">⏳ {{ item.remaining_str }}</p>
 
               <form method="POST" action="{{ url_for('update_plus', user_id=user.id) }}"
-                    onsubmit="return confirmTimeChange(this)">
+                    onsubmit="submitPlusForm(event, this)">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <div class="flex gap-2 mt-2 flex-wrap items-center">
@@ -129,7 +110,7 @@
             <!-- Delete Action -->
             <td class="px-4 py-2 text-center align-top">
               <form method="POST" action="{{ url_for('delete_plus', user_id=user.id) }}"
-                    onsubmit="return confirm('Revoke Plus for this user?');">
+                    onsubmit="submitDeleteForm(event, this, '{{ user.id }}')">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit"
                         class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 mt-2 rounded text-xs flex items-center gap-1">
@@ -148,18 +129,6 @@
 
   <!-- JS Logic -->
   <script>
-    function confirmTimeChange(form) {
-      const h = parseInt(form.hours.value || "0");
-      const m = parseInt(form.minutes.value || "0");
-      const s = parseInt(form.seconds.value || "0");
-
-      if (h === 0 && m === 0 && s === 0) {
-        alert("⚠️ No time added. Update skipped.");
-        return false;
-      }
-      return confirm(`Apply ${h}h ${m}m ${s}s to this user?`);
-    }
-
     function prefillTime(btn) {
       const form = btn.closest('form');
       const remaining = btn.getAttribute('data-remaining');
@@ -167,7 +136,6 @@
       const m = form.querySelector('input[name="minutes"]');
       const s = form.querySelector('input[name="seconds"]');
 
-      // Reset
       h.value = 0; m.value = 0; s.value = 0;
 
       const match = remaining.match(/(\d+)\s*h.*?(\d+)\s*m.*?(\d+)\s*s/i);
@@ -177,7 +145,56 @@
         s.value = parseInt(match[3] || "0");
       }
     }
-  </script>
 
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById("toast");
+      const color = type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600';
+      const div = document.createElement('div');
+      div.className = `px-4 py-2 rounded shadow-md text-sm text-white ${color}`;
+      div.innerText = message;
+      toast.appendChild(div);
+      setTimeout(() => div.remove(), 4000);
+    }
+
+    async function submitPlusForm(event, form) {
+      event.preventDefault();
+      const h = parseInt(form.hours.value || "0");
+      const m = parseInt(form.minutes.value || "0");
+      const s = parseInt(form.seconds.value || "0");
+
+      if (h === 0 && m === 0 && s === 0) {
+        return alert("⚠️ No time added. Update skipped.");
+      }
+
+      if (!confirm(`Apply ${h}h ${m}m ${s}s to this user?`)) return;
+
+      const formData = new FormData(form);
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      showToast(data.message, data.status);
+    }
+
+    async function submitDeleteForm(event, form, userId) {
+      event.preventDefault();
+      if (!confirm("Revoke Plus for this user?")) return;
+
+      const formData = new FormData(form);
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      showToast(data.message, data.status);
+      if (data.status === 'success') {
+        const row = document.getElementById(`user-row-${userId}`);
+        if (row) row.remove();
+      }
+    }
+  </script>
 </body>
 </html>

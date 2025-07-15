@@ -1685,7 +1685,6 @@ def manage_plus():
 @admin_required
 def update_plus(user_id):
     user = User.query.get_or_404(user_id)
-
     try:
         hours = int(request.form.get("hours", 0))
         minutes = int(request.form.get("minutes", 0))
@@ -1693,18 +1692,15 @@ def update_plus(user_id):
 
         duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
         if duration.total_seconds() <= 0:
-            flash("Duration must be greater than 0", "error")
-            return redirect(url_for("manage_plus"))
+            return jsonify({"status": "error", "message": "Duration must be greater than 0"}), 400
 
         user.plus_expires_at = datetime.utcnow() + duration
         user.plus_type = user.plus_type or "paid"
         db.session.commit()
 
-        flash(f"Updated Plus time for {user.email}", "success")
+        return jsonify({"status": "success", "message": f"Updated Plus time for {user.email}"})
     except Exception as e:
-        flash("Failed to update Plus", "error")
-
-    return redirect(url_for("manage_plus"))
+        return jsonify({"status": "error", "message": "Failed to update Plus"}), 500
 #-------------------------------------------------------------------    
 @app.route("/admin/delete_plus/<int:user_id>", methods=["POST"])
 @login_required
@@ -1715,8 +1711,7 @@ def delete_plus(user_id):
     user.plus_type = None
     db.session.commit()
 
-    flash(f"Revoked Plus for {user.email}", "success")
-    return redirect(url_for("manage_plus"))
+    return jsonify({"status": "success", "message": f"Revoked Plus for {user.email}"})
 #-------------------------------------------------------------------------
 # user management
 

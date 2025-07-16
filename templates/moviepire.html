@@ -46,13 +46,52 @@
         height: calc(100% - 70px);
       }
     }
+
+    #fullscreen-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #00c6ff;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+      z-index: 3;
+    }
+
+    #fullscreen-btn:hover {
+      background: rgba(0, 198, 255, 0.2);
+    }
   </style>
 </head>
 <body>
   <header>View Tv | Moviepire</header>
+
   <iframe 
+    id="movie-frame"
     src="https://moviepire.net/" 
     allowfullscreen>
   </iframe>
+
+  <!-- Fullscreen Button -->
+  <button id="fullscreen-btn">Fullscreen</button>
+
+  <script>
+    const iframe = document.getElementById('movie-frame');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+    fullscreenBtn.onclick = () => {
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) {
+        iframe.msRequestFullscreen();
+      }
+    };
+  </script>
 </body>
 </html>

@@ -1,272 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>View Tv | Moviepire</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .spin-animation {
-      animation: spin 0.5s linear;
-    }
-    
-    body {
+    html, body {
       margin: 0;
-      background: #0f172a;
-      color: #fff;
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .glass-effect {
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .gradient-text {
-      background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .control-btn {
-      transition: all 0.3s ease;
-      backdrop-filter: blur(8px);
-    }
-    
-    .control-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.3);
-    }
-    
-    #video-container:fullscreen {
+      padding: 0;
+      height: 100%;
       background: #000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
-    #video-container:fullscreen iframe {
-      width: 100vw;
-      height: 100vh;
+
+    header {
+      background: linear-gradient(90deg, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      z-index: 2;
+      position: relative;
     }
-    
-    #video-container:fullscreen #controls {
-      display: none;
-    }
-    
-    /* Ad-blocking styles */
+
     iframe {
-      /* Block common ad iframe selectors */
-      visibility: visible !important;
+      width: 100%;
+      height: calc(100% - 80px);
+      border: none;
+      position: absolute;
+      top: 80px;
+      left: 0;
     }
-    
-    /* Element hiding rules for common ad containers */
-    [id*='ad'], [class*='ad'], [id*='Ad'], [class*='Ad'] {
-      display: none !important;
-      visibility: hidden !important;
-      height: 0 !important;
-      width: 0 !important;
-      opacity: 0 !important;
+
+    @media (max-width: 768px) {
+      header {
+        font-size: 1.8rem;
+        padding: 15px;
+      }
+
+      iframe {
+        top: 70px;
+        height: calc(100% - 70px);
+      }
     }
   </style>
 </head>
-<body class="relative">
-  <!-- Animated Background -->
-  <div class="absolute inset-0 overflow-hidden z-0">
-    <div class="absolute inset-0 bg-gradient-to-br from-sky-900/30 to-indigo-900/30"></div>
-    <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjMDAwMDAwIj48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiMxMTExMTEiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=')"></div>
-  </div>
-
-  <!-- Header -->
-  <header class="glass-effect z-10 px-6 py-4 flex items-center justify-between shadow-lg">
-    <div class="flex items-center space-x-3">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
-      </svg>
-      <h1 class="text-2xl font-bold gradient-text">View Tv</h1>
-    </div>
-    <div class="flex items-center space-x-4">
-      <button id="refresh-btn" class="control-btn p-2 rounded-full hover:bg-sky-600/20 transition flex items-center justify-center">
-        <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-      </button>
-      <a href="/home_2" class="control-btn px-4 py-2 rounded-lg bg-sky-600/30 hover:bg-sky-600/40 text-sm font-medium text-sky-100 border border-sky-500/30 transition flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        Home
-      </a>
-    </div>
-  </header>
-
-  <!-- Video Container -->
-  <div id="video-container" class="flex-1 relative z-10">
-    <iframe id="movie-frame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" referrerpolicy="no-referrer" class="w-full h-full border-none"></iframe>
-    
-    <!-- Controls -->
-    <div id="controls" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
-      <button id="fullscreen-btn" class="control-btn px-4 py-2 rounded-lg bg-sky-600/70 hover:bg-sky-500/80 text-sm font-medium text-white flex items-center space-x-2 transition-all">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-        </svg>
-        <span>Fullscreen</span>
-      </button>
-      
-      <button id="clean-view-btn" class="control-btn px-4 py-2 rounded-lg bg-emerald-600/70 hover:bg-emerald-500/80 text-sm font-medium text-white flex items-center space-x-2 transition-all">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
-        <span>Clean View</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Loading Indicator -->
-  <div id="loading" class="absolute inset-0 z-20 flex items-center justify-center bg-gray-900/90">
-    <div class="text-center">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500 mb-4"></div>
-      <p class="text-sky-300 font-medium">Loading...</p>
-    </div>
-  </div>
-
-  <script>
-    // DOM Elements
-    const iframe = document.getElementById("movie-frame");
-    const loading = document.getElementById("loading");
-    const fullscreenBtn = document.getElementById("fullscreen-btn");
-    const refreshBtn = document.getElementById("refresh-btn");
-    const refreshIcon = document.getElementById("refresh-icon");
-    const cleanViewBtn = document.getElementById("clean-view-btn");
-    const videoContainer = document.getElementById("video-container");
-    const controls = document.getElementById("controls");
-
-    // Initialize with a clean source
-    const cleanSource = "https://moviepire.net/"; // Replace with your clean source
-    iframe.src = cleanSource;
-    
-    // Show loading indicator while iframe loads
-    iframe.onload = () => {
-      setTimeout(() => {
-        loading.classList.add("hidden");
-        applyAdBlocking();
-      }, 1500);
-    };
-
-    // Fullscreen functionality
-    fullscreenBtn.onclick = () => {
-      if (videoContainer.requestFullscreen) {
-        videoContainer.requestFullscreen();
-      } else if (videoContainer.webkitRequestFullscreen) {
-        videoContainer.webkitRequestFullscreen();
-      } else if (videoContainer.msRequestFullscreen) {
-        videoContainer.msRequestFullscreen();
-      }
-    };
-
-    // Refresh functionality with animation
-    refreshBtn.onclick = () => {
-      refreshIcon.classList.add("spin-animation");
-      loading.classList.remove("hidden");
-      iframe.src = iframe.src;
-      setTimeout(() => refreshIcon.classList.remove("spin-animation"), 500);
-    };
-
-    // Clean View functionality
-    cleanViewBtn.onclick = () => {
-      loading.classList.remove("hidden");
-      iframe.src = cleanSource;
-      setTimeout(() => loading.classList.add("hidden"), 1500);
-    };
-
-    // Ad-blocking function
-    function applyAdBlocking() {
-      try {
-        // Block common ad networks
-        const blockedDomains = [
-          'doubleclick.net',
-          'googleads.com',
-          'googlesyndication.com',
-          'google-analytics.com',
-          'facebook.net',
-          'adsrvr.org',
-          'adnxs.com',
-          'amazon-adsystem.com',
-          'scorecardresearch.com',
-          'taboola.com',
-          'outbrain.com',
-          'downloadisready.site',
-          'cdn.lr3m.com',
-          'mks98.com',
-          'houndlocumfeather.com',
-          'assortmentsaw.com',
-          'peacockconceive.com',
-          'prohibitiondomicileimperative.com'
-        ];
-        
-        blockedDomains.forEach(domain => {
-          if (iframe.src.includes(domain)) {
-            iframe.src = cleanSource;
-            throw new Error("Ad domain blocked");
-          }
-        });
-        
-        // Mutation observer to detect dynamically loaded ads
-        const observer = new MutationObserver(mutations => {
-          mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
-              if (node.nodeType === 1) { // Element node
-                if (node.tagName === 'IFRAME' || 
-                    node.id?.includes('ad') || 
-                    node.className?.includes('ad')) {
-                  node.remove();
-                }
-              }
-            });
-          });
-        });
-        
-        observer.observe(document.body, {
-          childList: true,
-          subtree: true
-        });
-        
-      } catch (e) {
-        console.log("Ad blocking applied:", e.message);
-      }
-    }
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (e.key.toLowerCase() === 'f') fullscreenBtn.click();
-      if (e.key.toLowerCase() === 'r') refreshBtn.click();
-      if (e.key.toLowerCase() === 'c') cleanViewBtn.click();
-    });
-    
-    // Fullscreen change handler
-    function handleFullscreenChange() {
-      if (document.fullscreenElement || 
-          document.webkitFullscreenElement || 
-          document.msFullscreenElement) {
-        controls.style.display = 'none';
-      } else {
-        controls.style.display = 'flex';
-      }
-    }
-    
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('msfullscreenchange', handleFullscreenChange);
-  </script>
+<body>
+  <header>View Tv | Moviepire</header>
+  <iframe 
+    src="https://moviepire.net/" 
+    allowfullscreen>
+  </iframe>
 </body>
 </html>

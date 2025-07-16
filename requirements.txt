@@ -12,3 +12,5 @@ requests>=2.25
 gunicorn==23.0.0
 Flask-Mail==0.9.1
 psycopg2-binary>=2.9
+beautifulsoup4
+lxml

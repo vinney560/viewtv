@@ -625,7 +625,6 @@ def custom_list():
 def moviepire():
     return render_template("moviepire.html")
 
-
 from flask import Flask, Response
 import requests
 from bs4 import BeautifulSoup

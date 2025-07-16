@@ -126,13 +126,24 @@
       <span class="relative">View TV Playlist</span>
     </a>
 
-    <!-- Plus Movies Button -->
-    <a href="{{ url_for('plus_movies') }}" class="w-full py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-      </svg>
-      <span>Plus Movies</span>
-    </a>
+    <!-- Movies Row -->
+    <div class="flex w-full space-x-4">
+      <!-- Plus Movies Button -->
+      <a href="{{ url_for('plus_movies') }}" class="w-1/2 py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+        </svg>
+        <span>Plus Movies</span>
+      </a>
+
+      <!-- Moviepire Button -->
+      <a href="/embed/moviepire" class="w-1/2 py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-red-600 to-pink-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
+        </svg>
+        <span>Moviepire</span>
+      </a>
+    </div>
 
   </main>
 

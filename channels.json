@@ -9,6 +9,21 @@
     "url": "https://abcnews.go.com/Live",
     "group-title": "News"
   },
+  "meru-tv": {
+    "name": "Meru Tv",
+    "url": "https://goliveafrica.media:9998/live/628e5c1991061/index.m3u8",
+    "group-title": "News"
+  },
+  "reflect-tv": {
+    "name": "Reflect Tv",
+    "url": "https://edge-a3.evrideo.tv/8f37c9f0-fe22-44f4-b64a-76ad11730daf_1000026630_HLS/manifest.m3u8",
+    "group-title": "News"
+  },
+  "dodoma-tv": {
+    "name": "Dodoma Tv",
+    "url": "https://goliveafrica.media:9998/live/625965017ed69/index.m3u8",
+    "group-title": ""
+  },
   "kids-soccer": {
     "name": "Kids Soccer",
     "url": "https://www.youtube.com/embed/YKlMmvkw66M?rel=0&autoplay=1&modestbranding=1&controls=1&showinfo=0",
@@ -22,6 +37,16 @@
   "akilikids": {
     "name": "Akili Kids! TV",
     "url": "https://akilikids.co.ke/live/",
+    "group-title": "Kids"
+  },
+  "bricks": {
+    "name": "TV Bricks",
+    "url": "https://cdn.freevisiontv.co.za/sttv/smil:brics.stream.smil/playlist.m3u8",
+    "group-title": "News"
+  },
+  "car-city": {
+    "name": "Car City TV",
+    "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/b6397b24-18b0-49c2-80bf-0333ae568e37/5.m3u8",
     "group-title": "Kids"
   },
   "al-jazeera-english": {
@@ -402,7 +427,7 @@
   },
   "ramogi-tv": {
     "name": "Ramogi Tv",
-    "url": "https://citizen.digital/tv/ramogi-tv-19",
+    "url": "https://citizentv.castr.com/5ea49827ff3b5d7b22708777/live_9b761ff063f511eca12909b8ef1524b4/index.m3u8",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogi.png",
     "group-title": "News"
   },

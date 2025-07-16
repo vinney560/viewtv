@@ -446,12 +446,18 @@ def register():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    if current_user.is_authenticated and current_user.status == "active":
+    if current_user.is_authenticated:
+        if current_user.status != "active":
+            logout_user()
+            flash("Your account is inactive.", "danger")
+            return redirect(url_for("login"))
+
         if current_user.role == 'admin':
             return redirect(url_for('home_admin'))
-        if current_user.is_plus:
+        elif current_user.is_plus:
             return redirect(url_for('home_2'))
-        return redirect(url_for('home_1'))
+        else:
+            return redirect(url_for('home_1'))
 
     if request.method == "POST":
         email_addr = request.form['email']

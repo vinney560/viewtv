@@ -624,6 +624,57 @@ def custom_list():
 @plus_required
 def moviepire():
     return render_template("moviepire.html")
+
+
+from flask import Flask, Response
+import requests
+from bs4 import BeautifulSoup
+@app.route('/proxy/moviepire')
+def proxy_moviepire():
+    try:
+        url = 'https://moviepire.net'
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        r = requests.get(url, headers=headers, timeout=10)
+        r.raise_for_status()
+
+        soup = BeautifulSoup(r.text, 'html.parser')
+
+        # Inject CSS to hide ads
+        style = soup.new_tag("style")
+        style.string = """
+        iframe[src*="ads"], div[id*="ads"], div[class*="ads"],
+        .popup, .ad-container, .sponsor, .banner, .modal, .promobox {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        a[href*="redirect"], a[onclick] {
+            pointer-events: none !important;
+            color: grey !important;
+        }
+        """
+        soup.head.append(style)
+
+        # Remove ad-related tags
+        bad_keywords = ['ads', 'ad', 'sponsor', 'popup', 'banner', 'promo', 'onclick']
+        for tag in soup.find_all(['div', 'section', 'iframe', 'script']):
+            id_ = tag.get('id', '') or ''
+            classes = ' '.join(tag.get('class', [])) if tag.get('class') else ''
+            content = tag.string or ''
+
+            if any(bad in id_.lower() for bad in bad_keywords) or \
+               any(bad in classes.lower() for bad in bad_keywords) or \
+               any(bad in content.lower() for bad in bad_keywords):
+                tag.decompose()
+
+        # Remove inline onclick hijacks
+        for tag in soup.find_all():
+            if 'onclick' in tag.attrs:
+                del tag.attrs['onclick']
+
+        return Response(str(soup), mimetype='text/html')
+    
+    except Exception as e:
+        return f"<h1>Failed to load moviepire proxy: {e}</h1>"
 #------------------------------------------------------------------------
 import json
 import os

@@ -490,7 +490,7 @@ def login():
 
                 session['role'] = user.role
                 user.status = "active"
-                db.sessioncommit()
+                db.session.commit()
                 # Thisstores the status in the session (for use in templates or logic)
                 session['active'] = user.status
                 login_user(user)

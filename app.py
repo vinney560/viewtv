@@ -1009,7 +1009,7 @@ def save_cache_to_file():
     except Exception as e:
         print(f"Error saving cache: {e}")
 
-def fetch_live_streams(query, max_results=50):
+def fetch_live_streams(query, max_results=100):
     url = "https://www.googleapis.com/youtube/v3/search"
     params = {
         "part":       "snippet",

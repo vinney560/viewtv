@@ -620,6 +620,8 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #-------------------------------------------------------------------------
 @app.route("/embed/moviepire")
+@login_required
+@plus_required
 def moviepire():
     return render_template("moviepire.html")
 #------------------------------------------------------------------------

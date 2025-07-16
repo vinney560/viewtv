@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>View Tv - Moviepire</title>
+  <title>View Tv | Moviepire</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -63,6 +63,21 @@
     #video-container:fullscreen #controls {
       display: none;
     }
+    
+    /* Ad-blocking styles */
+    iframe {
+      /* Block common ad iframe selectors */
+      visibility: visible !important;
+    }
+    
+    /* Element hiding rules for common ad containers */
+    [id*='ad'], [class*='ad'], [id*='Ad'], [class*='Ad'] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      width: 0 !important;
+      opacity: 0 !important;
+    }
   </style>
 </head>
 <body class="relative">
@@ -78,7 +93,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
       </svg>
-      <h1 class="text-2xl font-bold gradient-text">View Tv <span class="text-white font-medium">| Moviepire</span></h1>
+      <h1 class="text-2xl font-bold gradient-text">View Tv</h1>
     </div>
     <div class="flex items-center space-x-4">
       <button id="refresh-btn" class="control-btn p-2 rounded-full hover:bg-sky-600/20 transition flex items-center justify-center">
@@ -97,7 +112,7 @@
 
   <!-- Video Container -->
   <div id="video-container" class="flex-1 relative z-10">
-    <iframe id="movie-frame" src="https://moviepire.net/" allowfullscreen class="w-full h-full border-none"></iframe>
+    <iframe id="movie-frame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" referrerpolicy="no-referrer" class="w-full h-full border-none"></iframe>
     
     <!-- Controls -->
     <div id="controls" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
@@ -108,59 +123,44 @@
         <span>Fullscreen</span>
       </button>
       
-      <a href="https://moviepire.net/" target="_blank" class="control-btn px-4 py-2 rounded-lg bg-gray-700/70 hover:bg-gray-600/80 text-sm font-medium text-white flex items-center space-x-2 transition-all">
+      <button id="clean-view-btn" class="control-btn px-4 py-2 rounded-lg bg-emerald-600/70 hover:bg-emerald-500/80 text-sm font-medium text-white flex items-center space-x-2 transition-all">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
         </svg>
-        <span>Open Directly</span>
-      </a>
+        <span>Clean View</span>
+      </button>
     </div>
   </div>
 
-  <!-- Fallback Message -->
-  <div id="fallback" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-gray-900/90 p-8 text-center">
-    <div class="max-w-md bg-gray-800/90 rounded-xl p-8 border border-gray-700/50 shadow-xl">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-      <h2 class="text-xl font-bold text-gray-100 mb-2">Content Not Available</h2>
-      <p class="text-gray-300 mb-6">This content cannot be embedded due to security restrictions.</p>
-      <div class="flex justify-center space-x-3">
-        <a href="https://moviepire.net/" target="_blank" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-sm font-medium text-white flex items-center space-x-2 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-          <span>Open Moviepire</span>
-        </a>
-        <button id="retry-btn" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium text-white flex items-center space-x-2 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          <span>Try Again</span>
-        </button>
-      </div>
+  <!-- Loading Indicator -->
+  <div id="loading" class="absolute inset-0 z-20 flex items-center justify-center bg-gray-900/90">
+    <div class="text-center">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sky-500 mb-4"></div>
+      <p class="text-sky-300 font-medium">Loading...</p>
     </div>
   </div>
 
   <script>
+    // DOM Elements
     const iframe = document.getElementById("movie-frame");
-    const fallback = document.getElementById("fallback");
+    const loading = document.getElementById("loading");
     const fullscreenBtn = document.getElementById("fullscreen-btn");
     const refreshBtn = document.getElementById("refresh-btn");
-    const retryBtn = document.getElementById("retry-btn");
     const refreshIcon = document.getElementById("refresh-icon");
+    const cleanViewBtn = document.getElementById("clean-view-btn");
     const videoContainer = document.getElementById("video-container");
     const controls = document.getElementById("controls");
 
-    // Check if iframe loaded successfully
+    // Initialize with a clean source
+    const cleanSource = "https://moviepire.net/"; // Replace with your clean source
+    iframe.src = cleanSource;
+    
+    // Show loading indicator while iframe loads
     iframe.onload = () => {
-      console.log("Iframe loaded successfully.");
-      fallback.classList.add("hidden");
-    };
-
-    iframe.onerror = () => {
-      videoContainer.classList.add("hidden");
-      fallback.classList.remove("hidden");
+      setTimeout(() => {
+        loading.classList.add("hidden");
+        applyAdBlocking();
+      }, 1500);
     };
 
     // Fullscreen functionality
@@ -176,37 +176,77 @@
 
     // Refresh functionality with animation
     refreshBtn.onclick = () => {
-      // Add spin animation
       refreshIcon.classList.add("spin-animation");
-      
-      // Reload iframe
+      loading.classList.remove("hidden");
       iframe.src = iframe.src;
-      
-      // Remove animation class after animation completes
-      setTimeout(() => {
-        refreshIcon.classList.remove("spin-animation");
-      }, 500);
+      setTimeout(() => refreshIcon.classList.remove("spin-animation"), 500);
     };
 
-    // Retry functionality
-    retryBtn.onclick = () => {
-      fallback.classList.add("hidden");
-      videoContainer.classList.remove("hidden");
-      iframe.src = iframe.src;
+    // Clean View functionality
+    cleanViewBtn.onclick = () => {
+      loading.classList.remove("hidden");
+      iframe.src = cleanSource;
+      setTimeout(() => loading.classList.add("hidden"), 1500);
     };
 
-    // Add keyboard shortcut for fullscreen (F key)
-    document.addEventListener('keydown', (e) => {
-      if (e.key.toLowerCase() === 'f') {
-        fullscreenBtn.click();
+    // Ad-blocking function
+    function applyAdBlocking() {
+      try {
+        // Block common ad networks
+        const blockedDomains = [
+          'doubleclick.net',
+          'googleads.com',
+          'googlesyndication.com',
+          'google-analytics.com',
+          'facebook.net',
+          'adsrvr.org',
+          'adnxs.com',
+          'amazon-adsystem.com',
+          'scorecardresearch.com',
+          'taboola.com',
+          'outbrain.com'
+        ];
+        
+        blockedDomains.forEach(domain => {
+          if (iframe.src.includes(domain)) {
+            iframe.src = cleanSource;
+            throw new Error("Ad domain blocked");
+          }
+        });
+        
+        // Mutation observer to detect dynamically loaded ads
+        const observer = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === 1) { // Element node
+                if (node.tagName === 'IFRAME' || 
+                    node.id?.includes('ad') || 
+                    node.className?.includes('ad')) {
+                  node.remove();
+                }
+              }
+            });
+          });
+        });
+        
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+        
+      } catch (e) {
+        console.log("Ad blocking applied:", e.message);
       }
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'f') fullscreenBtn.click();
+      if (e.key.toLowerCase() === 'r') refreshBtn.click();
+      if (e.key.toLowerCase() === 'c') cleanViewBtn.click();
     });
     
-    // Handle fullscreen change events to show/hide controls
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('msfullscreenchange', handleFullscreenChange);
-    
+    // Fullscreen change handler
     function handleFullscreenChange() {
       if (document.fullscreenElement || 
           document.webkitFullscreenElement || 
@@ -216,6 +256,10 @@
         controls.style.display = 'flex';
       }
     }
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
   </script>
 </body>
 </html>

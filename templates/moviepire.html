@@ -7,9 +7,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .spin-animation {
+      animation: spin 0.5s linear;
     }
     
     body {
@@ -46,6 +50,19 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.3);
     }
+    
+    #video-container:fullscreen {
+      background: #000;
+    }
+    
+    #video-container:fullscreen iframe {
+      width: 100vw;
+      height: 100vh;
+    }
+    
+    #video-container:fullscreen #controls {
+      display: none;
+    }
   </style>
 </head>
 <body class="relative">
@@ -65,11 +82,11 @@
     </div>
     <div class="flex items-center space-x-4">
       <button id="refresh-btn" class="control-btn p-2 rounded-full hover:bg-sky-600/20 transition flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
       </button>
-      <a href="/" class="control-btn px-4 py-2 rounded-lg bg-sky-600/30 hover:bg-sky-600/40 text-sm font-medium text-sky-100 border border-sky-500/30 transition flex items-center">
+      <a href="/home_2" class="control-btn px-4 py-2 rounded-lg bg-sky-600/30 hover:bg-sky-600/40 text-sm font-medium text-sky-100 border border-sky-500/30 transition flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
         </svg>
@@ -83,7 +100,7 @@
     <iframe id="movie-frame" src="https://moviepire.net/" allowfullscreen class="w-full h-full border-none"></iframe>
     
     <!-- Controls -->
-    <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
+    <div id="controls" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
       <button id="fullscreen-btn" class="control-btn px-4 py-2 rounded-lg bg-sky-600/70 hover:bg-sky-500/80 text-sm font-medium text-white flex items-center space-x-2 transition-all">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
@@ -102,7 +119,7 @@
 
   <!-- Fallback Message -->
   <div id="fallback" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-gray-900/90 p-8 text-center">
-    <div class="max-w-md bg-gray-800/90 rounded-xl p-8 border border-gray-700/50 shadow-xl animate-fadeIn">
+    <div class="max-w-md bg-gray-800/90 rounded-xl p-8 border border-gray-700/50 shadow-xl">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
       </svg>
@@ -131,6 +148,9 @@
     const fullscreenBtn = document.getElementById("fullscreen-btn");
     const refreshBtn = document.getElementById("refresh-btn");
     const retryBtn = document.getElementById("retry-btn");
+    const refreshIcon = document.getElementById("refresh-icon");
+    const videoContainer = document.getElementById("video-container");
+    const controls = document.getElementById("controls");
 
     // Check if iframe loaded successfully
     iframe.onload = () => {
@@ -139,30 +159,39 @@
     };
 
     iframe.onerror = () => {
-      document.getElementById("video-container").classList.add("hidden");
+      videoContainer.classList.add("hidden");
       fallback.classList.remove("hidden");
     };
 
     // Fullscreen functionality
     fullscreenBtn.onclick = () => {
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      } else if (iframe.webkitRequestFullscreen) {
-        iframe.webkitRequestFullscreen();
-      } else if (iframe.msRequestFullscreen) {
-        iframe.msRequestFullscreen();
+      if (videoContainer.requestFullscreen) {
+        videoContainer.requestFullscreen();
+      } else if (videoContainer.webkitRequestFullscreen) {
+        videoContainer.webkitRequestFullscreen();
+      } else if (videoContainer.msRequestFullscreen) {
+        videoContainer.msRequestFullscreen();
       }
     };
 
-    // Refresh functionality
+    // Refresh functionality with animation
     refreshBtn.onclick = () => {
+      // Add spin animation
+      refreshIcon.classList.add("spin-animation");
+      
+      // Reload iframe
       iframe.src = iframe.src;
+      
+      // Remove animation class after animation completes
+      setTimeout(() => {
+        refreshIcon.classList.remove("spin-animation");
+      }, 500);
     };
 
     // Retry functionality
     retryBtn.onclick = () => {
       fallback.classList.add("hidden");
-      document.getElementById("video-container").classList.remove("hidden");
+      videoContainer.classList.remove("hidden");
       iframe.src = iframe.src;
     };
 
@@ -172,6 +201,21 @@
         fullscreenBtn.click();
       }
     });
+    
+    // Handle fullscreen change events to show/hide controls
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('msfullscreenchange', handleFullscreenChange);
+    
+    function handleFullscreenChange() {
+      if (document.fullscreenElement || 
+          document.webkitFullscreenElement || 
+          document.msFullscreenElement) {
+        controls.style.display = 'none';
+      } else {
+        controls.style.display = 'flex';
+      }
+    }
   </script>
 </body>
 </html>

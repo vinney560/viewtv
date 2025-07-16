@@ -1855,6 +1855,20 @@ def delete_user(user_id):
     flash("User deleted.", "success")
     return redirect(url_for("manage_users"))
 #------------------------------------------------------------------------
+@app.route('/toggle_verified/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def toggle_verified(user_id):
+    user = User.query.get_or_404(user_id)
+
+    # Toggle email_verified
+    user.email_verified = not user.email_verified
+    db.session.commit()
+
+    status = "verified" if user.email_verified else "unverified"
+    flash(f"User {user.id} is now {status}.", "success")
+    return redirect(url_for('manage_users'))
+#------------------------------------------------------------------------
 @app.route("/admin/update_email/<int:user_id>", methods=["POST"])
 @login_required
 @admin_required

@@ -39,6 +39,11 @@
         .moviebox-btn:hover {
             background: linear-gradient(135deg, #5d3a99 0%, #8c40ab 100%);
         }
+        .platform-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 scroll-smooth">
@@ -54,16 +59,19 @@
             <p class="mb-4 text-gray-300">Choose your preferred streaming platform:</p>
             
             <div class="space-y-3">
-                <button onclick="redirectToPlatform('moviebox')" class="stream-btn w-full moviebox-btn text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
-                    <i class="fas fa-film mr-2 text-xl"></i> Watch on MovieBox
+                <button onclick="handlePlatformRedirect('moviebox')" class="stream-btn w-full moviebox-btn text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <img src="https://moviebox.ng/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="platform-icon" alt="MovieBox">
+                    Watch on MovieBox
                 </button>
                 
-                <button onclick="redirectToPlatform('youtube')" class="stream-btn w-full bg-red-500 hover:bg-red-400 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
-                    <i class="fab fa-youtube mr-2 text-xl"></i> YouTube Movies
+                <button onclick="handlePlatformRedirect('youtube')" class="stream-btn w-full bg-red-500 hover:bg-red-400 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <img src="https://www.youtube.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="platform-icon" alt="YouTube">
+                    YouTube Movies
                 </button>
                 
-                <button onclick="redirectToPlatform('justwatch')" class="stream-btn w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
-                    <i class="fas fa-external-link-alt mr-2 text-xl"></i> View All Options
+                <button onclick="handlePlatformRedirect('justwatch')" class="stream-btn w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <img src="https://www.justwatch.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="platform-icon" alt="JustWatch">
+                    View All Options
                 </button>
             </div>
             
@@ -107,7 +115,7 @@
                         <i class="fas fa-play mr-2"></i>Watch Now
                     </button>
                     
-                    <a href="{{ movie.tmdb_link }}" target="_blank" 
+                    <a href="{{ movie.tmdb_link }}" target="_blank" rel="noopener noreferrer"
                        class="inline-flex items-center bg-yellow-600 hover:bg-yellow-500 text-white py-2 px-4 rounded-lg font-bold">
                         <i class="fab fa-imdb mr-2"></i>View on TMDB
                     </a>
@@ -126,20 +134,20 @@
             <h2 class="text-2xl font-semibold mb-4">Streaming Options</h2>
             
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <button onclick="redirectToPlatform('moviebox')" class="stream-btn moviebox-btn text-white p-4 rounded-lg flex flex-col items-center">
-                    <i class="fas fa-film text-3xl mb-2"></i>
+                <button onclick="handlePlatformRedirect('moviebox')" class="stream-btn moviebox-btn text-white p-4 rounded-lg flex flex-col items-center">
+                    <img src="https://moviebox.ng/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="MovieBox">
                     <span>MovieBox</span>
                     <span class="text-xs mt-1 text-gray-300">Premium</span>
                 </button>
                 
-                <button onclick="redirectToPlatform('youtube')" class="stream-btn bg-red-500 hover:bg-red-400 text-white p-4 rounded-lg flex flex-col items-center">
-                    <i class="fab fa-youtube text-3xl mb-2"></i>
+                <button onclick="handlePlatformRedirect('youtube')" class="stream-btn bg-red-500 hover:bg-red-400 text-white p-4 rounded-lg flex flex-col items-center">
+                    <img src="https://www.youtube.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="YouTube">
                     <span>YouTube</span>
                     <span class="text-xs mt-1 text-gray-300">Rent/Buy</span>
                 </button>
                 
-                <button onclick="redirectToPlatform('justwatch')" class="stream-btn bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-lg flex flex-col items-center">
-                    <i class="fas fa-search text-3xl mb-2"></i>
+                <button onclick="handlePlatformRedirect('justwatch')" class="stream-btn bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-lg flex flex-col items-center">
+                    <img src="https://www.justwatch.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="JustWatch">
                     <span>All Options</span>
                     <span class="text-xs mt-1 text-gray-300">JustWatch</span>
                 </button>
@@ -187,12 +195,29 @@
     </footer>
 
     <script>
-        // Enhanced platform redirects
-        const platformUrls = {
-            moviebox: `https://moviebox.ng/web/searchResult?keyword=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}&utm_source=`,
-            youtube: `https://www.youtube.com/results?search_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }} movie official')}`,
-            justwatch: `https://www.justwatch.com/us/search?q=${encodeURIComponent('{{ movie.title }}')}`,
-            tmdb: `{{ movie.tmdb_link }}`
+        // Platform configuration with enhanced URLs
+        const platforms = {
+            moviebox: {
+                name: "MovieBox",
+                type: "streaming service",
+                icon: "https://moviebox.ng/favicon.ico",
+                url: `https://moviebox.ng/web/searchResult?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}`,
+                fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:moviebox.ng')}`
+            },
+            youtube: {
+                name: "YouTube Movies",
+                type: "rental/purchase",
+                icon: "https://www.youtube.com/favicon.ico",
+                url: `https://www.youtube.com/results?search_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }} movie')}`,
+                fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:youtube.com')}`
+            },
+            justwatch: {
+                name: "JustWatch",
+                type: "streaming aggregator",
+                icon: "https://www.justwatch.com/favicon.ico",
+                url: `https://www.justwatch.com/us/search?q=${encodeURIComponent('{{ movie.title }}')}`,
+                fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:justwatch.com')}`
+            }
         };
 
         // Show streaming options modal
@@ -211,31 +236,41 @@
             document.body.style.overflow = '';
         }
 
-        // Smart redirect with confirmation
-        function redirectToPlatform(platform) {
-            const platformInfo = {
-                moviebox: {
-                    name: "MovieBox",
-                    type: "streaming service"
-                },
-                youtube: {
-                    name: "YouTube Movies",
-                    type: "rental/purchase"
-                },
-                justwatch: {
-                    name: "JustWatch",
-                    type: "streaming aggregator"
-                }
-            };
-
-            if (confirm(`Redirect to ${platformInfo[platform].name} (${platformInfo[platform].type}) to find:\n\n"{{ movie.title }} ({{ movie.year }})"?`)) {
-                // Open in new tab with noreferrer for security
-                const newTab = window.open('', '_blank', 'noopener,noreferrer');
-                newTab.location.href = platformUrls[platform];
+        // Enhanced redirect handler with fallback
+        function handlePlatformRedirect(platformKey) {
+            const platform = platforms[platformKey];
+            
+            if (confirm(`Redirect to ${platform.name} (${platform.type}) to find:\n\n"{{ movie.title }} ({{ movie.year }})"?`)) {
+                // Create hidden anchor tag for more reliable redirect
+                const link = document.createElement('a');
+                link.href = platform.url;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                
+                // Fallback handling
+                link.onerror = () => {
+                    showNotification(`Couldn't open ${platform.name}, trying fallback`, 'error');
+                    setTimeout(() => {
+                        window.open(platform.fallback, '_blank', 'noopener,noreferrer');
+                    }, 1500);
+                };
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Track the redirect attempt
+                trackRedirect(platformKey);
             }
         }
 
-        // Notification system
+        // Track redirects (example implementation)
+        function trackRedirect(platform) {
+            // In a real app, you might send this to analytics
+            console.log(`Redirect attempted to ${platform}`);
+        }
+
+        // Enhanced notification system
         function showNotification(message, type = 'success') {
             const colors = {
                 success: 'bg-green-600',
@@ -243,10 +278,16 @@
                 info: 'bg-blue-600'
             };
             
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-circle',
+                info: 'info-circle'
+            };
+            
             const notification = document.createElement('div');
-            notification.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-4 py-2 rounded-lg shadow-lg flex items-center`;
+            notification.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-4 py-2 rounded-lg shadow-lg flex items-center z-50`;
             notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} mr-2"></i>
+                <i class="fas fa-${icons[type]} mr-2"></i>
                 <span>${message}</span>
             `;
             document.body.appendChild(notification);
@@ -256,6 +297,17 @@
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
+
+        // Initialize platform icons
+        document.addEventListener('DOMContentLoaded', () => {
+            const platformElements = document.querySelectorAll('[data-platform]');
+            platformElements.forEach(el => {
+                const platformKey = el.dataset.platform;
+                if (platforms[platformKey]) {
+                    el.querySelector('img').src = platforms[platformKey].icon;
+                }
+            });
+        });
     </script>
 </body>
 </html>

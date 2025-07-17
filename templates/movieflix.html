@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MovieFlix - Popular Movies</title>
+    <title>Plus Movies  | ViewTv</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -27,7 +27,7 @@
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <h1 class="text-3xl font-bold text-blue-400 mb-4 md:mb-0">
-                    <i class="fas fa-film mr-2"></i>MovieFlix
+                    <i class="fas fa-film mr-2"></i>Plus Movies | ViewTv
                 </h1>
                 <form class="w-full md:w-1/3" action="/" method="get">
                     <div class="relative">
@@ -47,7 +47,7 @@
         {% if search_query %}
         <div class="mb-6">
             <h2 class="text-2xl font-semibold">Search Results for "{{ search_query }}"</h2>
-            <a href="/" class="text-blue-400 hover:underline">← Back to all movies</a>
+            <a href="#" onclick="history.back(); return false;" class="text-blue-400 hover:underline">Back</a>
         </div>
         {% endif %}
 
@@ -100,8 +100,8 @@
 
     <footer class="bg-gray-800 py-6 mt-12">
         <div class="container mx-auto px-4 text-center text-gray-400">
-            <p>© 2023 MovieFlix. Data provided by TMDB, OMDB, and YTS.</p>
-            <p class="mt-2 text-sm">This site is for educational purposes only.</p>
+            <p>© 2025 • Plus Movies | ViewTv • Data provided by TMDB, OMDB, and YTS.</p>
+            <p class="mt-2 text-sm">This site is for viewing and streaming purposes only.</p>
         </div>
     </footer>
 </body>

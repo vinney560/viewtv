@@ -6,6 +6,8 @@
     <title>{{ movie.title }} - MovieFlix</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Video.js for streaming player -->
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
     <style>
         .backdrop {
             background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.3)), 
@@ -13,11 +15,16 @@
             background-size: cover;
             background-position: center;
         }
-        .torrent-btn {
+        .action-btn {
             transition: all 0.2s ease;
         }
-        .torrent-btn:hover {
+        .action-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -41,11 +48,44 @@
                     <span class="mr-4"><i class="fas fa-clock mr-1"></i>{{ movie.runtime }}</span>
                     <span><i class="fas fa-film mr-1"></i>{{ movie.genre.split(',')[0] }}</span>
                 </div>
+                
+                <!-- Action Buttons at the Top -->
+                <div class="flex flex-wrap gap-3 mt-6">
+                    {% if movie.stream_url %}
+                    <button onclick="showPlayer()" class="action-btn bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-lg font-bold">
+                        <i class="fas fa-play mr-2"></i>Watch Now
+                    </button>
+                    {% endif %}
+                    
+                    <a href="{{ movie.tmdb_link }}" target="_blank" class="action-btn bg-yellow-600 hover:bg-yellow-500 text-white py-2 px-4 rounded-lg font-bold">
+                        <i class="fab fa-imdb mr-2"></i>View on TMDB
+                    </a>
+                    
+                    {% if movie.torrents %}
+                    <button onclick="showDownloads()" class="action-btn bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded-lg font-bold">
+                        <i class="fas fa-download mr-2"></i>Download Options
+                    </button>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-8">
+        <!-- Video Player Section (Hidden by default) -->
+        <div id="player-section" class="hidden video-container mb-8">
+            <video id="movie-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="100%" height="450"
+                   poster="{{ movie.poster }}">
+                {% if movie.stream_url %}
+                <source src="{{ movie.stream_url }}" type="video/mp4">
+                {% endif %}
+                <p class="vjs-no-js">
+                    To view this video please enable JavaScript, or consider upgrading to a web browser that
+                    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                </p>
+            </video>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2">
                 <section class="mb-8">
@@ -53,8 +93,9 @@
                     <p class="text-gray-300 leading-relaxed">{{ movie.plot }}</p>
                 </section>
 
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold mb-4">Torrents</h2>
+                <!-- Downloads Section -->
+                <section id="downloads-section" class="mb-8">
+                    <h2 class="text-2xl font-semibold mb-4">Download Options</h2>
                     {% if movie.torrents %}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {% for t in movie.torrents|sort(attribute='quality', reverse=True) %}
@@ -67,10 +108,10 @@
                                 <span><i class="fas fa-download mr-1"></i>{{ t.size }}</span>
                                 <span><i class="fas fa-users mr-1"></i>{{ t.seeds }} seeds</span>
                             </div>
-                            <a href="magnet:?xt=urn:btih:{{ t.hash }}&dn={{ movie.title|urlencode }}&tr=udp://tracker.openbittorrent.com:80" 
-                               class="torrent-btn block w-full bg-blue-600 hover:bg-blue-500 text-white text-center py-2 px-4 rounded-lg font-bold">
+                            <button onclick="startDownload('{{ t.hash }}', '{{ movie.title }}', '{{ t.quality }}')"
+                               class="action-btn block w-full bg-blue-600 hover:bg-blue-500 text-white text-center py-2 px-4 rounded-lg font-bold">
                                 <i class="fas fa-magnet mr-2"></i>Download Torrent
-                            </a>
+                            </button>
                         </div>
                         {% endfor %}
                     </div>
@@ -105,9 +146,6 @@
                             <p>{{ movie.runtime }}</p>
                         </div>
                     </div>
-                    <a href="{{ movie.tmdb_link }}" target="_blank" class="inline-block mt-6 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg">
-                        <i class="fab fa-imdb mr-2"></i>View on TMDB
-                    </a>
                 </section>
             </div>
         </div>
@@ -119,5 +157,54 @@
             <p class="mt-2 text-sm">This site is for educational purposes only.</p>
         </div>
     </footer>
+
+    <!-- Video.js Script -->
+    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+    <script>
+        // Initialize player when shown
+        let player;
+        
+        function showPlayer() {
+            document.getElementById('player-section').classList.remove('hidden');
+            document.getElementById('downloads-section').classList.add('hidden');
+            
+            if (!player) {
+                player = videojs('movie-player', {
+                    controls: true,
+                    autoplay: true,
+                    responsive: true,
+                    fluid: true
+                });
+            }
+            
+            // Scroll to player
+            document.getElementById('player-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function showDownloads() {
+            document.getElementById('downloads-section').classList.remove('hidden');
+            document.getElementById('player-section').classList.add('hidden');
+            
+            // Scroll to downloads
+            document.getElementById('downloads-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function startDownload(hash, title, quality) {
+            // Create magnet link
+            const encodedTitle = encodeURIComponent(title + ' ' + quality);
+            const magnetLink = `magnet:?xt=urn:btih:${hash}&dn=${encodedTitle}&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.opentrackr.org:1337/announce`;
+            
+            // Create hidden link and click it
+            const link = document.createElement('a');
+            link.href = magnetLink;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show success message
+            alert(`Starting download for ${title} (${quality})\nYour torrent client should open automatically.`);
+        }
+    </script>
 </body>
 </html>

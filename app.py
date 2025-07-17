@@ -1009,6 +1009,8 @@ def fetch_movies():
     return sorted_movies[:CONFIG["MAX_MOVIES"]]
 
 @app.route("/movieflix")
+@plus_required
+@login_required
 def movieflix():
     search_query = request.args.get("q", "").strip().lower()
     

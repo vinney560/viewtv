@@ -853,7 +853,7 @@ CONFIG = {
     "CACHE_EXPIRY_HOURS": 6,
     "TMDB_PAGES_TO_FETCH": 3,
     "OMDB_KEYS": ["a465208e", "1d9efb66"],
-    "TMDB_API_KEY": "<<YOUR_TMDB_API_KEY>>",
+    "TMDB_API_KEY": "a54b0b5ef7df29593b16b047e11a9ca9",
     "REQUEST_TIMEOUT": 15,
     "MAX_THREADS": 8,
     "SESSION_SECRET_KEY": os.urandom(24).hex()

@@ -836,6 +836,193 @@ def get_movies():
 def get_movie_count():
     return jsonify({'count': len(MOVIES_DATA)})
 #-------------------------------------------------------------------------
+import os
+import json
+import requests
+from flask import Flask, render_template, request, redirect, url_for
+from datetime import datetime, timedelta
+import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+
+app.logger.setLevel(logging.INFO)
+
+# Configuration
+CONFIG = {
+    "CACHE_FILE": "movie_cache.json",
+    "CACHE_EXPIRY_HOURS": 6,
+    "TMDB_PAGES_TO_FETCH": 3,
+    "OMDB_KEYS": ["a465208e", "1d9efb66"],
+    "TMDB_API_KEY": "<<YOUR_TMDB_API_KEY>>",
+    "REQUEST_TIMEOUT": 15,
+    "MAX_THREADS": 8,
+    "SESSION_SECRET_KEY": os.urandom(24).hex()
+}
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+def rate_limited(max_per_second):
+    min_interval = 1.0 / max_per_second
+    def decorate(func):
+        last_time_called = 0.0
+        def rate_limited_function(*args, **kwargs):
+            nonlocal last_time_called
+            elapsed = time.time() - last_time_called
+            wait = min_interval - elapsed
+            if wait > 0:
+                time.sleep(wait)
+            last_time_called = time.time()
+            return func(*args, **kwargs)
+        return rate_limited_function
+    return decorate
+
+class MovieCache:
+    @staticmethod
+    def is_valid():
+        if not os.path.exists(CONFIG["CACHE_FILE"]):
+            return False
+        modified_time = datetime.fromtimestamp(os.path.getmtime(CONFIG["CACHE_FILE"]))
+        return datetime.now() - modified_time <= timedelta(hours=CONFIG["CACHE_EXPIRY_HOURS"])
+
+    @staticmethod
+    def load():
+        try:
+            with open(CONFIG["CACHE_FILE"], "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (IOError, json.JSONDecodeError) as e:
+            app.logger.error(f"Cache load failed: {str(e)}")
+            return []
+
+    @staticmethod
+    def save(data):
+        try:
+            with open(CONFIG["CACHE_FILE"], "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+        except IOError as e:
+            app.logger.error(f"Cache save failed: {str(e)}")
+
+class MovieAPI:
+    @staticmethod
+    @rate_limited(5)
+    def get_tmdb_movies(page=1):
+        url = f"https://api.themoviedb.org/3/movie/popular?api_key={CONFIG['TMDB_API_KEY']}&page={page}"
+        try:
+            r = requests.get(url, timeout=CONFIG["REQUEST_TIMEOUT"])
+            r.raise_for_status()
+            return r.json().get("results", [])
+        except requests.exceptions.RequestException as e:
+            app.logger.error(f"TMDB API error: {str(e)}")
+            return []
+
+    @staticmethod
+    @rate_limited(1)
+    def get_omdb_data(title, year=None, key_index=0):
+        key = CONFIG["OMDB_KEYS"][key_index % len(CONFIG["OMDB_KEYS"])]
+        params = {"t": title, "apikey": key}
+        if year:
+            params["y"] = year
+        try:
+            r = requests.get("http://www.omdbapi.com/", params=params, timeout=CONFIG["REQUEST_TIMEOUT"])
+            r.raise_for_status()
+            data = r.json()
+            if data.get("Response") == "True":
+                return data
+            return {}
+        except requests.exceptions.RequestException as e:
+            app.logger.error(f"OMDB API error: {str(e)}")
+            return {}
+
+    @staticmethod
+    @rate_limited(2)
+    def get_yts_torrents(title):
+        params = {"query_term": title, "limit": 3}
+        try:
+            r = requests.get("https://yts.mx/api/v2/list_movies.json", params=params, timeout=CONFIG["REQUEST_TIMEOUT"])
+            r.raise_for_status()
+            data = r.json()
+            if data.get("status") != "ok" or data.get("data", {}).get("movie_count", 0) == 0:
+                return []
+            movies = data["data"]["movies"]
+            return movies[0].get("torrents", []) if movies else []
+        except requests.exceptions.RequestException as e:
+            app.logger.error(f"YTS API error: {str(e)}")
+            return []
+
+def process_movie(movie, index):
+    title = movie.get("title")
+    year = movie.get("release_date", "")[:4] if movie.get("release_date") else None
+    
+    omdb = MovieAPI.get_omdb_data(title, year, key_index=index)
+    torrents = MovieAPI.get_yts_torrents(title)
+    
+    return {
+        "id": movie.get("id"),
+        "title": title,
+        "year": year,
+        "poster": f"https://image.tmdb.org/t/p/w500{movie.get('poster_path')}" if movie.get("poster_path") else None,
+        "backdrop": f"https://image.tmdb.org/t/p/w1280{movie.get('backdrop_path')}" if movie.get("backdrop_path") else None,
+        "rating": movie.get("vote_average"),
+        "plot": omdb.get("Plot", "No description available."),
+        "runtime": omdb.get("Runtime", "N/A"),
+        "genre": omdb.get("Genre", "N/A"),
+        "imdb_rating": omdb.get("imdbRating", "N/A"),
+        "torrents": torrents,
+        "tmdb_link": f"https://www.themoviedb.org/movie/{movie.get('id')}"
+    }
+
+def fetch_movies():
+    movies = []
+    tmdb_movies = []
+    
+    for page in range(1, CONFIG["TMDB_PAGES_TO_FETCH"] + 1):
+        tmdb_movies.extend(MovieAPI.get_tmdb_movies(page))
+    
+    with ThreadPoolExecutor(max_workers=CONFIG["MAX_THREADS"]) as executor:
+        futures = [executor.submit(process_movie, movie, idx) for idx, movie in enumerate(tmdb_movies)]
+        for future in as_completed(futures):
+            try:
+                movie_data = future.result()
+                if movie_data:
+                    movies.append(movie_data)
+            except Exception as e:
+                app.logger.error(f"Error processing movie: {str(e)}")
+    
+    return sorted(movies, key=lambda x: float(x["rating"]) if x["rating"] else 0, reverse=True)
+
+@app.route("/movieflix")
+def movieflix():
+    search_query = request.args.get("q", "").strip()
+    
+    if MovieCache.is_valid() and not search_query:
+        movies = MovieCache.load()
+    else:
+        movies = fetch_movies()
+        if not search_query:
+            MovieCache.save(movies)
+    
+    if search_query:
+        movies = [m for m in movies if search_query.lower() in m["title"].lower()]
+    
+    return render_template("movieflix.html", movies=movies, search_query=search_query)
+
+@app.route("/movie/<int:movie_id>")
+def movie_detail(movie_id):
+    if MovieCache.is_valid():
+        movies = MovieCache.load()
+        movie = next((m for m in movies if m.get("id") == movie_id), None)
+        if movie:
+            return render_template("detail.html", movie=movie)
+    return redirect(url_for("movieflix"))
+
+#-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required
 @plus_required

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieFlix - Popular Movies</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .movie-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .torrent-btn {
+            transition: all 0.2s ease;
+        }
+        .torrent-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <header class="bg-gray-800 py-6 shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <h1 class="text-3xl font-bold text-blue-400 mb-4 md:mb-0">
+                    <i class="fas fa-film mr-2"></i>MovieFlix
+                </h1>
+                <form class="w-full md:w-1/3" action="/" method="get">
+                    <div class="relative">
+                        <input type="text" name="q" value="{{ search_query }}" 
+                               class="w-full py-2 px-4 rounded-full bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                               placeholder="Search movies...">
+                        <button type="submit" class="absolute right-3 top-2 text-gray-400 hover:text-white">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        {% if search_query %}
+        <div class="mb-6">
+            <h2 class="text-2xl font-semibold">Search Results for "{{ search_query }}"</h2>
+            <a href="/" class="text-blue-400 hover:underline">← Back to all movies</a>
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {% for movie in movies %}
+            <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="movie-card bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                {% if movie.poster %}
+                <div class="relative pb-150%">
+                    <img src="{{ movie.poster }}" alt="{{ movie.title }}" class="absolute h-full w-full object-cover">
+                </div>
+                {% else %}
+                <div class="h-64 bg-gray-700 flex items-center justify-center">
+                    <i class="fas fa-image fa-3x text-gray-500"></i>
+                </div>
+                {% endif %}
+                <div class="p-4">
+                    <h3 class="font-bold text-lg truncate">{{ movie.title }}</h3>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="text-yellow-400">
+                            <i class="fas fa-star mr-1"></i>{{ movie.rating|round(1) }}
+                        </span>
+                        <span class="text-gray-400">{{ movie.year }}</span>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        {% if movie.torrents %}
+                            {% for t in movie.torrents|sort(attribute='quality') %}
+                                <span class="torrent-btn inline-block bg-blue-600 hover:bg-blue-500 text-white text-xs py-1 px-2 rounded">
+                                    {{ t.quality }}
+                                </span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-gray-500 text-sm">No torrents</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if not movies %}
+        <div class="text-center py-12">
+            <i class="fas fa-film fa-5x text-gray-600 mb-4"></i>
+            <h3 class="text-2xl font-semibold">No movies found</h3>
+            {% if search_query %}
+            <p class="mt-2 text-gray-400">Try a different search term</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </main>
+
+    <footer class="bg-gray-800 py-6 mt-12">
+        <div class="container mx-auto px-4 text-center text-gray-400">
+            <p>© 2023 MovieFlix. Data provided by TMDB, OMDB, and YTS.</p>
+            <p class="mt-2 text-sm">This site is for educational purposes only.</p>
+        </div>
+    </footer>
+</body>
+</html>

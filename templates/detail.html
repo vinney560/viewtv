@@ -33,6 +33,12 @@
         .modal {
             transition: opacity 0.3s ease, visibility 0.3s;
         }
+        .moviebox-btn {
+            background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+        }
+        .moviebox-btn:hover {
+            background: linear-gradient(135deg, #5d3a99 0%, #8c40ab 100%);
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 scroll-smooth">
@@ -45,23 +51,19 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <p class="mb-4 text-gray-300">You'll be redirected to search results for this movie on popular platforms:</p>
+            <p class="mb-4 text-gray-300">Choose your preferred streaming platform:</p>
             
             <div class="space-y-3">
-                <button onclick="redirectToPlatform('netflix')" class="stream-btn w-full bg-red-600 hover:bg-red-500 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
-                    <i class="fab fa-netflix mr-2 text-xl"></i> Search on Netflix
-                </button>
-                
-                <button onclick="redirectToPlatform('prime')" class="stream-btn w-full bg-blue-600 hover:bg-blue-500 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
-                    <i class="fab fa-amazon mr-2 text-xl"></i> Search on Prime Video
-                </button>
-                
-                <button onclick="redirectToPlatform('disney')" class="stream-btn w-full bg-blue-400 hover:bg-blue-300 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
-                    <i class="fab fa-disney mr-2 text-xl"></i> Search on Disney+
+                <button onclick="redirectToPlatform('moviebox')" class="stream-btn w-full moviebox-btn text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <i class="fas fa-film mr-2 text-xl"></i> Watch on MovieBox
                 </button>
                 
                 <button onclick="redirectToPlatform('youtube')" class="stream-btn w-full bg-red-500 hover:bg-red-400 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
-                    <i class="fab fa-youtube mr-2 text-xl"></i> Search on YouTube Movies
+                    <i class="fab fa-youtube mr-2 text-xl"></i> YouTube Movies
+                </button>
+                
+                <button onclick="redirectToPlatform('justwatch')" class="stream-btn w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <i class="fas fa-external-link-alt mr-2 text-xl"></i> View All Options
                 </button>
             </div>
             
@@ -121,27 +123,25 @@
         </section>
 
         <section id="watch-options" class="mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Where to Watch</h2>
+            <h2 class="text-2xl font-semibold mb-4">Streaming Options</h2>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button onclick="redirectToPlatform('netflix')" class="stream-btn bg-red-600 hover:bg-red-500 text-white p-4 rounded-lg flex flex-col items-center">
-                    <i class="fab fa-netflix text-3xl mb-2"></i>
-                    <span>Netflix</span>
-                </button>
-                
-                <button onclick="redirectToPlatform('prime')" class="stream-btn bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-lg flex flex-col items-center">
-                    <i class="fab fa-amazon text-3xl mb-2"></i>
-                    <span>Prime Video</span>
-                </button>
-                
-                <button onclick="redirectToPlatform('disney')" class="stream-btn bg-blue-400 hover:bg-blue-300 text-white p-4 rounded-lg flex flex-col items-center">
-                    <i class="fab fa-disney text-3xl mb-2"></i>
-                    <span>Disney+</span>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <button onclick="redirectToPlatform('moviebox')" class="stream-btn moviebox-btn text-white p-4 rounded-lg flex flex-col items-center">
+                    <i class="fas fa-film text-3xl mb-2"></i>
+                    <span>MovieBox</span>
+                    <span class="text-xs mt-1 text-gray-300">Premium</span>
                 </button>
                 
                 <button onclick="redirectToPlatform('youtube')" class="stream-btn bg-red-500 hover:bg-red-400 text-white p-4 rounded-lg flex flex-col items-center">
                     <i class="fab fa-youtube text-3xl mb-2"></i>
                     <span>YouTube</span>
+                    <span class="text-xs mt-1 text-gray-300">Rent/Buy</span>
+                </button>
+                
+                <button onclick="redirectToPlatform('justwatch')" class="stream-btn bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-lg flex flex-col items-center">
+                    <i class="fas fa-search text-3xl mb-2"></i>
+                    <span>All Options</span>
+                    <span class="text-xs mt-1 text-gray-300">JustWatch</span>
                 </button>
             </div>
         </section>
@@ -176,24 +176,23 @@
                     <h2 class="text-xl font-bold text-blue-400 flex items-center">
                         <i class="fas fa-film mr-2"></i>MovieFlix
                     </h2>
-                    <p class="text-gray-400 mt-1 text-sm">Your gateway to cinema</p>
+                    <p class="text-gray-400 mt-1 text-sm">Your streaming guide</p>
                 </div>
                 <div class="text-center md:text-right">
                     <p class="text-gray-400">Data provided by TMDB</p>
-                    <p class="text-gray-500 text-sm mt-1">© 2025 • Plus  Movie • Provided streams are for viewing purposes only.</p>
+                    <p class="text-gray-500 text-sm mt-1">© 2025 • Plus Movie • All external links are to official platforms</p>
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // Platform search URLs
+        // Enhanced platform redirects
         const platformUrls = {
-            netflix: `https://www.netflix.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')`,
-            prime: `https://www.amazon.com/s?k=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')&i=instant-video`,
-            disney: `https://www.disneyplus.com/search/${encodeURIComponent('{{ movie.title }}')`,
-            youtube: `https://www.youtube.com/results?search_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }} full movie')}`,
-            apple: `https://tv.apple.com/search?term=${encodeURIComponent('{{ movie.title }}')}`
+            moviebox: `https://www.moviebox.example/movies?search=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}`,
+            youtube: `https://www.youtube.com/results?search_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }} movie official')}`,
+            justwatch: `https://www.justwatch.com/us/search?q=${encodeURIComponent('{{ movie.title }}')}`,
+            tmdb: `{{ movie.tmdb_link }}`
         };
 
         // Show streaming options modal
@@ -212,27 +211,42 @@
             document.body.style.overflow = '';
         }
 
-        // Redirect to platform with confirmation
+        // Smart redirect with confirmation
         function redirectToPlatform(platform) {
-            const platformNames = {
-                netflix: "Netflix",
-                prime: "Amazon Prime Video",
-                disney: "Disney+",
-                youtube: "YouTube Movies"
+            const platformInfo = {
+                moviebox: {
+                    name: "MovieBox",
+                    type: "streaming service"
+                },
+                youtube: {
+                    name: "YouTube Movies",
+                    type: "rental/purchase"
+                },
+                justwatch: {
+                    name: "JustWatch",
+                    type: "streaming aggregator"
+                }
             };
-            
-            if (confirm(`You're being redirected to ${platformNames[platform]} to search for:\n\n"{{ movie.title }} ({{ movie.year }})"\n\nContinue?`)) {
-                window.open(platformUrls[platform], '_blank');
+
+            if (confirm(`Redirect to ${platformInfo[platform].name} (${platformInfo[platform].type}) to find:\n\n"{{ movie.title }} ({{ movie.year }})"?`)) {
+                // Open in new tab with noreferrer for security
+                const newTab = window.open('', '_blank', 'noopener,noreferrer');
+                newTab.location.href = platformUrls[platform];
             }
-            closeModal();
         }
 
         // Notification system
-        function showNotification(message) {
+        function showNotification(message, type = 'success') {
+            const colors = {
+                success: 'bg-green-600',
+                error: 'bg-red-600',
+                info: 'bg-blue-600'
+            };
+            
             const notification = document.createElement('div');
-            notification.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center';
+            notification.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-4 py-2 rounded-lg shadow-lg flex items-center`;
             notification.innerHTML = `
-                <i class="fas fa-check-circle mr-2"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} mr-2"></i>
                 <span>${message}</span>
             `;
             document.body.appendChild(notification);

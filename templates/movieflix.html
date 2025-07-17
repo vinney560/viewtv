@@ -14,12 +14,49 @@
             background-color: #0f172a;
         }
         
+        .genre-section {
+            margin-bottom: 3rem;
+        }
+        
+        .genre-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .movie-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: #334155 #1e293b;
+        }
+        
+        .movie-row::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .movie-row::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+        
+        .movie-row::-webkit-scrollbar-thumb {
+            background-color: #334155;
+            border-radius: 10px;
+        }
+        
         .movie-card {
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 0 0 auto;
+            width: 220px;
         }
         
         .movie-card:hover {
@@ -46,6 +83,8 @@
         
         .movie-poster {
             transition: transform 0.5s ease;
+            height: 330px;
+            width: 100%;
         }
         
         .movie-card:hover .movie-poster {
@@ -126,6 +165,8 @@
             background: linear-gradient(110deg, #1e293b 8%, #334155 18%, #1e293b 33%);
             background-size: 200% 100%;
             animation: 1.5s shine linear infinite;
+            height: 330px;
+            width: 100%;
         }
 
         @keyframes shine {
@@ -167,69 +208,8 @@
             </button>
         </div>
 
-        <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-            {% for movie in movies %}
-            <div class="movie-card group h-full" data-title="{{ movie.title|lower }}" data-year="{{ movie.year }}" data-genres="{{ movie.genres|join(',')|lower if movie.genres else '' }}" data-rating="{{ movie.rating }}">
-                <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="block h-full">
-                    <div class="relative overflow-hidden h-full">
-                        <!-- Rating Badge -->
-                        <div class="rating-circle 
-                            {% if movie.rating >= 7.5 %}rating-high
-                            {% elif movie.rating >= 5 %}rating-medium
-                            {% else %}rating-low
-                            {% endif %}">
-                            {{ movie.rating|round(1) }}
-                        </div>
-                        
-                        <!-- Movie Poster with Loading State -->
-                        <div class="movie-poster h-full w-full poster-loading">
-                            <img src="{{ movie.poster }}" alt="{{ movie.title }}" 
-                                 class="h-full w-full object-cover"
-                                 loading="lazy"
-                                 onload="this.parentElement.classList.remove('poster-loading')">
-                        </div>
-                        
-                        <!-- Movie Info (shown on hover) -->
-                        <div class="movie-info">
-                            <h3 class="font-bold text-xl mb-1">{{ movie.title }}</h3>
-                            <div class="flex items-center text-gray-300 mb-3">
-                                <span class="mr-3">{{ movie.year }}</span>
-                                {% if movie.runtime %}
-                                <span><i class="fas fa-clock mr-1"></i> {{ movie.runtime }} min</span>
-                                {% endif %}
-                            </div>
-                            
-                            {% if movie.genres %}
-                            <div class="flex flex-wrap gap-2 mb-3">
-                                {% for genre in movie.genres[:3] %}
-                                <span class="text-xs bg-gray-700 bg-opacity-80 px-2 py-1 rounded-full">
-                                    {{ genre }}
-                                </span>
-                                {% endfor %}
-                            </div>
-                            {% endif %}
-                            
-                            <div class="flex flex-wrap gap-2">
-                                {% if movie.torrents %}
-                                    {% for t in movie.torrents|sort(attribute='quality') %}
-                                        <span class="torrent-btn inline-block 
-                                            {% if t.quality == '4K' %}bg-purple-600 hover:bg-purple-500
-                                            {% elif t.quality == '1080p' %}bg-blue-600 hover:bg-blue-500
-                                            {% elif t.quality == '720p' %}bg-green-600 hover:bg-green-500
-                                            {% else %}bg-gray-600 hover:bg-gray-500{% endif %} 
-                                            text-white text-xs font-semibold py-1 px-3 rounded-full">
-                                            {{ t.quality }}
-                                        </span>
-                                    {% endfor %}
-                                {% else %}
-                                    <span class="text-gray-400 text-sm">No torrents available</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
+        <div id="genreContainer">
+            <!-- This will be populated by JavaScript -->
         </div>
 
         <div id="noResults" class="text-center py-20 hidden">
@@ -281,7 +261,58 @@
             const noResults = document.getElementById('noResults');
             const noResultsQuery = document.getElementById('noResultsQuery');
             const clearSearch = document.getElementById('clearSearch');
-            const movieGrid = document.getElementById('movieGrid');
+            const genreContainer = document.getElementById('genreContainer');
+            
+            // Organize movies by genre
+            function organizeMoviesByGenre() {
+                const genreMap = new Map();
+                
+                movieCards.forEach(card => {
+                    const genres = card.dataset.genres ? card.dataset.genres.split(',') : [];
+                    
+                    if (genres.length === 0) {
+                        // If no genres, add to "Other" category
+                        if (!genreMap.has('Other')) {
+                            genreMap.set('Other', []);
+                        }
+                        genreMap.get('Other').push(card.outerHTML);
+                    } else {
+                        genres.forEach(genre => {
+                            const genreName = genre.trim();
+                            if (!genreMap.has(genreName)) {
+                                genreMap.set(genreName, []);
+                            }
+                            genreMap.get(genreName).push(card.outerHTML);
+                        });
+                    }
+                });
+                
+                // Sort genres alphabetically
+                const sortedGenres = Array.from(genreMap.keys()).sort();
+                
+                // Clear and rebuild the genre container
+                genreContainer.innerHTML = '';
+                
+                sortedGenres.forEach(genre => {
+                    const genreSection = document.createElement('div');
+                    genreSection.className = 'genre-section';
+                    
+                    const genreTitle = document.createElement('h3');
+                    genreTitle.className = 'genre-title';
+                    genreTitle.textContent = genre;
+                    
+                    const movieRow = document.createElement('div');
+                    movieRow.className = 'movie-row';
+                    movieRow.innerHTML = genreMap.get(genre).join('');
+                    
+                    genreSection.appendChild(genreTitle);
+                    genreSection.appendChild(movieRow);
+                    genreContainer.appendChild(genreSection);
+                });
+            }
+            
+            // Initialize the genre organization
+            organizeMoviesByGenre();
             
             // Live search functionality
             liveSearch.addEventListener('input', function() {
@@ -293,8 +324,9 @@
                     searchResultsHeader.classList.remove('hidden');
                     
                     let hasResults = false;
+                    const allCards = document.querySelectorAll('.movie-card');
                     
-                    movieCards.forEach(card => {
+                    allCards.forEach(card => {
                         const title = card.dataset.title;
                         const year = card.dataset.year;
                         const genres = card.dataset.genres;
@@ -309,20 +341,27 @@
                         }
                     });
                     
+                    // Hide empty genre sections
+                    document.querySelectorAll('.genre-section').forEach(section => {
+                        const visibleCards = section.querySelectorAll('.movie-card:not(.hidden)');
+                        if (visibleCards.length === 0) {
+                            section.classList.add('hidden');
+                        } else {
+                            section.classList.remove('hidden');
+                        }
+                    });
+                    
                     if (hasResults) {
                         noResults.classList.add('hidden');
-                        movieGrid.classList.remove('hidden');
                     } else {
                         noResults.classList.remove('hidden');
-                        movieGrid.classList.add('hidden');
                     }
                 } else {
                     // If search is empty, show all movies
                     searchResultsHeader.classList.add('hidden');
                     noResults.classList.add('hidden');
-                    movieGrid.classList.remove('hidden');
-                    movieCards.forEach(card => {
-                        card.classList.remove('hidden');
+                    document.querySelectorAll('.movie-card, .genre-section').forEach(el => {
+                        el.classList.remove('hidden');
                     });
                 }
             });
@@ -332,9 +371,8 @@
                 liveSearch.value = '';
                 searchResultsHeader.classList.add('hidden');
                 noResults.classList.add('hidden');
-                movieGrid.classList.remove('hidden');
-                movieCards.forEach(card => {
-                    card.classList.remove('hidden');
+                document.querySelectorAll('.movie-card, .genre-section').forEach(el => {
+                    el.classList.remove('hidden');
                 });
                 liveSearch.focus();
             });

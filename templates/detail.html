@@ -189,7 +189,7 @@
     <script>
         // Enhanced platform redirects
         const platformUrls = {
-            moviebox: `https://www.moviebox.example/movies?search=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}`,
+            moviebox: `https://moviebox.ng/web/searchResult?keyword=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}&utm_source=`,
             youtube: `https://www.youtube.com/results?search_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }} movie official')}`,
             justwatch: `https://www.justwatch.com/us/search?q=${encodeURIComponent('{{ movie.title }}')}`,
             tmdb: `{{ movie.tmdb_link }}`

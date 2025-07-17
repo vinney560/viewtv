@@ -83,16 +83,6 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
         }
         
-        .placeholder-icon {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
-        }
-        
         .rating-circle {
             width: 36px;
             height: 36px;
@@ -130,6 +120,18 @@
         
         .hidden {
             display: none !important;
+        }
+
+        .poster-loading {
+            background: linear-gradient(110deg, #1e293b 8%, #334155 18%, #1e293b 33%);
+            background-size: 200% 100%;
+            animation: 1.5s shine linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position-x: -200%;
+            }
         }
     </style>
 </head>
@@ -179,16 +181,13 @@
                             {{ movie.rating|round(1) }}
                         </div>
                         
-                        <!-- Movie Poster -->
-                        {% if movie.poster %}
-                        <div class="movie-poster h-full w-full">
-                            <img src="{{ movie.poster }}" alt="{{ movie.title }}" class="h-full w-full object-cover">
+                        <!-- Movie Poster with Loading State -->
+                        <div class="movie-poster h-full w-full poster-loading">
+                            <img src="{{ movie.poster }}" alt="{{ movie.title }}" 
+                                 class="h-full w-full object-cover"
+                                 loading="lazy"
+                                 onload="this.parentElement.classList.remove('poster-loading')">
                         </div>
-                        {% else %}
-                        <div class="h-full w-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                            <i class="fas fa-image fa-3x text-gray-600 placeholder-icon"></i>
-                        </div>
-                        {% endif %}
                         
                         <!-- Movie Info (shown on hover) -->
                         <div class="movie-info">
@@ -349,6 +348,25 @@
                     this.dispatchEvent(event);
                 }, 200);
             });
+
+            // Lazy load images with Intersection Observer
+            if ('IntersectionObserver' in window) {
+                const lazyImageObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+
+                document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+                    img.dataset.src = img.src;
+                    img.src = '';
+                    lazyImageObserver.observe(img);
+                });
+            }
         });
     </script>
 </body>

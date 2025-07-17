@@ -3,198 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ movie.title }} | Plus Movie</title>
+    <title>{{ movie.title }} ({{ movie.year }}) | Plus Movie</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Video.js for streaming player -->
-    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .backdrop {
-            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.3)), 
-                             url('{{ movie.backdrop or "" }}');
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), 
+                             url('{{ movie.backdrop or movie.poster or "" }}');
             background-size: cover;
             background-position: center;
+            min-height: 60vh;
         }
-        .action-btn {
+        .torrent-btn {
             transition: all 0.2s ease;
         }
-        .action-btn:hover {
-            transform: translateY(-2px);
+        .torrent-btn:hover {
+            transform: translateY(-3px);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .video-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .movie-poster {
+            transition: transform 0.3s ease;
+        }
+        .movie-poster:hover {
+            transform: scale(1.03);
+        }
+        .scroll-smooth {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
-<body class="bg-gray-900 text-gray-100">
-    <header class="backdrop h-96 flex flex-col">
+<body class="bg-gray-900 text-gray-100 scroll-smooth">
+    <header class="backdrop flex flex-col">
         <div class="container mx-auto px-4 pt-6">
-            <a href="/movieflix" class="inline-block bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-lg">
+            <a href="/movieflix" class="inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors">
                 <i class="fas fa-arrow-left mr-2"></i>Back
             </a>
         </div>
-        <div class="container mx-auto px-4 mt-auto mb-8 flex flex-col md:flex-row items-end">
+        <div class="container mx-auto px-4 mt-auto mb-8 flex flex-col md:flex-row items-end gap-6">
             {% if movie.poster %}
-            <img src="{{ movie.poster }}" alt="{{ movie.title }}" class="w-48 h-64 rounded-lg shadow-xl border-4 border-white mb-4 md:mb-0 md:mr-8">
+            <img src="{{ movie.poster }}" alt="{{ movie.title }}" 
+                 class="movie-poster w-48 h-64 md:w-56 md:h-80 rounded-lg shadow-xl border-4 border-white">
             {% endif %}
             <div class="flex-1">
-                <h1 class="text-4xl font-bold">{{ movie.title }} <span class="text-gray-400">({{ movie.year }})</span></h1>
-                <div class="flex items-center mt-4">
-                    <div class="bg-blue-600 text-white py-1 px-3 rounded-full mr-4">
+                <h1 class="text-3xl md:text-4xl font-bold">{{ movie.title }} 
+                    <span class="text-gray-400">({{ movie.year }})</span>
+                </h1>
+                
+                <div class="flex flex-wrap items-center gap-3 mt-4">
+                    <div class="flex items-center bg-blue-600 text-white py-1 px-3 rounded-full">
                         <i class="fas fa-star mr-1"></i>{{ movie.rating|round(1) }}
                     </div>
-                    <span class="mr-4"><i class="fas fa-clock mr-1"></i>{{ movie.runtime }}</span>
-                    <span><i class="fas fa-film mr-1"></i>{{ movie.genre.split(',')[0] }}</span>
+                    <span class="flex items-center text-gray-300">
+                        <i class="fas fa-clock mr-1"></i>{{ movie.runtime }}
+                    </span>
+                    <span class="flex items-center text-gray-300">
+                        <i class="fas fa-film mr-1"></i>{{ movie.genre.split(',')[0] }}
+                    </span>
                 </div>
-                
-                <!-- Action Buttons at the Top -->
+
+                <!-- Quick Actions -->
                 <div class="flex flex-wrap gap-3 mt-6">
-                    {% if movie.stream_url %}
-                    <button onclick="showPlayer()" class="action-btn bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-lg font-bold">
-                        <i class="fas fa-play mr-2"></i>Watch Now
-                    </button>
+                    {% if movie.torrents %}
+                    <a href="#downloads" class="torrent-btn inline-flex items-center bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded-lg font-bold">
+                        <i class="fas fa-download mr-2"></i>Download
+                    </a>
                     {% endif %}
-                    
-                    <a href="{{ movie.tmdb_link }}" target="_blank" class="action-btn bg-yellow-600 hover:bg-yellow-500 text-white py-2 px-4 rounded-lg font-bold">
+                    <a href="{{ movie.tmdb_link }}" target="_blank" 
+                       class="inline-flex items-center bg-yellow-600 hover:bg-yellow-500 text-white py-2 px-4 rounded-lg font-bold">
                         <i class="fab fa-imdb mr-2"></i>View on TMDB
                     </a>
-                    
-                    {% if movie.torrents %}
-                    <button onclick="showDownloads()" class="action-btn bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded-lg font-bold">
-                        <i class="fas fa-download mr-2"></i>Download Options
-                    </button>
-                    {% endif %}
                 </div>
             </div>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-8">
-        <!-- Video Player Section (Hidden by default) -->
-        <div id="player-section" class="hidden video-container mb-8">
-            <video id="movie-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="100%" height="450"
-                   poster="{{ movie.poster }}">
-                {% if movie.stream_url %}
-                <source src="{{ movie.stream_url }}" type="video/mp4">
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Overview</h2>
+            <p class="text-gray-300 leading-relaxed">{{ movie.plot or "No description available." }}</p>
+        </section>
+
+        <section id="downloads" class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold">Download Options</h2>
+                {% if movie.torrents %}
+                <span class="text-sm text-gray-400">{{ movie.torrents|length }} options available</span>
                 {% endif %}
-                <p class="vjs-no-js">
-                    To view this video please enable JavaScript, or consider upgrading to a web browser that
-                    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                </p>
-            </video>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2">
-                <section class="mb-8">
-                    <h2 class="text-2xl font-semibold mb-4">Overview</h2>
-                    <p class="text-gray-300 leading-relaxed">{{ movie.plot }}</p>
-                </section>
-
-                <!-- Downloads Section -->
-                <section id="downloads-section" class="mb-8">
-                    <h2 class="text-2xl font-semibold mb-4">Download Options</h2>
-                    {% if movie.torrents %}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {% for t in movie.torrents|sort(attribute='quality', reverse=True) %}
-                        <div class="bg-gray-800 rounded-lg p-4">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="font-bold text-lg">{{ t.quality }}</span>
-                                <span class="bg-green-600 text-white py-1 px-2 rounded text-sm">{{ t.type }}</span>
-                            </div>
-                            <div class="flex justify-between text-sm text-gray-400 mb-3">
-                                <span><i class="fas fa-download mr-1"></i>{{ t.size }}</span>
-                                <span><i class="fas fa-users mr-1"></i>{{ t.seeds }} seeds</span>
-                            </div>
-                            <button onclick="startDownload('{{ t.hash }}', '{{ movie.title }}', '{{ t.quality }}')"
-                               class="action-btn block w-full bg-blue-600 hover:bg-blue-500 text-white text-center py-2 px-4 rounded-lg font-bold">
-                                <i class="fas fa-magnet mr-2"></i>Download Torrent
-                            </button>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    <div class="bg-gray-800 rounded-lg p-8 text-center">
-                        <i class="fas fa-cloud-rain fa-3x text-gray-600 mb-4"></i>
-                        <h3 class="text-xl font-semibold">No torrents available</h3>
-                        <p class="text-gray-400 mt-2">We couldn't find any torrents for this movie</p>
-                    </div>
-                    {% endif %}
-                </section>
             </div>
-
-            <div>
-                <section class="bg-gray-800 rounded-lg p-6 mb-8">
-                    <h2 class="text-2xl font-semibold mb-4">Details</h2>
-                    <div class="space-y-3">
-                        <div>
-                            <h3 class="text-gray-400 text-sm">Genre</h3>
-                            <p>{{ movie.genre }}</p>
-                        </div>
-                        <div>
-                            <h3 class="text-gray-400 text-sm">IMDb Rating</h3>
-                            <p>{{ movie.imdb_rating }}</p>
-                        </div>
-                        <div>
-                            <h3 class="text-gray-400 text-sm">TMDB Rating</h3>
-                            <p>{{ movie.rating|round(1) }}</p>
-                        </div>
-                        <div>
-                            <h3 class="text-gray-400 text-sm">Runtime</h3>
-                            <p>{{ movie.runtime }}</p>
-                        </div>
+            
+            {% if movie.torrents %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for t in movie.torrents|sort(attribute='quality', reverse=True) %}
+                <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-gray-600 transition-colors">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="font-bold text-lg flex items-center">
+                            <i class="fas fa-file-video mr-2 text-blue-400"></i>{{ t.quality }}
+                        </span>
+                        <span class="bg-green-600 text-white py-1 px-2 rounded text-xs font-bold">
+                            {{ t.type|upper }}
+                        </span>
                     </div>
-                </section>
+                    <div class="flex justify-between text-sm text-gray-400 mb-4">
+                        <span class="flex items-center">
+                            <i class="fas fa-download mr-1"></i>{{ t.size }}
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-users mr-1"></i>{{ t.seeds }} seeds
+                        </span>
+                    </div>
+                    <button onclick="startTorrentDownload('{{ t.hash }}', '{{ movie.title }} ({{ movie.year }}) {{ t.quality }}')"
+                       class="torrent-btn w-full bg-blue-600 hover:bg-blue-500 text-white text-center py-2 px-4 rounded-lg font-bold">
+                        <i class="fas fa-magnet mr-2"></i>Download Torrent
+                    </button>
+                </div>
+                {% endfor %}
             </div>
-        </div>
+            {% else %}
+            <div class="bg-gray-800 rounded-lg p-8 text-center border border-gray-700">
+                <i class="fas fa-cloud-rain fa-3x text-gray-600 mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">No torrents available</h3>
+                <p class="text-gray-400">We couldn't find any download options for this movie</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Details</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="text-gray-400 text-sm uppercase font-bold mb-1">Genre</h3>
+                    <p>{{ movie.genre or "N/A" }}</p>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 text-sm uppercase font-bold mb-1">IMDb Rating</h3>
+                    <p>{{ movie.imdb_rating or "N/A" }}</p>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 text-sm uppercase font-bold mb-1">TMDB Rating</h3>
+                    <p>{{ movie.rating|round(1) if movie.rating else "N/A" }}</p>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 text-sm uppercase font-bold mb-1">Runtime</h3>
+                    <p>{{ movie.runtime or "N/A" }}</p>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <footer class="bg-gray-800 py-6 mt-12">
-        <div class="container mx-auto px-4 text-center text-gray-400">
-            <p>© 2025 • Plus Movies | ViewTv • Data provided by TMDB, OMDB, and YTS.</p>
-            <p class="mt-2 text-sm">This site is for viewing and streaming purposes only.</p>
+    <footer class="bg-gray-800 py-8 mt-12 border-t border-gray-700">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold text-blue-400 flex items-center">
+                        <i class="fas fa-film mr-2"></i>Plus Movie
+                    </h2>
+                    <p class="text-gray-400 mt-1 text-sm">Your gateway to cinema</p>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">Data provided by TMDB, OMDB, and YTS</p>
+                    <p class="text-gray-500 text-sm mt-1">© 2025 Plus Movie. Educational use only.</p>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <!-- Video.js Script -->
-    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
     <script>
-        // Initialize player when shown
-        let player;
-        
-        function showPlayer() {
-            document.getElementById('player-section').classList.remove('hidden');
-            document.getElementById('downloads-section').classList.add('hidden');
+        // Enhanced torrent download function
+        function startTorrentDownload(hash, title) {
+            // Additional trackers for better connectivity
+            const trackers = [
+                'udp://tracker.openbittorrent.com:80',
+                'udp://tracker.opentrackr.org:1337/announce',
+                'udp://tracker.leechers-paradise.org:6969',
+                'udp://tracker.coppersurfer.tk:6969',
+                'udp://exodus.desync.com:6969'
+            ];
             
-            if (!player) {
-                player = videojs('movie-player', {
-                    controls: true,
-                    autoplay: true,
-                    responsive: true,
-                    fluid: true
-                });
-            }
-            
-            // Scroll to player
-            document.getElementById('player-section').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function showDownloads() {
-            document.getElementById('downloads-section').classList.remove('hidden');
-            document.getElementById('player-section').classList.add('hidden');
-            
-            // Scroll to downloads
-            document.getElementById('downloads-section').scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function startDownload(hash, title, quality) {
             // Create magnet link
-            const encodedTitle = encodeURIComponent(title + ' ' + quality);
-            const magnetLink = `magnet:?xt=urn:btih:${hash}&dn=${encodedTitle}&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.opentrackr.org:1337/announce`;
+            const encodedTitle = encodeURIComponent(title);
+            let magnetLink = `magnet:?xt=urn:btih:${hash}&dn=${encodedTitle}`;
             
-            // Create hidden link and click it
+            // Add all trackers
+            trackers.forEach(tr => {
+                magnetLink += `&tr=${encodeURIComponent(tr)}`;
+            });
+            
+            // Create hidden link and trigger download
             const link = document.createElement('a');
             link.href = magnetLink;
             link.style.display = 'none';
@@ -202,8 +196,25 @@
             link.click();
             document.body.removeChild(link);
             
-            // Show success message
-            alert(`Starting download for ${title} (${quality})\nYour torrent client should open automatically.`);
+            // Show download started notification
+            showNotification(`Starting download: ${title}`);
+        }
+        
+        // Notification system
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
         }
     </script>
 </body>

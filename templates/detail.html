@@ -201,7 +201,7 @@
                 name: "MovieBox",
                 type: "streaming service",
                 icon: "https://moviebox.ng/favicon.ico",
-                url: `https://moviebox.ng/web/searchResult?keyword=${encodeURIComponent('{{ movie.title }}') + '+' + encodeURIComponent('{{ movie.year }}')}&utm_source=`
+                url: `https://moviebox.ng/web/searchResult?keyword=${encodeURIComponent('{{ movie.title }}') + '+' + encodeURIComponent('{{ movie.year }}')}&utm_source=`,
                 fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:moviebox.ng')}`
             },
             youtube: {

@@ -491,7 +491,7 @@ def login():
                 session['role'] = user.role
                 user.status = "active"
                 db.session.commit()
-                # Thisstores the status in the session (for use in templates or logic)
+                # This stores the status in the session (for use in templates or logic)
                 session['active'] = user.status
                 login_user(user)
                 flash("♻️ Welcome back!", "success")
@@ -1797,7 +1797,7 @@ def update_plus(user_id):
             return jsonify({"status": "error", "message": "Duration must be greater than 0"}), 400
 
         user.plus_expires_at = datetime.utcnow() + duration
-        user.plus_type = user.plus_type or "paid"
+        user.plus_type = "paid"
         db.session.commit()
 
         return jsonify({"status": "success", "message": f"Updated Plus time for {user.email}"})

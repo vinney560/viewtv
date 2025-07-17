@@ -221,7 +221,7 @@
                 youtube: "YouTube Movies"
             };
             
-            if (confirm(`You're being redirected to ${platformNames[platform]} to search for:\n\n"{{ movie.title }} ({{ movie.year })}"\n\nContinue?`)) {
+            if (confirm(`You're being redirected to ${platformNames[platform]} to search for:\n\n"{{ movie.title }} ({{ movie.year }})"\n\nContinue?`)) {
                 window.open(platformUrls[platform], '_blank');
             }
             closeModal();

@@ -210,6 +210,75 @@
 
         <div id="genreContainer">
             <!-- This will be populated by JavaScript -->
+            {% for genre, movies_in_genre in movies|groupby('genre') %}
+            <div class="genre-section">
+                <h3 class="genre-title">{{ genre }}</h3>
+                <div class="movie-row">
+                    {% for movie in movies_in_genre %}
+                    <div class="movie-card group h-full" data-title="{{ movie.title|lower }}" data-year="{{ movie.year }}" data-genre="{{ movie.genre|lower if movie.genre else '' }}" data-rating="{{ movie.rating }}">
+                        <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="block h-full">
+                            <div class="relative overflow-hidden h-full">
+                                <!-- Rating Badge -->
+                                <div class="rating-circle 
+                                    {% if movie.rating >= 7.5 %}rating-high
+                                    {% elif movie.rating >= 5 %}rating-medium
+                                    {% else %}rating-low
+                                    {% endif %}">
+                                    {{ movie.rating|round(1) if movie.rating else 'N/A' }}
+                                </div>
+                                
+                                <!-- Movie Poster with Loading State -->
+                                <div class="movie-poster h-full w-full poster-loading">
+                                    <img src="{{ movie.poster }}" alt="{{ movie.title }}" 
+                                         class="h-full w-full object-cover"
+                                         loading="lazy"
+                                         onload="this.parentElement.classList.remove('poster-loading')">
+                                </div>
+                                
+                                <!-- Movie Info (shown on hover) -->
+                                <div class="movie-info">
+                                    <h3 class="font-bold text-xl mb-1">{{ movie.title }}</h3>
+                                    <div class="flex items-center text-gray-300 mb-3">
+                                        <span class="mr-3">{{ movie.year }}</span>
+                                        {% if movie.runtime and movie.runtime != 'N/A' %}
+                                        <span><i class="fas fa-clock mr-1"></i> {{ movie.runtime }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if movie.genre and movie.genre != 'N/A' %}
+                                    <div class="flex flex-wrap gap-2 mb-3">
+                                        {% for genre in movie.genre.split(',')[:3] %}
+                                        <span class="text-xs bg-gray-700 bg-opacity-80 px-2 py-1 rounded-full">
+                                            {{ genre }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="flex flex-wrap gap-2">
+                                        {% if movie.torrents %}
+                                            {% for t in movie.torrents|sort(attribute='quality') %}
+                                                <span class="torrent-btn inline-block 
+                                                    {% if t.quality == '4K' %}bg-purple-600 hover:bg-purple-500
+                                                    {% elif t.quality == '1080p' %}bg-blue-600 hover:bg-blue-500
+                                                    {% elif t.quality == '720p' %}bg-green-600 hover:bg-green-500
+                                                    {% else %}bg-gray-600 hover:bg-gray-500{% endif %} 
+                                                    text-white text-xs font-semibold py-1 px-3 rounded-full">
+                                                    {{ t.quality }}
+                                                </span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="text-gray-400 text-sm">No torrents available</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
         </div>
 
         <div id="noResults" class="text-center py-20 hidden">
@@ -263,46 +332,6 @@
             const clearSearch = document.getElementById('clearSearch');
             const genreContainer = document.getElementById('genreContainer');
             
-            // Organize movies by genre (using movie.genre instead of movie.genres)
-            function organizeMoviesByGenre() {
-                const genreMap = new Map();
-                
-                movieCards.forEach(card => {
-                    const genre = card.dataset.genre ? card.dataset.genre.trim() : 'Other';
-                    
-                    if (!genreMap.has(genre)) {
-                        genreMap.set(genre, []);
-                    }
-                    genreMap.get(genre).push(card.outerHTML);
-                });
-                
-                // Sort genres alphabetically
-                const sortedGenres = Array.from(genreMap.keys()).sort();
-                
-                // Clear and rebuild the genre container
-                genreContainer.innerHTML = '';
-                
-                sortedGenres.forEach(genre => {
-                    const genreSection = document.createElement('div');
-                    genreSection.className = 'genre-section';
-                    
-                    const genreTitle = document.createElement('h3');
-                    genreTitle.className = 'genre-title';
-                    genreTitle.textContent = genre;
-                    
-                    const movieRow = document.createElement('div');
-                    movieRow.className = 'movie-row';
-                    movieRow.innerHTML = genreMap.get(genre).join('');
-                    
-                    genreSection.appendChild(genreTitle);
-                    genreSection.appendChild(movieRow);
-                    genreContainer.appendChild(genreSection);
-                });
-            }
-            
-            // Initialize the genre organization
-            organizeMoviesByGenre();
-            
             // Live search functionality
             liveSearch.addEventListener('input', function() {
                 const searchTerm = this.value.trim().toLowerCase();
@@ -313,16 +342,15 @@
                     searchResultsHeader.classList.remove('hidden');
                     
                     let hasResults = false;
-                    const allCards = document.querySelectorAll('.movie-card');
                     
-                    allCards.forEach(card => {
+                    movieCards.forEach(card => {
                         const title = card.dataset.title;
                         const year = card.dataset.year;
-                        const genre = card.dataset.genre ? card.dataset.genre.toLowerCase() : '';
+                        const genre = card.dataset.genre;
                         
                         if (title.includes(searchTerm) || 
                             year.includes(searchTerm) || 
-                            genre.includes(searchTerm)) {
+                            (genre && genre.includes(searchTerm))) {
                             card.classList.remove('hidden');
                             hasResults = true;
                         } else {

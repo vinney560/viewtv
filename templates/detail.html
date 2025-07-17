@@ -14,10 +14,10 @@
             background-position: center;
             min-height: 60vh;
         }
-        .torrent-btn {
+        .stream-btn {
             transition: all 0.2s ease;
         }
-        .torrent-btn:hover {
+        .stream-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -30,9 +30,47 @@
         .scroll-smooth {
             scroll-behavior: smooth;
         }
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 scroll-smooth">
+    <!-- Streaming Redirect Modal -->
+    <div id="streamModal" class="modal fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 opacity-0 invisible">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Where to watch <span class="text-blue-400">{{ movie.title }}</span></h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="mb-4 text-gray-300">You'll be redirected to search results for this movie on popular platforms:</p>
+            
+            <div class="space-y-3">
+                <button onclick="redirectToPlatform('netflix')" class="stream-btn w-full bg-red-600 hover:bg-red-500 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <i class="fab fa-netflix mr-2 text-xl"></i> Search on Netflix
+                </button>
+                
+                <button onclick="redirectToPlatform('prime')" class="stream-btn w-full bg-blue-600 hover:bg-blue-500 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <i class="fab fa-amazon mr-2 text-xl"></i> Search on Prime Video
+                </button>
+                
+                <button onclick="redirectToPlatform('disney')" class="stream-btn w-full bg-blue-400 hover:bg-blue-300 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <i class="fab fa-disney mr-2 text-xl"></i> Search on Disney+
+                </button>
+                
+                <button onclick="redirectToPlatform('youtube')" class="stream-btn w-full bg-red-500 hover:bg-red-400 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <i class="fab fa-youtube mr-2 text-xl"></i> Search on YouTube Movies
+                </button>
+            </div>
+            
+            <div class="mt-4 text-sm text-gray-400">
+                <p>We don't host any content - these are official platform searches.</p>
+            </div>
+        </div>
+    </div>
+
     <header class="backdrop flex flex-col">
         <div class="container mx-auto px-4 pt-6">
             <a href="/movieflix" class="inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors">
@@ -63,11 +101,10 @@
 
                 <!-- Quick Actions -->
                 <div class="flex flex-wrap gap-3 mt-6">
-                    {% if movie.torrents %}
-                    <a href="#downloads" class="torrent-btn inline-flex items-center bg-green-600 hover:bg-green-500 text-white py-2 px-4 rounded-lg font-bold">
-                        <i class="fas fa-download mr-2"></i>Download
-                    </a>
-                    {% endif %}
+                    <button onclick="showStreamModal()" class="stream-btn inline-flex items-center bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-lg font-bold">
+                        <i class="fas fa-play mr-2"></i>Watch Now
+                    </button>
+                    
                     <a href="{{ movie.tmdb_link }}" target="_blank" 
                        class="inline-flex items-center bg-yellow-600 hover:bg-yellow-500 text-white py-2 px-4 rounded-lg font-bold">
                         <i class="fab fa-imdb mr-2"></i>View on TMDB
@@ -83,48 +120,30 @@
             <p class="text-gray-300 leading-relaxed">{{ movie.plot or "No description available." }}</p>
         </section>
 
-        <section id="downloads" class="mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-semibold">Download Options</h2>
-                {% if movie.torrents %}
-                <span class="text-sm text-gray-400">{{ movie.torrents|length }} options available</span>
-                {% endif %}
-            </div>
+        <section id="watch-options" class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Where to Watch</h2>
             
-            {% if movie.torrents %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {% for t in movie.torrents|sort(attribute='quality', reverse=True) %}
-                <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-gray-600 transition-colors">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="font-bold text-lg flex items-center">
-                            <i class="fas fa-file-video mr-2 text-blue-400"></i>{{ t.quality }}
-                        </span>
-                        <span class="bg-green-600 text-white py-1 px-2 rounded text-xs font-bold">
-                            {{ t.type|upper }}
-                        </span>
-                    </div>
-                    <div class="flex justify-between text-sm text-gray-400 mb-4">
-                        <span class="flex items-center">
-                            <i class="fas fa-download mr-1"></i>{{ t.size }}
-                        </span>
-                        <span class="flex items-center">
-                            <i class="fas fa-users mr-1"></i>{{ t.seeds }} seeds
-                        </span>
-                    </div>
-                    <button onclick="startTorrentDownload('{{ t.hash }}', '{{ movie.title }} ({{ movie.year }}) {{ t.quality }}')"
-                       class="torrent-btn w-full bg-blue-600 hover:bg-blue-500 text-white text-center py-2 px-4 rounded-lg font-bold">
-                        <i class="fas fa-magnet mr-2"></i>Download Torrent
-                    </button>
-                </div>
-                {% endfor %}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="redirectToPlatform('netflix')" class="stream-btn bg-red-600 hover:bg-red-500 text-white p-4 rounded-lg flex flex-col items-center">
+                    <i class="fab fa-netflix text-3xl mb-2"></i>
+                    <span>Netflix</span>
+                </button>
+                
+                <button onclick="redirectToPlatform('prime')" class="stream-btn bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-lg flex flex-col items-center">
+                    <i class="fab fa-amazon text-3xl mb-2"></i>
+                    <span>Prime Video</span>
+                </button>
+                
+                <button onclick="redirectToPlatform('disney')" class="stream-btn bg-blue-400 hover:bg-blue-300 text-white p-4 rounded-lg flex flex-col items-center">
+                    <i class="fab fa-disney text-3xl mb-2"></i>
+                    <span>Disney+</span>
+                </button>
+                
+                <button onclick="redirectToPlatform('youtube')" class="stream-btn bg-red-500 hover:bg-red-400 text-white p-4 rounded-lg flex flex-col items-center">
+                    <i class="fab fa-youtube text-3xl mb-2"></i>
+                    <span>YouTube</span>
+                </button>
             </div>
-            {% else %}
-            <div class="bg-gray-800 rounded-lg p-8 text-center border border-gray-700">
-                <i class="fas fa-cloud-rain fa-3x text-gray-600 mb-4"></i>
-                <h3 class="text-xl font-semibold mb-2">No torrents available</h3>
-                <p class="text-gray-400">We couldn't find any download options for this movie</p>
-            </div>
-            {% endif %}
         </section>
 
         <section class="bg-gray-800 rounded-lg p-6 mb-8">
@@ -155,51 +174,59 @@
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
                     <h2 class="text-xl font-bold text-blue-400 flex items-center">
-                        <i class="fas fa-film mr-2"></i>Plus Movie
+                        <i class="fas fa-film mr-2"></i>MovieFlix
                     </h2>
                     <p class="text-gray-400 mt-1 text-sm">Your gateway to cinema</p>
                 </div>
                 <div class="text-center md:text-right">
-                    <p class="text-gray-400">Data provided by TMDB, OMDB, and YTS</p>
-                    <p class="text-gray-500 text-sm mt-1">© 2025 Plus Movie. Educational use only.</p>
+                    <p class="text-gray-400">Data provided by TMDB</p>
+                    <p class="text-gray-500 text-sm mt-1">© 2025 • Plus  Movie • Provided streams are for viewing purposes only.</p>
                 </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // Enhanced torrent download function
-        function startTorrentDownload(hash, title) {
-            // Additional trackers for better connectivity
-            const trackers = [
-                'udp://tracker.openbittorrent.com:80',
-                'udp://tracker.opentrackr.org:1337/announce',
-                'udp://tracker.leechers-paradise.org:6969',
-                'udp://tracker.coppersurfer.tk:6969',
-                'udp://exodus.desync.com:6969'
-            ];
-            
-            // Create magnet link
-            const encodedTitle = encodeURIComponent(title);
-            let magnetLink = `magnet:?xt=urn:btih:${hash}&dn=${encodedTitle}`;
-            
-            // Add all trackers
-            trackers.forEach(tr => {
-                magnetLink += `&tr=${encodeURIComponent(tr)}`;
-            });
-            
-            // Create hidden link and trigger download
-            const link = document.createElement('a');
-            link.href = magnetLink;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Show download started notification
-            showNotification(`Starting download: ${title}`);
+        // Platform search URLs
+        const platformUrls = {
+            netflix: `https://www.netflix.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')`,
+            prime: `https://www.amazon.com/s?k=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')&i=instant-video`,
+            disney: `https://www.disneyplus.com/search/${encodeURIComponent('{{ movie.title }}')`,
+            youtube: `https://www.youtube.com/results?search_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }} full movie')}`,
+            apple: `https://tv.apple.com/search?term=${encodeURIComponent('{{ movie.title }}')}`
+        };
+
+        // Show streaming options modal
+        function showStreamModal() {
+            const modal = document.getElementById('streamModal');
+            modal.classList.remove('opacity-0', 'invisible');
+            modal.classList.add('opacity-100', 'visible');
+            document.body.style.overflow = 'hidden';
         }
-        
+
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('streamModal');
+            modal.classList.remove('opacity-100', 'visible');
+            modal.classList.add('opacity-0', 'invisible');
+            document.body.style.overflow = '';
+        }
+
+        // Redirect to platform with confirmation
+        function redirectToPlatform(platform) {
+            const platformNames = {
+                netflix: "Netflix",
+                prime: "Amazon Prime Video",
+                disney: "Disney+",
+                youtube: "YouTube Movies"
+            };
+            
+            if (confirm(`You're being redirected to ${platformNames[platform]} to search for:\n\n"{{ movie.title }} ({{ movie.year })}"\n\nContinue?`)) {
+                window.open(platformUrls[platform], '_blank');
+            }
+            closeModal();
+        }
+
         // Notification system
         function showNotification(message) {
             const notification = document.createElement('div');
@@ -210,7 +237,6 @@
             `;
             document.body.appendChild(notification);
             
-            // Auto-remove after 3 seconds
             setTimeout(() => {
                 notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
                 setTimeout(() => notification.remove(), 300);

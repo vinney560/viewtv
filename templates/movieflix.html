@@ -263,28 +263,17 @@
             const clearSearch = document.getElementById('clearSearch');
             const genreContainer = document.getElementById('genreContainer');
             
-            // Organize movies by genre
+            // Organize movies by genre (using movie.genre instead of movie.genres)
             function organizeMoviesByGenre() {
                 const genreMap = new Map();
                 
                 movieCards.forEach(card => {
-                    const genres = card.dataset.genres ? card.dataset.genres.split(',') : [];
+                    const genre = card.dataset.genre ? card.dataset.genre.trim() : 'Other';
                     
-                    if (genres.length === 0) {
-                        // If no genres, add to "Other" category
-                        if (!genreMap.has('Other')) {
-                            genreMap.set('Other', []);
-                        }
-                        genreMap.get('Other').push(card.outerHTML);
-                    } else {
-                        genres.forEach(genre => {
-                            const genreName = genre.trim();
-                            if (!genreMap.has(genreName)) {
-                                genreMap.set(genreName, []);
-                            }
-                            genreMap.get(genreName).push(card.outerHTML);
-                        });
+                    if (!genreMap.has(genre)) {
+                        genreMap.set(genre, []);
                     }
+                    genreMap.get(genre).push(card.outerHTML);
                 });
                 
                 // Sort genres alphabetically
@@ -329,11 +318,11 @@
                     allCards.forEach(card => {
                         const title = card.dataset.title;
                         const year = card.dataset.year;
-                        const genres = card.dataset.genres;
+                        const genre = card.dataset.genre ? card.dataset.genre.toLowerCase() : '';
                         
                         if (title.includes(searchTerm) || 
                             year.includes(searchTerm) || 
-                            (genres && genres.includes(searchTerm))) {
+                            genre.includes(searchTerm)) {
                             card.classList.remove('hidden');
                             hasResults = true;
                         } else {

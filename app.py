@@ -836,27 +836,23 @@ def get_movies():
 def get_movie_count():
     return jsonify({'count': len(MOVIES_DATA)})
 #-------------------------------------------------------------------------
-import os
 import json
-import requests
-from flask import Flask, render_template, request, redirect, url_for
-from datetime import datetime, timedelta
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import time
 
 app.logger.setLevel(logging.INFO)
 
-# Configuration
+# Enhanced Configuration
 CONFIG = {
     "CACHE_FILE": "movie_cache.json",
-    "CACHE_EXPIRY_HOURS": 6,
-    "TMDB_PAGES_TO_FETCH": 3,
+    "CACHE_EXPIRY_HOURS": 3,  # Reduced from 6 to 3 hours
+    "TMDB_PAGES_TO_FETCH": 10,  # Increased from 3 to 10 (will fetch ~200 movies)
     "OMDB_KEYS": ["a465208e", "1d9efb66"],
     "TMDB_API_KEY": "a54b0b5ef7df29593b16b047e11a9ca9",
-    "REQUEST_TIMEOUT": 15,
-    "MAX_THREADS": 8,
-    "SESSION_SECRET_KEY": os.urandom(24).hex()
+    "REQUEST_TIMEOUT": 20,  # Increased timeout
+    "MAX_THREADS": 12,  # Increased from 8
+    "SESSION_SECRET_KEY": os.urandom(24).hex(),
+    "MAX_MOVIES": 200  # New setting for maximum movies to keep
 }
 
 # Setup logging
@@ -896,7 +892,9 @@ class MovieCache:
     def load():
         try:
             with open(CONFIG["CACHE_FILE"], "r", encoding="utf-8") as f:
-                return json.load(f)
+                data = json.load(f)
+                # Ensure we don't return more than MAX_MOVIES
+                return data[:CONFIG["MAX_MOVIES"]]
         except (IOError, json.JSONDecodeError) as e:
             app.logger.error(f"Cache load failed: {str(e)}")
             return []
@@ -904,8 +902,11 @@ class MovieCache:
     @staticmethod
     def save(data):
         try:
+            # Truncate to MAX_MOVIES before saving
+            data_to_save = data[:CONFIG["MAX_MOVIES"]]
             with open(CONFIG["CACHE_FILE"], "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+                json.dump(data_to_save, f, indent=2, ensure_ascii=False)
+            app.logger.info(f"Cache saved with {len(data_to_save)} movies")
         except IOError as e:
             app.logger.error(f"Cache save failed: {str(e)}")
 
@@ -919,7 +920,7 @@ class MovieAPI:
             r.raise_for_status()
             return r.json().get("results", [])
         except requests.exceptions.RequestException as e:
-            app.logger.error(f"TMDB API error: {str(e)}")
+            app.logger.error(f"TMDB API error (page {page}): {str(e)}")
             return []
 
     @staticmethod
@@ -937,7 +938,7 @@ class MovieAPI:
                 return data
             return {}
         except requests.exceptions.RequestException as e:
-            app.logger.error(f"OMDB API error: {str(e)}")
+            app.logger.error(f"OMDB API error ({title}): {str(e)}")
             return {}
 
     @staticmethod
@@ -953,7 +954,7 @@ class MovieAPI:
             movies = data["data"]["movies"]
             return movies[0].get("torrents", []) if movies else []
         except requests.exceptions.RequestException as e:
-            app.logger.error(f"YTS API error: {str(e)}")
+            app.logger.error(f"YTS API error ({title}): {str(e)}")
             return []
 
 def process_movie(movie, index):
@@ -982,9 +983,15 @@ def fetch_movies():
     movies = []
     tmdb_movies = []
     
+    # Fetch TMDB data first (10 pages = ~200 movies)
+    app.logger.info(f"Fetching {CONFIG['TMDB_PAGES_TO_FETCH']} pages from TMDB...")
     for page in range(1, CONFIG["TMDB_PAGES_TO_FETCH"] + 1):
-        tmdb_movies.extend(MovieAPI.get_tmdb_movies(page))
+        page_movies = MovieAPI.get_tmdb_movies(page)
+        tmdb_movies.extend(page_movies)
+        app.logger.info(f"Fetched page {page} with {len(page_movies)} movies")
     
+    # Process in parallel with thread pool
+    app.logger.info(f"Processing {len(tmdb_movies)} movies...")
     with ThreadPoolExecutor(max_workers=CONFIG["MAX_THREADS"]) as executor:
         futures = [executor.submit(process_movie, movie, idx) for idx, movie in enumerate(tmdb_movies)]
         for future in as_completed(futures):
@@ -992,34 +999,51 @@ def fetch_movies():
                 movie_data = future.result()
                 if movie_data:
                     movies.append(movie_data)
+                    if len(movies) % 20 == 0:
+                        app.logger.info(f"Processed {len(movies)} movies so far...")
             except Exception as e:
                 app.logger.error(f"Error processing movie: {str(e)}")
     
-    return sorted(movies, key=lambda x: float(x["rating"]) if x["rating"] else 0, reverse=True)
+    # Sort by rating and limit to MAX_MOVIES
+    sorted_movies = sorted(movies, key=lambda x: float(x["rating"]) if x["rating"] else 0, reverse=True)
+    return sorted_movies[:CONFIG["MAX_MOVIES"]]
 
 @app.route("/movieflix")
 def movieflix():
-    search_query = request.args.get("q", "").strip()
+    search_query = request.args.get("q", "").strip().lower()
     
-    if MovieCache.is_valid() and not search_query:
-        movies = MovieCache.load()
-    else:
-        movies = fetch_movies()
+    # Always check cache first
+    cached_movies = MovieCache.load() if MovieCache.is_valid() else []
+    
+    if not cached_movies or search_query:
+        # Fetch fresh data if no cache or search query exists
+        fresh_movies = fetch_movies()
+        
         if not search_query:
-            MovieCache.save(movies)
+            # Only save to cache if not searching
+            MovieCache.save(fresh_movies)
+            movies = fresh_movies
+        else:
+            # Combine cache and fresh results for search
+            movies = fresh_movies + cached_movies
+    else:
+        movies = cached_movies
     
+    # Apply search filter if query exists
     if search_query:
-        movies = [m for m in movies if search_query.lower() in m["title"].lower()]
+        movies = [m for m in movies if search_query in m["title"].lower()]
     
+    app.logger.info(f"Returning {len(movies)} movies (search: '{search_query}')")
     return render_template("movieflix.html", movies=movies, search_query=search_query)
 
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
-    if MovieCache.is_valid():
-        movies = MovieCache.load()
-        movie = next((m for m in movies if m.get("id") == movie_id), None)
-        if movie:
-            return render_template("detail.html", movie=movie)
+    # Check both cache and fresh data
+    movies = MovieCache.load() if MovieCache.is_valid() else fetch_movies()
+    movie = next((m for m in movies if m.get("id") == movie_id), None)
+    
+    if movie:
+        return render_template("detail.html", movie=movie)
     return redirect(url_for("movieflix"))
 
 #-------------------------------------------------------------------------

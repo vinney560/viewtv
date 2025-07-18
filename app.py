@@ -1209,18 +1209,22 @@ import time
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
 CATEGORY_QUERIES = {
-    "all":        "Live Football",
-    "fifa":       "FIFA live match",
-    "sporty":       "Live Sporty Tv",
-    "uefa":       "UEFA live match",
-    "epl":        "EPL live match",
-    "laliga":     "La Liga live match",
-    "maisha":     "Maisha Magic East live",
-    "nickelodeon":"Nickelodeon live OR Nickelodeon live stream",
-    "bein":       "Bein Sports live OR Bein Sports live stream",
-    "dazn":       "DAZN live OR DAZN live sports OR DAZN streaming",
-    "tnt":        "TNT live OR TNT live stream OR TNT sports live",
-    "fox":        "FOX live OR FOX live stream OR FOX sports live"
+    "all": "Live Football official broadcast OR Premier League OR La Liga OR Bundesliga OR Serie A OR UEFA Champions League",
+    "fifa": "FIFA World Cup live OR FIFA official broadcast",
+    "sporty": "Sporty TV live OR Sporty TV football stream",
+    "uefa": "UEFA Champions League live OR UEFA Europa League official stream",
+    "epl": "Premier League live OR EPL official broadcast OR Sky Sports Premier League",
+    "laliga": "La Liga live OR La Liga official stream OR Movistar LaLiga",
+    "bundesliga": "Bundesliga live OR Bundesliga official stream OR Sky Sport Bundesliga",
+    "seriea": "Serie A live OR Serie A official stream OR DAZN Serie A",
+    "supersport": "SuperSport live OR SuperSport Premier League OR SuperSport Football",
+    "bein": "beIN Sports live OR beIN Sports HD stream OR beIN Sports Premier League",
+    "dazn": "DAZN Football live OR DAZN official stream OR DAZN Premier League",
+    "tnt": "TNT Sports live OR TNT Sports football OR TNT Sports Premier League",
+    "fox": "FOX Sports live OR FOX Soccer OR FOX Sports football",
+    "espn": "ESPN FC live OR ESPN football stream OR ESPN Premier League",
+    "maisha": "Maisha Magic East live",
+    "nickelodeon": "Nickelodeon live OR Nickelodeon live stream"
 }
 
 CACHE = {}
@@ -1246,15 +1250,17 @@ def save_cache_to_file():
     except Exception as e:
         print(f"Error saving cache: {e}")
 
-def fetch_live_streams(query, max_results=100):
+def fetch_live_streams(query, max_results=50):  # Reduced max results for more relevance
     url = "https://www.googleapis.com/youtube/v3/search"
     params = {
-        "part":       "snippet",
-        "type":       "video",
-        "eventType":  "live",
-        "q":          query,
+        "part": "snippet",
+        "type": "video",
+        "eventType": "live",
+        "q": query,
         "maxResults": max_results,
-        "key":        YOUTUBE_API_KEY
+        "key": YOUTUBE_API_KEY,
+        "relevanceLanguage": "en",
+        "order": "viewCount"  # Prioritize popular streams
     }
 
     try:
@@ -1267,11 +1273,17 @@ def fetch_live_streams(query, max_results=100):
             if not vid:
                 continue
             snip = item["snippet"]
+            # Filter out likely irrelevant streams
+            title = snip["title"].lower()
+            if any(word in title for word in ["fifa 23", "pes", "efootball", "gameplay", "android", "mobile"]):
+                continue
+                
             streams.append({
-                "title":        snip["title"],
-                "video_id":     vid,
-                "channel":      snip["channelTitle"],
-                "published_at": snip["publishedAt"]
+                "title": snip["title"],
+                "video_id": vid,
+                "channel": snip["channelTitle"],
+                "published_at": snip["publishedAt"],
+                "thumbnail": snip["thumbnails"]["high"]["url"]
             })
 
         return streams
@@ -1288,16 +1300,24 @@ def fetch_live_streams_cached(category):
         return cached["data"]
 
     raw_query = CATEGORY_QUERIES.get(category, CATEGORY_QUERIES["all"])
-    # Split queries by ' OR ' with exact spacing to handle multi-term queries properly
     queries = [q.strip() for q in raw_query.split(" OR ")]
 
     all_streams = {}
     for query in queries:
         results = fetch_live_streams(query)
         for stream in results:
-            all_streams[stream["video_id"]] = stream  # deduplicate by video_id
+            # Additional filtering for better relevance
+            if stream["video_id"] not in all_streams:
+                all_streams[stream["video_id"]] = stream
 
     fresh = list(all_streams.values())
+    
+    # Sort by channel reliability (you can customize this)
+    priority_channels = ["beIN SPORTS", "DAZN", "Sky Sports", "BT Sport", "ESPN", "SuperSport"]
+    fresh.sort(key=lambda x: (
+        -any(channel in x["channel"] for channel in priority_channels),
+        x["title"]
+    ))
 
     CACHE[category] = {
         "data": fresh,

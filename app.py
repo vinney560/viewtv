@@ -841,20 +841,21 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 app.logger.setLevel(logging.INFO)
 
-# Configuration matching previous output
+# Configuration
 CONFIG = {
     "CACHE_FILE": "movie_cache.json",
-    "SCRAPE_INTERVAL_HOURS": 3,
-    "TMDB_PAGES_TO_FETCH": 10,
+    "SCRAPE_INTERVAL_HOURS": 3,  # Scrape every 3 hours
+    "TMDB_PAGES_TO_FETCH": 10,   # ~200 movies
     "OMDB_KEYS": ["a465208e", "1d9efb66"],
     "TMDB_API_KEY": "a54b0b5ef7df29593b16b047e11a9ca9",
     "REQUEST_TIMEOUT": 20,
     "MAX_THREADS": 12,
     "SESSION_SECRET_KEY": os.urandom(24).hex(),
-    "MAX_MOVIES": 200
+    "MAX_MOVIES": 200,
+    "LAST_SCRAPE_TIME": None
 }
 
-# Identical logging setup
+# Setup logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -864,7 +865,6 @@ logging.basicConfig(
     ]
 )
 
-# Preserved rate limiting decorator
 def rate_limited(max_per_second):
     min_interval = 1.0 / max_per_second
     def decorate(func):
@@ -883,16 +883,21 @@ def rate_limited(max_per_second):
 class MovieCache:
     @staticmethod
     def should_scrape():
+        """Check if we should scrape new movies"""
         if not os.path.exists(CONFIG["CACHE_FILE"]):
             return True
-        file_time = datetime.fromtimestamp(os.path.getmtime(CONFIG["CACHE_FILE"]))
-        return datetime.now() - file_time > timedelta(hours=CONFIG["SCRAPE_INTERVAL_HOURS"])
+            
+        if CONFIG["LAST_SCRAPE_TIME"] is None:
+            return True
+            
+        time_since_last = datetime.now() - CONFIG["LAST_SCRAPE_TIME"]
+        return time_since_last >= timedelta(hours=CONFIG["SCRAPE_INTERVAL_HOURS"])
 
     @staticmethod
     def load():
         try:
             with open(CONFIG["CACHE_FILE"], "r", encoding="utf-8") as f:
-                return json.load(f)[:CONFIG["MAX_MOVIES"]]
+                return json.load(f)
         except (IOError, json.JSONDecodeError) as e:
             app.logger.error(f"Cache load failed: {str(e)}")
             return []
@@ -901,7 +906,9 @@ class MovieCache:
     def save(data):
         try:
             with open(CONFIG["CACHE_FILE"], "w", encoding="utf-8") as f:
-                json.dump(data[:CONFIG["MAX_MOVIES"]], f, indent=2, ensure_ascii=False)
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            CONFIG["LAST_SCRAPE_TIME"] = datetime.now()
+            app.logger.info(f"New movies scraped at {CONFIG['LAST_SCRAPE_TIME']}")
         except IOError as e:
             app.logger.error(f"Cache save failed: {str(e)}")
 
@@ -959,7 +966,6 @@ def process_movie(movie, index):
     omdb = MovieAPI.get_omdb_data(title, year, key_index=index)
     torrents = MovieAPI.get_yts_torrents(title)
     
-    # Maintain identical output structure
     return {
         "id": movie.get("id"),
         "title": title,
@@ -973,16 +979,19 @@ def process_movie(movie, index):
         "imdb_rating": omdb.get("imdbRating", "N/A"),
         "torrents": torrents,
         "tmdb_link": f"https://www.themoviedb.org/movie/{movie.get('id')}",
-        "added_at": datetime.now().isoformat()  # New field for sorting
+        "scraped_at": datetime.now().isoformat()  # Track when movie was scraped
     }
 
 def fetch_movies():
+    """Fetch and process new movies from APIs"""
     movies = []
     tmdb_movies = []
     
+    # Fetch from TMDB
     for page in range(1, CONFIG["TMDB_PAGES_TO_FETCH"] + 1):
         tmdb_movies.extend(MovieAPI.get_tmdb_movies(page))
     
+    # Process in parallel
     with ThreadPoolExecutor(max_workers=CONFIG["MAX_THREADS"]) as executor:
         futures = [executor.submit(process_movie, movie, idx) for idx, movie in enumerate(tmdb_movies)]
         for future in as_completed(futures):
@@ -993,21 +1002,24 @@ def fetch_movies():
             except Exception as e:
                 app.logger.error(f"Error processing movie: {str(e)}")
     
-    # Sort by addition time (newest first) then by rating
+    # Sort by scrape time (newest first) then by rating
     return sorted(
         movies,
-        key=lambda x: (x["added_at"], float(x["rating"]) if x["rating"] else 0),
+        key=lambda x: (x["scraped_at"], float(x["rating"]) if x["rating"] else 0),
         reverse=True
     )[:CONFIG["MAX_MOVIES"]]
 
+def update_movies_if_needed():
+    """Check if we need to scrape new movies and update cache"""
+    if MovieCache.should_scrape():
+        app.logger.info("Scraping new movies...")
+        new_movies = fetch_movies()
+        MovieCache.save(new_movies)
+
 @app.route("/movieflix")
 def movieflix():
-    if MovieCache.should_scrape():
-        movies = fetch_movies()
-        MovieCache.save(movies)
-    else:
-        movies = MovieCache.load()
-    
+    update_movies_if_needed()
+    movies = MovieCache.load()
     return render_template("movieflix.html", movies=movies)
 
 @app.route("/movie/<int:movie_id>")
@@ -2365,4 +2377,7 @@ def handle_csrf_error(e):
 
 #========================================
 if __name__ == '__main__':
+    if not os.path.exists(CONFIG["CACHE_FILE"]):
+        app.logger.info("Initializing cache...")
+        MovieCache.save(fetch_movies())
     app.run(host='0.0.0.0', port=47947, debug=False)

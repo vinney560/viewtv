@@ -1208,134 +1208,154 @@ import time
 
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
+# Official broadcaster channel IDs
+OFFICIAL_BROADCASTERS = {
+    "beIN Sports": "UCb3KXgUtBGr4OvgGJV8Zb5A",
+    "DAZN": "UCqdw6UF0m-6Hq1t4i4Xx9JQ",
+    "Sky Sports": "UCTi0ZRSN1wmGBK1x4QqQKzA",
+    "ESPN FC": "UCdKic8_9Q1JP1Qw_Rs5QlRw",
+    "BT Sport": "UCjzbDk-B9gQY8hU4UjTlVDw"
+}
+
 CATEGORY_QUERIES = {
-    "all": "Live Football official broadcast OR Premier League OR La Liga OR Bundesliga OR Serie A OR UEFA Champions League",
-    "fifa": "FIFA World Cup live OR FIFA official broadcast",
-    "sporty": "Sporty TV live OR Sporty TV football stream",
-    "uefa": "UEFA Champions League live OR UEFA Europa League official stream",
-    "epl": "Premier League live OR EPL official broadcast OR Sky Sports Premier League",
-    "laliga": "La Liga live OR La Liga official stream OR Movistar LaLiga",
-    "bundesliga": "Bundesliga live OR Bundesliga official stream OR Sky Sport Bundesliga",
-    "seriea": "Serie A live OR Serie A official stream OR DAZN Serie A",
-    "supersport": "SuperSport live OR SuperSport Premier League OR SuperSport Football",
-    "bein": "beIN Sports live OR beIN Sports HD stream OR beIN Sports Premier League",
-    "dazn": "DAZN Football live OR DAZN official stream OR DAZN Premier League",
-    "tnt": "TNT Sports live OR TNT Sports football OR TNT Sports Premier League",
-    "fox": "FOX Sports live OR FOX Soccer OR FOX Sports football",
-    "espn": "ESPN FC live OR ESPN football stream OR ESPN Premier League",
-    "maisha": "Maisha Magic East live",
-    "nickelodeon": "Nickelodeon live OR Nickelodeon live stream"
+    "all": "live football -fifa23 -gameplay -android -mobile -pes -efootball",
+    "epl": "premier league live -fifa -game -android -mobile",
+    "laliga": "laliga live -fifa -game -android -mobile",
+    "bundesliga": "bundesliga live -fifa -game -android -mobile",
+    "seriea": "serie a live -fifa -game -android -mobile",
+    "champions": "champions league live -fifa -game -android -mobile",
+    "europa": "europa league live -fifa -game -android -mobile"
 }
 
 CACHE = {}
 CACHE_FILE = "cache.json"
-CACHE_DURATION = 1 * 60 * 60  # 1 hour in seconds
+CACHE_DURATION = 30 * 60  # 30 minutes cache
 
-# Load cache from file on startup
-if os.path.exists(CACHE_FILE):
-    try:
-        with open(CACHE_FILE, "r") as f:
-            CACHE = json.load(f)
-            # Convert timestamps back to float
-            for k in CACHE:
-                CACHE[k]["timestamp"] = float(CACHE[k]["timestamp"])
-    except Exception as e:
-        print(f"Error loading cache from file: {e}")
-        CACHE = {}
+def load_cache():
+    if os.path.exists(CACHE_FILE):
+        try:
+            with open(CACHE_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
 
-def save_cache_to_file():
-    try:
-        with open(CACHE_FILE, "w") as f:
-            json.dump(CACHE, f)
-    except Exception as e:
-        print(f"Error saving cache: {e}")
+def save_cache():
+    with open(CACHE_FILE, 'w') as f:
+        json.dump(CACHE, f)
 
-def fetch_live_streams(query, max_results=50):  # Reduced max results for more relevance
+def fetch_from_youtube(query_params):
     url = "https://www.googleapis.com/youtube/v3/search"
-    params = {
-        "part": "snippet",
-        "type": "video",
-        "eventType": "live",
-        "q": query,
-        "maxResults": max_results,
-        "key": YOUTUBE_API_KEY,
-        "relevanceLanguage": "en",
-        "order": "viewCount"  # Prioritize popular streams
-    }
-
     try:
-        resp = requests.get(url, params=params)
-        items = resp.json().get("items", [])
-        streams = []
-
-        for item in items:
-            vid = item["id"].get("videoId")
-            if not vid:
-                continue
-            snip = item["snippet"]
-            # Filter out likely irrelevant streams
-            title = snip["title"].lower()
-            if any(word in title for word in ["fifa 23", "pes", "efootball", "gameplay", "android", "mobile"]):
-                continue
-                
-            streams.append({
-                "title": snip["title"],
-                "video_id": vid,
-                "channel": snip["channelTitle"],
-                "published_at": snip["publishedAt"],
-                "thumbnail": snip["thumbnails"]["high"]["url"]
-            })
-
-        return streams
-
+        response = requests.get(url, params=query_params)
+        return response.json().get('items', [])
     except Exception as e:
-        print(f"Error fetching streams: {e}")
+        print(f"YouTube API error: {e}")
         return []
 
-def fetch_live_streams_cached(category):
-    now = time.time()
-    cached = CACHE.get(category)
-
-    if cached and now - cached["timestamp"] < CACHE_DURATION:
-        return cached["data"]
-
-    raw_query = CATEGORY_QUERIES.get(category, CATEGORY_QUERIES["all"])
-    queries = [q.strip() for q in raw_query.split(" OR ")]
-
-    all_streams = {}
-    for query in queries:
-        results = fetch_live_streams(query)
-        for stream in results:
-            # Additional filtering for better relevance
-            if stream["video_id"] not in all_streams:
-                all_streams[stream["video_id"]] = stream
-
-    fresh = list(all_streams.values())
+def filter_streams(items):
+    valid_streams = []
+    for item in items:
+        vid = item.get('id', {}).get('videoId')
+        if not vid:
+            continue
+            
+        snippet = item.get('snippet', {})
+        title = snippet.get('title', '').lower()
+        channel = snippet.get('channelTitle', '').lower()
+        
+        # Skip gaming and mobile streams
+        if any(bad_word in title for bad_word in ['fifa', 'pes', 'efootball', 'gameplay', 'android', 'mobile']):
+            continue
+            
+        # Skip channels with suspicious names
+        if any(bad_word in channel for bad_word in ['game', 'fifa', 'android', 'mobile']):
+            continue
+            
+        valid_streams.append({
+            'title': snippet.get('title'),
+            'video_id': vid,
+            'channel': snippet.get('channelTitle'),
+            'thumbnail': snippet.get('thumbnails', {}).get('high', {}).get('url')
+        })
     
-    # Sort by channel reliability (you can customize this)
-    priority_channels = ["beIN SPORTS", "DAZN", "Sky Sports", "BT Sport", "ESPN", "SuperSport"]
-    fresh.sort(key=lambda x: (
-        -any(channel in x["channel"] for channel in priority_channels),
-        x["title"]
-    ))
+    return valid_streams
 
-    CACHE[category] = {
-        "data": fresh,
-        "timestamp": now
+def get_official_broadcasts():
+    streams = []
+    for name, channel_id in OFFICIAL_BROADCASTERS.items():
+        params = {
+            'part': 'snippet',
+            'channelId': channel_id,
+            'eventType': 'live',
+            'type': 'video',
+            'maxResults': 5,
+            'key': YOUTUBE_API_KEY
+        }
+        items = fetch_from_youtube(params)
+        streams.extend(filter_streams(items))
+    return streams
+
+def get_category_streams(category):
+    query = CATEGORY_QUERIES.get(category, "")
+    if not query:
+        return []
+        
+    params = {
+        'part': 'snippet',
+        'q': query,
+        'eventType': 'live',
+        'type': 'video',
+        'maxResults': 15,
+        'key': YOUTUBE_API_KEY,
+        'order': 'viewCount',
+        'relevanceLanguage': 'en'
     }
+    
+    items = fetch_from_youtube(params)
+    return filter_streams(items)
 
-    save_cache_to_file()
-    return fresh
+@app.route('/api/streams')
+def get_streams():
+    category = request.args.get('cat', 'all')
+    
+    # Check cache first
+    if category in CACHE and time.time() - CACHE[category]['timestamp'] < CACHE_DURATION:
+        return jsonify(CACHE[category]['data'])
+    
+    # Get official broadcasts first
+    streams = get_official_broadcasts()
+    
+    # Add category-specific streams
+    if category != 'all':
+        streams.extend(get_category_streams(category))
+    else:
+        # For 'all' category, get streams from popular leagues
+        for league in ['epl', 'laliga', 'bundesliga', 'seriea', 'champions']:
+            streams.extend(get_category_streams(league))
+    
+    # Remove duplicates
+    unique_streams = {stream['video_id']: stream for stream in streams}.values()
+    
+    # Sort by channel reliability
+    priority_channels = [name.lower() for name in OFFICIAL_BROADCASTERS.keys()]
+    sorted_streams = sorted(
+        unique_streams,
+        key=lambda x: (
+            -any(chan in x['channel'].lower() for chan in priority_channels),
+            x['title']
+        )
+    )
+    
+    # Update cache
+    CACHE[category] = {
+        'data': list(sorted_streams),
+        'timestamp': time.time()
+    }
+    save_cache()
+    
+    return jsonify(sorted_streams)
 
-@app.route("/live_matches")
-def live_matches():
-    return render_template("live_matches.html")
-
-@app.route("/api/live_streams")
-def api_live_streams():
-    cat = request.args.get("cat", "all")
-    streams = fetch_live_streams_cached(cat)
-    return jsonify(streams)
 #=======================================
 @app.route('/status', methods=['GET'])
 def status():

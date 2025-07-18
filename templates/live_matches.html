@@ -3,26 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Live Football | StreamTv</title>
+  <title>Live Football | StreamTV</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          animation: {
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'fade-in': 'fadeIn 0.3s ease-out forwards',
-          },
-          keyframes: {
-            fadeIn: {
-              'from': { opacity: '0', transform: 'translateY(10px)' },
-              'to': { opacity: '1', transform: 'translateY(0)' }
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
     .stream-card {
       transition: all 0.2s ease;
@@ -33,7 +15,7 @@
       box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.2), 0 4px 6px -2px rgba(6, 182, 212, 0.1);
     }
     .live-badge {
-      animation: pulse-slow 2s infinite;
+      animation: pulse 2s infinite;
     }
     .category-btn {
       transition: all 0.2s ease;
@@ -41,15 +23,20 @@
     iframe {
       aspect-ratio: 16/9;
     }
-    .updating-indicator {
-      animation: pulse 1.5s infinite;
-    }
-    .refresh-spin {
-      animation: spin 1s linear infinite;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
     @keyframes spin {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -59,7 +46,6 @@
   <header class="bg-gray-800/80 backdrop-blur-sm border-b border-gray-700 p-4 sticky top-0 z-10">
     <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center">
-        <!-- Soccer Ball SVG -->
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-cyan-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 2l3 7h7l-5.5 4 2.5 7L12 16l-7 4 2.5-7L2 9h7l3-7z" />
@@ -73,9 +59,11 @@
       <div class="flex items-center gap-3">
         <div id="categories" class="flex flex-wrap justify-center gap-2">
           <button data-cat="all" class="category-btn px-4 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-sm font-medium">All</button>
-          <button data-cat="fifa" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">FIFA</button>
-          <button data-cat="uefa" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">UEFA</button>
-          <button data-cat="epl" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">EPL</button>
+          <button data-cat="epl" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">Premier League</button>
+          <button data-cat="laliga" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">La Liga</button>
+          <button data-cat="bundesliga" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">Bundesliga</button>
+          <button data-cat="seriea" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">Serie A</button>
+          <button data-cat="champions" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">Champions</button>
         </div>
         <button id="refreshBtn" class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors" title="Refresh streams">
           <svg id="refreshIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,57 +102,61 @@
     </div>
   </footer>
 
-  <!-- JavaScript -->
   <script>
     let currentCat = 'all';
-    const POLL_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+    const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
     let pollTimeout;
 
     // Format time for display
-    function formatTime(date) {
-      return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    function formatTime(dateString) {
+      if (!dateString) return 'Live now';
+      const date = new Date(dateString);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    function formatDate(date) {
-      return new Date(date).toLocaleDateString([], { month: 'short', day: 'numeric' });
+    function formatDate(dateString) {
+      if (!dateString) return 'Today';
+      const date = new Date(dateString);
+      return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
 
     // Create a stream card element
-    function createStreamCard(s) {
+    function createStreamCard(stream) {
       const card = document.createElement('div');
       card.className = 'stream-card bg-gray-800/80 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30 transition-all animate-fade-in';
       card.innerHTML = `
         <div class="relative">
-          <iframe 
-            class="w-full" 
-            src="https://www.youtube.com/embed/${s.video_id}?autoplay=0" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen
-            loading="lazy"
-          ></iframe>
+          <img src="${stream.thumbnail}" alt="${stream.title}" class="w-full h-auto aspect-video object-cover">
+          <a href="https://www.youtube.com/watch?v=${stream.video_id}" target="_blank" class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-black/50 rounded-full p-3 hover:bg-black/70 transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </a>
           <span class="live-badge absolute top-2 left-2 px-2 py-1 rounded-md bg-red-600 text-xs font-bold flex items-center">
             <span class="w-2 h-2 rounded-full bg-white mr-1 animate-pulse"></span>
             LIVE
           </span>
         </div>
         <div class="p-4">
-          <h2 class="text-md font-semibold text-gray-100 line-clamp-2 mb-2">${s.title}</h2>
+          <h2 class="text-md font-semibold text-gray-100 line-clamp-2 mb-2">${stream.title}</h2>
           <div class="flex items-center text-xs text-gray-400 space-x-3">
             <span class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              ${s.channel}
+              ${stream.channel || 'Unknown'}
             </span>
             <span class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              ${formatDate(s.published_at)} • ${formatTime(s.published_at)}
+              ${formatDate(stream.published_at)} • ${formatTime(stream.published_at)}
             </span>
           </div>
-        </div>`;
+        </div>
+      `;
       return card;
     }
 
@@ -173,9 +165,9 @@
       try {
         // Show loading state
         document.getElementById('updatingIndicator').classList.remove('hidden');
-        document.getElementById('refreshIcon').classList.add('refresh-spin');
+        document.getElementById('refreshIcon').classList.add('animate-spin');
         
-        const response = await fetch(`/api/live_streams?cat=${currentCat}`);
+        const response = await fetch(`/api/streams?cat=${currentCat}`);
         const streams = await response.json();
         const container = document.getElementById('streamsContainer');
         
@@ -206,9 +198,9 @@
       } finally {
         // Hide loading state
         document.getElementById('updatingIndicator').classList.add('hidden');
-        document.getElementById('refreshIcon').classList.remove('refresh-spin');
+        document.getElementById('refreshIcon').classList.remove('animate-spin');
         
-        // Schedule next poll (1 hour)
+        // Schedule next poll
         clearTimeout(pollTimeout);
         pollTimeout = setTimeout(loadStreams, POLL_INTERVAL);
       }

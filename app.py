@@ -1208,24 +1208,22 @@ import time
 
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
-# Official broadcaster channel IDs
 OFFICIAL_BROADCASTERS = {
     "premier": "UCTi0ZRSN1wmGBK1x4QqQKzA",     # Sky Sports Premier League
     "laliga": "UC8C4LqMsJ8Q9XaLK1O0QY8g",      # LaLigaTV
     "uefa": "UC3GzR0a8Qm_9b0wJjXz9QzQ",        # UEFA.tv
-    "bein": "UCb3KXgUtBGr4OvgGJV8Zb5A",         # beIN Sports
+    "bein": "UCb3KXgUtBGr4OvgGJV8Zb5A",        # beIN Sports
     "dazn": "UCqdw6UF0m-6Hq1t4i4Xx9JQ",        # DAZN
     "tnt": "UCjzbDk-B9gQY8hU4UjTlVDw",         # TNT Sports
     "espn": "UCdKic8_9Q1JP1Qw_Rs5QlRw",        # ESPN FC
-    "fox": "UCdKic8_9Q1JP1Qw_Rs5QlRw",         # FOX Sports (duplicate for fallback)
-    "sporty": "UCVYfMX_jAvH6nU-WCIp0K4w",       # Sporty TV (Unofficial YouTube ID – verified working for now)
+    "fox": "UCdKic8_9Q1JP1Qw_Rs5QlRw",         # FOX Sports
+    "sporty": "UCVYfMX_jAvH6nU-WCIp0K4w",      # Sporty TV
     "nbcsports": "UCqZQlzSHbVJrwrn5XvzrzcA",   # NBC Sports
     "cbs": "UCJ2ZhWnWwJbKvnW3n7CO7Xg",         # CBS Sports
     "tsn": "UCd4FOx0s9jJjWb8HsFnPpYw",         # TSN
     "fubo": "UCZMFmRBpXrH-ObiOeYcW1FQ"         # fubo Sports
 }
 
-# Your original categories as fallback
 CATEGORY_QUERIES = {
     "all": "Live Football -game -android -mobile",
     "fifa": "FIFA live match -gameplay -android",
@@ -1241,7 +1239,7 @@ CATEGORY_QUERIES = {
 
 CACHE = {}
 CACHE_FILE = "cache.json"
-CACHE_DURATION = 1 * 60 * 60  # 1 hour in seconds
+CACHE_DURATION = 1 * 60 * 60
 
 if os.path.exists(CACHE_FILE):
     try:
@@ -1260,6 +1258,12 @@ def save_cache_to_file():
     except Exception as e:
         print(f"Error saving cache: {e}")
 
+def is_football_stream(title):
+    football_terms = ['football', 'soccer', 'premier', 'laliga', 'champions', 'uefa', 'match', 'serie a', 'epl', 'sporty', 'fifa']
+    banned_terms = ['pes', 'efootball', 'gameplay', 'android', 'mobile', 'video', 'ai', 'volleyball', 'cricket', 'basketball', 'today']
+    title = title.lower()
+    return any(term in title for term in football_terms) and not any(term in title for term in banned_terms)
+
 def fetch_official_streams(channel_id):
     try:
         response = requests.get(
@@ -1276,33 +1280,21 @@ def fetch_official_streams(channel_id):
             timeout=10
         )
         response.raise_for_status()
-        
         streams = []
         for item in response.json().get("items", []):
             vid = item["id"].get("videoId")
-            if not vid:
-                continue
-                
             snip = item["snippet"]
-            title = snip["title"].lower()
-            
-            # Ensure it's football content
-            football_terms = ['football', 'soccer', 'premier', 'laliga', 
-                            'champions', 'uefa', 'match', 'seriea', 'fifa', 'sporty']
-            if not any(term in title for term in football_terms):
+            if not vid or not is_football_stream(snip["title"]):
                 continue
-                
             streams.append({
                 "title": snip["title"],
                 "video_id": vid,
                 "channel": snip["channelTitle"],
                 "published_at": snip["publishedAt"],
                 "thumbnail": snip["thumbnails"]["high"]["url"],
-                "is_official": True  # Mark as official broadcast
+                "is_official": True
             })
-            
         return streams
-        
     except Exception as e:
         print(f"Error fetching official streams: {e}")
         return []
@@ -1316,46 +1308,28 @@ def fetch_fallback_streams(query):
                 "q": query,
                 "eventType": "live",
                 "type": "video",
-                "maxResults": 100,
+                "maxResults": 50,
                 "key": YOUTUBE_API_KEY,
                 "order": "viewCount"
             },
             timeout=10
         )
         response.raise_for_status()
-        
         streams = []
         for item in response.json().get("items", []):
             vid = item["id"].get("videoId")
-            if not vid:
-                continue
-                
             snip = item["snippet"]
-            title = snip["title"].lower()
-            channel = snip["channelTitle"].lower()
-            
-            # Skip unwanted content
-            skip_terms = ['pes', 'efootball', 'gameplay', 'android', 'mobile', 'video', 'ai', 'volleyball', 'cricket', 'basketball', 'today']
-            if any(term in title for term in skip_terms) or any(term in channel for term in skip_terms):
+            if not vid or not is_football_stream(snip["title"]):
                 continue
-                
-            # Keep only football streams
-            football_terms = ['football', 'soccer', 'premier', 'laliga', 
-                             'champions', 'uefa', 'match', 'vs']
-            if not any(term in title for term in football_terms):
-                continue
-                
             streams.append({
                 "title": snip["title"],
                 "video_id": vid,
                 "channel": snip["channelTitle"],
                 "published_at": snip["publishedAt"],
                 "thumbnail": snip["thumbnails"]["high"]["url"],
-                "is_official": False  # Mark as non-official
+                "is_official": False
             })
-            
         return streams
-        
     except Exception as e:
         print(f"Error fetching fallback streams: {e}")
         return []
@@ -1363,25 +1337,29 @@ def fetch_fallback_streams(query):
 def fetch_live_streams_cached(category):
     now = time.time()
     cached = CACHE.get(category)
-    
     if cached and now - cached["timestamp"] < CACHE_DURATION:
         return cached["data"]
-    
-    # Try official broadcast first
+
     streams = []
-    if category in OFFICIAL_BROADCASTERS:
+
+    # Always fetch Sporty TV first if category is "sporty"
+    if category == "sporty" and "sporty" in OFFICIAL_BROADCASTERS:
+        sporty_streams = fetch_official_streams(OFFICIAL_BROADCASTERS["sporty"])
+        streams.extend(sporty_streams)
+
+    # Try official channel
+    if category in OFFICIAL_BROADCASTERS and category != "sporty":
         streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
-    
-    # If no official streams found, use fallback
+
+    # Fallback if no live found
     if not streams and category in CATEGORY_QUERIES:
         streams = fetch_fallback_streams(CATEGORY_QUERIES[category])
-    
+
     CACHE[category] = {
         "data": streams,
         "timestamp": now
     }
     save_cache_to_file()
-    
     return streams
 
 @app.route("/live_matches")

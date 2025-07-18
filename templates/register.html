@@ -172,6 +172,8 @@
         type="text"
         id="name"
         name="name"
+        minlength="3"
+        maxlength="15"
         value="{{ name }}"
         required
         autocomplete="name"
@@ -188,6 +190,7 @@
         id="email"
         name="email"
         value="{{ email }}"
+        minlength="8"
         required
         autocomplete="email"
         class="w-full rounded-md px-3 py-2"
@@ -202,7 +205,7 @@
     id="password"
     name="password"
     minlength="4"
-    maxlength="8"
+    maxlength="10"
     value="{{ password }}"
     required
     autocomplete="new-password"
@@ -233,7 +236,7 @@
     id="confirm_password"
     name="confirm_password"
     minlength="4"
-    maxlength="8"
+    maxlength="10"
     value="{{ confirm_password }}"
     required
     autocomplete="new-password"

@@ -844,14 +844,14 @@ app.logger.setLevel(logging.INFO)
 # Configuration
 CONFIG = {
     "CACHE_FILE": "movie_cache.json",
-    "SCRAPE_INTERVAL_HOURS": 3,  # Scrape every 3 hours
-    "TMDB_PAGES_TO_FETCH": 10,   # ~200 movies
+    "SCRAPE_INTERVAL_HOURS": 2,  # Scrape every 3 hours
+    "TMDB_PAGES_TO_FETCH": 15,   # ~300 movies
     "OMDB_KEYS": ["a465208e", "1d9efb66"],
     "TMDB_API_KEY": "a54b0b5ef7df29593b16b047e11a9ca9",
     "REQUEST_TIMEOUT": 20,
-    "MAX_THREADS": 12,
+    "MAX_THREADS": 8,
     "SESSION_SECRET_KEY": os.urandom(24).hex(),
-    "MAX_MOVIES": 200,
+    "MAX_MOVIES": 300,
     "LAST_SCRAPE_TIME": None
 }
 

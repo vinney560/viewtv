@@ -836,10 +836,11 @@ def get_movies():
 def get_movie_count():
     return jsonify({'count': len(MOVIES_DATA)})
 #-------------------------------------------------------------------------
+import time
 import logging
+from datetime import datetime, timedelta
+from threading import Timer
 from concurrent.futures import ThreadPoolExecutor, as_completed
-
-app.logger.setLevel(logging.INFO)
 
 # Configuration
 CONFIG = {
@@ -852,8 +853,11 @@ CONFIG = {
     "MAX_THREADS": 8,
     "SESSION_SECRET_KEY": os.urandom(24).hex(),
     "MAX_MOVIES": 600,
-    "LAST_SCRAPE_TIME": None
+    "LAST_SCRAPE_TIME": None,
+    "SCHEDULER_RUNNING": False
 }
+
+app.logger.setLevel(logging.INFO)
 
 # Setup logging
 logging.basicConfig(
@@ -979,7 +983,7 @@ def process_movie(movie, index):
         "imdb_rating": omdb.get("imdbRating", "N/A"),
         "torrents": torrents,
         "tmdb_link": f"https://www.themoviedb.org/movie/{movie.get('id')}",
-        "scraped_at": datetime.now().isoformat()  # Track when movie was scraped
+        "scraped_at": datetime.now().isoformat()
     }
 
 def fetch_movies():
@@ -1009,12 +1013,44 @@ def fetch_movies():
         reverse=True
     )[:CONFIG["MAX_MOVIES"]]
 
+def run_scheduled_scrape():
+    """Execute the scheduled scrape job"""
+    try:
+        if MovieCache.should_scrape():
+            app.logger.info("Running scheduled scrape...")
+            new_movies = fetch_movies()
+            MovieCache.save(new_movies)
+            app.logger.info(f"Scheduled scrape completed. {len(new_movies)} movies cached.")
+        else:
+            app.logger.info("Skipping scheduled scrape - cache is still fresh")
+    except Exception as e:
+        app.logger.error(f"Scheduled scrape failed: {str(e)}")
+    finally:
+        # Reschedule the next run
+        schedule_next_scrape()
+
+def schedule_next_scrape():
+    """Schedule the next scrape job"""
+    Timer(
+        CONFIG["SCRAPE_INTERVAL_HOURS"] * 3600,  # Convert hours to seconds
+        run_scheduled_scrape
+    ).start()
+
+def start_scrape_scheduler():
+    """Start the automatic scraping scheduler"""
+    if not CONFIG["SCHEDULER_RUNNING"]:
+        CONFIG["SCHEDULER_RUNNING"] = True
+        app.logger.info("Starting automatic scraping scheduler...")
+        # Run first scrape immediately
+        Timer(0, run_scheduled_scrape).start()
+
 def update_movies_if_needed():
     """Check if we need to scrape new movies and update cache"""
     if MovieCache.should_scrape():
-        app.logger.info("Scraping new movies...")
+        app.logger.info("Manual scraping initiated...")
         new_movies = fetch_movies()
         MovieCache.save(new_movies)
+        app.logger.info(f"Manual scrape completed. {len(new_movies)} movies cached.")
 
 @app.route("/movieflix")
 def movieflix():
@@ -1026,8 +1062,7 @@ def movieflix():
 def movie_detail(movie_id):
     movies = MovieCache.load()
     movie = next((m for m in movies if m.get("id") == movie_id), None)
-    return render_template("detail.html", movie=movie) if movie else redirect(url_for("movieflix"))
-
+    return render_template("detail.html", movie=movie) if movie else redirect(url_for("movieflix"))    
 #-------------------------------------------------------------------------
 @app.route("/countries")
 @login_required
@@ -2380,4 +2415,5 @@ if __name__ == '__main__':
     if not os.path.exists(CONFIG["CACHE_FILE"]):
         app.logger.info("Initializing cache...")
         MovieCache.save(fetch_movies())
+    start_scrape_scheduler()    
     app.run(host='0.0.0.0', port=47947, debug=False)

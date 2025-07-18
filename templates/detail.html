@@ -149,7 +149,7 @@
                 <button onclick="handlePlatformRedirect('justwatch')" class="stream-btn bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-lg flex flex-col items-center">
                     <img src="https://www.justwatch.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="JustWatch">
                     <span>All Options</span>
-                    <span class="text-xs mt-1 text-gray-300">JustWatch</span>
+                    <span class="text-xs mt-1 text-gray-300">Watch • Download</span>
                 </button>
             </div>
         </section>
@@ -212,11 +212,11 @@
                 fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:youtube.com')}`
             },
             justwatch: {
-                name: "JustWatch",
+                name: "Watch • Download",
                 type: "streaming aggregator",
-                icon: "https://www.justwatch.com/favicon.ico",
-                url: `https://www.justwatch.com/us/search?q=${encodeURIComponent('{{ movie.title }}')}`,
-                fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:justwatch.com')}`
+                icon: "https://www.downloads-anymovies.co/favicon.ico",
+                url: `https://www.downloads-anymovies.co/search.php?zoom_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}`,
+                fallback: `https://www.downloads-anymovies.co/search.php?zoom_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}`
             }
         };
 

@@ -1227,11 +1227,11 @@ OFFICIAL_BROADCASTERS = {
 
 # Your original categories as fallback
 CATEGORY_QUERIES = {
-    "all": "Live Football -fifa -game -android -mobile",
+    "all": "Live Football -game -android -mobile",
     "fifa": "FIFA live match -gameplay -android",
-    "sporty": "Live Sporty Tv -fifa -game",
+    "sporty": "Live Sporty Tv -game",
     "uefa": "UEFA live match -fifa -android",
-    "epl": "EPL live match -fifa -mobile",
+    "epl": "EPL live match -mobile",
     "laliga": "La Liga live match -fifa",
     "bein": "Bein Sports live -fifa -game",
     "dazn": "DAZN live sports -fifa -android",
@@ -1288,7 +1288,7 @@ def fetch_official_streams(channel_id):
             
             # Ensure it's football content
             football_terms = ['football', 'soccer', 'premier', 'laliga', 
-                            'champions', 'uefa', 'match', 'vs']
+                            'champions', 'uefa', 'match', 'seriea', 'fifa', 'sporty']
             if not any(term in title for term in football_terms):
                 continue
                 
@@ -1335,7 +1335,7 @@ def fetch_fallback_streams(query):
             channel = snip["channelTitle"].lower()
             
             # Skip unwanted content
-            skip_terms = ['fifa', 'pes', 'efootball', 'gameplay', 'android', 'mobile']
+            skip_terms = ['pes', 'efootball', 'gameplay', 'android', 'mobile', 'video', 'ai']
             if any(term in title for term in skip_terms) or any(term in channel for term in skip_terms):
                 continue
                 

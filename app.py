@@ -1209,8 +1209,9 @@ import time
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
 CATEGORY_QUERIES = {
+    "all":        "Live Football",
     "fifa":       "FIFA live match",
-    "sporty":       "Sporty live",
+    "sporty":       "Live Sporty Tv",
     "uefa":       "UEFA live match",
     "epl":        "EPL live match",
     "laliga":     "La Liga live match",

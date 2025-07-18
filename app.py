@@ -1204,7 +1204,6 @@ import requests
 import re
 from urllib.parse import quote_plus
 #=======================================
-
 import time
 
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
@@ -1265,7 +1264,7 @@ def fetch_official_streams(channel_id):
                 "channelId": channel_id,
                 "eventType": "live",
                 "type": "video",
-                "maxResults": 100,
+                "maxResults": 10,
                 "key": YOUTUBE_API_KEY,
                 "order": "date"
             },
@@ -1312,7 +1311,7 @@ def fetch_fallback_streams(query):
                 "q": query,
                 "eventType": "live",
                 "type": "video",
-                "maxResults": 10,
+                "maxResults": 100,
                 "key": YOUTUBE_API_KEY,
                 "order": "viewCount"
             },

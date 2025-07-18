@@ -1335,7 +1335,7 @@ def fetch_fallback_streams(query):
             channel = snip["channelTitle"].lower()
             
             # Skip unwanted content
-            skip_terms = ['pes', 'efootball', 'gameplay', 'android', 'mobile', 'video', 'ai']
+            skip_terms = ['pes', 'efootball', 'gameplay', 'android', 'mobile', 'video', 'ai', 'volleyball', 'cricket', 'basketball', 'today']
             if any(term in title for term in skip_terms) or any(term in channel for term in skip_terms):
                 continue
                 

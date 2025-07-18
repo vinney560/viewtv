@@ -1265,7 +1265,7 @@ def fetch_official_streams(channel_id):
                 "channelId": channel_id,
                 "eventType": "live",
                 "type": "video",
-                "maxResults": 5,
+                "maxResults": 100,
                 "key": YOUTUBE_API_KEY,
                 "order": "date"
             },

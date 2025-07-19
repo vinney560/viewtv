@@ -1259,8 +1259,8 @@ def save_cache_to_file():
         print(f"Error saving cache: {e}")
 
 def is_football_stream(title):
-    football_terms = ['football', 'soccer', 'premier', 'laliga', 'champions', 'uefa', 'match', 'serie a', 'epl', 'sporty', 'fifa']
-    banned_terms = ['pes', 'efootball', 'gameplay', 'android', 'mobile', 'video', 'ai', 'volleyball', 'cricket', 'basketball', 'today']
+    football_terms = ['football', 'soccer', 'premier', 'laliga', 'champions', 'uefa', 'match', 'serie a', 'epl', 'sports', 'fifa']
+    banned_terms = ['pes', 'efootball', 'gameplay', 'android', 'mobile', 'video', 'ai', 'volleyball', 'cricket', 'basketball']
     title = title.lower()
     return any(term in title for term in football_terms) and not any(term in title for term in banned_terms)
 
@@ -1308,7 +1308,7 @@ def fetch_fallback_streams(query):
                 "q": query,
                 "eventType": "live",
                 "type": "video",
-                "maxResults": 50,
+                "maxResults": 100,
                 "key": YOUTUBE_API_KEY,
                 "order": "viewCount"
             },

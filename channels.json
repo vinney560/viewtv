@@ -941,5 +941,1469 @@
     "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883098",
     "logo": "https://images-1.rakuten.tv/storage/global-live-channel/translation/artwork/dff3a92e-c4aa-49c4-b1b6-4a847428b8d5-width200-quality90.png",
     "group-title": "News"
+  },
+  "3abn_english": {
+    "name": "3ABN English",
+    "url": "https://3abn.bozztv.com/3abn2/3abn_live/smil:3abn_live.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/bgJQIyW.png"
+  },
+  "3abn_international": {
+    "name": "3ABN International",
+    "url": "https://3abn.bozztv.com/3abn2/Int_live/smil:Int_live.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/8YMLPA3.png"
+  },
+  "3abn_kids": {
+    "name": "3ABN Kids",
+    "url": "https://3abn.bozztv.com/3abn2/Kids_live/smil:Kids_live.smil/playlist.m3u8",
+    "group-title": "Animation;Kids;Religious",
+    "logo": "https://i.imgur.com/SUPQAok.png"
+  },
+  "3abn_praise_him": {
+    "name": "3ABN Praise Him Music Network",
+    "url": "https://3abn.bozztv.com/3abn1/PraiseHim/smil:PraiseHim.smil/playlist.m3u8",
+    "group-title": "Music;Religious",
+    "logo": "https://i.imgur.com/iBcqT8L.png"
+  },
+  "3abn_proclaim": {
+    "name": "3ABN Proclaim! Network",
+    "url": "https://3abn.bozztv.com/3abn2/Pro_live/smil:Pro_live.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://yt3.googleusercontent.com/ytc/AIdro_mb4TLclxAUPvlnV84blg4YSnZYjspMitP_sS2rX_5IYQ=s512-c-k-c0x00ffffff-no-rj"
+  },
+  "3abn_tv_uganda": {
+    "name": "3ABN TV Uganda",
+    "url": "https://3abn.bozztv.com/3abn/3abn_uganda_live/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/mml9lI2.png"
+  },
+  "abn_africa": {
+    "name": "ABN Africa",
+    "url": "https://mediaserver.abnvideos.com/streams/abnafrica.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/SLrX8Ef.png"
+  },
+  "abn_bible_movies": {
+    "name": "ABN Bible Movies Channel",
+    "url": "https://mediaserver.abnvideos.com/streams/abnbiblemovies.m3u8",
+    "group-title": "Movies;Religious",
+    "logo": "https://i.imgur.com/NCqZdaL.png"
+  },
+  "acnn": {
+    "name": "ACNN",
+    "url": "https://webstreaming.viewmedia.tv/web_014/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/91JLpxr.png"
+  },
+  "acts_tv": {
+    "name": "ACTS TV",
+    "url": "https://mediagh.us:19360/deliverancetv/deliverancetv.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/c1gnTho.jpg"
+  },
+  "ahlulbayt_tv": {
+    "name": "Ahlulbayt TV",
+    "url": "https://cdn5.iqsat.net/iqb02/35fae546b99b61a038d52353487e8190.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/lNGJGjy.png"
+  },
+  "akaal_channel": {
+    "name": "Akaal Channel",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/akaal_tv/hls1_smart_akaal/akaal_tv.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/K81vNbk.png"
+  },
+  "almagd_tv_middle_east": {
+    "name": "Almagd TV Middle East",
+    "url": "https://597f64b67707a.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/3pUik3b.png"
+  },
+  "almagd_tv_north_america": {
+    "name": "Almagd TV North America",
+    "url": "https://5aafcc5de91f1.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/3pUik3b.png"
+  },
+  "alpha_digital": {
+    "name": "Alpha Digital",
+    "url": "https://streamfi-alphatvdgtl1.zettawiseroutes.com:8181/hls/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/sLt242H.png"
+  },
+  "amazing_discoveries_tv": {
+    "name": "Amazing Discoveries TV",
+    "url": "https://uni01rtmp.tulix.tv/amazingdtv/amazingdtv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/I0oPFTj.png"
+  },
+  "approval_tv": {
+    "name": "Approval TV",
+    "url": "https://live.approvaltv.com/approvaltv/index.m3u8",
+    "group-title": "General;Religious",
+    "logo": "https://live.approvaltv.com/logov.png"
+  },
+  "aptim_tv": {
+    "name": "APTIM TV",
+    "url": "https://stream.commec.tv/6447b2559d8b0711e2fa75cc/live_222c2dc0b69f11ee8c3c99218c8c67c4/index.fmp4.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/gWgvm0I.png"
+  },
+  "ark_tv": {
+    "name": "Ark TV",
+    "url": "https://stream.hydeinnovations.com/arktv-international/index.fmp4.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/yCHNZXD.png"
+  },
+  "bet_gospel": {
+    "name": "BET Gospel",
+    "url": "https://fl3.moveonjoy.com/BET_GOSPEL/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/jbOkq8C.png"
+  },
+  "better_life_tv": {
+    "name": "Better Life TV",
+    "url": "https://tgn.bozztv.com/betterlife/betterlife/betterlife/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://yt3.googleusercontent.com/YQLtMymrkfaL2UwsK7pOcvPsePMRSdWehXK1Hds9h0F_IzNnN56tw6vzFhRar3d9HRFCAuG7=s512"
+  },
+  "btl_tv": {
+    "name": "BTL TV",
+    "url": "https://goliveafrica.media:9998/live/638da5440743c/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/4r09woD.jpg"
+  },
+  "bx_inspire": {
+    "name": "BX Inspire",
+    "url": "https://reflect-stream-bronxnet.cablecast.tv/live-18/live/live.m3u8",
+    "group-title": "General;Religious",
+    "logo": "https://i.imgur.com/PF71rdZ.png"
+  },
+  "caribbean_gospel_tv": {
+    "name": "Caribbean Gospel TV",
+    "url": "https://5a1178b42cc03.streamlock.net/CGTV2024/CGTV2024/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/mVQ8J4k.png"
+  },
+  "catholic_faith_network": {
+    "name": "Catholic Faith Network",
+    "url": "https://uni8rtmp.tulix.tv/cfntv/cfntv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/0/07/Catholic_Faith_Network_2018.png"
+  },
+  "catholic_tv": {
+    "name": "Catholic TV",
+    "url": "https://catholictvhd-lh.akamaized.net/hls/live/2043390/CTVLiveHD/master.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RI9GbLX.jpg"
+  },
+  "caught_up_tv": {
+    "name": "Caught-Up TV",
+    "url": "https://webstreaming-3.viewmedia.tv/web_031/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/7jeoulU.png"
+  },
+  "cbn_family": {
+    "name": "CBN Family",
+    "url": "https://bcovlive-a.akamaihd.net/r602a47f47fee47bb83239eb1b1e1ac83/us-east-1/734546207001/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/adHRFrS.png"
+  },
+  "cbn_news": {
+    "name": "CBN News",
+    "url": "https://bcovlive-a.akamaihd.net/re8d9f611ee4a490a9bb59e52db91414d/us-east-1/734546207001/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/gG2SWgG.png"
+  },
+  "ccco_aspire_tv": {
+    "name": "CCCO Aspire TV",
+    "url": "https://panel.freedomflixtv.org:3948/hybrid/play.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/33FHk1A.jpg"
+  },
+  "cdm_internacional": {
+    "name": "CDM Internacional",
+    "url": "https://59825a54e4454.streamlock.net:8443/marcos536/marcos536/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/N7IneVk.png"
+  },
+  "chosen_tv_english": {
+    "name": "Chosen TV English SD",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-chosentv/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/cc/chosen-tv-ng.png"
+  },
+  "christian_youth_channel": {
+    "name": "Christian Youth Channel CYC",
+    "url": "http://media3.smc-host.com:1935/cycnow.com/smil:cyc.smil/playlist.m3u8",
+    "group-title": "Kids;Religious",
+    "logo": "https://i.imgur.com/61eV77C.png"
+  },
+  "church_of_uganda_family_television": {
+    "name": "Church of Uganda Family Television",
+    "url": "https://stream.castr.com/66b2205a464da535308e57e1/live_2c12d7a053f511ef9a978b0191f4a826/index.fmp4.m3u8",
+    "group-title": "Family;Religious",
+    "logo": "https://i.imgur.com/l53Eur6.png"
+  },
+  "clergy_tv": {
+    "name": "Clergy TV",
+    "url": "https://goliveafrica.media:9998/live/650452cf2ddb2/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RcxBEUo.jpg"
+  },
+  "cloveworld_tv": {
+    "name": "cLoveworld TV",
+    "url": "https://live-hls-5rxy.livepush.io/live_cdn/em_LJ5aZjqp0LdiQ/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/MKKap2F.png"
+  },
+  "coza_tv": {
+    "name": "Coza TV",
+    "url": "https://webstreaming-7.viewmedia.tv/web_097/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/QVBdpuF.png"
+  },
+  "csat_tv": {
+    "name": "CSat TV",
+    "url": "http://media.smc-host.com:1935/csat.tv/smil:csat.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/fp2EaLJ.png"
+  },
+  "ctn": {
+    "name": "CTN",
+    "url": "https://ctntv.getstreamhosting.com:1936/CTNTV/CTNTV/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/mHCabmJ.png"
+  },
+  "dare_to_dream_network": {
+    "name": "Dare To Dream Network",
+    "url": "https://3abn.bozztv.com/3abn2/d2d_live/smil:d2d_live.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/JwCLwQ2.png"
+  },
+  "daystar_tv": {
+    "name": "Daystar TV SD",
+    "url": "https://live20.bozztv.com/dvrfl05/gin-daystar/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/IjzCv8f.png"
+  },
+  "destiny_voices_tv": {
+    "name": "Destiny Voices TV",
+    "url": "https://apps.digitaltv.co.ke/live/2004.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/yedftwj.jpg"
+  },
+  "dove_tv": {
+    "name": "Dove TV",
+    "url": "https://webstreaming-7.viewmedia.tv/web_093/Stream/live93_3/high/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/wOlMfCR.png"
+  },
+  "dream_tv": {
+    "name": "Dream TV",
+    "url": "https://streamfi-dreamtv1.zettawiseroutes.com:8181/hls/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/XRUDhqQ.png"
+  },
+  "dr_gene_scott": {
+    "name": "Dr. Gene Scott",
+    "url": "https://wescottcc.piksel.tech/hls/live/2041478/adp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Db3EI19.png"
+  },
+  "dunamis_tv": {
+    "name": "Dunamis TV",
+    "url": "https://atechgroupuk.site/DTV.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/thGAXeM.png"
+  },
+  "ebn_tv": {
+    "name": "EBN TV",
+    "url": "https://goliveafrica.media:9998/live/65d8475d1e6cb/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/NvxqoEn.png"
+  },
+  "elevate_tv": {
+    "name": "Elevate TV",
+    "url": "https://goliveafrica.media:9998/live/64a98a7eac12a/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/M7xaQ7o.jpg"
+  },
+  "elijah_tv": {
+    "name": "Elijah TV SD",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-elijah/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/kprss2J.png"
+  },
+  "eman_channel": {
+    "name": "Eman Channel",
+    "url": "https://ap02.iqplay.tv:8082/iqb8002/3m9n/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/ugn0DWe.png"
+  },
+  "emmanuel_tv": {
+    "name": "Emmanuel TV SD",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-emmanuel/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/c7XjM8Y.png"
+  },
+  "enlace": {
+    "name": "Enlace",
+    "url": "https://livecdn.enlace.plus/enlace/smil:enlace-hd.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/YwUVTmS.png"
+  },
+  "eternal_life_tv_network": {
+    "name": "Eternal Life TV Network",
+    "url": "https://livecdn.live247stream.com/eternallife/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/49XTqzs.png"
+  },
+  "ewtn": {
+    "name": "EWTN",
+    "url": "https://cdn3.wowza.com/1/QjRzVXJtVml5SUVx/WGJRSWxz/hls/live/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/sua70RO.png"
+  },
+  "faith_tv": {
+    "name": "Faith TV",
+    "url": "https://cdn.freevisiontv.co.za/sttv/smil:faith.stream.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://admango.cdn.mangomolo.com/analytics/uploads/188/6544bcf232.jpg"
+  },
+  "fazal_tv": {
+    "name": "Fazal TV",
+    "url": "http://cdn9.live247stream.com/punjabitvcanada/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/c0fvKia.png"
+  },
+  "fire_tv": {
+    "name": "Fire TV SD",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-rock/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/om2y5Bp.png"
+  },
+  "flame_tv": {
+    "name": "Flame TV",
+    "url": "https://webstreaming.viewmedia.tv/web_010/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/ORKcnzr.png"
+  },
+  "foursquare_tv": {
+    "name": "Foursquare TV",
+    "url": "https://webstreaming-3.viewmedia.tv/web_033/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/ORer9ag.png"
+  },
+  "freedom_experience_tv": {
+    "name": "Freedom Experience TV",
+    "url": "https://panel.freedomflixtv.org:3934/hybrid/play.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/1SiJpPy.png"
+  },
+  "gawahi_tv": {
+    "name": "Gawahi TV",
+    "url": "https://livecdn.live247stream.com/gawahi/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/0W6zzHS.png"
+  },
+  "gbn_tv": {
+    "name": "GBN TV",
+    "url": "https://cdn3.wowza.com/5/Ny9jK1A1Q3h4N1VZ/live/myStream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/DsFyyHy.png"
+  },
+  "gcn_america": {
+    "name": "GCN America",
+    "url": "http://liveen24-manminglobal3.ktcdn.co.kr/liveen24/gcnus_1300k.stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/DWSWrtV.png"
+  },
+  "gmtv": {
+    "name": "GMTV",
+    "url": "https://webstreaming-11.viewmedia.tv/web_160/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.ibb.co/cvDyWs1/IMG-20230628-152516.jpg"
+  },
+  "gnf_tv": {
+    "name": "GNF TV",
+    "url": "https://oqgdrb8my4rm-hls-live.5centscdn.com/GNF02/bcea197d8b00f79cb716c6288a861000.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/vCB7u0e.png"
+  },
+  "god_tv_africa": {
+    "name": "GOD TV Africa",
+    "url": "https://webstreaming.viewmedia.tv/web_006/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/hW4g2oe.png"
+  },
+  "goodlife_45": {
+    "name": "GoodLife 45",
+    "url": "https://2-fss-2.streamhoster.com/pl_118/201450-1248872-1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/AQfVNMK.png"
+  },
+  "gospel_truth_tv": {
+    "name": "Gospel Truth TV",
+    "url": "https://na.linear.zype.com/bf94f9f4-383c-40e0-9d49-279a4f33ab8d/f29b8836-d990-4c8d-b421-192a8f43edc4-zype/manifest.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/LI52X2q.png"
+  },
+  "grace_network": {
+    "name": "Grace Network",
+    "url": "https://livecdn.live247stream.com/grace/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/QSaZPJ4.png"
+  },
+  "gugudde_tv": {
+    "name": "Gugudde TV",
+    "url": "https://jk3lzqq4lw79-hls-live.5centscdn.com/gugudde/c9a1fdac6e082dd89e7173244f34d7b3.sdp/chunks.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/XEakc6Q.png"
+  },
+  "healing_jesus_tv": {
+    "name": "Healing Jesus TV",
+    "url": "https://webstreaming-3.viewmedia.tv/web_041/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/ZZryVU9.png"
+  },
+  "heaven_bound_tv": {
+    "name": "Heaven Bound TV",
+    "url": "https://goliveafrica.media:9998/live/62580b337c021/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/pwnesmW.jpg"
+  },
+  "hilaal_tv": {
+    "name": "Hilaal TV",
+    "url": "https://cdn5.iqsat.net/iq/aa89b15058a61b904359307cc0a5e80a.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/tlylDbi.png"
+  },
+  "his_grace_tv": {
+    "name": "His Grace TV",
+    "url": "https://goliveafrica.media:9998/live/6593c35f9c090/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/uIlU5im.jpg"
+  },
+  "homebase_tv": {
+    "name": "Homebase TV SD",
+    "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_022/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/MaLNfJG.png"
+  },
+  "hope4life_tv": {
+    "name": "Hope4Life TV",
+    "url": "http://144.217.14.88/hls/hope4life.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/p24tAjs.jpg"
+  },
+  "hope_channel_africa": {
+    "name": "Hope Channel Africa",
+    "url": "https://jstre.am/live/jsl:i1onRBELcGV.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/SFacyYO.png"
+  },
+  "hope_channel_australia": {
+    "name": "Hope Channel Australia",
+    "url": "https://videodelivery.net/9fb3596948ddf463fde0ec4b85625b24/manifest/video.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/8Zs7rDm.png"
+  },
+  "hope_channel_ghana": {
+    "name": "Hope Channel Ghana",
+    "url": "https://videodelivery.net/dfbdca87f2a6291aa4fdc8fe3290769b/manifest/video.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/d1P9ekm.png"
+  },
+  "hope_channel_international": {
+    "name": "Hope Channel International",
+    "url": "https://jstre.am/live/jsl:cZXINbwrFj6.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/PNihgl2.png"
+  },
+  "hope_channel_north_america": {
+    "name": "Hope Channel North America",
+    "url": "https://jstre.am/live/jsl:0sUSK6VA7GT.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/2qXqajS.png"
+  },
+  "hope_channel_norway": {
+    "name": "Hope Channel Norway",
+    "url": "http://media1.adventist.no:1935/live/hope1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/fQPIZn9.png"
+  },
+  "horemowtv": {
+    "name": "HoremowTV",
+    "url": "https://tvsw6-hls.secdn.net/tvsw6-chorigin/play/prod-2859eecc9b514f2bb955290066ef172d/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/LzTqsW9.png"
+  },
+  "huda_tv": {
+    "name": "Huda TV",
+    "url": "https://cdn.bestream.io:19360/elfaro1/elfaro1.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/1UUjU26.png"
+  },
+  "ibn_tv": {
+    "name": "IBN TV",
+    "url": "http://138.68.138.119:8080/live/5a8993709ea19/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/hkV51ij.png"
+  },
+  "ibn_tv_africa": {
+    "name": "IBN TV Africa",
+    "url": "http://68.183.41.209:8080/live/5d9a537c64b9c/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/eKy2ocd.png"
+  },
+  "icnet_2": {
+    "name": "ICnet 2",
+    "url": "https://icnet2hls.wns.live/hls/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Ke5xn4E.png"
+  },
+  "ictv": {
+    "name": "ICTV",
+    "url": "https://goliveafrica.media:9998/live/659a7f33bed3f/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/0kMhqK3.png"
+  },
+  "iipc_tv": {
+    "name": "IIPC TV SD",
+    "url": "https://rpn.bozztv.com/dvrfl03/iipctv/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/mIih39Y.png"
+  },
+  "isaac_tv": {
+    "name": "Isaac TV",
+    "url": "https://livecdn.live247stream.com/isaac/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RHDbsiO.png"
+  },
+  "islam_channel": {
+    "name": "Islam Channel",
+    "url": "https://live.islamchannel.tv/live11/islamtv_english/bitrate1.isml/live.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/bJdFH7x.png"
+  },
+  "its_supernatural_network": {
+    "name": "It's Supernatural! Network",
+    "url": "https://content.uplynk.com/channel/fbc0f835332e476397b12216f9042f78.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/JWrdL9a.png"
+  },
+  "jbs": {
+    "name": "JBS",
+    "url": "http://uni8rtmp.tulix.tv:1935/shalomtv-pc/smil:shalomtv.smil/master.m3u8",
+    "group-title": "Religious",
+    "logo": "https://yt3.googleusercontent.com/ytc/AIdro_lDWY-W9dD7UvLlp1NuWLJs1wV6t_KjeOT-1iVVIGuLZ8U=s512-c-k-c0x00ffffff-no-rj"
+  },
+  "jcm_tv": {
+    "name": "JCM TV",
+    "url": "https://goliveafrica.media:9998/live/646c92d07b16c/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/28YB7dD.jpg"
+  },
+  "jewish_life_television": {
+    "name": "Jewish Life Television",
+    "url": "https://jlt-jltv-xumo.otteravision.com/jlt/jltv/jltv.m3u8",
+    "group-title": "Culture;Religious",
+    "logo": "https://yt3.googleusercontent.com/i6ETvgNzA8vvGCo-Ih6eo2XZUwz2VVMnstLyNZVXBlwa4uOeUIEl-3tzphB8phJaibe-FPQ5Fw=s512-c-k-c0x00ffffff-no-rj"
+  },
+  "joshua_tv": {
+    "name": "Joshua TV",
+    "url": "https://livecdn.live247stream.com/joshua/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/x9xPR2h.png"
+  },
+  "k21jq_d1": {
+    "name": "K21JQ-D1",
+    "url": "https://1189614805.rsc.cdn77.org/hls/bmt.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/k9Ze0cr.png"
+  },
+  "kbsv_dt1": {
+    "name": "KBSV-DT1",
+    "url": "http://66.242.170.53/hls/live/temp/index.m3u8",
+    "group-title": "General;Religious",
+    "logo": "https://i.imgur.com/6lklsyN.png"
+  },
+  "kicc_tv": {
+    "name": "KICC TV",
+    "url": "https://live.mdc.akamaized.net/hls/livestream/kicctv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/4kU1VNx.png"
+  },
+  "king_tv": {
+    "name": "King TV",
+    "url": "https://streamer12.vdn.dstreamone.net/kingtv/kingtv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/dujrwRE.png"
+  },
+  "kpcb_dt1": {
+    "name": "KPCB-DT1",
+    "url": "https://2-fss-1.streamhoster.com/pl_122/200562-1176456-1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/w1bK8YN.png"
+  },
+  "kqsl_dt1": {
+    "name": "KQSL-DT1",
+    "url": "https://uni01rtmp.tulix.tv/kqsltv/kqsltv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/TLN_2015.png/512px-TLN_2015.png"
+  },
+  "ksce_dt1": {
+    "name": "KSCE-DT1",
+    "url": "https://2-fss-2.streamhoster.com/pl_138/200226-1359204-1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/FioxUa3.png"
+  },
+  "ksce_dt3": {
+    "name": "KSCE-DT3",
+    "url": "https://2-fss-1.streamhoster.com/pl_122/200226-1427780-1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/P0vZXU0.png"
+  },
+  "kstv_uganda": {
+    "name": "KSTV Uganda",
+    "url": "https://kstv48.fra1.cdn.digitaloceanspaces.com/hls/0/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/jOx4Cmh.png"
+  },
+  "ktbn_dt3": {
+    "name": "KTBN-DT3",
+    "url": "https://tbn-jw.cdn.vustreams.com/live/smile/live.isml/.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/WYM3tj8.png"
+  },
+  "kvtn_dt1": {
+    "name": "KVTN-DT1",
+    "url": "https://api.new.livestream.com/accounts/15669040/events/4554297/live.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/CjKQuEP.png"
+  },
+  "liberation_tv": {
+    "name": "Liberation TV",
+    "url": "https://webstreaming.viewmedia.tv/web_011/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/MjbLGOu.png"
+  },
+  "lifevisiontv": {
+    "name": "LifevisionTV",
+    "url": "https://tgn.bozztv.com/lifevision/lifevision/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/pF6Wowj.jpg"
+  },
+  "living_faith_tv": {
+    "name": "Living Faith TV",
+    "url": "https://cdn-unified-hls.streamspot.com/ingest1/0b5c0f18e9/playlist.m3u8?origin=1",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/FuNpesJ.png"
+  },
+  "llbn_his_light": {
+    "name": "LLBN His Light",
+    "url": "https://brightstar-hislight-pull-secure.akamaized.net/brightstarhislight/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/YkLZjRw.png"
+  },
+  "llbn_his_word": {
+    "name": "LLBN His Word",
+    "url": "https://brightstar-hisword-pull-secure.akamaized.net/brightstarhisword/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/GbyHlS2.png"
+  },
+  "logos_tv_english": {
+    "name": "Logos TV English",
+    "url": "https://5aafcc5de91f1.streamlock.net/logoschannel.com/logoseng/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/LDfEK81.png"
+  },
+  "loveworld_asia": {
+    "name": "LoveWorld Asia",
+    "url": "https://cdnstack.internetmultimediaonline.org/auxano/Hindilanx/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/ll/love_world_ng_asia.png"
+  },
+  "loveworld_casa": {
+    "name": "LoveWorld CASA",
+    "url": "https://j78dp6reyq5r-hls-live.5centscdn.com/kview/5c6d78cffa59e129f040fcec2d788532.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/ll/loveworld-casa-ng.png"
+  },
+  "loveworld_euro": {
+    "name": "LoveWorld Euro",
+    "url": "https://cdnstack.internetmultimediaonline.org/auxano/Cespain/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/ll/love_world_ng_euro.png"
+  },
+  "loveworldsat": {
+    "name": "LoveworldSAT SD",
+    "url": "https://cdnstack.internetmultimediaonline.org/lwsat/lwsat.stream/chunklist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Fg65XCS.png"
+  },
+  "loveworld_xp": {
+    "name": "Loveworld XP",
+    "url": "https://bus-asia-east-1-cimzmgnuu-cdn.sa.metacdn.com/live/ngrp:livestream2022_main_all_transcode/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/ll/loveworld-xp-ng.png"
+  },
+  "mabesh_tv": {
+    "name": "Mabesh TV SD",
+    "url": "https://tv.localstreamgh.com/MabeshTV/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Y2ATesY.png"
+  },
+  "madani_channel_bangla": {
+    "name": "Madani Channel Bangla",
+    "url": "https://streaming.madanichannel.tv/static/streaming-playlists/hls/d3e49b76-ac06-4689-a641-9200445b647f/master.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/vIJTVia.png"
+  },
+  "madani_channel_english": {
+    "name": "Madani Channel English",
+    "url": "https://streaming.madanichannel.tv/static/streaming-playlists/hls/c6a600b0-82cb-454a-8953-2bb2bb372edc/master.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Abi9j0A.png"
+  },
+  "maranatha_tv": {
+    "name": "Maranatha TV SD",
+    "url": "https://media.streambrothers.com:1936/8298/8298/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/MargDV9.png"
+  },
+  "masters_tv": {
+    "name": "Master's TV",
+    "url": "https://mn-nl.mncdn.com/commectv_live/masterstv/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/mm/masters-tv-ng.png"
+  },
+  "mercy_and_truth_ministries_television": {
+    "name": "Mercy and Truth Ministries Television",
+    "url": "https://angel.btbn.tv:5443/mtmtv/streams/live.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/krcVhrx.png"
+  },
+  "mission_tv": {
+    "name": "Mission TV",
+    "url": "https://6096a9cf11ae5.streamlock.net:1943/live/missiontv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Hb38BNo.png"
+  },
+  "mmc_tv_usa": {
+    "name": "MMC TV USA",
+    "url": "https://live.relentlessinnovations.net:1936/rspe-tv/rspe-tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/0MwrSYE.png"
+  },
+  "mogpa_tv": {
+    "name": "MOGPA TV SD",
+    "url": "https://bk7l2r2nyx53-hls-live.5centscdn.com/ablazetv/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/34PmVAq.png"
+  },
+  "mogpa_tv_plus": {
+    "name": "MOGPA TV Plus SD",
+    "url": "https://bk7l2r2nyx53-hls-live.5centscdn.com/mogpatvplus/2567a5ec9705eb7ac2c984033e06189d.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/0YLSM3R.png"
+  },
+  "more_grace_tv": {
+    "name": "More Grace TV",
+    "url": "https://atechgroupuk.site/ETV.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/DNTeCQt.png"
+  },
+  "morning_cloud_tv": {
+    "name": "Morning Cloud TV SD",
+    "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_026/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Lxfd2ip.png"
+  },
+  "mta1_world": {
+    "name": "MTA1 World",
+    "url": "https://chlivemta1.akamaized.net/hls/live/2008145/mta1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/bYiRfAg.png"
+  },
+  "mta2_europe": {
+    "name": "MTA2 Europe",
+    "url": "https://chlivemta1.akamaized.net/hls/live/2008145/mta2/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/aVts0sz.png"
+  },
+  "mta4_africa": {
+    "name": "MTA4 Africa",
+    "url": "https://chlivemta.akamaized.net/hls/live/2010555/mtaafrica1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/lmVeQQX.png"
+  },
+  "mta5_africa": {
+    "name": "MTA5 Africa",
+    "url": "https://chlivemta.akamaized.net/hls/live/2010555/mtaafrica2/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/9Cobb2i.png"
+  },
+  "mta6_asia": {
+    "name": "MTA6 Asia",
+    "url": "https://livemtaasia.akamaized.net/hls/live/2039224/mta6asia/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/nhCNPJI.png"
+  },
+  "mta7_asia": {
+    "name": "MTA7 Asia",
+    "url": "https://livemtaasia.akamaized.net/hls/live/2039224/mtaasia2/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/3Nl8Tpu.png"
+  },
+  "mta8_america": {
+    "name": "MTA8 America",
+    "url": "https://chlivemta.akamaized.net/hls/live/2016718/mta8/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/CF6X9wB.png"
+  },
+  "muthingi_tv": {
+    "name": "Muthingi TV",
+    "url": "https://apps.digitaltv.co.ke/live/2005.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/bnkbclB.jpg"
+  },
+  "mwangaza_tv": {
+    "name": "Mwangaza TV",
+    "url": "https://goliveafrica.media:9998/live/6516be24a6bac/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/GjXfuSh.png"
+  },
+  "my_righteous_tv": {
+    "name": "My Righteous TV SD",
+    "url": "https://live20.bozztv.com/ssh101/ssh101/myrighteous/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/wKSLNHB.png"
+  },
+  "new_frontiers_tv": {
+    "name": "New Frontiers TV",
+    "url": "https://media2.streambrothers.com:1936/8044/8044/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/dYRIJjh.png"
+  },
+  "new_vision_tv": {
+    "name": "New Vision TV",
+    "url": "https://webstreaming-2.viewmedia.tv/web_027/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/nn/new-vision-tv-ng.png"
+  },
+  "noor_tv": {
+    "name": "Noor TV",
+    "url": "https://sscsott.com/srt/noortvuk/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/DlKgIuQ.png"
+  },
+  "noursat_english": {
+    "name": "Noursat English",
+    "url": "https://svs.itworkscdn.net/noursatenglive/noursateng.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RC5Kw82.png"
+  },
+  "nrbtv": {
+    "name": "NRBTV",
+    "url": "https://uni6rtmp.tulix.tv/nrbnetwork/myStream.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/2PL1Au7.png"
+  },
+  "ocn_tv": {
+    "name": "OCN TV SD",
+    "url": "https://5d12bc59c4748.streamlock.net/redirect/ocnbroadcasting.com/ocnbroadcasting2?type=m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/iSB5Obl.png"
+  },
+  "omid_javedan": {
+    "name": "Omid Javedan",
+    "url": "http://livestream.5centscdn.com/shaditv/23abe62a446fc05ce0a6c810f4045308.sdp/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/K7502YG.png"
+  },
+  "pent_tv": {
+    "name": "Pent TV",
+    "url": "https://iptv-trans.ecntv.net/live/penttv.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Jw6d3dR.png"
+  },
+  "phenomenal_life_tv": {
+    "name": "Phenomenal Life TV",
+    "url": "https://5be80bd118c27.streamlock.net:433/phenomenaltv/phenomenal/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/JHbhLuK.jpg"
+  },
+  "pillar_tv": {
+    "name": "Pillar TV",
+    "url": "https://goliveafrica.media:9998/live/627e198474bd1/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/9kCxFqj.png"
+  },
+  "praise_jesus_tower_tv": {
+    "name": "Praise Jesus Tower TV",
+    "url": "https://vsrv1.az-streamingserver.com:3555/live/dyjoqlgklive.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/KT4qIve.png"
+  },
+  "ptl_tv_network": {
+    "name": "PTL TV Network",
+    "url": "https://storage.sardius.media/archives/-KyMV-J0vDqnClcSXs8p/events/site_1a4721d3BA/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/EhISpCd.png"
+  },
+  "quo_vadis_tv": {
+    "name": "Quo Vadis TV SD",
+    "url": "https://tgn.bozztv.com/qvtv/qvtv-web/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/pEqDDHl.png"
+  },
+  "redemption_television_ministry": {
+    "name": "Redemption Television Ministry",
+    "url": "https://live.nixsat.com/play/rtm/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/63SmAby.png"
+  },
+  "rlw_tv": {
+    "name": "RLW TV",
+    "url": "https://webstreaming-8.viewmedia.tv/web_119/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/VcwqoEF.png"
+  },
+  "rtn_chicago": {
+    "name": "RTN Chicago",
+    "url": "https://5bb3298db4821.streamlock.net/3707/live1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.ibb.co/wwchqYk/889dc1-937ba3d8d4ed4331a668a1c544766318-mv2.png"
+  },
+  "safeer_tv": {
+    "name": "Safeer TV",
+    "url": "https://cdn3.wowza.com/1/YStGZlJRdktzZkdK/VXROZWNW/hls/live/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://image.roku.com/developer_channels/prod/8389e15af8fe49ac7c36d201c24ebf62fbe5b22897c2879ca26ae936e0ed308d.png"
+  },
+  "safetv": {
+    "name": "SafeTV",
+    "url": "http://18.191.91.130:1935/live/safetv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/sDGZCpL.png"
+  },
+  "salt_tv": {
+    "name": "Salt TV",
+    "url": "https://live.salttelevision.com/app/stream/abr.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/AK9nE6Y.png"
+  },
+  "sayare_tv": {
+    "name": "Sayare TV",
+    "url": "https://goliveafrica.media:9998/live/636dedfa327d7/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/M2Fnxj7.png"
+  },
+  "sbn_tv": {
+    "name": "SBN TV SD",
+    "url": "https://live20.bozztv.com/trn03/gin-sbntv/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/tspT2dF.png"
+  },
+  "sbn_tv_international": {
+    "name": "SBN TV International SD",
+    "url": "http://trn03.bozztv.com/gin-sbntv/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/NJu6oYB.png"
+  },
+  "seraphim_tv": {
+    "name": "Seraphim TV",
+    "url": "https://restream.churchtv247.co.za/Apostle/Hggc@24/1.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/MfeKk07.png"
+  },
+  "soa_tv": {
+    "name": "SOA TV",
+    "url": "https://goliveafrica.media:9998/live/6268e317152cc/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/4uDXP3A.jpg"
+  },
+  "spirit_of_glory_tv": {
+    "name": "Spirit Of Glory TV",
+    "url": "https://panel.freedomflixtv.org:3937/hybrid/play.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/tR3Vfco.png"
+  },
+  "spirit_tv_uganda": {
+    "name": "Spirit TV",
+    "url": "https://tv.tuhlprintltd.com/hls/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RGfoWmD.png"
+  },
+  "spirit_tv_us": {
+    "name": "Spirit TV",
+    "url": "https://cdnlive.myspirit.tv/LS-ATL-43240-2/index.m3u8",
+    "group-title": "Music;Religious",
+    "logo": "https://i.imgur.com/yCp6vXz.png"
+  },
+  "tbn_east": {
+    "name": "TBN East",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5d486b2eeddd9576d66f9066/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2bfeb1-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=a3bb369c-6039-4656-a79d-8e87112a8232",
+    "group-title": "Religious",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/TBN_logo_2015.jpg/512px-TBN_logo_2015.jpg"
+  },
+  "tbn_inspire": {
+    "name": "TBN Inspire SD",
+    "url": "https://live20.bozztv.com/dvrfl05/gin-tbninspire/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/GSM0Pkr.png"
+  },
+  "the_now_network": {
+    "name": "The Now Network",
+    "url": "https://mediaprod1.nowcast.cc:5443/LiveApp/streams/anZPy7eaVWLyDMZB1697488814699.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Wp6d0F8.png"
+  },
+  "the_word_network": {
+    "name": "The Word Network",
+    "url": "https://clouditize.piksel.tech/hls/live/2043070/ClouditizeStream1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/ltFBrrj.png"
+  },
+  "trinity_channel": {
+    "name": "Trinity Channel",
+    "url": "https://edge66.magictvbox.com/liveApple/trinity/tracks-v1a1/mono.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/pUVL3d5.png"
+  },
+  "trust_tv": {
+    "name": "Trust TV",
+    "url": "https://panel.freedomflixtv.org:3900/hybrid/play.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/01k6voZ.png"
+  },
+  "tvcarib_gospel": {
+    "name": "TVCARiB Gospel",
+    "url": "https://cdn.mycloudstream.io/hls/live/broadcast/wokrhjkd/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/fvGlwKo.png"
+  },
+  "urejesho_tv_africa": {
+    "name": "Urejesho TV Africa",
+    "url": "https://goliveafrica.media:9998/live/64a26e4dd21a3/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/u7xDXEt.jpg"
+  },
+  "w14dk_d1": {
+    "name": "W14DK-D1",
+    "url": "https://2-fss-2.streamhoster.com/pl_118/amlst:204972-1949480/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/TjQP7kS.png"
+  },
+  "whole_word_tv": {
+    "name": "Whole Word TV",
+    "url": "https://mn-nl.mncdn.com/wholewordtv/wholewordtv/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/71MRtuK.png"
+  },
+  "wlmb": {
+    "name": "WLMB",
+    "url": "https://hls-live-media.cdn01.net/default/stream_10327.m3u8?source=othersites",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/KeELZ1Y.png"
+  },
+  "yadah_tv": {
+    "name": "Yadah TV",
+    "url": "https://webstreaming-2.viewmedia.tv/web_018/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/4BNVhoC.png"
+  },
+  "younib_media_tv": {
+    "name": "YOUNIB Media TV",
+    "url": "https://goliveafrica.media:9998/live/6257fbe7383d6/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/LtiPOYG.jpg"
+  },
+  "alan_becker_tv": {
+    "name": "Alan Becker TV SD",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/630348a54c48ce00077eb6c7/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=1b1ca065-4b81-11ef-a8ac-e146e4e7be02&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=c5b43dd2-234d-4338-9a94-c40967ccbed6",
+    "group-title": "Animation",
+    "logo": "https://yt3.googleusercontent.com/ytc/AOPolaSk8jLwTPTZ9tnSWr0coUk1-VJLYQCi2muftdUyHw=s100-c-k-c0x00ffffff-no-rj"
+  },
+  "anime_all_day": {
+    "name": "Anime All Day",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5812b7d3249444e05d09cc49/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c26a781-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=6903cfae-183e-4d3b-a482-b7acf38ce356",
+    "group-title": "Animation",
+    "logo": "https://i.imgur.com/bYZtd0G.png"
+  },
+  "gooder_nation_channel_32_west": {
+    "name": "Gooder Nation Channel 32 West",
+    "url": "https://ssh101stream.ssh101.com/akamaissh101/ssh101/channel32/playlist.m3u8",
+    "group-title": "Animation;General",
+    "logo": "https://i.imgur.com/7bHiavg.png"
+  },
+  "kmby_ld5": {
+    "name": "KMBY-LD5",
+    "url": "https://2-fss-2.streamhoster.com/pl_138/205510-3094608-1/playlist.m3u8",
+    "group-title": "Animation",
+    "logo": "https://i.imgur.com/px0CSti.png"
+  },
+  "lupin_the_3rd": {
+    "name": "Lupin the 3rd",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/60f74ba51c82ac000776c669/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c29b4c3-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=929f711f-6565-41d9-84a9-9f2c83d020e5",
+    "group-title": "Animation",
+    "logo": "https://i.imgur.com/Wopu3y9.png"
+  },
+  "mcn6_music_channel": {
+    "name": "MCN6 Music Channel",
+    "url": "https://d18fcxaqfnwjhj.cloudfront.net/CDN_Ingest/MCN6_MUSIC.smil/Playlist.m3u8",
+    "group-title": "Animation;Kids;Music",
+    "logo": "https://i.imgur.com/j6IiysJ.png"
+  },
+  "movies_for_gamers": {
+    "name": "Movies for Gamers",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/6008ddf24ef92b00079d61cf/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2a02e3-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=2f37e9d8-bdac-4d46-949d-ccfbf76dd6e0",
+    "group-title": "Animation",
+    "logo": "https://i.imgur.com/aqjzEkb.png"
+  },
+  "naruto": {
+    "name": "Naruto",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5da0c85bd2c9c10009370984/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2a29f8-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=bbd39836-427d-4099-82bb-28b34f88aa35",
+    "group-title": "Animation",
+    "logo": "https://i.imgur.com/M8X3Kvc.png"
+  },
+  "one_piece": {
+    "name": "One Piece",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5f7790b3ed0c88000720b241/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2a7816-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=4b38ba42-6f97-4a17-b657-1277978d366c",
+    "group-title": "Animation",
+    "logo": "https://i.imgur.com/XsvbAWR.png"
+  },
+  "retro_crush": {
+    "name": "RetroCrush",
+    "url": "https://amg01201-cinedigmenterta-retrocrush-cineverse-nrfll.amagi.tv/playlist/amg01201-cinedigmenterta-retrocrush-cineverse/playlist.m3u8",
+    "group-title": "Animation;Classic",
+    "logo": "https://i.imgur.com/M40b4YI.png"
+  },
+  "toonami_aftermath_east": {
+    "name": "Toonami Aftermath East",
+    "url": "http://api.toonamiaftermath.com:3000/est/playlist.m3u8",
+    "group-title": "Animation",
+    "logo": "https://i.imgur.com/aSjhZK7.png"
+  },
+  "yu_gi_oh": {
+    "name": "Yu-Gi-Oh!",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5f4ec10ed9636f00089b8c89/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2d3738-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=31531314-3e7f-4788-8c4f-f153a43ee0a0",
+    "group-title": "Animation",
+    "logo": "https://i.imgur.com/Tl6aW2u.png"
+  },
+  "9life_sydney": {
+    "name": "9Life Sydney",
+    "url": "https://9now-livestreams.akamaized.net/hls/live/2008313/life-syd/master.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/HlJOrGI.png"
+  },
+  "10_bold_sydney": {
+    "name": "10 Bold Sydney",
+    "url": "https://dce3793146fef017.mediapackage.us-west-2.amazonaws.com/out/v1/55cdf73af7894775ba6de8f57482b66a/CMAF_HLS/index.m3u8",
+    "group-title": "Lifestyle;Relax",
+    "logo": "https://i.imgur.com/2xglh33.png"
+  },
+  "30a_luxe_life_discovered": {
+    "name": "30A Luxe Life Discovered",
+    "url": "https://30a-tv.com/feeds/vidaa/luxelife.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://m.media-amazon.com/images/I/51FJ5A0mEyL.jpg"
+  },
+  "antiques_road_trip": {
+    "name": "Antiques Road Trip",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/615b8ec39e878900073f419a/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c26ce90-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=db6c1565-8df4-4092-a404-9e5aee5bb6ae",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/kkm7VqV.png"
+  },
+  "bbc_home_garden": {
+    "name": "BBC Home & Garden",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5fb5836fe745b600070fc743/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c26f5a1-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=844b6663-bad2-462b-9aef-d0f33d5dfaa0",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/rC0pi1D.png"
+  },
+  "better_health_tv": {
+    "name": "Better Health TV",
+    "url": "https://tgn.bozztv.com/betterlife/betterhealth/betterhealth/index.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/dThvIsV.png"
+  },
+  "biz_tv": {
+    "name": "Biz TV",
+    "url": "https://thegateway.app/BizAndYou/BizTV/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/yaNXOnO.png"
+  },
+  "bridezillas_uk": {
+    "name": "Bridezillas UK",
+    "url": "https://run-br-uk.otteravision.com/run/br_uk/br_uk_720.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/gppwrJa.png"
+  },
+  "cats_24_7": {
+    "name": "Cats 24/7",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/599375885ceaac3cabccbed7/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c276ad4-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=f1d9d30b-52fa-4979-a2d6-5066af724ab6",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/od1taaY.png"
+  },
+  "cine_life": {
+    "name": "CineLife",
+    "url": "https://magnolia-cinelife.amagi.tv/hls/amagi_hls_data_magnoliaA-cinelife-oando/CDN/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/RIUNuMQ.png"
+  },
+  "cleo_tv": {
+    "name": "Cleo TV",
+    "url": "https://fl3.moveonjoy.com/Cleo_TV/index.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/US0T6DC.png"
+  },
+  "ctn_lifestyle": {
+    "name": "CTN Lifestyle",
+    "url": "https://ctntv.getstreamhosting.com:1936/Lifestyle/Lifestyle/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/i1TBfGl.png"
+  },
+  "diva": {
+    "name": "Diva",
+    "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/diva/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/U9wMnQ0.png"
+  },
+  "fashion_finds": {
+    "name": "Fashion Finds",
+    "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
+    "group-title": "Lifestyle;Shop",
+    "logo": "https://i.imgur.com/GvDRZgq.png"
+  },
+  "fashiontv_europe": {
+    "name": "FashionTV Europe",
+    "url": "https://fashiontv-fashiontv-5-nl.samsung.wurl.tv/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Fashion_TV_logo.svg/512px-Fashion_TV_logo.svg.png"
+  },
+  "fashiontv_pg16": {
+    "name": "FashionTV PG16",
+    "url": "https://fash1043.cloudycdn.services/slive/ftv_pg16_adaptive.smil/media.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/GFTAN5Q.png"
+  },
+  "fashiontv_uhd": {
+    "name": "FashionTV UHD",
+    "url": "https://fash2043.cloudycdn.services/slive/ftv_ftv_4k_hevc_73d_42080_default_466_hls.smil/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/vQuyyWO.png"
+  },
+  "fyi_east": {
+    "name": "FYI East",
+    "url": "https://fl3.moveonjoy.com/FYI/index.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/PggQk7F.png"
+  },
+  "global_fashion_channel": {
+    "name": "Global Fashion Channel",
+    "url": "https://pubgfc.teleosmedia.com/linear/globalfashionchannel/globalfashionchannel/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/s4eGYEP.jpg"
+  },
+  "hobby_maker": {
+    "name": "Hobby Maker",
+    "url": "https://lo3.gemporia.com/abrhobbymakerukgfx/smil:livestreamFullHD.smil/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/VWHp5Tl.png"
+  },
+  "just_vogue_tv": {
+    "name": "Just Vogue TV",
+    "url": "https://ip100.radyotelekomtv.com:3873/stream/play.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/sRKYBMb.png"
+  },
+  "lnktv_health": {
+    "name": "LNKTV Health",
+    "url": "http://10tv.lincoln.ne.gov/live/live.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/dGgmOY0.png"
+  },
+  "localish": {
+    "name": "Localish",
+    "url": "https://apollo.production-public.tubi.io/live/ac-localish.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/ACEbGD5.png"
+  },
+  "luxe_tv": {
+    "name": "Luxe TV",
+    "url": "https://alchimie-luxe-fr-rakuten.amagi.tv/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/24ehonx.png"
+  },
+  "monte_carlo_digital_television": {
+    "name": "Monte Carlo Digital Television",
+    "url": "https://fl718492-exthls-p1.flovp.com/fl718492/live/live.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/99h8F1y.jpeg"
+  },
+  "ourtv": {
+    "name": "OURTV",
+    "url": "https://hls-cdn.tvstartup.net/barakyah-channel/play/mp4:ourtvedge/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/LMeoW0l.png"
+  },
+  "plous_tv": {
+    "name": "Plous TV",
+    "url": "https://vcp.myplaytv.com/glowtv/glowtv/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/OSet4en.png"
+  },
+  "pluto_tv_food_germany": {
+    "name": "Pluto TV Food Germany",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5dc280c9aa218c0009724b4b/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=84ae7979-4b92-11ef-aece-533610f1ea34&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=6afece0b-4e3f-4de4-935d-3288b6200e01",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/HTLo1GG.png"
+  },
+  "pluto_tv_home_germany": {
+    "name": "Pluto TV Home Germany",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5eb96303f5bb020008e7e44f/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=84aea082-4b92-11ef-aece-533610f1ea34&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=98a9fe20-9187-429d-b9ac-8042d3142022",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/FDxMMBb.png"
+  },
+  "pridetv_latam_hd": {
+    "name": "PRIDEtv LATAM HD",
+    "url": "https://backend.energeek.cl/webtv/pridetvweb/index.m3u8?token=ZZDemoIPTVGH",
+    "group-title": "Entertainment;Lifestyle;Music",
+    "logo": "https://neotv.cl/img/pridetv-512.png"
+  },
+  "revry_2": {
+    "name": "Revry 2",
+    "url": "https://linear-5.frequency.stream/mt/brightcove/5/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/bKpligT.png"
+  },
+  "revry": {
+    "name": "Revry",
+    "url": "https://linear-5.frequency.stream/dist/plex/5/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/XuTUaq4.png"
+  },
+  "revry_news": {
+    "name": "Revry News",
+    "url": "https://linear-44.frequency.stream/mt/brightcove/44/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/lKMYCkb.png"
+  },
+  "revry_queer": {
+    "name": "Revry Queer",
+    "url": "https://linear-43.frequency.stream/dist/galxy/43/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://f9q4g5j6.ssl.hwcdn.net/5fc81016d98cab623846a4f3"
+  },
+  "smart_lifestyle_tv": {
+    "name": "Smart LifeStyle TV",
+    "url": "https://brightstar-sls-pull-secure.akamaized.net/brightstarsls/stream.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/kHFlTEy.png"
+  },
+  "so_real": {
+    "name": "So... Real",
+    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01201-cinedigmenterta-soreal-cineverse/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/wZ2uj9d.png"
+  },
+  "superyacht_tv": {
+    "name": "Superyacht TV",
+    "url": "https://sy.wns.live/hls/stream.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/cgjgjE1.png"
+  },
+  "the_beach_channel": {
+    "name": "The Beach Channel",
+    "url": "https://cf-live29e5f8c.lwcdn.com/live/fallback/014dc067-4922-4168-bdcd-5278589269ed/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/KShaqAp.png"
+  },
+  "the_design_network": {
+    "name": "The Design Network",
+    "url": "https://amg00441-amg00441c1-xumo-us-5144.playouts.now.amagi.tv/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/J5YJ3r3.png"
+  },
+  "the_jamie_oliver_channel": {
+    "name": "The Jamie Oliver Channel",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/64dab9df3d48f40008868091/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2c25c5-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=4c35404c-1695-499c-9f13-965f00e7ea9b",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/4v93XUB.png"
+  },
+  "tv_kesehatan": {
+    "name": "TV Kesehatan",
+    "url": "https://5bf7b725107e5.streamlock.net/tvkesehatan/tvkesehatan/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/IGIX3o8.jpg"
+  },
+  "inwonder": {
+    "name": "InWonder",
+    "url": "https://amg00861-terncloud-amg00861c4-cineverse-us-962.playouts.now.amagi.tv/playlist/amg00861-terninternationalfast-inwonderushd-cineverseus/playlist.m3u8",
+    "group-title": "Science",
+    "logo": "https://i.imgur.com/7kOhGef.png"
+  },
+  "mystery_science_theater_3000": {
+    "name": "Mystery Science Theater 3000",
+    "url": "https://mst3k-vizio.amagi.tv/playlist.m3u8",
+    "group-title": "Comedy",
+    "logo": "https://i.imgur.com/8KWjY4o.png"
+  },
+  "pluto_tv_science": {
+    "name": "Pluto TV Science",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/563a970aa1a1f7fe7c9daad7/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2b3b61-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=31adb772-adc8-4202-ad66-25e3c1a49df7",
+    "group-title": "Science",
+    "logo": "https://i.imgur.com/uhunRoU.png"
+  },
+  "pluto_tv_space_germany": {
+    "name": "Pluto TV Space Germany",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/61409f8d6feb30000766b675/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=84aeeea6-4b92-11ef-aece-533610f1ea34&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=aee0c343-6689-49c1-9090-319522e3c837",
+    "group-title": "Science",
+    "logo": "https://i.imgur.com/hQwS3ui.png"
+  },
+  "smithsonian_channel_east": {
+    "name": "Smithsonian Channel East",
+    "url": "https://fl3.moveonjoy.com/SMITHSONIAN_CHANNEL/index.m3u8",
+    "group-title": "Science",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/SmithsonianChannellogo.png/512px-SmithsonianChannellogo.png"
+  },
+  "smithsonian_channel_selects": {
+    "name": "Smithsonian Channel Selects",
+    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5f21ea08007a49000762d349/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2bb094-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=984e1d1d-6d7f-4f0b-98a5-825ccb67a891",
+    "group-title": "Science",
+    "logo": "https://images.pluto.tv/channels/5f21ea08007a49000762d349/featuredImage.jpg"
+  },
+  "kets_dt1": {
+    "name": "KETS-DT1",
+    "url": "https://ketsdt.lls.pbs.org/out/v1/03c094dbd7874a4a8c3fe9fb10081bdb/index.m3u8",
+    "group-title": "Education",
+    "logo": "https://i.imgur.com/dNBZLtD.png"
+  },
+  "leominster_tv_educational": {
+    "name": "Leominster TV Educational",
+    "url": "http://edu.leominster.tv/Edu/smil:Edu.smil/playlist.m3u8",
+    "group-title": "Education",
+    "logo": "https://i.imgur.com/Cy94oLl.png"
+  },
+  "marin_tv_educational_channel": {
+    "name": "Marin TV Educational Channel",
+    "url": "https://dacastmmd.mmdlive.lldns.net/dacastmmd/bc1fcf000e4e48a6a490d2af1f6added/playlist.m3u8",
+    "group-title": "Education",
+    "logo": "https://i.imgur.com/HsBBu8g.png"
+  },
+  "ncm_educational_kids_channel": {
+    "name": "NCM Educational & Kids Channel",
+    "url": "https://cdn3.wowza.com/5/cHYzekYzM2kvTVFH/nevco/G0644_005/playlist.m3u8",
+    "group-title": "Education;Kids",
+    "logo": "https://i.imgur.com/3YPvfPn.png"
+  },
+  "world_channel": {
+    "name": "World Channel",
+    "url": "https://world.lls.pbs.org/index.m3u8",
+    "group-title": "Education",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6b/PBSworld.png"
   }
 }

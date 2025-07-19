@@ -1320,29 +1320,29 @@ def fetch_official_streams(channel_id):
         print(f"Error fetching official streams: {e}")
         return []
 
-def fetch_sporty_live_stream_only():
+def fetch_sporty_live_without_api(channel_id):
     """
-    Fetch Sporty TV live stream ONLY by requesting the /live URL
-    and extracting the redirected live video ID.
-    No API calls.
+    Fetch live video ID by checking redirect from /channel/{channel_id}/live
+    Returns list with one stream dict or empty list.
     """
-    channel_id = OFFICIAL_BROADCASTERS["sporty"]
+    live_url = f"https://www.youtube.com/channel/{channel_id}/live"
     try:
-        url = f"https://www.youtube.com/channel/{channel_id}/live"
-        response = requests.get(url, allow_redirects=False, timeout=10)
-        location = response.headers.get("Location", "")
-        if "/watch?v=" in location:
-            video_id = location.split("watch?v=")[-1].split("&")[0]
-            return [{
-                "title": "Sporty TV Live Stream",
-                "video_id": video_id,
-                "channel": "Sporty TV",
-                "published_at": None,
-                "thumbnail": f"https://i.ytimg.com/vi/{video_id}/hqdefault_live.jpg",
-                "is_official": True
-            }]
+        resp = requests.get(live_url, allow_redirects=False, timeout=5)
+        if resp.status_code == 302:
+            location = resp.headers.get("Location", "")
+            if location.startswith("/watch?v="):
+                video_id = location.split("v=")[1].split("&")[0]
+                # Since we don't have metadata without API, build minimal info
+                return [{
+                    "title": "Sporty TV Live Stream",
+                    "video_id": video_id,
+                    "channel": "Sporty TV",
+                    "published_at": None,
+                    "thumbnail": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
+                    "is_official": True
+                }]
     except Exception as e:
-        print(f"Error fetching Sporty TV live stream: {e}")
+        print(f"Error fetching sporty live without API: {e}")
     return []
 
 def fetch_live_streams_cached(category):
@@ -1354,12 +1354,13 @@ def fetch_live_streams_cached(category):
     streams = []
 
     if category == "sporty":
-        # Use only the /live redirect URL, no API calls for Sporty TV
-        streams = fetch_sporty_live_stream_only()
+        # NO API, no cache - fetch live video from /live redirect only
+        streams = fetch_sporty_live_without_api(OFFICIAL_BROADCASTERS["sporty"])
+        # Optionally, do not cache sporty at all (comment cache save below)
     else:
-        # For other categories, use official streams only (no fallback)
         if category in OFFICIAL_BROADCASTERS:
-            streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
+            official_streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
+            streams.extend(official_streams)
 
     # Deduplicate by video ID
     unique_streams = []
@@ -1369,11 +1370,13 @@ def fetch_live_streams_cached(category):
             seen_ids.add(stream["video_id"])
             unique_streams.append(stream)
 
-    CACHE[category] = {
-        "data": unique_streams,
-        "timestamp": now
-    }
-    save_cache_to_file()
+    if category != "sporty":
+        CACHE[category] = {
+            "data": unique_streams,
+            "timestamp": now
+        }
+        save_cache_to_file()
+
     return unique_streams
 
 @app.route("/live_matches")

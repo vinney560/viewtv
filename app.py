@@ -1208,7 +1208,6 @@ from urllib.parse import quote_plus
 #=======================================
 import time
 
-# Configuration
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 CACHE_FILE = "cache.json"
 CACHE_DURATION = 30 * 60  # 30 minutes
@@ -1271,12 +1270,12 @@ def is_football_stream(title):
         return False
     title = title.lower()
     football_terms = {
-        'football', 'soccer', 'premier', 'laliga', 'champions', 
+        'football', 'soccer', 'premier', 'laliga', 'champions',
         'uefa', 'match', 'serie a', 'epl', 'sports', 'fifa', 'live',
         'premier league', 'bundesliga', 'ligue 1', 'serie a', 'mls'
     }
     banned_terms = {
-        'pes', 'efootball', 'gameplay', 'android', 'mobile', 
+        'pes', 'efootball', 'gameplay', 'android', 'mobile',
         'video', 'ai', 'volleyball', 'cricket', 'basketball',
         'highlight', 'review', 'news'
     }
@@ -1368,18 +1367,6 @@ def fetch_search_results(query):
         print(f"Error in search fallback: {e}")
         return []
 
-def fetch_sporty_live():
-    channel_id = OFFICIAL_BROADCASTERS["sporty"]
-    methods = [fetch_official_streams, fetch_sporty_live_redirect]
-    for method in methods:
-        try:
-            res = method(channel_id)
-            if res:
-                return res
-        except Exception as e:
-            print(f"Sporty method error: {e}")
-    return []
-
 def fetch_sporty_live_redirect(channel_id):
     url = f"https://www.youtube.com/channel/{channel_id}/live"
     try:
@@ -1400,6 +1387,10 @@ def fetch_sporty_live_redirect(channel_id):
         print(f"Redirect error: {e}")
     return []
 
+def fetch_sporty_live(channel_id):
+    # For sporty, ONLY use redirect method (API-free)
+    return fetch_sporty_live_redirect(channel_id)
+
 def fetch_live_streams_cached(category):
     now = time.time()
     cached = CACHE.get(category)
@@ -1409,38 +1400,35 @@ def fetch_live_streams_cached(category):
     streams = []
 
     if category == "sporty":
-        streams = fetch_sporty_live()
+        # API-free sporty fetching only via redirect method
+        streams = fetch_sporty_live(OFFICIAL_BROADCASTERS["sporty"])
     else:
         if category in OFFICIAL_BROADCASTERS:
             streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
         if not streams and category in CATEGORY_QUERIES:
             streams = fetch_search_results(CATEGORY_QUERIES[category])
 
+    # Deduplicate videos by video_id
     unique = []
     seen = set()
     for s in streams:
         if s["video_id"] not in seen:
             seen.add(s["video_id"])
             unique.append(s)
+    streams = unique
 
-    if category != "sporty":
-        CACHE[category] = {
-            "data": unique,
-            "timestamp": now
-        }
-        save_cache_to_file()
+    CACHE[category] = {
+        "data": streams,
+        "timestamp": now
+    }
+    save_cache_to_file()
 
-    return unique
+    return streams
 
-@app.route("/live_matches")
-def live_matches():
-    sporty_streams = fetch_live_streams_cached("sporty")
-    return render_template("live_matches.html", sporty_streams=sporty_streams)
-
-@app.route("/api/live_streams")
-def api_live_streams():
-    cat = request.args.get("cat", "all")
-    streams = fetch_live_streams_cached(cat)
+# Flask route example (adjust as needed)
+@app.route('/streams/<category>')
+def get_streams(category):
+    streams = fetch_live_streams_cached(category)
     return jsonify(streams)
 #=======================================
 @app.route('/status', methods=['GET'])

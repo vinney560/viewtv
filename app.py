@@ -1259,7 +1259,7 @@ def is_football_stream(title):
 def fetch_sporty_live():
     """Fetch SportyTV live stream using direct method (no API needed)"""
     try:
-        live_url = f"https://www.youtube.com/channel/{OFFICIAL_BROADCASTERS['sporty']}/live"
+        live_url = f"https://www.youtube.com/channel/UCwu87p766uwEyzG1p8dEMlg/live"
         response = requests.get(live_url, allow_redirects=False, timeout=5)
         
         if response.status_code == 302:

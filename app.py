@@ -1229,7 +1229,7 @@ OFFICIAL_BROADCASTERS = {
 CATEGORY_QUERIES = {
     "all": "Live Football -android -mobile",
     "fifa": "FIFA live match -gameplay -android",
-    "sporty": "live sports tv",
+    "sporty": "sporty tv",
     "uefa": "UEFA live match -fifa -android",
     "epl": "EPL live match -mobile",
     "laliga": "La Liga live match -fifa",

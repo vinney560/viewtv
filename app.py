@@ -1211,19 +1211,19 @@ import time
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 
 OFFICIAL_BROADCASTERS = {
-    "premier": "UCTi0ZRSN1wmGBK1x4QqQKzA",     # Sky Sports Premier League
-    "laliga": "UC8C4LqMsJ8Q9XaLK1O0QY8g",      # LaLigaTV
-    "uefa": "UC3GzR0a8Qm_9b0wJjXz9QzQ",        # UEFA.tv
-    "bein": "UCJUCcJUeh0Cz2xyKwkw5Q1w",        # beIN Sports (updated)
-    "dazn": "UCqdw6UF0m-6Hq1t4i4Xx9JQ",        # DAZN
-    "tnt": "UCjzbDk-B9gQY8hU4UjTlVDw",         # TNT Sports
-    "espn": "UCdKic8_9Q1JP1Qw_Rs5QlRw",        # ESPN FC
-    "fox": "UCdKic8_9Q1JP1Qw_Rs5QlRw",         # FOX Sports (same as ESPN FC)
-    "sporty": "UCwu87p766uwEyzG1p8dEMlg",      # SportyTV (actual channel ID)
-    "nbcsports": "UCqZQlzSHbVJrwrn5XvzrzcA",   # NBC Sports
-    "cbs": "UCJ2ZhWnWwJbKvnW3n7CO7Xg",         # CBS Sports
-    "tsn": "UCd4FOx0s9jJjWb8HsFnPpYw",         # TSN
-    "fubo": "UCZMFmRBpXrH-ObiOeYcW1FQ"         # fubo Sports
+    "premier": "UCTi0ZRSN1wmGBK1x4QqQKzA",
+    "laliga": "UC8C4LqMsJ8Q9XaLK1O0QY8g",
+    "uefa": "UC3GzR0a8Qm_9b0wJjXz9QzQ",
+    "bein": "UCJUCcJUeh0Cz2xyKwkw5Q1w",
+    "dazn": "UCqdw6UF0m-6Hq1t4i4Xx9JQ",
+    "tnt": "UCjzbDk-B9gQY8hU4UjTlVDw",
+    "espn": "UCdKic8_9Q1JP1Qw_Rs5QlRw",
+    "fox": "UCdKic8_9Q1JP1Qw_Rs5QlRw",
+    "sporty": "UCwu87p766uwEyzG1p8dEMlg",
+    "nbcsports": "UCqZQlzSHbVJrwrn5XvzrzcA",
+    "cbs": "UCJ2ZhWnWwJbKvnW3n7CO7Xg",
+    "tsn": "UCd4FOx0s9jJjWb8HsFnPpYw",
+    "fubo": "UCZMFmRBpXrH-ObiOeYcW1FQ"
 }
 
 CATEGORY_QUERIES = {
@@ -1241,8 +1241,9 @@ CATEGORY_QUERIES = {
 
 CACHE = {}
 CACHE_FILE = "cache.json"
-CACHE_DURATION = 30 * 60
+CACHE_DURATION = 30 * 60  # 30 minutes
 
+# Load cache from disk
 if os.path.exists(CACHE_FILE):
     try:
         with open(CACHE_FILE, "r") as f:
@@ -1261,7 +1262,7 @@ def save_cache_to_file():
         print(f"Error saving cache: {e}")
 
 def is_football_stream(title):
-    football_terms = ['football', 'soccer', 'premier', 'laliga', 'champions', 'uefa', 'match', 'serie a', 'epl', 'sports', 'fifa']
+    football_terms = ['football', 'soccer', 'premier', 'laliga', 'champions', 'uefa', 'match', 'serie a', 'epl', 'sports', 'fifa', 'live']
     banned_terms = ['pes', 'efootball', 'gameplay', 'android', 'mobile', 'video', 'ai', 'volleyball', 'cricket', 'basketball']
     title = title.lower()
     return any(term in title for term in football_terms) and not any(term in title for term in banned_terms)
@@ -1310,7 +1311,7 @@ def fetch_fallback_streams(query):
                 "q": query,
                 "eventType": "live",
                 "type": "video",
-                "maxResults": 100,
+                "maxResults": 50,
                 "key": YOUTUBE_API_KEY,
                 "order": "viewCount"
             },
@@ -1344,7 +1345,7 @@ def fetch_live_streams_cached(category):
 
     streams = []
 
-    # Always check SportyTV first (regardless of category)
+    # Always check SportyTV first
     if "sporty" in OFFICIAL_BROADCASTERS:
         sporty_streams = fetch_official_streams(OFFICIAL_BROADCASTERS["sporty"])
         if sporty_streams:
@@ -1358,7 +1359,7 @@ def fetch_live_streams_cached(category):
     if not streams and category in CATEGORY_QUERIES:
         streams.extend(fetch_fallback_streams(CATEGORY_QUERIES[category]))
 
-    # Deduplicate streams by video_id
+    # Deduplicate by video ID
     unique_streams = []
     seen_ids = set()
     for stream in streams:
@@ -1375,7 +1376,6 @@ def fetch_live_streams_cached(category):
 
 @app.route("/live_matches")
 def live_matches():
-    # Get SportyTV streams separately for the template
     sporty_streams = fetch_official_streams(OFFICIAL_BROADCASTERS["sporty"])
     return render_template("live_matches.html", sporty_streams=sporty_streams)
 

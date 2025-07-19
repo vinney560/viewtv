@@ -1612,6 +1612,8 @@ RANDOMIZED_CHANNELS = {
 @app.route('/home_1')
 @login_required
 def home_1():
+    if current_user.plus_type in ["free", "paid"]:
+        return redirect(url_for("home_2"))
     return render_template('home_1.html', user=current_user, channels=RANDOMIZED_CHANNELS)
 
 #======================================

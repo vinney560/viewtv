@@ -521,6 +521,8 @@ def login():
 @login_required
 @plus_required
 def home_2():
+    if current_user.plus_type not in ["free", "paid"]:
+        return redirect(url_for("home_1"))
     return render_template('home_2.html', user=current_user)
 #-----------------------------------------------------------------------
 # Exclusive sport Logic

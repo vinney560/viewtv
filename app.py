@@ -1217,7 +1217,6 @@ OFFICIAL_BROADCASTERS = {
     "premier": "UCTi0ZRSN1wmGBK1x4QqQKzA",
     "laliga": "UC8C4LqMsJ8Q9XaLK1O0QY8g",
     "uefa": "UC3GzR0a8Qm_9b0wJjXz9QzQ",
-    "sporty": "UCwu87p766uwEyzG1p8dEMlg",  # SportyTV's channel ID
     "bein": "UCJUCcJUeh0Cz2xyKwkw5Q1w",
     "dazn": "UCqdw6UF0m-6Hq1t4i4Xx9JQ",
     "tnt": "UCjzbDk-B9gQY8hU4UjTlVDw",
@@ -1226,8 +1225,7 @@ OFFICIAL_BROADCASTERS = {
     "nbcsports": "UCqZQlzSHbVJrwrn5XvzrzcA",
     "cbs": "UCJ2ZhWnWwJbKvnW3n7CO7Xg",
     "tsn": "UCd4FOx0s9jJjWb8HsFnPpYw",
-    "fubo": "UCZMFmRBpXrH-ObiOeYcW1FQ",
-    "newcastle": "UCjzbDk-B9gQY8hU4UjTlVDw"
+    "fubo": "UCZMFmRBpXrH-ObiOeYcW1FQ"
 }
 
 # Initialize cache
@@ -1240,7 +1238,7 @@ if os.path.exists(CACHE_FILE):
         print(f"Error loading cache: {e}")
         CACHE = {}
 
-def save_cache_to_file():
+def save_cache():
     try:
         with open(CACHE_FILE, "w") as f:
             json.dump(CACHE, f)
@@ -1251,33 +1249,10 @@ def is_football_stream(title):
     if not title:
         return False
     title = title.lower()
-    football_terms = ['football', 'soccer', 'premier', 'laliga', 'match', 'uefa', 'champions']
-    banned_terms = ['gameplay', 'android', 'mobile', 'highlights', 'review', 'news']
+    football_terms = ['football', 'soccer', 'premier', 'laliga', 'match']
+    banned_terms = ['gameplay', 'android', 'mobile', 'highlights']
     return (any(term in title for term in football_terms) and \
            (not any(term in title for term in banned_terms)))
-
-def fetch_sporty_live():
-    """Fetch SportyTV live stream using direct method (no API needed)"""
-    try:
-        live_url = f"https://www.youtube.com/channel/UCwu87p766uwEyzG1p8dEMlg/live"
-        response = requests.get(live_url, allow_redirects=False, timeout=5)
-        
-        if response.status_code == 302:
-            location = response.headers.get("Location", "")
-            if location and "/watch?v=" in location:
-                video_id = location.split("v=")[1].split("&")[0]
-                return [{
-                    "title": "Sporty TV Live Football",
-                    "video_id": video_id,
-                    "channel": "Sporty TV",
-                    "published_at": None,
-                    "thumbnail": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
-                    "is_official": True
-                }]
-        return []
-    except Exception as e:
-        print(f"Error fetching SportyTV stream: {e}")
-        return []
 
 def fetch_official_streams(channel_id):
     try:
@@ -1320,17 +1295,14 @@ def fetch_live_streams_cached(category):
         return cached["data"]
 
     streams = []
-    
-    if category == "sporty":
-        streams = fetch_sporty_live()
-    elif category in OFFICIAL_BROADCASTERS:
+    if category in OFFICIAL_BROADCASTERS:
         streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
     
     CACHE[category] = {
         "data": streams,
         "timestamp": now
     }
-    save_cache_to_file()
+    save_cache()
     return streams
 
 @app.route("/live_matches")
@@ -1342,6 +1314,7 @@ def api_live_streams():
     cat = request.args.get("cat", "all")
     streams = fetch_live_streams_cached(cat)
     return jsonify(streams)
+
 #=======================================
 @app.route('/status', methods=['GET'])
 def status():

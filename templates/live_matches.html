@@ -6,177 +6,155 @@
   <title>Live Football | StreamTv</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .stream-card {
+    .channel-card {
       transition: all 0.2s ease;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
-    .stream-card:hover {
+    .channel-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.2);
-    }
-    .live-badge {
-      animation: pulse 2s infinite;
-    }
-    .sporty-tag {
-      background-color: #3b82f6;
     }
   </style>
 </head>
 <body class="flex flex-col h-full text-gray-100">
   <header class="bg-gray-800/80 border-b border-gray-700 p-4 sticky top-0 z-10">
-    <div class="container mx-auto flex justify-between items-center">
+    <div class="container mx-auto">
       <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-        Live Football
+        Live Sports Channels
       </h1>
-      <button id="refreshBtn" class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600">
-        <svg id="refreshIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-      </button>
     </div>
   </header>
 
   <main class="flex-1 overflow-y-auto p-4">
     <div class="container mx-auto">
-      <!-- SportyTV Section -->
-      <div class="mb-8">
-        <h2 class="text-xl font-bold mb-4 flex items-center">
-          <span class="sporty-tag text-white text-xs px-2 py-1 rounded mr-2">OFFICIAL</span>
-          SportyTV Live Stream
-        </h2>
-        <div id="sportyContainer" class="grid grid-cols-1 gap-4"></div>
-        <div id="sportyOffline" class="hidden text-center py-8 bg-gray-800/50 rounded-lg">
-          <p class="text-gray-400">SportyTV is currently offline</p>
-        </div>
-      </div>
+      <!-- Sports Channels Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <!-- SportyTV -->
+        <a href="https://www.youtube.com/channel/UCwu87p766uwEyzG1p8dEMlg/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-blue-500/50">
+          <div class="p-4 text-center">
+            <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+            <h3 class="font-medium">SportyTV</h3>
+            <p class="text-xs text-gray-400 mt-1">Football</p>
+          </div>
+        </a>
 
-      <!-- Other Streams -->
-      <div>
-        <h2 class="text-xl font-bold mb-4">Live Football Streams</h2>
-        <div id="streamsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        <p id="noResults" class="text-center text-gray-500 py-10 hidden">
-          No live streams found
-        </p>
+        <!-- Premier League -->
+        <a href="https://www.youtube.com/channel/UCTi0ZRSN1wmGBK1x4QqQKzA/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">Premier League</h3>
+            <p class="text-xs text-gray-400 mt-1">English Football</p>
+          </div>
+        </a>
+
+        <!-- La Liga -->
+        <a href="https://www.youtube.com/channel/UC8C4LqMsJ8Q9XaLK1O0QY8g/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">La Liga</h3>
+            <p class="text-xs text-gray-400 mt-1">Spanish Football</p>
+          </div>
+        </a>
+
+        <!-- UEFA -->
+        <a href="https://www.youtube.com/channel/UC3GzR0a8Qm_9b0wJjXz9QzQ/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">UEFA</h3>
+            <p class="text-xs text-gray-400 mt-1">European Football</p>
+          </div>
+        </a>
+
+        <!-- beIN Sports -->
+        <a href="https://www.youtube.com/channel/UCJUCcJUeh0Cz2xyKwkw5Q1w/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">beIN Sports</h3>
+            <p class="text-xs text-gray-400 mt-1">Middle East Sports</p>
+          </div>
+        </a>
+
+        <!-- DAZN -->
+        <a href="https://www.youtube.com/channel/UCqdw6UF0m-6Hq1t4i4Xx9JQ/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">DAZN</h3>
+            <p class="text-xs text-gray-400 mt-1">Global Sports</p>
+          </div>
+        </a>
+
+        <!-- TNT Sports -->
+        <a href="https://www.youtube.com/channel/UCjzbDk-B9gQY8hU4UjTlVDw/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">TNT Sports</h3>
+            <p class="text-xs text-gray-400 mt-1">UK Sports</p>
+          </div>
+        </a>
+
+        <!-- ESPN -->
+        <a href="https://www.youtube.com/channel/UCdKic8_9Q1JP1Qw_Rs5QlRw/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">ESPN</h3>
+            <p class="text-xs text-gray-400 mt-1">US Sports</p>
+          </div>
+        </a>
+
+        <!-- NBC Sports -->
+        <a href="https://www.youtube.com/channel/UCqZQlzSHbVJrwrn5XvzrzcA/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">NBC Sports</h3>
+            <p class="text-xs text-gray-400 mt-1">US Sports</p>
+          </div>
+        </a>
+
+        <!-- CBS Sports -->
+        <a href="https://www.youtube.com/channel/UCJ2ZhWnWwJbKvnW3n7CO7Xg/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">CBS Sports</h3>
+            <p class="text-xs text-gray-400 mt-1">US Sports</p>
+          </div>
+        </a>
+
+        <!-- TSN -->
+        <a href="https://www.youtube.com/channel/UCd4FOx0s9jJjWb8HsFnPpYw/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">TSN</h3>
+            <p class="text-xs text-gray-400 mt-1">Canadian Sports</p>
+          </div>
+        </a>
+
+        <!-- fubo Sports -->
+        <a href="https://www.youtube.com/channel/UCZMFmRBpXrH-ObiOeYcW1FQ/live" 
+           target="_blank"
+           class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
+          <div class="p-4 text-center">
+            <h3 class="font-medium">fubo Sports</h3>
+            <p class="text-xs text-gray-400 mt-1">US Sports</p>
+          </div>
+        </a>
       </div>
     </div>
   </main>
 
   <footer class="bg-gray-800/50 border-t border-gray-700/30 p-3 text-center text-sm text-gray-500">
-    <div>Showing <span id="streamCount">0</span> streams | Updated: <span id="lastUpdated">never</span></div>
+    <div>Live Sports Channels - Click any to watch</div>
   </footer>
-
-  <script>
-    const SPORTY_CHANNEL_ID = "UCwu87p766uwEyzG1p8dEMlg";
-    let currentCat = 'all';
-    const POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes
-    let pollTimeout;
-
-    // Format time for display
-    function formatTime(date) {
-      if (!date) return "Live Now";
-      return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    function createStreamCard(stream, isSporty = false) {
-      const card = document.createElement('div');
-      card.className = `stream-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 ${isSporty ? 'border-blue-500/50' : ''}`;
-      card.innerHTML = `
-        <div class="relative">
-          <iframe class="w-full aspect-video" 
-                  src="https://www.youtube.com/embed/${stream.video_id}?autoplay=0"
-                  frameborder="0" allowfullscreen></iframe>
-          <span class="live-badge absolute top-2 left-2 px-2 py-1 rounded-md bg-red-600 text-xs font-bold">
-            LIVE
-          </span>
-          ${isSporty ? `<span class="sporty-tag absolute top-2 right-2 px-2 py-1 rounded-md text-xs font-bold">SPORTY</span>` : ''}
-        </div>
-        <div class="p-3">
-          <h3 class="font-medium line-clamp-2">${stream.title || "Live Football"}</h3>
-          <div class="text-xs text-gray-400 mt-2">${stream.channel || "Unknown"} • ${formatTime(stream.published_at)}</div>
-        </div>
-      `;
-      return card;
-    }
-
-    // SportyTV specific functions
-    async function checkSportyLive() {
-      try {
-        const response = await fetch(`https://www.youtube.com/channel/UCwu87p766uwEyzG1p8dEMlg/live`, {
-          redirect: 'manual'
-        });
-        
-        if (response.status === 302) {
-          const location = response.headers.get('location');
-          if (location && location.includes('/watch?v=')) {
-            const videoId = location.split('v=')[1].split('&')[0];
-            return {
-              video_id: videoId,
-              title: "Sporty TV Live Football",
-              channel: "Sporty TV",
-              published_at: null,
-              is_official: true
-            };
-          }
-        }
-      } catch (e) {
-        console.error("SportyTV check failed:", e);
-      }
-      return null;
-    }
-
-    async function loadSportyStream() {
-      const container = document.getElementById('sportyContainer');
-      const offlineMsg = document.getElementById('sportyOffline');
-      
-      container.innerHTML = '';
-      offlineMsg.classList.add('hidden');
-      
-      const sportyStream = await checkSportyLive();
-      if (sportyStream) {
-        container.appendChild(createStreamCard(sportyStream, true));
-      } else {
-        offlineMsg.classList.remove('hidden');
-      }
-    }
-
-    // Regular stream loading
-    async function loadStreams() {
-      try {
-        const response = await fetch(`/api/live_streams?cat=${currentCat}`);
-        const streams = await response.json();
-        const container = document.getElementById('streamsContainer');
-        
-        container.innerHTML = '';
-        document.getElementById('noResults').classList.toggle('hidden', streams.length > 0);
-        
-        streams.forEach(stream => {
-          container.appendChild(createStreamCard(stream));
-        });
-        
-        document.getElementById('streamCount').textContent = streams.length;
-        document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
-      } catch (error) {
-        console.error("Error loading streams:", error);
-      }
-    }
-
-    async function refreshAll() {
-      await Promise.all([loadSportyStream(), loadStreams()]);
-    }
-
-    // Initial load
-    refreshAll();
-    
-    // Setup refresh button
-    document.getElementById('refreshBtn').addEventListener('click', () => {
-      clearTimeout(pollTimeout);
-      refreshAll();
-    });
-
-    // Auto-refresh
-    pollTimeout = setTimeout(() => {
-      refreshAll();
-    }, POLL_INTERVAL);
-  </script>
 </body>
 </html>

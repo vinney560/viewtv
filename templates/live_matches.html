@@ -51,6 +51,12 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
+    .sporty-banner {
+      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+    }
+    .sporty-tag {
+      background-color: #3b82f6;
+    }
   </style>
 </head>
 <body class="flex flex-col h-full text-gray-100">
@@ -76,6 +82,7 @@
           <button data-cat="fifa" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">FIFA</button>
           <button data-cat="uefa" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">UEFA</button>
           <button data-cat="epl" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">EPL</button>
+          <button data-cat="sporty" class="category-btn px-4 py-1.5 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">SportyTV</button>
         </div>
         <button id="refreshBtn" class="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors" title="Refresh streams">
           <svg id="refreshIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -96,13 +103,36 @@
         </svg>
         Updating streams...
       </div>
-      <div id="streamsContainer" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
-      <p id="noResults" class="text-center text-gray-500 py-10 hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        No live streams found for this category.
-      </p>
+
+      <!-- SportyTV Section (Always Visible) -->
+      <div id="sportySection" class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold flex items-center">
+            <span class="sporty-tag text-white text-xs px-2 py-1 rounded mr-2">OFFICIAL</span>
+            SportyTV Live Streams
+          </h2>
+          <div id="sportyStatus" class="text-sm text-gray-400"></div>
+        </div>
+        <div id="sportyContainer" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+        <div id="sportyOffline" class="hidden text-center py-8 bg-gray-800/50 rounded-lg border border-gray-700/30">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-gray-400">SportyTV is currently offline. Check back later.</p>
+        </div>
+      </div>
+
+      <!-- All Other Streams -->
+      <div id="mainStreamsSection">
+        <h2 class="text-xl font-bold mb-4">Live Football Streams</h2>
+        <div id="streamsContainer" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></div>
+        <p id="noResults" class="text-center text-gray-500 py-10 hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-600 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          No live streams found for this category.
+        </p>
+      </div>
     </div>
   </main>
 
@@ -130,9 +160,9 @@
     }
 
     // Create a stream card element
-    function createStreamCard(s) {
+    function createStreamCard(s, isSporty = false) {
       const card = document.createElement('div');
-      card.className = 'stream-card bg-gray-800/80 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30 transition-all animate-fade-in';
+      card.className = `stream-card bg-gray-800/80 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30 transition-all animate-fade-in ${isSporty ? 'border-blue-500/50' : ''}`;
       card.innerHTML = `
         <div class="relative">
           <iframe 
@@ -147,6 +177,7 @@
             <span class="w-2 h-2 rounded-full bg-white mr-1 animate-pulse"></span>
             LIVE
           </span>
+          ${isSporty ? `<span class="sporty-tag absolute top-2 right-2 px-2 py-1 rounded-md text-xs font-bold">SPORTYTV</span>` : ''}
         </div>
         <div class="p-4">
           <h2 class="text-md font-semibold text-gray-100 line-clamp-2 mb-2">${s.title}</h2>
@@ -168,6 +199,33 @@
       return card;
     }
 
+    // Load SportyTV streams separately
+    async function loadSportyStreams() {
+      try {
+        const response = await fetch('/api/live_streams?cat=sporty');
+        const streams = await response.json();
+        const container = document.getElementById('sportyContainer');
+        const offlineMsg = document.getElementById('sportyOffline');
+        const statusElement = document.getElementById('sportyStatus');
+        
+        container.innerHTML = '';
+        
+        if (streams.length > 0) {
+          offlineMsg.classList.add('hidden');
+          streams.forEach(stream => {
+            container.appendChild(createStreamCard(stream, true));
+          });
+          statusElement.textContent = `${streams.length} live stream${streams.length > 1 ? 's' : ''}`;
+        } else {
+          offlineMsg.classList.remove('hidden');
+          statusElement.textContent = 'Offline';
+        }
+      } catch (error) {
+        console.error('Error loading SportyTV streams:', error);
+        document.getElementById('sportyOffline').classList.remove('hidden');
+      }
+    }
+
     // Load streams for current category
     async function loadStreams() {
       try {
@@ -175,30 +233,8 @@
         document.getElementById('updatingIndicator').classList.remove('hidden');
         document.getElementById('refreshIcon').classList.add('refresh-spin');
         
-        const response = await fetch(`/api/live_streams?cat=${currentCat}`);
-        const streams = await response.json();
-        const container = document.getElementById('streamsContainer');
-        
-        // Clear existing streams
-        container.innerHTML = '';
-        
-        if (streams.length === 0) {
-          document.getElementById('noResults').classList.remove('hidden');
-        } else {
-          // Add new streams
-          streams.forEach(stream => {
-            container.appendChild(createStreamCard(stream));
-          });
-          document.getElementById('noResults').classList.add('hidden');
-        }
-        
-        // Update counters
-        document.getElementById('streamCount').textContent = streams.length;
-        document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString([], { 
-          hour: '2-digit', 
-          minute: '2-digit',
-          second: '2-digit'
-        });
+        // Load both SportyTV and regular streams
+        await Promise.all([loadSportyStreams(), loadRegularStreams()]);
         
       } catch (error) {
         console.error('Error loading streams:', error);
@@ -212,6 +248,37 @@
         clearTimeout(pollTimeout);
         pollTimeout = setTimeout(loadStreams, POLL_INTERVAL);
       }
+    }
+
+    // Load regular streams (non-SportyTV)
+    async function loadRegularStreams() {
+      const response = await fetch(`/api/live_streams?cat=${currentCat}`);
+      const streams = await response.json();
+      const container = document.getElementById('streamsContainer');
+      
+      // Clear existing streams
+      container.innerHTML = '';
+      
+      if (streams.length === 0) {
+        document.getElementById('noResults').classList.remove('hidden');
+      } else {
+        // Add new streams
+        streams.forEach(stream => {
+          // Skip SportyTV streams since we show them separately
+          if (!stream.channel.toLowerCase().includes('sporty')) {
+            container.appendChild(createStreamCard(stream));
+          }
+        });
+        document.getElementById('noResults').classList.add('hidden');
+      }
+      
+      // Update counters
+      document.getElementById('streamCount').textContent = streams.length;
+      document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString([], { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+      });
     }
 
     // Category buttons

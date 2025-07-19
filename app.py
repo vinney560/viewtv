@@ -1219,7 +1219,7 @@ OFFICIAL_BROADCASTERS = {
     "tnt": "UCjzbDk-B9gQY8hU4UjTlVDw",         # TNT Sports
     "espn": "UCdKic8_9Q1JP1Qw_Rs5QlRw",        # ESPN FC
     "fox": "UCdKic8_9Q1JP1Qw_Rs5QlRw",         # FOX Sports (same as ESPN FC)
-    "sporty": "@sportytvafrica",              # SportyTV (YouTube handle)
+    "sporty": "UCXg6sH9d4a3h9qZkIlJ7J8g",      # SportyTV (actual channel ID)
     "nbcsports": "UCqZQlzSHbVJrwrn5XvzrzcA",   # NBC Sports
     "cbs": "UCJ2ZhWnWwJbKvnW3n7CO7Xg",         # CBS Sports
     "tsn": "UCd4FOx0s9jJjWb8HsFnPpYw",         # TSN
@@ -1229,7 +1229,7 @@ OFFICIAL_BROADCASTERS = {
 CATEGORY_QUERIES = {
     "all": "Live Football -android -mobile",
     "fifa": "FIFA live match -gameplay -android",
-    "sporty": "sporty tv",
+    "sporty": "sporty tv live football",
     "uefa": "UEFA live match -fifa -android",
     "epl": "EPL live match -mobile",
     "laliga": "La Liga live match -fifa",
@@ -1344,29 +1344,40 @@ def fetch_live_streams_cached(category):
 
     streams = []
 
-    # Always fetch Sporty TV first if category is "sporty"
-    if category == "sporty" and "sporty" in OFFICIAL_BROADCASTERS:
+    # Always check SportyTV first (regardless of category)
+    if "sporty" in OFFICIAL_BROADCASTERS:
         sporty_streams = fetch_official_streams(OFFICIAL_BROADCASTERS["sporty"])
-        streams.extend(sporty_streams)
+        if sporty_streams:
+            streams.extend(sporty_streams)
 
-    # Try official channel
+    # Then check the requested category
     if category in OFFICIAL_BROADCASTERS and category != "sporty":
-        streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
+        streams.extend(fetch_official_streams(OFFICIAL_BROADCASTERS[category]))
 
-    # Fallback if no live found
+    # Fallback to search if no official streams found
     if not streams and category in CATEGORY_QUERIES:
-        streams = fetch_fallback_streams(CATEGORY_QUERIES[category])
+        streams.extend(fetch_fallback_streams(CATEGORY_QUERIES[category]))
+
+    # Deduplicate streams by video_id
+    unique_streams = []
+    seen_ids = set()
+    for stream in streams:
+        if stream["video_id"] not in seen_ids:
+            seen_ids.add(stream["video_id"])
+            unique_streams.append(stream)
 
     CACHE[category] = {
-        "data": streams,
+        "data": unique_streams,
         "timestamp": now
     }
     save_cache_to_file()
-    return streams
+    return unique_streams
 
 @app.route("/live_matches")
 def live_matches():
-    return render_template("live_matches.html")
+    # Get SportyTV streams separately for the template
+    sporty_streams = fetch_official_streams(OFFICIAL_BROADCASTERS["sporty"])
+    return render_template("live_matches.html", sporty_streams=sporty_streams)
 
 @app.route("/api/live_streams")
 def api_live_streams():

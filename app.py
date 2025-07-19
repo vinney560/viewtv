@@ -1241,7 +1241,7 @@ CATEGORY_QUERIES = {
 
 CACHE = {}
 CACHE_FILE = "cache.json"
-CACHE_DURATION = 1 * 60 * 60
+CACHE_DURATION = 30 * 60
 
 if os.path.exists(CACHE_FILE):
     try:

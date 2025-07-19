@@ -1337,6 +1337,29 @@ def fetch_fallback_streams(query):
         print(f"Error fetching fallback streams: {e}")
         return []
 
+def resolve_live_redirect(channel_id):
+    """
+    Fallback function to get live video ID from the /live redirect URL if
+    official API returns no live streams.
+    """
+    try:
+        url = f"https://www.youtube.com/channel/{channel_id}/live"
+        response = requests.get(url, allow_redirects=False, timeout=10)
+        location = response.headers.get("Location", "")
+        if "/watch?v=" in location:
+            video_id = location.split("watch?v=")[-1].split("&")[0]
+            return [{
+                "title": "Live Stream (fallback)",
+                "video_id": video_id,
+                "channel": "Unknown",
+                "published_at": None,
+                "thumbnail": f"https://i.ytimg.com/vi/{video_id}/hqdefault_live.jpg",
+                "is_official": False
+            }]
+    except Exception as e:
+        print(f"Fallback live redirect error: {e}")
+    return []
+
 def fetch_live_streams_cached(category):
     now = time.time()
     cached = CACHE.get(category)
@@ -1345,19 +1368,30 @@ def fetch_live_streams_cached(category):
 
     streams = []
 
-    # Always check SportyTV first
-    if "sporty" in OFFICIAL_BROADCASTERS:
+    # Always check SportyTV first if category isn't sporty (to avoid duplicate)
+    if category != "sporty" and "sporty" in OFFICIAL_BROADCASTERS:
         sporty_streams = fetch_official_streams(OFFICIAL_BROADCASTERS["sporty"])
         if sporty_streams:
             streams.extend(sporty_streams)
+        else:
+            # Fallback for sporty if no official live found
+            fallback_sporty = resolve_live_redirect(OFFICIAL_BROADCASTERS["sporty"])
+            streams.extend(fallback_sporty)
 
     # Then check the requested category
-    if category in OFFICIAL_BROADCASTERS and category != "sporty":
-        streams.extend(fetch_official_streams(OFFICIAL_BROADCASTERS[category]))
+    if category in OFFICIAL_BROADCASTERS:
+        official_streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
+        if official_streams:
+            streams.extend(official_streams)
+        else:
+            # fallback redirect if no official streams found
+            fallback_streams = resolve_live_redirect(OFFICIAL_BROADCASTERS[category])
+            streams.extend(fallback_streams)
 
-    # Fallback to search if no official streams found
+    # Fallback to search if still no streams found
     if not streams and category in CATEGORY_QUERIES:
-        streams.extend(fetch_fallback_streams(CATEGORY_QUERIES[category]))
+        fallback_search_streams = fetch_fallback_streams(CATEGORY_QUERIES[category])
+        streams.extend(fallback_search_streams)
 
     # Deduplicate by video ID
     unique_streams = []

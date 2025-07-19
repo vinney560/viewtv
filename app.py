@@ -1219,7 +1219,7 @@ OFFICIAL_BROADCASTERS = {
     "tnt": "UCjzbDk-B9gQY8hU4UjTlVDw",         # TNT Sports
     "espn": "UCdKic8_9Q1JP1Qw_Rs5QlRw",        # ESPN FC
     "fox": "UCdKic8_9Q1JP1Qw_Rs5QlRw",         # FOX Sports (same as ESPN FC)
-    "sporty": "UCXg6sH9d4a3h9qZkIlJ7J8g",      # SportyTV (actual channel ID)
+    "sporty": "UCwu87p766uwEyzG1p8dEMlg",      # SportyTV (actual channel ID)
     "nbcsports": "UCqZQlzSHbVJrwrn5XvzrzcA",   # NBC Sports
     "cbs": "UCJ2ZhWnWwJbKvnW3n7CO7Xg",         # CBS Sports
     "tsn": "UCd4FOx0s9jJjWb8HsFnPpYw",         # TSN

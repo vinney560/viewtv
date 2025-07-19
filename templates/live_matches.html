@@ -51,9 +51,6 @@
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
     }
-    .sporty-banner {
-      background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-    }
     .sporty-tag {
       background-color: #3b82f6;
     }
@@ -65,7 +62,6 @@
   <header class="bg-gray-800/80 backdrop-blur-sm border-b border-gray-700 p-4 sticky top-0 z-10">
     <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center">
-        <!-- Soccer Ball SVG -->
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-cyan-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 2l3 7h7l-5.5 4 2.5 7L12 16l-7 4 2.5-7L2 9h7l3-7z" />
@@ -147,10 +143,9 @@
   <!-- JavaScript -->
   <script>
     let currentCat = 'all';
-    const POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes in milliseconds (matches backend cache)
+    const POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes
     let pollTimeout;
 
-    // Format time for display
     function formatTime(date) {
       if (!date) return "Live Now";
       return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -161,7 +156,6 @@
       return new Date(date).toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
 
-    // Create a stream card element
     function createStreamCard(s, isSporty = false) {
       const card = document.createElement('div');
       card.className = `stream-card bg-gray-800/80 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30 transition-all animate-fade-in ${isSporty ? 'border-blue-500/50' : ''}`;
@@ -201,7 +195,6 @@
       return card;
     }
 
-    // Load SportyTV streams separately (now handled by backend)
     async function loadSportyStreams() {
       try {
         const response = await fetch('/api/live_streams?cat=sporty');
@@ -228,62 +221,51 @@
       }
     }
 
-    // Load streams for current category
+    async function loadRegularStreams() {
+      try {
+        const response = await fetch(`/api/live_streams?cat=${currentCat}`);
+        const streams = await response.json();
+        const container = document.getElementById('streamsContainer');
+        
+        container.innerHTML = '';
+        
+        if (streams.length === 0) {
+          document.getElementById('noResults').classList.remove('hidden');
+        } else {
+          streams.forEach(stream => {
+            container.appendChild(createStreamCard(stream));
+          });
+          document.getElementById('noResults').classList.add('hidden');
+        }
+        
+        document.getElementById('streamCount').textContent = streams.length;
+        document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString([], { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          second: '2-digit'
+        });
+      } catch (error) {
+        console.error('Error loading regular streams:', error);
+        document.getElementById('noResults').classList.remove('hidden');
+      }
+    }
+
     async function loadStreams() {
       try {
-        // Show loading state
         document.getElementById('updatingIndicator').classList.remove('hidden');
         document.getElementById('refreshIcon').classList.add('refresh-spin');
         
-        // Load both SportyTV and regular streams
         await Promise.all([loadSportyStreams(), loadRegularStreams()]);
-        
       } catch (error) {
         console.error('Error loading streams:', error);
-        document.getElementById('noResults').classList.remove('hidden');
       } finally {
-        // Hide loading state
         document.getElementById('updatingIndicator').classList.add('hidden');
         document.getElementById('refreshIcon').classList.remove('refresh-spin');
-        
-        // Schedule next poll (30 minutes to match backend cache)
         clearTimeout(pollTimeout);
         pollTimeout = setTimeout(loadStreams, POLL_INTERVAL);
       }
     }
 
-    // Load regular streams (non-SportyTV)
-    async function loadRegularStreams() {
-      const response = await fetch(`/api/live_streams?cat=${currentCat}`);
-      const streams = await response.json();
-      const container = document.getElementById('streamsContainer');
-      
-      // Clear existing streams
-      container.innerHTML = '';
-      
-      if (streams.length === 0) {
-        document.getElementById('noResults').classList.remove('hidden');
-      } else {
-        // Add new streams
-        streams.forEach(stream => {
-          // Skip SportyTV streams since we show them separately
-          if (!stream.channel.toLowerCase().includes('sporty')) {
-            container.appendChild(createStreamCard(stream));
-          }
-        });
-        document.getElementById('noResults').classList.add('hidden');
-      }
-      
-      // Update counters
-      document.getElementById('streamCount').textContent = streams.length;
-      document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        second: '2-digit'
-      });
-    }
-
-    // Category buttons
     document.querySelectorAll('.category-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         currentCat = btn.dataset.cat;
@@ -297,13 +279,12 @@
       });
     });
 
-    // Manual refresh button
     document.getElementById('refreshBtn').addEventListener('click', () => {
       clearTimeout(pollTimeout);
       loadStreams();
     });
 
-    // Initial load + start polling
+    // Initial load
     loadStreams();
   </script>
 </body>

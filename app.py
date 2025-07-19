@@ -1267,6 +1267,21 @@ def is_football_stream(title):
     title = title.lower()
     return any(term in title for term in football_terms) and not any(term in title for term in banned_terms)
 
+def is_recent_video(published_at, max_days=1):
+    """
+    Check if video is published within max_days (default 1 day).
+    published_at is ISO 8601 string.
+    """
+    if not published_at:
+        return False
+    try:
+        video_time = time.strptime(published_at, "%Y-%m-%dT%H:%M:%SZ")
+        video_timestamp = time.mktime(video_time)
+        now = time.time()
+        return (now - video_timestamp) <= max_days * 86400
+    except Exception:
+        return False
+
 def fetch_official_streams(channel_id):
     try:
         response = requests.get(
@@ -1289,6 +1304,9 @@ def fetch_official_streams(channel_id):
             snip = item["snippet"]
             if not vid or not is_football_stream(snip["title"]):
                 continue
+            # Check published date is recent (within 1 day)
+            if not is_recent_video(snip.get("publishedAt"), max_days=1):
+                continue
             streams.append({
                 "title": snip["title"],
                 "video_id": vid,
@@ -1302,46 +1320,13 @@ def fetch_official_streams(channel_id):
         print(f"Error fetching official streams: {e}")
         return []
 
-def fetch_fallback_streams(query):
-    try:
-        response = requests.get(
-            "https://www.googleapis.com/youtube/v3/search",
-            params={
-                "part": "snippet",
-                "q": query,
-                "eventType": "live",
-                "type": "video",
-                "maxResults": 50,
-                "key": YOUTUBE_API_KEY,
-                "order": "viewCount"
-            },
-            timeout=10
-        )
-        response.raise_for_status()
-        streams = []
-        for item in response.json().get("items", []):
-            vid = item["id"].get("videoId")
-            snip = item["snippet"]
-            if not vid or not is_football_stream(snip["title"]):
-                continue
-            streams.append({
-                "title": snip["title"],
-                "video_id": vid,
-                "channel": snip["channelTitle"],
-                "published_at": snip["publishedAt"],
-                "thumbnail": snip["thumbnails"]["high"]["url"],
-                "is_official": False
-            })
-        return streams
-    except Exception as e:
-        print(f"Error fetching fallback streams: {e}")
-        return []
-
-def resolve_live_redirect(channel_id):
+def fetch_sporty_live_stream_only():
     """
-    Fallback function to get live video ID from the /live redirect URL if
-    official API returns no live streams.
+    Fetch Sporty TV live stream ONLY by requesting the /live URL
+    and extracting the redirected live video ID.
+    No API calls.
     """
+    channel_id = OFFICIAL_BROADCASTERS["sporty"]
     try:
         url = f"https://www.youtube.com/channel/{channel_id}/live"
         response = requests.get(url, allow_redirects=False, timeout=10)
@@ -1349,15 +1334,15 @@ def resolve_live_redirect(channel_id):
         if "/watch?v=" in location:
             video_id = location.split("watch?v=")[-1].split("&")[0]
             return [{
-                "title": "Live Stream (fallback)",
+                "title": "Sporty TV Live Stream",
                 "video_id": video_id,
-                "channel": "Unknown",
+                "channel": "Sporty TV",
                 "published_at": None,
                 "thumbnail": f"https://i.ytimg.com/vi/{video_id}/hqdefault_live.jpg",
-                "is_official": False
+                "is_official": True
             }]
     except Exception as e:
-        print(f"Fallback live redirect error: {e}")
+        print(f"Error fetching Sporty TV live stream: {e}")
     return []
 
 def fetch_live_streams_cached(category):
@@ -1368,30 +1353,13 @@ def fetch_live_streams_cached(category):
 
     streams = []
 
-    # Always check SportyTV first if category isn't sporty (to avoid duplicate)
-    if category != "sporty" and "sporty" in OFFICIAL_BROADCASTERS:
-        sporty_streams = fetch_official_streams(OFFICIAL_BROADCASTERS["sporty"])
-        if sporty_streams:
-            streams.extend(sporty_streams)
-        else:
-            # Fallback for sporty if no official live found
-            fallback_sporty = resolve_live_redirect(OFFICIAL_BROADCASTERS["sporty"])
-            streams.extend(fallback_sporty)
-
-    # Then check the requested category
-    if category in OFFICIAL_BROADCASTERS:
-        official_streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
-        if official_streams:
-            streams.extend(official_streams)
-        else:
-            # fallback redirect if no official streams found
-            fallback_streams = resolve_live_redirect(OFFICIAL_BROADCASTERS[category])
-            streams.extend(fallback_streams)
-
-    # Fallback to search if still no streams found
-    if not streams and category in CATEGORY_QUERIES:
-        fallback_search_streams = fetch_fallback_streams(CATEGORY_QUERIES[category])
-        streams.extend(fallback_search_streams)
+    if category == "sporty":
+        # Use only the /live redirect URL, no API calls for Sporty TV
+        streams = fetch_sporty_live_stream_only()
+    else:
+        # For other categories, use official streams only (no fallback)
+        if category in OFFICIAL_BROADCASTERS:
+            streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
 
     # Deduplicate by video ID
     unique_streams = []
@@ -1410,7 +1378,7 @@ def fetch_live_streams_cached(category):
 
 @app.route("/live_matches")
 def live_matches():
-    sporty_streams = fetch_official_streams(OFFICIAL_BROADCASTERS["sporty"])
+    sporty_streams = fetch_live_streams_cached("sporty")
     return render_template("live_matches.html", sporty_streams=sporty_streams)
 
 @app.route("/api/live_streams")

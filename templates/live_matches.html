@@ -147,15 +147,17 @@
   <!-- JavaScript -->
   <script>
     let currentCat = 'all';
-    const POLL_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+    const POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes in milliseconds (matches backend cache)
     let pollTimeout;
 
     // Format time for display
     function formatTime(date) {
+      if (!date) return "Live Now";
       return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
     function formatDate(date) {
+      if (!date) return "Today";
       return new Date(date).toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
 
@@ -180,13 +182,13 @@
           ${isSporty ? `<span class="sporty-tag absolute top-2 right-2 px-2 py-1 rounded-md text-xs font-bold">SPORTYTV</span>` : ''}
         </div>
         <div class="p-4">
-          <h2 class="text-md font-semibold text-gray-100 line-clamp-2 mb-2">${s.title}</h2>
+          <h2 class="text-md font-semibold text-gray-100 line-clamp-2 mb-2">${s.title || "Live Football Stream"}</h2>
           <div class="flex items-center text-xs text-gray-400 space-x-3">
             <span class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              ${s.channel}
+              ${s.channel || "Sporty TV"}
             </span>
             <span class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -199,7 +201,7 @@
       return card;
     }
 
-    // Load SportyTV streams separately
+    // Load SportyTV streams separately (now handled by backend)
     async function loadSportyStreams() {
       try {
         const response = await fetch('/api/live_streams?cat=sporty');
@@ -244,7 +246,7 @@
         document.getElementById('updatingIndicator').classList.add('hidden');
         document.getElementById('refreshIcon').classList.remove('refresh-spin');
         
-        // Schedule next poll (1 hour)
+        // Schedule next poll (30 minutes to match backend cache)
         clearTimeout(pollTimeout);
         pollTimeout = setTimeout(loadStreams, POLL_INTERVAL);
       }

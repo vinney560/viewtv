@@ -1214,12 +1214,12 @@ OFFICIAL_BROADCASTERS = {
     "premier": "UCTi0ZRSN1wmGBK1x4QqQKzA",     # Sky Sports Premier League
     "laliga": "UC8C4LqMsJ8Q9XaLK1O0QY8g",      # LaLigaTV
     "uefa": "UC3GzR0a8Qm_9b0wJjXz9QzQ",        # UEFA.tv
-    "bein": "UCb3KXgUtBGr4OvgGJV8Zb5A",        # beIN Sports
+    "bein": "UCJUCcJUeh0Cz2xyKwkw5Q1w",        # beIN Sports (updated)
     "dazn": "UCqdw6UF0m-6Hq1t4i4Xx9JQ",        # DAZN
     "tnt": "UCjzbDk-B9gQY8hU4UjTlVDw",         # TNT Sports
     "espn": "UCdKic8_9Q1JP1Qw_Rs5QlRw",        # ESPN FC
-    "fox": "UCdKic8_9Q1JP1Qw_Rs5QlRw",         # FOX Sports
-    "sporty": "UCVYfMX_jAvH6nU-WCIp0K4w",      # Sporty TV
+    "fox": "UCdKic8_9Q1JP1Qw_Rs5QlRw",         # FOX Sports (same as ESPN FC)
+    "sporty": "@sportytvafrica",              # SportyTV (YouTube handle)
     "nbcsports": "UCqZQlzSHbVJrwrn5XvzrzcA",   # NBC Sports
     "cbs": "UCJ2ZhWnWwJbKvnW3n7CO7Xg",         # CBS Sports
     "tsn": "UCd4FOx0s9jJjWb8HsFnPpYw",         # TSN

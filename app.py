@@ -1211,7 +1211,7 @@ import time
 # Configuration
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 CACHE_FILE = "cache.json"
-CACHE_DURATION = 30 * 60  # 30 minutes in seconds
+CACHE_DURATION = 30 * 60  # 30 minutes
 MAX_RETRIES = 3
 RETRY_DELAY = 1  # seconds
 
@@ -1229,7 +1229,7 @@ OFFICIAL_BROADCASTERS = {
     "cbs": "UCJ2ZhWnWwJbKvnW3n7CO7Xg",
     "tsn": "UCd4FOx0s9jJjWb8HsFnPpYw",
     "fubo": "UCZMFmRBpXrH-ObiOeYcW1FQ",
-    "newcastle": "UCjzbDk-B9gQY8hU4UjTlVDw"  # Example - replace with actual NUFC channel ID
+    "newcastle": "UCjzbDk-B9gQY8hU4UjTlVDw"
 }
 
 CATEGORY_QUERIES = {
@@ -1246,33 +1246,29 @@ CATEGORY_QUERIES = {
     "newcastle": "Newcastle United live -android -mobile"
 }
 
-# Initialize cache
+# Load cache
 CACHE = {}
 if os.path.exists(CACHE_FILE):
     try:
         with open(CACHE_FILE, "r") as f:
             CACHE = json.load(f)
-            # Convert timestamp strings to float
             for k in CACHE:
                 if isinstance(CACHE[k].get("timestamp"), str):
                     CACHE[k]["timestamp"] = float(CACHE[k]["timestamp"])
-    except (json.JSONDecodeError, IOError) as e:
+    except Exception as e:
         print(f"Error loading cache: {e}")
         CACHE = {}
 
 def save_cache_to_file():
-    """Save cache to file with error handling."""
     try:
         with open(CACHE_FILE, "w") as f:
             json.dump(CACHE, f, indent=2)
-    except (IOError, TypeError) as e:
+    except Exception as e:
         print(f"Error saving cache: {e}")
 
 def is_football_stream(title):
-    """Improved stream validation with more comprehensive checks."""
     if not title:
         return False
-        
     title = title.lower()
     football_terms = {
         'football', 'soccer', 'premier', 'laliga', 'champions', 
@@ -1284,42 +1280,32 @@ def is_football_stream(title):
         'video', 'ai', 'volleyball', 'cricket', 'basketball',
         'highlight', 'review', 'news'
     }
-    
-    has_football_term = any(term in title for term in football_terms)
-    has_banned_term = any(term in title for term in banned_terms)
-    
-    # Additional checks for live streams
+    has_football = any(term in title for term in football_terms)
+    banned = any(term in title for term in banned_terms)
     is_live = 'live' in title or 'stream' in title
     is_replay = 'replay' in title or 'full match' in title
-    
-    return has_football_term and not has_banned_term and is_live and not is_replay
+    return has_football and not banned and is_live and not is_replay
 
 def is_recent_video(published_at, max_hours=6):
-    """Check if video was published recently (default 6 hours)."""
     if not published_at:
-        return True  # Assume live streams without publish date are current
-        
+        return True
     try:
-        published_time = datetime.fromisoformat(published_at.replace('Z', '+00:00'))
-        return (datetime.utcnow() - published_time) < timedelta(hours=max_hours)
-    except (ValueError, TypeError):
+        dt = datetime.fromisoformat(published_at.replace("Z", "+00:00"))
+        return (datetime.utcnow() - dt) < timedelta(hours=max_hours)
+    except Exception:
         return False
 
-def fetch_with_retry(url, params=None, max_retries=MAX_RETRIES):
-    """Generic retry mechanism for API requests."""
-    for attempt in range(max_retries):
+def fetch_with_retry(url, params=None):
+    for attempt in range(MAX_RETRIES):
         try:
-            response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except (requests.RequestException, ValueError) as e:
-            if attempt == max_retries - 1:
-                raise
+            res = requests.get(url, params=params, timeout=10)
+            res.raise_for_status()
+            return res.json()
+        except Exception:
             time.sleep(RETRY_DELAY * (attempt + 1))
-    return None
+    return {}
 
 def fetch_official_streams(channel_id):
-    """Fetch live streams from official channel with improved reliability."""
     try:
         data = fetch_with_retry(
             "https://www.googleapis.com/youtube/v3/search",
@@ -1328,128 +1314,131 @@ def fetch_official_streams(channel_id):
                 "channelId": channel_id,
                 "eventType": "live",
                 "type": "video",
-                "maxResults": 15,
-                "key": YOUTUBE_API_KEY,
-                "order": "date"
+                "maxResults": 10,
+                "key": YOUTUBE_API_KEY
             }
         )
-        
-        streams = []
+        results = []
         for item in data.get("items", []):
             vid = item["id"].get("videoId")
             snip = item.get("snippet", {})
-            
-            if not vid or not is_football_stream(snip.get("title")):
-                continue
-                
-            if not is_recent_video(snip.get("publishedAt")):
-                continue
-                
-            streams.append({
-                "title": snip.get("title", "Live Football Stream"),
-                "video_id": vid,
-                "channel": snip.get("channelTitle", "Unknown Channel"),
-                "published_at": snip.get("publishedAt"),
-                "thumbnail": snip.get("thumbnails", {}).get("high", {}).get("url", ""),
-                "is_official": True
-            })
-            
-        return streams
-        
+            if vid and is_football_stream(snip.get("title")) and is_recent_video(snip.get("publishedAt")):
+                results.append({
+                    "title": snip.get("title"),
+                    "video_id": vid,
+                    "channel": snip.get("channelTitle"),
+                    "published_at": snip.get("publishedAt"),
+                    "thumbnail": snip.get("thumbnails", {}).get("high", {}).get("url", ""),
+                    "is_official": True
+                })
+        return results
     except Exception as e:
-        print(f"Error fetching official streams for {channel_id}: {str(e)}")
+        print(f"Error fetching official: {e}")
+        return []
+
+def fetch_search_results(query):
+    try:
+        data = fetch_with_retry(
+            "https://www.googleapis.com/youtube/v3/search",
+            params={
+                "part": "snippet",
+                "q": query,
+                "eventType": "live",
+                "type": "video",
+                "maxResults": 10,
+                "order": "date",
+                "key": YOUTUBE_API_KEY
+            }
+        )
+        results = []
+        for item in data.get("items", []):
+            vid = item["id"].get("videoId")
+            snip = item.get("snippet", {})
+            if vid and is_football_stream(snip.get("title")) and is_recent_video(snip.get("publishedAt")):
+                results.append({
+                    "title": snip.get("title"),
+                    "video_id": vid,
+                    "channel": snip.get("channelTitle"),
+                    "published_at": snip.get("publishedAt"),
+                    "thumbnail": snip.get("thumbnails", {}).get("high", {}).get("url", ""),
+                    "is_official": False
+                })
+        return results
+    except Exception as e:
+        print(f"Error in search fallback: {e}")
         return []
 
 def fetch_sporty_live():
-    """Enhanced SportyTV stream fetcher with multiple fallback methods."""
     channel_id = OFFICIAL_BROADCASTERS["sporty"]
-    methods = [
-        fetch_official_streams,  # First try official API
-        fetch_sporty_live_redirect  # Fallback to redirect method
-    ]
-    
+    methods = [fetch_official_streams, fetch_sporty_live_redirect]
     for method in methods:
         try:
-            streams = method(channel_id)
-            if streams:
-                return streams
+            res = method(channel_id)
+            if res:
+                return res
         except Exception as e:
-            print(f"SportyTV fetch method failed: {str(e)}")
-    
+            print(f"Sporty method error: {e}")
     return []
 
 def fetch_sporty_live_redirect(channel_id):
-    """Alternative method to detect SportyTV live stream via redirect."""
-    live_url = f"https://www.youtube.com/channel/{channel_id}/live"
+    url = f"https://www.youtube.com/channel/{channel_id}/live"
     try:
-        response = requests.get(live_url, allow_redirects=False, timeout=5)
-        if response.status_code == 302:
-            location = response.headers.get("Location", "")
-            if location and "/watch?v=" in location:
-                video_id = location.split("v=")[1].split("&")[0]
+        res = requests.get(url, allow_redirects=False, timeout=5)
+        if res.status_code == 302:
+            location = res.headers.get("Location", "")
+            if "/watch?v=" in location:
+                vid = location.split("v=")[1].split("&")[0]
                 return [{
                     "title": "Sporty TV Live Stream",
-                    "video_id": video_id,
+                    "video_id": vid,
                     "channel": "Sporty TV",
                     "published_at": None,
-                    "thumbnail": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
+                    "thumbnail": f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg",
                     "is_official": True
                 }]
     except Exception as e:
-        print(f"Error in SportyTV redirect method: {str(e)}")
+        print(f"Redirect error: {e}")
     return []
 
 def fetch_live_streams_cached(category):
-    """Fetch streams with caching and improved category handling."""
     now = time.time()
     cached = CACHE.get(category)
-    
-    # Return cached data if valid
     if cached and now - cached.get("timestamp", 0) < CACHE_DURATION:
         return cached["data"]
-    
+
     streams = []
-    
-    # Special handling for SportyTV
+
     if category == "sporty":
         streams = fetch_sporty_live()
     else:
-        # Try official channel first
         if category in OFFICIAL_BROADCASTERS:
             streams = fetch_official_streams(OFFICIAL_BROADCASTERS[category])
-        
-        # Fallback to search if no official streams found
         if not streams and category in CATEGORY_QUERIES:
-            # Implement search fallback here if needed
-            pass
-    
-    # Deduplicate and validate streams
-    unique_streams = []
-    seen_ids = set()
-    for stream in streams:
-        if stream["video_id"] not in seen_ids and is_football_stream(stream.get("title")):
-            seen_ids.add(stream["video_id"])
-            unique_streams.append(stream)
-    
-    # Update cache (except for SportyTV which we want to check frequently)
+            streams = fetch_search_results(CATEGORY_QUERIES[category])
+
+    unique = []
+    seen = set()
+    for s in streams:
+        if s["video_id"] not in seen:
+            seen.add(s["video_id"])
+            unique.append(s)
+
     if category != "sporty":
         CACHE[category] = {
-            "data": unique_streams,
+            "data": unique,
             "timestamp": now
         }
         save_cache_to_file()
-    
-    return unique_streams
+
+    return unique
 
 @app.route("/live_matches")
 def live_matches():
-    """Main page with SportyTV streams."""
     sporty_streams = fetch_live_streams_cached("sporty")
     return render_template("live_matches.html", sporty_streams=sporty_streams)
 
 @app.route("/api/live_streams")
 def api_live_streams():
-    """API endpoint for live streams."""
     cat = request.args.get("cat", "all")
     streams = fetch_live_streams_cached(cat)
     return jsonify(streams)

@@ -2396,41 +2396,11 @@
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/dLSKBEn.png"
   },
-  "black_throwbacks": {
-    "name": "Black Throwbacks",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/61326275b3c86a00078e4833/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2743c0-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=16224f18-2a57-4fa3-bf6a-994524fcf480",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/2r6UbZw.png"
-  },
-  "british_comedy": {
-    "name": "British Comedy",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/60f870184865da00074210ee/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2743ca-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=eb435cdf-0572-470d-a677-52380a0d39e7",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/LlwoR74.png"
-  },
-  "camera_smile_tv": {
-    "name": "Camera Smile TV",
-    "url": "https://bozztv.com/gusa/gusa-camerasmile/index.m3u8",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/V5h4R83.png"
-  },
-  "classic_tv_comedy": {
-    "name": "Classic TV Comedy",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5f15e32b297f96000768f928/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c27e004-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=518ef377-f53a-4652-8bcc-2dc596ce4106",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/wg5I5Fb.png"
-  },
   "comedy_central_east": {
     "name": "Comedy Central East",
     "url": "https://fl3.moveonjoy.com/Comedy_Central/index.m3u8",
     "group-title": "Comedy",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Comedy_Central_2018.svg/512px-Comedy_Central_2018.svg.png"
-  },
-  "comedy_central_animation": {
-    "name": "Comedy Central Animation",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5f99e24636d67d0007a94e6d/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c280716-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=0c5875b8-f67e-402d-97b3-0cf608608acb",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/uENch0P.png"
   },
   "comedy_dynamics": {
     "name": "Comedy Dynamics",
@@ -2450,18 +2420,6 @@
     "group-title": "Comedy",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/DistritoComediaLOGO2018.png/512px-DistritoComediaLOGO2018.png"
   },
-  "failarmy_germany": {
-    "name": "FailArmy Germany",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5ad9b7ffe738977e2c312133/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=84ad40f5-4b92-11ef-aece-533610f1ea34&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=c2b899ff-8adb-43d9-a336-9962f9aeca84",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/VIpQJxL.png"
-  },
-  "funny_af": {
-    "name": "Funny AF",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/580e87ff497c73ba2f321dd3/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c28f174-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=bbaba395-2ecd-414c-971c-2d705e4b67d5",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/UCwjdtQ.png"
-  },
   "gagsnetwork": {
     "name": "Gagsnetwork",
     "url": "https://s7.merlive.am/gagsnetwork/index.m3u8",
@@ -2474,23 +2432,11 @@
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/e5W91v2.png"
   },
-  "just_for_laughs_uk": {
-    "name": "Just for Laughs UK",
-    "url": "https://distributionsjustepourrire-justforlaughstv-1-eu.rakuten.wurl.tv/playlist.m3u8",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/YoK4vcm.png"
-  },
   "just_for_laughs_gags": {
     "name": "Just for Laughs Gags",
     "url": "https://streams2.sofast.tv/sofastplayout/4c727f82-d2ec-4a07-870c-49a6f22ee6f9_0_HLS/master.m3u8",
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/HjVEVMJ.png"
-  },
-  "kevin_harts_lol_network": {
-    "name": "Kevin Hart's LOL! Network",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5af09e645126c2157123f9eb/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2966a6-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=ca12f772-b121-408b-a288-4d8412b2a8f8",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/Tiy3Ur2.png"
   },
   "kshb_dt3": {
     "name": "KSHB-DT3",
@@ -2510,65 +2456,11 @@
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/qgsyzW4.png"
   },
-  "more_tv_sitcoms": {
-    "name": "More TV Sitcoms",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/6132619f9ddaa50007e7dd86/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2a02e0-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=62d7dbcd-04ab-4ca8-ae91-0bf98c68d0d2",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/4mbhOEo.png"
-  },
-  "pluto_tv_classic_tv_uk": {
-    "name": "Pluto TV Classic TV UK",
-    "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5e46ae801f347500099d461a/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=35f76fb0-e986-11eb-a0af-c3b401f46211&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=2fac39a7-56bc-492e-ae1e-3f6fb6cef1bc",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/hGdXRMd.png"
-  },
-  "pluto_tv_comedy": {
-    "name": "Pluto TV Comedy",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5a4d3a00ad95e4718ae8d8db/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2ac639-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=b9ed92f1-1fa3-4a05-abd8-e6b077ed35c4",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/MTVrbd5.png"
-  },
-  "pluto_tv_comedy_central_latino": {
-    "name": "Pluto TV Comedy Central Latino",
-    "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5cf96dad1652631e36d43320/master.m3u8?advertisingId=&appName=web&appStoreUrl=&appVersion=DNT&app_name=&architecture=&buildVersion=&deviceDNT=0&deviceId=5cf96dad1652631e36d43320&deviceLat=&deviceLon=&deviceMake=web&deviceModel=web&deviceType=web&deviceVersion=DNT&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false&sid=967&terminate=false&userId=",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/FiM7Rbz.png"
-  },
-  "rifftrax": {
-    "name": "RiffTrax",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/58d947b9e420d8656ee101ab/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2b8982-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=1ae8efba-578b-4c2b-a7a1-ec96f6d4bf26",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/hM4yKMn.png"
-  },
-  "slightly_off_ifc": {
-    "name": "Slightly Off IFC",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5e82547b6b3df60007fec2b5/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2bb093-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=5e336fce-1133-44bb-873d-7d5d7f8476c2",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/zMPpMbV.png"
-  },
-  "stand_up_tv": {
-    "name": "Stand-Up TV",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5637d31f319573e26b64040b/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2bd7a0-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=33a4d320-29a2-4c88-9bcb-84a407b88251",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/I6qHx25.png"
-  },
   "tv_land_sitcoms": {
     "name": "TV Land Sitcoms",
     "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5c2d64ffbdf11b71587184b8/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2c9af5-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=b42011ce-d42f-4692-bb1d-2fe02741437a",
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/phHHs7l.png"
-  },
-  "tvs_comedy_network": {
-    "name": "TVS Comedy Network",
-    "url": "https://bozztv.com/gusa/gusa-tvscomedy/index.m3u8",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/rXORbti.png"
-  },
-  "universal_comedy": {
-    "name": "Universal Comedy",
-    "url": "http://190.2.212.209:8050/play/a0q4",
-    "group-title": "Comedy;Movies;Series",
-    "logo": "https://i.imgur.com/avBL8pQ.png"
   },
   "better_life_nature_channel": {
     "name": "Better Life Nature Channel",
@@ -2594,23 +2486,11 @@
     "group-title": "Series",
     "logo": "https://i.imgur.com/Brry7cZ.png"
   },
-  "pluto_tv_nature_germany": {
-    "name": "Pluto TV Nature Germany",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5be1c3f9851dd5632e2c91b2/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=84aec793-4b92-11ef-aece-533610f1ea34&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=dd5077d7-0ac1-491c-87dc-536ab13c0313",
-    "group-title": "Outdoor",
-    "logo": "https://i.imgur.com/PtWUmss.png"
-  },
   "stingray_naturescape_sd": {
     "name": "Stingray Naturescape SD",
     "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5812bd9f249444e05d09cc4e/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2a29f9-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=2ac7255b-3bb1-4cd4-80c9-afb0bcb127dd",
     "group-title": "Music",
     "logo": "https://i.imgur.com/882kd90.png"
-  },
-  "maisha_magic_bongo": {
-    "name": "Maisha Magic Bongo",
-    "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/bongotv/playlist.m3u8",
-    "group-title": "General",
-    "logo": "https://i.imgur.com/pNKZwox.png"
   },
   "6PR": {
     "name": "6PR",
@@ -2629,12 +2509,6 @@
     "url": "https://amc-absolutereality-1-us.plex.wurl.tv/playlist.m3u8",
     "group-title": "Entertainment",
     "logo": "https://i.imgur.com/Gtwk8ic.png"
-  },
-  "Amantes_del_romance": {
-    "name": "Amantes del romance",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5e84db2db3851800077c871e/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c268072-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=68743968-8695-4725-b7a7-5a4926c380d1",
-    "group-title": "Entertainment",
-    "logo": "https://i.imgur.com/ipuLCWX.png"
   },
   "Apple68_TV": {
     "name": "Apple68 TV",
@@ -2767,12 +2641,6 @@
     "url": "http://210.210.155.37/uq2663/h/h192/index.m3u8",
     "group-title": "Movies",
     "logo": "https://i.imgur.com/BTmcTQO.png"
-  },
-  "Nick_Clasico": {
-    "name": "Nick Clasico",
-    "url": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5ddd7c348520b40009c347e2/master.m3u8?advertisingId=&appName=web&appVersion=5.14.0-0f5ca04c21649b8c8aad4e56266a23b96d73b83a&app_name=web&clientDeviceType=0&clientID=6fbead95-26b1-415d-998f-1bdef62d10be&clientModelNumber=na&deviceDNT=false&deviceId=6fbead95-26b1-415d-998f-1bdef62d10be&deviceLat=19.4358&deviceLon=-99.1441&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=88.0.4324.150&marketingRegion=VE&serverSideAds=false&sessionID=b8e5a857-714a-11eb-b532-0242ac110002&sid=b8e5a857-714a-11eb-b532-0242ac110002&userId=",
-    "group-title": "Kids",
-    "logo": "https://i.imgur.com/yxOuiqj.png"
   },
   "Nickelodeon_de": {
     "name": "Nickelodeon",

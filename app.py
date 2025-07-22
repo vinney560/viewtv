@@ -446,11 +446,22 @@ def register():
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    next_page = request.args.get("next")
+
     if current_user.is_authenticated:
         if current_user.status != "active":
             logout_user()
             flash("Your account is inactive.", "danger")
             return redirect(url_for("login"))
+
+        # ✅ Downgrade Plus if expired
+        if current_user.plus_expires_at and current_user.plus_expires_at < datetime.utcnow():
+            current_user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
+            current_user.plus_type = None
+            db.session.commit()
+
+        if next_page:
+            return redirect(next_page)
 
         if current_user.role == 'admin':
             return redirect(url_for('home_admin'))
@@ -470,7 +481,7 @@ def login():
         user = User.query.filter_by(email=email_addr).first()
 
         if user:
-            # Auto-unlock after 5 minutes
+            # ⏳ Auto-unlock after 5 minutes
             if user.failed_login_attempts >= 5:
                 if user.last_failed_login and datetime.utcnow() - user.last_failed_login < timedelta(minutes=5):
                     remaining = 5 - (datetime.utcnow() - user.last_failed_login).seconds // 60
@@ -483,32 +494,40 @@ def login():
             if not user.email_verified:
                 flash("Please verify your email before logging in.", "warning")
                 return redirect(url_for('login'))
+
             if check_password_hash(user.password, password):
-                user.failed_login_attempts = 0  # Reset on success
-                db.session.commit()
+                user.failed_login_attempts = 0
                 session.clear()
 
                 session['role'] = user.role
                 user.status = "active"
                 db.session.commit()
-                # This stores the status in the session (for use in templates or logic)
                 session['active'] = user.status
                 login_user(user)
                 flash("♻️ Welcome back!", "success")
+
+                # ✅ Downgrade Plus if expired
+                if user.plus_expires_at and user.plus_expires_at < datetime.utcnow():
+                    user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
+                    user.plus_type = None
+                    db.session.commit()
+
+                if next_page:
+                    return redirect(next_page)
 
                 if user.role == 'admin':
                     return redirect(url_for('home_admin'))
                 if user.is_plus:
                     return redirect(url_for('home_2'))
                 return redirect(url_for('home_1'))
+
             else:
-                # Increase failed attempt count
                 user.failed_login_attempts += 1
                 user.last_failed_login = datetime.utcnow()
                 db.session.commit()
 
         flash('Invalid Credentials', "error")
-        return render_template('login.html', email=email, password=password)
+        return render_template('login.html', email=email_addr, password=password)
 
     return render_template('login.html')
 
@@ -1826,7 +1845,16 @@ import random
 def home():
     all_channels = list(CUSTOM_CHANNELS.items())
     random_channels = dict(random.sample(all_channels, min(15, len(all_channels))))
-    return render_template('index.html', channels=random_channels, current_year=datetime.now().year) 
+
+    if current_user.is_authenticated:
+        if current_user.role == "admin":
+            return redirect(url_for("home_admin"))
+        elif current_user.plus_type in ["free", "paid"]:
+            return redirect(url_for("home_2"))
+        else:
+            return redirect(url_for("home_1"))
+    else:
+        return render_template("index.html", channels=random_channels, current_year=datetime.now().year)
 #--------------------------------------------------------------------------
 @app.route("/about")
 def about():
@@ -1905,7 +1933,7 @@ def dashboard():
         redirect_in_2min=redirect_flag,
         timedelta=timedelta,
         now=datetime.utcnow()
-    )    
+    )
 #-------------------------------------------------------------------------
 @app.route("/account", methods=["GET", "POST"])
 @login_required

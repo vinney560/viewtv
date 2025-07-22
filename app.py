@@ -443,13 +443,6 @@ def register():
     return render_template("register.html")
 
 #----------------------------------------------------------------------
-from urllib.parse import urlparse, urljoin
-
-def is_safe_url(target):
-    if not target:
-        return False
-    test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and test_url.netloc == urlparse(request.host_url).netloc
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

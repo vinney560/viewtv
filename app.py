@@ -443,10 +443,18 @@ def register():
     return render_template("register.html")
 
 #----------------------------------------------------------------------
+from urllib.parse import urlparse, urljoin
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target or ""))
+    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    next_page = request.args.get("next")
+    next_page = request.args.get("next") or request.form.get("next")
+    if not is_safe_url(next_page):
+        next_page = None
 
     if current_user.is_authenticated:
         if current_user.status != "active":
@@ -454,21 +462,15 @@ def login():
             flash("Your account is inactive.", "danger")
             return redirect(url_for("login"))
 
-        # ✅ Downgrade Plus if expired
         if current_user.plus_expires_at and current_user.plus_expires_at < datetime.utcnow():
             current_user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
             current_user.plus_type = None
             db.session.commit()
 
-        if next_page:
-            return redirect(next_page)
-
-        if current_user.role == 'admin':
-            return redirect(url_for('home_admin'))
-        elif current_user.is_plus:
-            return redirect(url_for('home_2'))
-        else:
-            return redirect(url_for('home_1'))
+        return redirect(next_page or
+                        url_for('home_admin') if current_user.role == 'admin' else
+                        url_for('home_2') if current_user.is_plus else
+                        url_for('home_1'))
 
     if request.method == "POST":
         email_addr = request.form['email']
@@ -481,7 +483,6 @@ def login():
         user = User.query.filter_by(email=email_addr).first()
 
         if user:
-            # ⏳ Auto-unlock after 5 minutes
             if user.failed_login_attempts >= 5:
                 if user.last_failed_login and datetime.utcnow() - user.last_failed_login < timedelta(minutes=5):
                     remaining = 5 - (datetime.utcnow() - user.last_failed_login).seconds // 60
@@ -498,7 +499,6 @@ def login():
             if check_password_hash(user.password, password):
                 user.failed_login_attempts = 0
                 session.clear()
-
                 session['role'] = user.role
                 user.status = "active"
                 db.session.commit()
@@ -506,20 +506,15 @@ def login():
                 login_user(user)
                 flash("♻️ Welcome back!", "success")
 
-                # ✅ Downgrade Plus if expired
                 if user.plus_expires_at and user.plus_expires_at < datetime.utcnow():
                     user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
                     user.plus_type = None
                     db.session.commit()
 
-                if next_page:
-                    return redirect(next_page)
-
-                if user.role == 'admin':
-                    return redirect(url_for('home_admin'))
-                if user.is_plus:
-                    return redirect(url_for('home_2'))
-                return redirect(url_for('home_1'))
+                return redirect(next_page or
+                                url_for('home_admin') if user.role == 'admin' else
+                                url_for('home_2') if user.is_plus else
+                                url_for('home_1'))
 
             else:
                 user.failed_login_attempts += 1

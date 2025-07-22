@@ -446,16 +446,14 @@ def register():
 from urllib.parse import urlparse, urljoin
 
 def is_safe_url(target):
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(urljoin(request.host_url, target or ""))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+    if not target:
+        return False
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and test_url.netloc == urlparse(request.host_url).netloc
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     next_page = request.args.get("next") or request.form.get("next")
-    if not is_safe_url(next_page):
-        next_page = None
-
     if current_user.is_authenticated:
         if current_user.status != "active":
             logout_user()

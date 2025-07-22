@@ -208,7 +208,7 @@
         </div>
 
         <!-- Submit Button -->
-        <input type="hidden" name="next" value="{{ request.args.get('next') }}">
+        <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
         <button
           type="submit"
           class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl glow-hover transition-all duration-300 shadow-lg"

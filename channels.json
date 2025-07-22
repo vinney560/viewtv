@@ -202,6 +202,12 @@
     "url": "https://plus.espn.com/live",
     "group-title": "Sports"
   },
+  "espn_u": {
+    "name": "ESPN U",
+    "url": "https://fl4.moveonjoy.com/ESPN_U/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/espn.png"
+  },
   "fashion-find": {
     "name": "Fasion Find",
     "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
@@ -372,11 +378,6 @@
   "nick-jr-east": {
     "name": "Nick Jr.",
     "url": "https://fl3.moveonjoy.com/NICK_JR/index.m3u8",
-    "group-title": "Kids"
-  },
-  "nickelodeon": {
-    "name": "Nickelodeon",
-    "url": "https://nickelodeon-rakuten.amagi.tv/playlist.m3u8",
     "group-title": "Kids"
   },
   "ninja-kidz-tv": {
@@ -2156,11 +2157,59 @@
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/8KWjY4o.png"
   },
-  "pluto_tv_science": {
-    "name": "Pluto TV Science",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/563a970aa1a1f7fe7c9daad7/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2b3b61-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=31adb772-adc8-4202-ad66-25e3c1a49df7",
-    "group-title": "Science",
-    "logo": "https://i.imgur.com/uhunRoU.png"
+  "sports_tv": {
+    "name": "Sports TV",
+    "url": "https://live.sportstv.com.tr/hls/low/sportstv.m3u8",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/tGTVcVe.jpg"
+  },
+  "tsn1": {
+    "name": "TSN1",
+    "url": "https://fl5.moveonjoy.com/TSN_1/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/eRFE0jZ.png"
+  },
+  "tsn2": {
+    "name": "TSN2",
+    "url": "https://fl5.moveonjoy.com/TSN_2/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/TSN2.svg/512px-TSN2.svg.png"
+  },
+  "tsn3": {
+    "name": "TSN3",
+    "url": "https://fl5.moveonjoy.com/TSN_3/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/AYza8KO.png"
+  },
+  "tsn4": {
+    "name": "TSN4",
+    "url": "https://fl5.moveonjoy.com/TSN_4/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/qJyAWU8.png"
+  },
+  "tsn5": {
+    "name": "TSN5",
+    "url": "https://fl5.moveonjoy.com/TSN_5/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/HEzHpzz.png"
+  },
+  "t_sports_7": {
+    "name": "T Sports 7",
+    "url": "https://lb1-live-mv.v2h-cdn.com/hls/ffef/tsport/tsport.m3u8",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/KyI0s5n.png"
+  },
+  "mma_tv_com_sd": {
+    "name": "MMA-TV.com SD",
+    "url": "https://streams2.sofast.tv/vglive-sk-462904/playlist.m3u8",
+    "group-title": "Wrestling",
+    "logo": "https://i.imgur.com/QhdxNsB.png"
+  },
+  "tr_sport": {
+    "name": "TR Sport",
+    "url": "https://livetr.teleromagna.it/mia/live/playlist.m3u8",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/ELXmaqg.png"
   },
   "smithsonian_channel_east": {
     "name": "Smithsonian Channel East",
@@ -2644,51 +2693,21 @@
   },
   "Nickelodeon_de": {
     "name": "Nickelodeon",
-    "url": "https://ma.anixa.tv/clips/stream/nickelodeon/playlist.php",
+    "url": "url=https://fl5.moveonjoy.com/NICKELODEON/index.m3u8",
     "group-title": "Kids",
     "logo": "https://i.imgur.com/E84jnP8.png"
-  },
-  "Nickelodeon_es": {
-    "name": "Nickelodeon",
-    "url": "http://185.189.225.150:85/nickelodeon/index.m3u8",
-    "group-title": "Kids",
-    "logo": "https://i.imgur.com/E84jnP8.png"
-  },
-  "Nickelodeon_SD": {
-    "name": "Nickelodeon SD",
-    "url": "http://31.148.48.15/Nickelodeon/index.m3u8",
-    "group-title": "Kids",
-    "logo": "https://i.imgur.com/w8iE8dV.png"
-  },
-  "Nickelodeon_uk": {
-    "name": "Nickelodeon",
-    "url": "http://92.114.85.72:8000/play/a02o",
-    "group-title": "Kids",
-    "logo": "https://i.imgur.com/E84jnP8.png"
-  },
-  "Nickelodeon_us": {
-    "name": "Nickelodeon",
-    "url": "http://23.237.104.106:8080/USA_NICKELODEON/index.m3u8",
-    "group-title": "Kids",
-    "logo": "https://i.imgur.com/E84jnP8.png"
-  },
-  "Nickelodeon_Asia": {
-    "name": "Nickelodeon Asia",
-    "url": "http://178.128.214.60:1234/stream/astro/nickelodeon/master.m3u8",
-    "group-title": "Kids",
-    "logo": "https://i.imgur.com/E84jnP8.png"
-  },
-  "Nickelodeon_Sonic": {
-    "name": "Nickelodeon Sonic",
-    "url": "https://prod-sports-north-gm.jiocinema.com/bpk-tv/Sonic_Nickelodeon_voot_MOB/Fallback/index.m3u8",
-    "group-title": "Kids",
-    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/2/2b/Nickelodeon_Sonic_logo.png/512px-Nickelodeon_Sonic_logo.png"
   },
   "Nick_HDPlus": {
     "name": "Nick HD+",
     "url": "http://103.68.28.58:5001/live/1226.m3u8",
     "group-title": "Kids",
     "logo": "https://i.imgur.com/nJPbTet.png"
+  },
+  "bein_sports": {
+    "name": "Bein Sports",
+    "url": "https://fl4.moveonjoy.com/BEIN_SPORTS/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/QWo0x7S.jpg"
   },
   "Nick_Jr": {
     "name": "Nick Jr.",

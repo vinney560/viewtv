@@ -208,6 +208,18 @@
     "group-title": "Sports",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/espn.png"
   },
+  "espn_2": {
+    "name": "ESPN 2",
+    "url": "https://fl5.moveonjoy.com/ESPN_2/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/espn.png"
+  },
+  "espn_news": {
+    "name": "ESPN NEWS",
+    "url": "https://fl5.moveonjoy.com/ESPN_NEWS/index.m3u8",
+    "group-title": "Sports",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/espn.png"
+  },
   "fashion-find": {
     "name": "Fasion Find",
     "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
@@ -811,11 +823,6 @@
     "url": "https://fl5.moveonjoy.com/TSN_3/index.m3u8",
     "group-title": "Sports"
   },
-  "tsn4": {
-    "name": "TSN4",
-    "url": "https://fl5.moveonjoy.com/TSN_4/index.m3u8",
-    "group-title": "Sports"
-  },
   "tsn5": {
     "name": "TSN5",
     "url": "https://fl5.moveonjoy.com/TSN_5/index.m3u8",
@@ -896,6 +903,12 @@
     "url": "https://restreamer1.tnt.ba/hls/tntkids.m3u8",
     "logo": "https://i.imgur.com/irTDbpn.png",
     "group-title": "Kids"
+  },
+  "tnt_t_tv": {
+    "name": "TNT",
+    "url": "https://fl3.moveonjoy.com/TNT/index.m3u8",
+    "logo": "https://i.imgur.com/irTDbpn.png",
+    "group-title": ""
   },
   "thsdv": {
     "name": "Sky Open",
@@ -2229,23 +2242,11 @@
     "group-title": "Documentary;News",
     "logo": "https://cbs12.com/resources/media/0c1ecad8-fb09-4bb2-beaa-fc561dfe624a-small21x9_LoomerStill.jpg?1603419052801"
   },
-  "backstage": {
-    "name": "Backstage",
-    "url": "https://fuse-backstage-xumo.amagi.tv/playlist.m3u8",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/qcTNvNU.png"
-  },
   "bbc_four_uk_hd": {
     "name": "BBC Four UK HD",
     "url": "https://streamer.nexyl.uk/48559ccd-6400-457d-8acc-06b9e24c2ed8.m3u8",
     "group-title": "Culture;Documentary",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/BBC_Four_logo_2021.svg/512px-BBC_Four_logo_2021.svg.png"
-  },
-  "britbox_mysteries": {
-    "name": "BritBox Mysteries",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/60f5d389985a0c0007357304/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2743c9-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=7df7400e-1d21-4d2c-9534-db1c6d847a42",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/PJdzoLN.png"
   },
   "cgtn": {
     "name": "CGTN",
@@ -2264,12 +2265,6 @@
     "url": "https://mn-nl.mncdn.com/dogusdyg_drone/cgtn/playlist.m3u8",
     "group-title": "Documentary",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/CGTN_Documentary_logo.png/400px-CGTN_Documentary_logo.png"
-  },
-  "dateline_247": {
-    "name": "Dateline 24/7",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/637413d8531e0c0007442d6d/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c287c41-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=9854ee63-3920-417e-933f-bdf38a5a6444",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/8mAJuut.png"
   },
   "gzt": {
     "name": "GZT",
@@ -2301,89 +2296,11 @@
     "group-title": "Documentary",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/National_Geographic_Wild_logo.svg/512px-National_Geographic_Wild_logo.svg.png"
   },
-  "pluto_tv_animals_germany": {
-    "name": "Pluto TV Animals Germany",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5d767ae7b456c8cf265ce922/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=84ae5268-4b92-11ef-aece-533610f1ea34&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=f4297955-3ff8-4299-b8e4-ca974cec3c7a",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/N00seOn.png"
-  },
-  "pluto_tv_biography_uk": {
-    "name": "Pluto TV Biography UK",
-    "url": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5d4af2a24f1c5ab2d298776b/master.m3u8?advertisingId=channel&appName=rokuchannel&appVersion=1.0&bmodel=bm1&channel_id=channel&content=channel&content_rating=ROKU_ADS_CONTENT_RATING&content_type=livefeed&coppa=false&deviceDNT=1&deviceId=channel&deviceMake=rokuChannel&deviceModel=web&deviceType=rokuChannel&deviceVersion=1.0&embedPartner=rokuChannel&genre=ROKU_ADS_CONTENT_GENRE&is_lat=1&platform=web&rdid=channel&studio_id=viacom&tags=ROKU_CONTENT_TAGS",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/MwuIHbX.png"
-  },
-  "pluto_tv_celebrity": {
-    "name": "Pluto TV Celebrity",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5d8bf1472907815f66a866dd/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2ac637-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=4865e28b-19f4-406d-a251-269b9bf2d477",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/YPfJS0B.png"
-  },
-  "pluto_tv_documentaries": {
-    "name": "Pluto TV Documentaries",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5b85a7582921777994caea63/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2aed43-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=c20f2b68-5b90-43f4-9269-05ca1653242d",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/ICOzMFc.png"
-  },
-  "pluto_tv_history": {
-    "name": "Pluto TV History",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5a4d35dfa5c02e717a234f86/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2aed48-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=6b0c9a3d-9786-4dee-8eea-1dfcbea2ee1b",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/XkQD5kM.png"
-  },
-  "pluto_tv_inside_france": {
-    "name": "Pluto TV Inside France",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5f8ed3892ed7bb000741a1d2/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=8e055174-1f2c-11ef-86d8-5d587df108c6&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=487dd86d-4b70-41e0-bab7-33de0eda4283",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/Tb4GNml.png"
-  },
-  "pluto_tv_paranormal": {
-    "name": "Pluto TV Paranormal",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5adf96e3e738977e2c31cb04/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2b1455-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=a6d0c5d3-d3a3-4e4b-acd3-5b277ebb8723",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/ApN6nfw.png"
-  },
-  "real_life_on_verizon": {
-    "name": "Real Life on Verizon",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5efb61e2a876670007ac2233/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2b8980-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=9da9197d-dc8b-4809-9fce-4852e615a062",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/Ws8cNtV.png"
-  },
-  "real_stories": {
-    "name": "Real Stories",
-    "url": "https://lds-realstories-plex.amagi.tv/playlist.m3u8",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/PG15QKA.png"
-  },
   "reelz": {
     "name": "Reelz",
     "url": "https://apollo.production-public.tubi.io/live/ac-reelz.m3u8",
     "group-title": "Documentary",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Reelz.svg/512px-Reelz.svg.png"
-  },
-  "rt_documentary_russian": {
-    "name": "RT Documentary Russian",
-    "url": "https://cdn-01.bonus-tv.ru/rtdoc/playlist.m3u8",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/aeu5zIC.png"
-  },
-  "spike_pluto_tv": {
-    "name": "Spike Pluto TV",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5812bcc8237a6ff45d16c407/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2bb098-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=7817c7c9-18cd-4d07-835d-350e94a68d2b",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/woY8Ecb.png"
-  },
-  "teen_mom_sd": {
-    "name": "Teen Mom SD",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/62f3f05505e621000783df2f/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=8e06d811-1f2c-11ef-86d8-5d587df108c6&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=ed84458b-d963-4758-88f3-5745e78c08a4",
-    "group-title": "Documentary",
-    "logo": "https://i.imgur.com/8o3ClCV.png"
-  },
-  "the_nest": {
-    "name": "The Nest",
-    "url": "https://content.uplynk.com/channel/b468fd41b60840579668c42c096a4103.m3u8",
-    "group-title": "Documentary;Entertainment",
-    "logo": "https://iili.io/JGqD21e.png"
   },
   "trt_belgesel": {
     "name": "TRT Belgesel",
@@ -2397,35 +2314,11 @@
     "group-title": "Series",
     "logo": "https://upload.wikimedia.org/wikipedia/en/2/21/Hallmark_Drama_Logo.png"
   },
-  "pluto_tv_crime_drama": {
-    "name": "Pluto TV Crime Drama",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5f31fd1b4c510e00071c3103/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2aed40-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=3ab21513-d563-430f-ace4-ec869e2676fb",
-    "group-title": "Movies",
-    "logo": "https://i.imgur.com/9j1njE3.png"
-  },
-  "pluto_tv_drama": {
-    "name": "Pluto TV Drama",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5b4e92e4694c027be6ecece1/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2aed44-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=01b9b883-5344-4e99-81f9-dc1d9942ca58",
-    "group-title": "Movies",
-    "logo": "https://i.imgur.com/PvhbHTZ.png"
-  },
   "rakuten_tv_drama_movies_germany": {
     "name": "Rakuten TV Drama Movies Germany",
     "url": "https://968754c2483045c1a9a7f677caec35b6.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6096/master.m3u8",
     "group-title": "Movies",
     "logo": "https://i.imgur.com/Meew6eX.png"
-  },
-  "tv_land_drama": {
-    "name": "TV Land Drama",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5d40bebc5e3d2750a2239d7e/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2c9af3-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=5e762bb7-572b-4470-87fd-b3b4bb48462e",
-    "group-title": "Movies",
-    "logo": "https://i.imgur.com/y1rXIAS.png"
-  },
-  "u_alibi": {
-    "name": "U&Alibi",
-    "url": "http://92.114.85.72:8000/play/a0bi",
-    "group-title": "Series",
-    "logo": "https://i.imgur.com/uazjv8g.png"
   },
   "30a_ridiculous_tv": {
     "name": "30A Ridiculous TV",
@@ -2451,23 +2344,11 @@
     "group-title": "Comedy",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Comedy_Central_2018.svg/512px-Comedy_Central_2018.svg.png"
   },
-  "comedy_dynamics": {
-    "name": "Comedy Dynamics",
-    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01201-cinedigmenterta-comedydynamics-cineverse/playlist.m3u8",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/1lEvUOa.png"
-  },
   "comedy_tv": {
     "name": "Comedy TV",
     "url": "https://fl3.moveonjoy.com/Comedy_TV/index.m3u8",
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/KLfXnba.png"
-  },
-  "distrito_comedia": {
-    "name": "Distrito Comedia",
-    "url": "https://linear-405.frequency.stream/mt/studio/405/hls/master/playlist.m3u8",
-    "group-title": "Comedy",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/DistritoComediaLOGO2018.png/512px-DistritoComediaLOGO2018.png"
   },
   "gagsnetwork": {
     "name": "Gagsnetwork",
@@ -2481,35 +2362,11 @@
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/e5W91v2.png"
   },
-  "just_for_laughs_gags": {
-    "name": "Just for Laughs Gags",
-    "url": "https://streams2.sofast.tv/sofastplayout/4c727f82-d2ec-4a07-870c-49a6f22ee6f9_0_HLS/master.m3u8",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/HjVEVMJ.png"
-  },
-  "kshb_dt3": {
-    "name": "KSHB-DT3",
-    "url": "https://cvtv.cvalley.net/hls/KSHBLaff/KSHBLaff.m3u8",
-    "group-title": "Comedy",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1e/LAFF_logo.png"
-  },
-  "laff": {
-    "name": "Laff",
-    "url": "http://72.46.118.193/Laff/index.m3u8",
-    "group-title": "Comedy",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/1/1e/LAFF_logo.png"
-  },
   "lol_stand_up": {
     "name": "LOL! Stand Up",
     "url": "https://apollo.production-public.tubi.io/live/lol-stand-up2.m3u8",
     "group-title": "Comedy",
     "logo": "https://i.imgur.com/qgsyzW4.png"
-  },
-  "tv_land_sitcoms": {
-    "name": "TV Land Sitcoms",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5c2d64ffbdf11b71587184b8/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2c9af5-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=b42011ce-d42f-4692-bb1d-2fe02741437a",
-    "group-title": "Comedy",
-    "logo": "https://i.imgur.com/phHHs7l.png"
   },
   "better_life_nature_channel": {
     "name": "Better Life Nature Channel",
@@ -2528,18 +2385,6 @@
     "url": "https://amg01515-amg01515c17-xumo-us-2489.playouts.now.amagi.tv/bamus-lovenaturespanish-roku/playlist.m3u8",
     "group-title": "",
     "logo": "https://i.imgur.com/7uNdcWB.png"
-  },
-  "pbs_nature": {
-    "name": "PBS Nature",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/640a64bd73e013000893d4e0/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2a9f23-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=c1a2f62c-0e00-4ba7-b555-34d14d59fee4",
-    "group-title": "Series",
-    "logo": "https://i.imgur.com/Brry7cZ.png"
-  },
-  "stingray_naturescape_sd": {
-    "name": "Stingray Naturescape SD",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5812bd9f249444e05d09cc4e/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2a29f9-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=2ac7255b-3bb1-4cd4-80c9-afb0bcb127dd",
-    "group-title": "Music",
-    "logo": "https://i.imgur.com/882kd90.png"
   },
   "6PR": {
     "name": "6PR",
@@ -2573,7 +2418,7 @@
   },
   "BET_Her_East": {
     "name": "BET Her East",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5d51e6949ab8e2b35bdcaa9f/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c271cb1-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=11b0b672-bcc1-4276-a5bb-e260ed6b89f4",
+    "url": "https://fl3.moveonjoy.com/BET_HER/index.m3u8",
     "group-title": "Entertainment",
     "logo": "https://i.imgur.com/oafsrlo.png"
   },
@@ -2582,12 +2427,6 @@
     "url": "https://fl3.moveonjoy.com/COMET/index.m3u8",
     "group-title": "Entertainment",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Comet_logo.svg/512px-Comet_logo.svg.png"
-  },
-  "Crime_Plus_Investigation_Asia": {
-    "name": "Crime + Investigation Asia",
-    "url": "https://cdn09jtedge.indihometv.com/joss/133/crimeinvestigation/index.m3u8",
-    "group-title": "Entertainment",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Crime_%2B_Investigation_Logo_10.2019.svg"
   },
   "District_of_Columbia_Network": {
     "name": "District of Columbia Network",
@@ -2612,12 +2451,6 @@
     "url": "https://fl5.moveonjoy.com/FX/index.m3u8",
     "group-title": "Entertainment",
     "logo": "https://i.imgur.com/ZScwrpi.png"
-  },
-  "FX_Movie_Channel": {
-    "name": "FX Movie Channel",
-    "url": "https://tvpass.org/live/FXMovieChannel/hd",
-    "group-title": "Movies",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/FXM_Logo.svg/512px-FXM_Logo.svg.png"
   },
   "FXX_East": {
     "name": "FXX East",
@@ -2648,12 +2481,6 @@
     "url": "https://scripps-gritxtra-1-us.vizio.wurl.tv/playlist.m3u8",
     "group-title": "Entertainment",
     "logo": "https://pbs.twimg.com/profile_images/1587656647803113472/tANAElTS_400x400.jpg"
-  },
-  "GuyTube_TV": {
-    "name": "GuyTube TV",
-    "url": "https://tvsw2-hls.secdn.net/tvsw2-chorigin/play/prod-55ed6f9cb6d64b22a5eed2ea3f349533/playlist.m3u8",
-    "group-title": "Entertainment",
-    "logo": "https://i.imgur.com/rp2UJwg.png"
   },
   "Haunt_TV": {
     "name": "Haunt TV",

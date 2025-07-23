@@ -936,7 +936,7 @@
     "group-title": "Sports"
   },  
   "ABCEast": {
-    "name": "ABC East",
+    "name": "ABC",
     "url": "https://fl5.moveonjoy.com/ABC/index.m3u8",
     "group-title": ""
   },
@@ -946,7 +946,7 @@
     "group-title": ""
   },
   "BETGospel": {
-    "name": "BET Gospel-religious",
+    "name": "BET Gospel",
     "url": "https://fl5.moveonjoy.com/BET_GOSPEL/index.m3u8",
     "group-title": "Religious"
   },
@@ -1006,7 +1006,7 @@
     "group-title": ""
   },
   "EPIX_Drive_In": {
-    "name": "EPIX Drive_In",
+    "name": "EPIX Drive-In",
     "url": "https://fl5.moveonjoy.com/EPIX_DRIVE_IN/index.m3u8",
     "group-title": ""
   },
@@ -1031,9 +1031,9 @@
     "group-title": ""
   },
   "HBO_2": {
-    "name": "HBO_2-series",
+    "name": "HBO_2",
     "url": "https://fl5.moveonjoy.com/HBO_2/index.m3u8",
-    "group-title": "series"
+    "group-title": "Series"
   },
   "HBO": {
     "name": "HBO Comedy",
@@ -1046,7 +1046,7 @@
     "group-title": ""
   },
   "HBO_Zone": {
-    "name": "HBO Zone-movies",
+    "name": "HBO Zone",
     "url": "https://fl5.moveonjoy.com/HBO_ZONE/index.m3u8",
     "group-title": "movies"
   },
@@ -1056,7 +1056,7 @@
     "group-title": ""
   },
   "Investigation_Discovery": {
-    "name": "Investigation_Discovery-Documentary",
+    "name": "Investigation Discovery",
     "url": "https://fl5.moveonjoy.com/INVESTIGATION_DISCOVERY/index.m3u8",
     "group-title": "Documentary"
   },
@@ -1066,9 +1066,9 @@
     "group-title": ""
   },
   "Lifetime_Movie_Network": {
-    "name": "Lifetime_Movie_Network-movies",
+    "name": "Lifetime Movie Network",
     "url": "https://fl5.moveonjoy.com/LIFETIME_MOVIE_NETWORK/index.m3u8",
-    "group-title": "movies"
+    "group-title": "Movies"
   },
   "MLBNetwork": {
     "name": "MLB Network",
@@ -1076,7 +1076,7 @@
     "group-title": ""
   },
   "Motor_Trend": {
-    "name": "Motor_Trend",
+    "name": "MotorTrend",
     "url": "https://fl5.moveonjoy.com/MOTOR_TREND/index.m3u8",
     "group-title": ""
   },
@@ -1091,22 +1091,22 @@
     "group-title": ""
   },
   "MTV_2": {
-    "name": "MTV_2",
+    "name": "MTV 2",
     "url": "https://fl5.moveonjoy.com/MTV_2/index.m3u8",
     "group-title": ""
   },
   "MTV_Classic": {
-    "name": "MTV_Classic",
+    "name": "MTV Classic",
     "url": "https://fl5.moveonjoy.com/MTV_CLASSIC/index.m3u8",
     "group-title": ""
   },
   "MTV_Live": {
-    "name": "MTV_Live",
+    "name": "MTV Live",
     "url": "https://fl5.moveonjoy.com/MTV_LIVE/index.m3u8",
     "group-title": ""
   },
   "MTV_U": {
-    "name": "MTV_U-Entertainmen",
+    "name": "MTV U",
     "url": "https://fl5.moveonjoy.com/MTV_U/index.m3u8",
     "group-title": "Entertainmen"
   },
@@ -1116,7 +1116,7 @@
     "group-title": ""
   },
   "News_Nation": {
-    "name": "News_Nation",
+    "name": "News Nation",
     "url": "https://fl5.moveonjoy.com/NEWS_NATION/index.m3u8",
     "group-title": ""
   },
@@ -1126,7 +1126,7 @@
     "group-title": ""
   },
   "Paramount": {
-    "name": "Paramount Network-ANIMATION;ANIME",
+    "name": "Paramount",
     "url": "https://fl5.moveonjoy.com/PARAMOUNT_NETWORK/index.m3u8",
     "group-title": "ANIMATION;ANIME"
   },
@@ -1136,7 +1136,7 @@
     "group-title": ""
   },
   "SECNetwork-sports": {
-    "name": "SEC Network-sports",
+    "name": "SEC Network",
     "url": "https://fl5.moveonjoy.com/SEC_NETWORK/index.m3u8",
     "group-title": "Sports"
   },
@@ -1201,7 +1201,7 @@
     "group-title": ""
   },
   "Sundance_Comedy": {
-    "name": "Sundance-Comedy",
+    "name": "Sundance",
     "url": "https://fl5.moveonjoy.com/SUNDANCE/index.m3u8",
     "group-title": "Comedy"
   },
@@ -1211,7 +1211,7 @@
     "group-title": ""
   },
   "TLC": {
-    "name": "TLC (The Learning Channel) East",
+    "name": "TLC",
     "url": "https://fl5.moveonjoy.com/TLC/index.m3u8",
     "group-title": ""
   },

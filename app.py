@@ -615,36 +615,28 @@ def sports_playlist():
         current_year=datetime.now().year
     )
 #----------------------------------------------------------------------
-@app.route("/proxy/")
-def proxy():
-    target_url = request.args.get("url")
+@app.route('/proxy/<path:stream_url>')
+def proxy_redirect(stream_url):
+    full_url = f"http://{stream_url}" if not stream_url.startswith("http") else stream_url
 
-    if not target_url:
-        return Response("Missing ?url= parameter", status=400)
-
-    try:
-        # Send request to actual media source
-        resp = requests.get(target_url, stream=True, timeout=10)
-
-        # Capture headers
-        content_type = resp.headers.get("Content-Type", "application/vnd.apple.mpegurl")
-
-        # Optional: Allow HLS playback in browser
-        headers = {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": content_type,
-            "Access-Control-Allow-Headers": "*"
-        }
-
-        # Stream the response
-        return Response(
-            resp.iter_content(chunk_size=8192),
-            status=resp.status_code,
-            headers=headers
-        )
-
-    except requests.exceptions.RequestException as e:
-        return Response(f"Proxy error: {str(e)}", status=502)
+    # Render a page that opens the stream URL in a new tab
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Opening Stream</title>
+        <script>
+            window.onload = function() {
+                window.open("{{ full_url }}", "_blank");
+            };
+        </script>
+    </head>
+    <body>
+        <p>Opening stream in a new tab...</p>
+        <p>If it doesn’t open, <a href="{{ full_url }}" target="_blank">click here</a>.</p>
+    </body>
+    </html>
+    """, full_url=full_url)
         
 @app.route("/plus-playlist")
 @login_required

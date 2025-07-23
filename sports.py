@@ -102,7 +102,7 @@ BEIN = {
         "tvg-country": "TR",
         "tvg-logo": "https://i.imgur.com/QWo0x7S.jpg",
         "name": "beIN Sports FHD",
-        "url": "https://viewtv-p2s3.onrender.com/player?url=https://fl4.moveonjoy.com/BEIN_SPORTS/index.m3u8"
+        "url": "https://fl4.moveonjoy.com/BEIN_SPORTS/index.m3u8"
     },
     "Bein_2": {
         "tvg-country": "UN",

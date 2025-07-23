@@ -615,34 +615,36 @@ def sports_playlist():
         current_year=datetime.now().year
     )
 #----------------------------------------------------------------------
-@app.route('/proxy/<path:target_url>')
-def proxy(target_url):
-    try:
-        # Rebuild the full URL (Render automatically uses HTTPS)
-        if target_url.startswith("http:/") or target_url.startswith("https:/"):
-            full_url = target_url.replace(":/", "://")
-        else:
-            full_url = "http://" + target_url  # Default to http
+@app.route("/proxy/")
+def proxy():
+    target_url = request.args.get("url")
 
+    if not target_url:
+        return Response("Missing ?url= parameter", status=400)
+
+    try:
+        # Send request to actual media source
+        resp = requests.get(target_url, stream=True, timeout=10)
+
+        # Capture headers
+        content_type = resp.headers.get("Content-Type", "application/vnd.apple.mpegurl")
+
+        # Optional: Allow HLS playback in browser
         headers = {
-            'User-Agent': request.headers.get('User-Agent'),
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": content_type,
+            "Access-Control-Allow-Headers": "*"
         }
 
-        # Forward request to the actual stream
-        r = requests.get(full_url, headers=headers, stream=True, timeout=10)
+        # Stream the response
+        return Response(
+            resp.iter_content(chunk_size=8192),
+            status=resp.status_code,
+            headers=headers
+        )
 
-        content_type = r.headers.get('Content-Type', 'application/vnd.apple.mpegurl')
-        def generate():
-            for chunk in r.iter_content(chunk_size=8192):
-                yield chunk
-
-        # Relay response with CORS
-        response = Response(generate(), content_type=content_type)
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        return response
-
-    except Exception as e:
-        return f"Proxy Error: {str(e)}", 500
+    except requests.exceptions.RequestException as e:
+        return Response(f"Proxy error: {str(e)}", status=502)
         
 @app.route("/plus-playlist")
 @login_required

@@ -2285,13 +2285,13 @@
     "logo": "https://i.imgur.com/C5YxD5m.png"
   },
   "national_geographic_east": {
-    "name": "National Geographic East",
+    "name": "Nat Geo",
     "url": "https://fl3.moveonjoy.com/National_Geographic/index.m3u8",
     "group-title": "Documentary",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Natgeologo.svg/512px-Natgeologo.svg.png"
   },
   "national_geographic_wild_east": {
-    "name": "National Geographic Wild East",
+    "name": "Nat Geo Wild",
     "url": "https://fl3.moveonjoy.com/Nat_Geo_Wild/index.m3u8",
     "group-title": "Documentary",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/National_Geographic_Wild_logo.svg/512px-National_Geographic_Wild_logo.svg.png"
@@ -2488,29 +2488,11 @@
     "group-title": "Entertainment",
     "logo": "https://yt3.googleusercontent.com/ytc/AIdro_kFORSMlXKT0V9fBpkp5TS7VbpwlNC6XbfZxrSSWUt1UA=s512-c-k-c0x00ffffff-no-rj"
   },
-  "Iris": {
-    "name": "Iris",
-    "url": "https://live3-mediaset-it.akamaized.net/Content/hls_h0_clr_vos/live/channel(ki)/index.m3u8",
-    "group-title": "Entertainment",
-    "logo": "https://i.imgur.com/ZLnSLh4.png"
-  },
-  "KC2": {
-    "name": "KC2",
-    "url": "http://197.243.19.131:1935/kc2/kc2/chunklist.m3u8",
-    "group-title": "Entertainment",
-    "logo": "https://i.imgur.com/PsYPzNc.png"
-  },
   "Kingsview_TV": {
     "name": "Kingsview TV",
     "url": "https://j78dp6reyq5r-hls-live.5centscdn.com/4896_push_1963_001/00cb1f2e4ff89048f2e77e26940c00e6.sdp/playlist.m3u8",
     "group-title": "Entertainment",
     "logo": "https://i.imgur.com/py1XOXX.png"
-  },
-  "K-Plus": {
-    "name": "K-Plus",
-    "url": "http://210.210.155.37/uq2663/h/h08/index.m3u8",
-    "group-title": "Entertainment",
-    "logo": "https://i.imgur.com/RbS0q71.png"
   },
   "My_Cinema": {
     "name": "My Cinema",
@@ -2520,15 +2502,9 @@
   },
   "Nickelodeon_de": {
     "name": "Nickelodeon",
-    "url": "url=https://fl5.moveonjoy.com/NICKELODEON/index.m3u8",
+    "url": "https://fl2.moveonjoy.com/NICKELODEON/index.m3u8",
     "group-title": "Kids",
     "logo": "https://i.imgur.com/E84jnP8.png"
-  },
-  "Nick_HDPlus": {
-    "name": "Nick HD+",
-    "url": "http://103.68.28.58:5001/live/1226.m3u8",
-    "group-title": "Kids",
-    "logo": "https://i.imgur.com/nJPbTet.png"
   },
   "bein_sports": {
     "name": "Bein Sports",
@@ -2536,35 +2512,17 @@
     "group-title": "Sports",
     "logo": "https://i.imgur.com/QWo0x7S.jpg"
   },
-  "Nick_Jr": {
-    "name": "Nick Jr.",
-    "url": "https://prod-sports-north-gm.jiocinema.com/bpk-tv/Nick_Junior_voot_MOB/Fallback/index.m3u8",
-    "group-title": "Kids",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Nick_Jr._logo_2009.svg/512px-Nick_Jr._logo_2009.svg.png"
-  },
   "Nick_Jr_East": {
-    "name": "Nick Jr. East",
+    "name": "Nick Jr.",
     "url": "https://fl3.moveonjoy.com/NICK_JR/index.m3u8",
     "group-title": "Kids",
     "logo": "https://i.imgur.com/KT4tdQs.png"
-  },
-  "Nick_Jr_Pluto_TV": {
-    "name": "Nick Jr. Pluto TV",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/5ca6748a37b88b269472dad9/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=6c2a5106-30d3-11ef-9cf5-e9ddff8ff496&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=d95e31ff-c65d-438c-9466-ddbbd097b4cf",
-    "group-title": "Kids",
-    "logo": "https://i.imgur.com/8DAe8wr.png"
   },
   "NickMusic": {
     "name": "NickMusic",
     "url": "https://fl3.moveonjoy.com/NICK_MUSIC/index.m3u8",
     "group-title": "Music",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/NickMusic.svg/512px-NickMusic.svg.png"
-  },
-  "Nicktoons": {
-    "name": "Nicktoons",
-    "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/654ca7f92c1d3300086b608c/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=2c7b6610-35fc-11ef-a031-2b5d494037a2&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=359ee837-a829-4fe0-9d99-8dc36018ced2",
-    "group-title": "Kids",
-    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Nicktoons_Network_logo_2009.svg/512px-Nicktoons_Network_logo_2009.svg.png"
   },
   "Nos_Pais": {
     "name": "Nos Pais",

@@ -681,55 +681,6 @@ def custom_list():
 def moviepire():
     return render_template("moviepire.html")
 
-from flask import Flask, Response
-import requests
-from bs4 import BeautifulSoup
-@app.route('/proxy/moviepire')
-def proxy_moviepire():
-    try:
-        url = 'https://moviepire.net'
-        headers = {'User-Agent': 'Mozilla/5.0'}
-        r = requests.get(url, headers=headers, timeout=10)
-        r.raise_for_status()
-
-        soup = BeautifulSoup(r.text, 'html.parser')
-
-        # Inject CSS to hide ads
-        style = soup.new_tag("style")
-        style.string = """
-        iframe[src*="ads"], div[id*="ads"], div[class*="ads"],
-        .popup, .ad-container, .sponsor, .banner, .modal, .promobox {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        a[href*="redirect"], a[onclick] {
-            pointer-events: none !important;
-            color: grey !important;
-        }
-        """
-        soup.head.append(style)
-
-        # Remove ad-related tags
-        bad_keywords = ['ads', 'ad', 'sponsor', 'popup', 'banner', 'promo', 'onclick']
-        for tag in soup.find_all(['div', 'section', 'iframe', 'script']):
-            id_ = tag.get('id', '') or ''
-            classes = ' '.join(tag.get('class', [])) if tag.get('class') else ''
-            content = tag.string or ''
-
-            if any(bad in id_.lower() for bad in bad_keywords) or \
-               any(bad in classes.lower() for bad in bad_keywords) or \
-               any(bad in content.lower() for bad in bad_keywords):
-                tag.decompose()
-
-        # Remove inline onclick hijacks
-        for tag in soup.find_all():
-            if 'onclick' in tag.attrs:
-                del tag.attrs['onclick']
-
-        return Response(str(soup), mimetype='text/html')
-    
-    except Exception as e:
-        return f"<h1>Failed to load moviepire proxy: {e}</h1>"
 #------------------------------------------------------------------------
 import json
 import os
@@ -1421,24 +1372,6 @@ def load_sports():
         for k, v in data.items()
     ]
 #--------------------------------------------------------------------------
-# Proxy route to stream remote content
-@app.route('/proxy')
-def proxy():
-    remote_url = request.args.get('url')
-    if not remote_url:
-        return abort(400, "Missing 'url' parameter")
-
-    try:
-        remote_resp = requests.get(remote_url, headers=PROXY_HEADERS, stream=True, timeout=10)
-        remote_resp.raise_for_status()
-    except requests.RequestException as e:
-        return abort(502, f"Upstream error: {e}")
-
-    return Response(
-        stream_with_context(remote_resp.iter_content(chunk_size=8192)),
-        content_type=remote_resp.headers.get('Content-Type', 'application/octet-stream'),
-        status=remote_resp.status_code
-    )
 
 #-----------------------------------------------------------------------
 # Route: Serve .m3u8 playlist (auto start ffmpeg if needed)

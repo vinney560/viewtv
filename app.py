@@ -615,6 +615,10 @@ def sports_playlist():
         current_year=datetime.now().year
     )
 #----------------------------------------------------------------------
+from flask import render_template_string
+
+app = Flask(__name__)
+
 @app.route('/proxy/<path:stream_url>')
 def proxy_redirect(stream_url):
     full_url = f"http://{stream_url}" if not stream_url.startswith("http") else stream_url

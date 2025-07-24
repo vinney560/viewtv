@@ -42,13 +42,15 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 load_dotenv()
 
+import traceback
+
 def choose_db_uri():
     supabase_uri = os.getenv('DATABASE_URL_3')  # Supabase DB (primary)
     render_uri = os.getenv('DATABASE_URL')      # Render DB (secondary)
 
     # Try Supabase first
     if supabase_uri:
-        print("Trying Supabase DB (DATABASE_URL_3)...")
+        print("🔍 Trying Supabase DB (DATABASE_URL_3)...")
         try:
             engine = create_engine(supabase_uri)
             engine.connect().close()
@@ -56,12 +58,12 @@ def choose_db_uri():
             return supabase_uri
         except OperationalError as e:
             print("❌ Failed to connect to Supabase DB.")
-            print(f" Error: {e}")
+            print(f"📋 Error: {e}")
             traceback.print_exc()
 
     # Try Render DB next
     if render_uri:
-        print("Trying Render DB (DATABASE_URL)...")
+        print("🔍 Trying Render DB (DATABASE_URL)...")
         try:
             engine = create_engine(render_uri)
             engine.connect().close()
@@ -69,13 +71,13 @@ def choose_db_uri():
             return render_uri
         except OperationalError as e:
             print("❌ Failed to connect to Render DB.")
-            print(f" Error: {e}")
+            print(f"📋 Error: {e}")
             traceback.print_exc()
 
     # Fallback to SQLite
     print("⚠️ All remote DBs failed. Falling back to SQLite.")
     fallback_uri = "sqlite:///default.db"
-    print(f"Using fallback: {fallback_uri}")
+    print(f"📦 Using fallback: {fallback_uri}")
     return fallback_uri
 
 # App Configuration

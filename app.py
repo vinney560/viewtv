@@ -494,6 +494,9 @@ def login():
                 return redirect(url_for('login'))
 
             if check_password_hash(user.password, password):
+                if user.status == "Banned":
+                    flash("Account Banned! Contact Support.", "danger")
+                    return redirect(url_for("home"))
                 user.failed_login_attempts = 0
                 user.status = "active"
                 session.clear()
@@ -2235,8 +2238,8 @@ from sqlalchemy.exc import OperationalError
 @app.route("/admin/clone_data")
 @login_required
 def clone_data():
-    db1_url = os.getenv("DATABASE_URL")
-    db2_url = os.getenv("DATABASE_URL_3")
+#    db1_url = os.getenv("DATABASE_URL")
+#    db2_url = os.getenv("DATABASE_URL_3")
 
     if not db1_url or not db2_url:
         flash("Database URLs not set in environment file.", "error")
@@ -2389,11 +2392,12 @@ def handle_csrf_error(e):
     app.logger.warning(f"CSRF Error: {e.description}", exc_info=True)
     flash("CSRF token missing or invalid. Please try again.", "error")
 
-    try:
-        return redirect(request.referrer), 400
-    except Exception:
+    # Fallback to home if referrer is not available
+    referrer = request.referrer
+    if referrer:
+        return redirect(referrer), 400
+    else:
         return redirect(url_for('home')), 400
-
 #========================================
 if __name__ == '__main__':
     if not os.path.exists(CONFIG["CACHE_FILE"]):

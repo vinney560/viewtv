@@ -42,28 +42,27 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 load_dotenv()
 
-
 def choose_db_uri():
-    render_uri = os.getenv('DATABASE_URL_3')        # Render DB (primary)
-    supabase_uri = os.getenv('DATABASE_URL')    # Supabase DB (secondary)
+    render_uri = os.getenv('DATABASE_URL_3')        # Neon DB (primary)
+    supabase_uri = os.getenv('DATABASE_URL')    # Render DB (secondary)
 
     if render_uri:
         try:
             engine = create_engine(render_uri)
             engine.connect().close()
-            print("✅ Connected to Render DB (DATABASE_URL)")
+            print("✅ Connected to Neon DB (DATABASE_URL_3)")
             return render_uri
         except OperationalError:
-            print("⚠️ Failed to connect to Render DB. Trying Supabase DB...")
+            print("⚠️ Failed to connect to Neon DB. Trying Supabase DB...")
 
     if supabase_uri:
         try:
             engine = create_engine(supabase_uri)
             engine.connect().close()
-            print("✅ Connected to Supabase DB (DATABASE_URL_3)")
+            print("✅ Connected to Render DB (DATABASE_URL)")
             return supabase_uri
         except OperationalError:
-            print("⚠️ Failed to connect to Supabase DB.")
+            print("⚠️ Failed to connect to Render DB.")
 
     print("❌ All remote DBs failed. Falling back to SQLite.")
     return "sqlite:///default.db"
@@ -2238,8 +2237,8 @@ from sqlalchemy.exc import OperationalError
 @app.route("/admin/clone_data")
 @login_required
 def clone_data():
-#    db1_url = os.getenv("DATABASE_URL")
-#    db2_url = os.getenv("DATABASE_URL_3")
+    db1_url = os.getenv("DATABASE_URL")
+    db2_url = os.getenv("DATABASE_URL_3")
 
     if not db1_url or not db2_url:
         flash("Database URLs not set in environment file.", "error")

@@ -45,8 +45,8 @@ load_dotenv()
 import traceback
 
 def choose_db_uri():
-    supabase_uri = os.getenv('DATABASE_URL_3')  # Supabase DB (primary)
-    render_uri = os.getenv('DATABASE_URL')      # Render DB (secondary)
+    supabase_uri = os.getenv('DATABASE_URL')  # Supabase DB (primary)
+    render_uri = os.getenv('DATABASE_URL_3')      # Render DB (secondary)
 
     # Try Supabase first
     if supabase_uri:
@@ -54,20 +54,20 @@ def choose_db_uri():
         try:
             engine = create_engine(supabase_uri)
             engine.connect().close()
-            print("✅ Connected to Supabase DB.")
+            print("✅ Connected to Render Old DB.")
             return supabase_uri
         except OperationalError as e:
-            print("❌ Failed to connect to Supabase DB.")
+            print("❌ Failed to connect to Render Old DB.")
             print(f"📋 Error: {e}")
             traceback.print_exc()
 
     # Try Render DB next
     if render_uri:
-        print("🔍 Trying Render DB (DATABASE_URL)...")
+        print("🔍 Trying Render New DB (DATABASE_URL)...")
         try:
             engine = create_engine(render_uri)
             engine.connect().close()
-            print("✅ Connected to Render DB.")
+            print("✅ Connected to Render New DB.")
             return render_uri
         except OperationalError as e:
             print("❌ Failed to connect to Render DB.")

@@ -43,17 +43,17 @@ app = Flask(__name__)
 load_dotenv()
 
 def choose_db_uri():
-    render_uri = os.getenv('DATABASE_URL_3')        # Neon DB (primary)
+    render_uri = os.getenv('DATABASE_URL_3')        # Supbase DB (primary)
     supabase_uri = os.getenv('DATABASE_URL')    # Render DB (secondary)
 
     if render_uri:
         try:
             engine = create_engine(render_uri)
             engine.connect().close()
-            print("✅ Connected to Neon DB (DATABASE_URL_3)")
+            print("✅ Connected to Supbase DB (DATABASE_URL_3)")
             return render_uri
         except OperationalError:
-            print("⚠️ Failed to connect to Neon DB. Trying Supabase DB...")
+            print("⚠️ Failed to connect to Supbase DB. Trying Render DB...")
 
     if supabase_uri:
         try:

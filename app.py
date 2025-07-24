@@ -43,29 +43,40 @@ app = Flask(__name__)
 load_dotenv()
 
 def choose_db_uri():
-    render_uri = os.getenv('DATABASE_URL_3')        # Supbase DB (primary)
-    supabase_uri = os.getenv('DATABASE_URL')    # Render DB (secondary)
+    supabase_uri = os.getenv('DATABASE_URL_3')  # Supabase DB (primary)
+    render_uri = os.getenv('DATABASE_URL')      # Render DB (secondary)
 
-    if render_uri:
-        try:
-            engine = create_engine(render_uri)
-            engine.connect().close()
-            print("✅ Connected to Supbase DB (DATABASE_URL_3)")
-            return render_uri
-        except OperationalError:
-            print("⚠️ Failed to connect to Supbase DB. Trying Render DB...")
-
+    # Try Supabase first
     if supabase_uri:
+        print("Trying Supabase DB (DATABASE_URL_3)...")
         try:
             engine = create_engine(supabase_uri)
             engine.connect().close()
-            print("✅ Connected to Render DB (DATABASE_URL)")
+            print("✅ Connected to Supabase DB.")
             return supabase_uri
-        except OperationalError:
-            print("⚠️ Failed to connect to Render DB.")
+        except OperationalError as e:
+            print("❌ Failed to connect to Supabase DB.")
+            print(f" Error: {e}")
+            traceback.print_exc()
 
-    print("❌ All remote DBs failed. Falling back to SQLite.")
-    return "sqlite:///default.db"
+    # Try Render DB next
+    if render_uri:
+        print("Trying Render DB (DATABASE_URL)...")
+        try:
+            engine = create_engine(render_uri)
+            engine.connect().close()
+            print("✅ Connected to Render DB.")
+            return render_uri
+        except OperationalError as e:
+            print("❌ Failed to connect to Render DB.")
+            print(f" Error: {e}")
+            traceback.print_exc()
+
+    # Fallback to SQLite
+    print("⚠️ All remote DBs failed. Falling back to SQLite.")
+    fallback_uri = "sqlite:///default.db"
+    print(f"Using fallback: {fallback_uri}")
+    return fallback_uri
 
 # App Configuration
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")

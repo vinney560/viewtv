@@ -983,7 +983,7 @@
   "DiscoveryLife": {
     "name": "Discovery Life",
     "url": "https://fl5.moveonjoy.com/DISCOVERY_LIFE/index.m3u8",
-    "group-title": ""
+    "group-title": "Documentary"
   },
   "DisneyXD": {
     "name": "DisneyXD",
@@ -1008,12 +1008,12 @@
   "EPIX_Hits": {
     "name": "EPIX Hits",
     "url": "https://fl5.moveonjoy.com/EPIX_HITS/index.m3u8",
-    "group-title": ""
+    "group-title": "Music"
   },
   "Food_Network": {
     "name": "Food Network",
     "url": "https://fl5.moveonjoy.com/FOOD_NETWORK/index.m3u8",
-    "group-title": ""
+    "group-title": "Food"
   },
   "FYI": {
     "name": "FYI",
@@ -1033,17 +1033,17 @@
   "HBO": {
     "name": "HBO Comedy",
     "url": "https://fl5.moveonjoy.com/HBO_COMEDY/index.m3u8",
-    "group-title": ""
+    "group-title": "Comedy"
   },
   "HBO": {
     "name": "HBO Family",
     "url": "https://fl5.moveonjoy.com/HBO_FAMILY/index.m3u8",
-    "group-title": ""
+    "group-title": "General"
   },
   "HBO_Zone": {
     "name": "HBO Zone",
     "url": "https://fl5.moveonjoy.com/HBO_ZONE/index.m3u8",
-    "group-title": "movies"
+    "group-title": "Movies"
   },
   "HGTV": {
     "name": "HGTV East",
@@ -1058,7 +1058,7 @@
   "LifetimeEast": {
     "name": "Lifetime East",
     "url": "https://fl5.moveonjoy.com/LIFETIME/index.m3u8",
-    "group-title": ""
+    "group-title": "General"
   },
   "Lifetime_Movie_Network": {
     "name": "Lifetime Movie Network",
@@ -1108,12 +1108,12 @@
   "NBATV": {
     "name": "NBA TV",
     "url": "https://fl5.moveonjoy.com/NBA_TV/index.m3u8",
-    "group-title": ""
+    "group-title": "Sports"
   },
   "News_Nation": {
     "name": "News Nation",
     "url": "https://fl5.moveonjoy.com/NEWS_NATION/index.m3u8",
-    "group-title": ""
+    "group-title": "News"
   },
   "Oxygen": {
     "name": "Oxygen",
@@ -1130,7 +1130,7 @@
     "url": "https://fl5.moveonjoy.com/REVOLT/index.m3u8",
     "group-title": ""
   },
-  "SECNetwork-sports": {
+  "SECNetwork": {
     "name": "SEC Network",
     "url": "https://fl5.moveonjoy.com/SEC_NETWORK/index.m3u8",
     "group-title": "Sports"
@@ -1173,7 +1173,7 @@
   "StarzComedy": {
     "name": "Starz Comedy",
     "url": "https://fl5.moveonjoy.com/STARZ_COMEDY/index.m3u8",
-    "group-title": ""
+    "group-title": "Comedy"
   },
   "StarzEdge": {
     "name": "Starz Edge",
@@ -1188,12 +1188,12 @@
   "StarzEncoreAction": {
     "name": "Starz Encore Action",
     "url": "https://fl5.moveonjoy.com/STARZ_ENCORE_ACTION/index.m3u8",
-    "group-title": ""
+    "group-title": "Movies"
   },
   "StarzEncoreWesterns": {
     "name": "Starz Encore Westerns",
     "url": "https://fl5.moveonjoy.com/STARZ_ENCORE_WESTERNS/index.m3u8",
-    "group-title": ""
+    "group-title": "Entertainment"
   },
   "Sundance_Comedy": {
     "name": "Sundance",
@@ -1238,7 +1238,7 @@
   "Weather Channel": {
     "name": "Weather Channel",
     "url": "https://fl5.moveonjoy.com/WEATHER_CHANNEL/index.m3u8",
-    "group-title": ""
+    "group-title": "News"
   },
   "We_TV": {
     "name": "WeTV",

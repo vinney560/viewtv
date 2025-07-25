@@ -386,14 +386,36 @@ def plus_required(f):
         return f(*args, **kwargs)
     return decorated_function
 #------------------------------------------------------------------------
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.role not in ['admin', 'superadmin']:
-            return abort(403)
-        return f(*args, **kwargs)
-    return decorated_function
+ROLE_HIERARCHY = {
+    'admin3': 1,
+    'admin2': 2,
+    'admin1': 3,
+    'superadmin': 4
+}
+def role_required(min_level):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                return abort(403)
+            user_role = getattr(current_user, 'role', None)
+            user_level = ROLE_HIERARCHY.get(user_role, 0)
+            if user_level < min_level:
+                return abort(403)
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+def admin3_required(f):
+    return role_required(1)(f)  # admin3 and above
 
+def admin2_required(f):
+    return role_required(2)(f)  # admin2, admin1, superadmin
+
+def admin1_required(f):
+    return role_required(3)(f)  # admin1 and superadmin
+
+def super#admin_required(f):
+    return role_required(4)(f)  # only superadmin
 #=====================================
 #        >>>>ACCESS GRANTERS<<<<
 #=====================================
@@ -416,49 +438,73 @@ def register():
             return render_template('register.html',
                                    name=name, email=email_addr,
                                    password=password, confirm_password=confirm_password)
+
         existing_email = User.query.filter_by(email=email_addr).first()
         if existing_email:
-            flash('Email Already exist', 'error')
-            return render_template('register.html', email=email_addr, name=name, password=password, confirm_password=confirm_password)
-            
+            flash('Email already exists', 'error')
+            return render_template('register.html',
+                                   email=email_addr, name=name,
+                                   password=password, confirm_password=confirm_password)
+
         if password != confirm_password:
             flash("Passwords don't match", "error")
             return render_template('register.html',
                                    name=name, email=email_addr,
                                    password=password, confirm_password=confirm_password)
 
-        secret_code = AdminCode.query.first()
-        if not secret_code:
-            new_code = AdminCode(code="479admin479")
-            db.session.add(new_code)
-            db.session.commit()
-            secret_code = AdminCode.query.first()
+        # Map known secret codes to roles
+        code_role_map = {
+            "479superadmin479": "superadmin",
+            "479admin1": "admin1",
+            "479admin2": "admin2",
+            "479admin3": "admin3"
+        }
 
-        if secret_code and code_input == secret_code.code:
-            role = 'admin'
+        # Check if input code exists in DB
+        code_in_db = AdminCode.query.filter_by(code=code_input).first()
+
+        if code_input and code_in_db and code_input in code_role_map:
+            role = code_role_map[code_input]
         else:
             role = 'user'
 
         status = 'active'
         hashed_password = generate_password_hash(password)
-        new_user = User(name=name, password=hashed_password,
-                        email=email_addr, role=role,
-                        status=status, agreed=True, plus_expires_at=datetime.utcnow() - timedelta(seconds=1), plus_type=None, last_free_plus=None)
+
+        new_user = User(
+            name=name,
+            email=email_addr,
+            password=hashed_password,
+            role=role,
+            status=status,
+            agreed=True,
+            plus_expires_at=datetime.utcnow() - timedelta(seconds=1),
+            plus_type=None,
+            last_free_plus=None
+        )
+
         db.session.add(new_user)
         db.session.commit()
 
         send_verification_email(new_user)
         flash(f"Account created as {role}. Check your email to verify.", "success")
-
         return redirect(url_for('home'))
 
     return render_template("register.html")
 
 #----------------------------------------------------------------------
+def get_role_home(role, is_plus):
+    if role in ['superadmin', 'admin1', 'admin2', 'admin3']:
+        return url_for('home_admin')
+    elif is_plus:
+        return url_for('home_2')  # Plus user home
+    else:
+        return url_for('home_1')  # Normal user home
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     next_page = request.args.get("next") or request.form.get("next")
+
     if current_user.is_authenticated:
         if current_user.status != "active":
             logout_user()
@@ -471,14 +517,7 @@ def login():
             current_user.plus_type = None
             db.session.commit()
 
-        if next_page:
-            return redirect(next_page)
-        elif current_user.role == 'admin':
-            return redirect(url_for('home_admin'))
-        elif current_user.is_plus:
-            return redirect(url_for('home_2'))
-        else:
-            return redirect(url_for('home_1'))
+        return redirect(next_page or get_role_home(current_user.role, current_user.is_plus))
 
     if request.method == "POST":
         email_addr = request.form.get('email')
@@ -491,7 +530,7 @@ def login():
         user = User.query.filter_by(email=email_addr).first()
 
         if user:
-            # ⏳ Account lock after 5 failed attempts
+            # ⏳ Lock account after 5 failed attempts
             if user.failed_login_attempts >= 5:
                 if user.last_failed_login and datetime.utcnow() - user.last_failed_login < timedelta(minutes=5):
                     remaining = 5 - (datetime.utcnow() - user.last_failed_login).seconds // 60
@@ -506,15 +545,17 @@ def login():
                 return redirect(url_for('login'))
 
             if check_password_hash(user.password, password):
-                if user.status == "Banned":
+                if user.status.lower() == "banned":
                     flash("Account Banned! Contact Support.", "danger")
                     return redirect(url_for("home"))
+
                 user.failed_login_attempts = 0
                 user.status = "active"
                 session.clear()
                 session['role'] = user.role
                 session['active'] = user.status
                 db.session.commit()
+
                 login_user(user)
                 flash("♻️ Welcome back!", "success")
 
@@ -524,15 +565,7 @@ def login():
                     user.plus_type = None
                     db.session.commit()
 
-                if next_page:
-                    return redirect(next_page)
-                elif user.role == 'admin':
-                    return redirect(url_for('home_admin'))
-                elif user.is_plus:
-                    return redirect(url_for('home_2'))
-                else:
-                    return redirect(url_for('home_1'))
-
+                return redirect(next_page or get_role_home(user.role, user.is_plus))
             else:
                 user.failed_login_attempts += 1
                 user.last_failed_login = datetime.utcnow()
@@ -542,7 +575,6 @@ def login():
         return render_template('login.html', email=email_addr, password=password)
 
     return render_template('login.html')
-
 #=======================================
 #           >>>>ROLE BASED ACTIONS<<<<
 #=======================================
@@ -1955,7 +1987,7 @@ def account():
 #=======================================
 @app.route('/home_admin')
 @login_required 
-@admin_required
+@admin3_required
 def home_admin():
     # Get statistics from database
     total_users = User.query.count()
@@ -1988,7 +2020,7 @@ def home_admin():
 
 @app.route("/admin/manage_plus")
 @login_required
-@admin_required
+@admin1_required
 def manage_plus():
     users = User.query.filter(User.plus_expires_at != None).order_by(User.id.asc()).all()
     
@@ -2010,7 +2042,7 @@ def manage_plus():
 #-------------------------------------------------------------------------
 @app.route("/admin/update_plus/<int:user_id>", methods=["POST"])
 @login_required
-@admin_required
+@admin1_required
 def update_plus(user_id):
     user = User.query.get_or_404(user_id)
     try:
@@ -2032,7 +2064,7 @@ def update_plus(user_id):
 #-------------------------------------------------------------------    
 @app.route("/admin/delete_plus/<int:user_id>", methods=["POST"])
 @login_required
-@admin_required
+@admin1_required
 def delete_plus(user_id):
     user = User.query.get_or_404(user_id)
     user.plus_expires_at = datetime.utcnow() - timedelta(seconds=1)
@@ -2045,29 +2077,54 @@ def delete_plus(user_id):
 
 @app.route("/manage-users")
 @login_required
-@admin_required
+@admin2_required
 def manage_users():
 
     users = User.query.filter(User.id != current_user.id).order_by(User.created_at.desc()).all()
     return render_template("manage_users.html", users=users)
 #--------------------------------------------------------------------------
-@app.route("/toggle-admin/<int:user_id>", methods=["POST"])
+@admin.route('/manage_role/<int:user_id>')
 @login_required
-@admin_required
-def toggle_admin(user_id):
-
+@superadmin_required
+def manage_role(user_id):
     user = User.query.get_or_404(user_id)
-    user.role = "user" if user.role == "admin" else "admin"
+    return render_template('admin/manage_role.html', user=user)
+
+@admin.route('/update_role/<int:user_id>', methods=['POST'])
+@login_required
+@superadmin_required
+def update_role(user_id):
+    user = User.query.get_or_404(user_id)
+    new_role = request.form.get('new_role')
+    
+    # Validate role
+    valid_roles = ['superadmin', 'admin1', 'admin2', 'admin3', 'user']
+    if new_role not in valid_roles:
+        flash('Invalid role specified', 'danger')
+        return redirect(url_for('manage_role', user_id=user_id))
+    
+    # Prevent modifying own role
+    if user.id == current_user.id:
+        flash('You cannot modify your own role', 'warning')
+        return redirect(url_for('manage_role', user_id=user_id))
+    
+    # Update role
+    old_role = user.role
+    user.role = new_role
     db.session.commit()
-    flash(f"User role changed to '{user.role}'.", "success")
-    return redirect(url_for("manage_users"))
+    
+    flash(f'Role updated from {old_role} to {new_role} for {user.email}', 'success')
+    return redirect(url_for('manage_role', user_id=user_id))
 #-------------------------------------------------------------------------
 @app.route("/toggle-ban/<int:user_id>", methods=["POST"])
 @login_required
-@admin_required
+@admin2_required
 def toggle_ban(user_id):
 
     user = User.query.get_or_404(user_id)
+    if user.role in ['superadmin', 'admin1']:
+        flash("Not Allowed", "danger")
+        return redirect(url_for('manage_user'))
     if user.status == "Banned":
         user.status = "active"
         flash("User unbanned.", "success")
@@ -2079,10 +2136,13 @@ def toggle_ban(user_id):
 #--------------------------------------------------------------------------
 @app.route("/delete-user/<int:user_id>", methods=["POST"])
 @login_required
-@admin_required
+@admin2_required
 def delete_user(user_id):
 
     user = User.query.get_or_404(user_id)
+    if user.role in ['superadmin', 'admin1']:
+        flash("Not Allowed", "danger")
+        return redirect(url_for('manage_user'))
     # Delete associated payments (if any)
     Payment.query.filter_by(user_id=user.id).delete()
     db.session.delete(user)
@@ -2092,7 +2152,7 @@ def delete_user(user_id):
 #------------------------------------------------------------------------
 @app.route('/toggle_verified/<int:user_id>', methods=['GET', 'POST'])
 @login_required
-@admin_required
+@admin2_required
 def toggle_verified(user_id):
     user = User.query.get_or_404(user_id)
 
@@ -2106,7 +2166,7 @@ def toggle_verified(user_id):
 #------------------------------------------------------------------------
 @app.route("/admin/update_email/<int:user_id>", methods=["POST"])
 @login_required
-@admin_required
+@admin2_required
 def update_user_email(user_id):
 
     new_email = request.form.get("new_email", "").strip()
@@ -2141,7 +2201,7 @@ def update_user_email(user_id):
 # Fetch & Save by Country
 @app.route('/save-channels')
 @login_required
-@admin_required
+@admin3_required
 def fetch_and_save_country_channels(country_code):
     url = f"https://iptv-org.github.io/iptv/countries/{country_code}.m3u"
     try:
@@ -2168,7 +2228,7 @@ def fetch_and_save_country_channels(country_code):
 #------------------------------------------------------------------------
 @app.route("/save-playlist")
 @login_required
-@admin_required
+@admin3_required
 def save_playlist():
     try:
         # Load channels from JSON file
@@ -2248,6 +2308,7 @@ from sqlalchemy.exc import OperationalError
 
 @app.route("/admin/clone_data")
 @login_required
+@superadmin_required
 def clone_data():
     db1_url = os.getenv("DATABASE_URL")
     db2_url = os.getenv("DATABASE_URL_3")
@@ -2292,12 +2353,13 @@ def clone_data():
 #--------------------------------------------------------------------------
 @app.route("/admin/manage_channels")
 @login_required
-@admin_required
+@admin3_required
 def manage_channels():
     channels = load_channels()
     return render_template("manage_channels.html", channels=channels)
 #--------------------------------------------------------------------------
 @app.route("/admin/channels/add", methods=["POST", "GET"])
+@admin3_required
 def add_channel():
     key = request.form.get("key").strip()
     name = request.form.get("name").strip()
@@ -2318,6 +2380,7 @@ def add_channel():
     return redirect(url_for("download_and_redirect"))
 #--------------------------------------------------------------------------
 @app.route("/admin/channels/edit/<key>", methods=["GET", "POST"])
+@admin3_required
 def edit_channel(key):
     channels = load_channels()
 
@@ -2342,6 +2405,7 @@ def edit_channel(key):
     return render_template("edit_channel.html", key=key, channel=channels[key])
 #--------------------------------------------------------------------------
 @app.route("/admin/channels/delete/<key>", methods=["GET","POST"])
+@admin3_required
 def delete_channel(key):
     channels = load_channels()
     if key in channels:
@@ -2354,6 +2418,7 @@ def delete_channel(key):
     return redirect(url_for("manage_channels"))
 #-------------------------------------------------------------------------
 @app.route("/admin/channels/download-and-redirect")
+@admin3_required
 def download_and_redirect():
     return render_template("download_and_redirect.html")
 

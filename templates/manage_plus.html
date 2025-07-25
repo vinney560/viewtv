@@ -55,6 +55,9 @@
             <!-- User Column -->
             <td class="px-4 py-2 align-top">
               <p class="font-semibold">{{ user.email }}</p>
+              {% if user.name %}
+                <p class="text-sm text-gray-300">{{ user.name }}</p>
+              {% endif %}
               <p class="text-xs text-gray-400 mt-1 countdown-timer" 
                  data-expires="{{ user.plus_expires_at.timestamp() if user.plus_expires_at else '' }}">
                 ⏳ {{ item.remaining_str }}

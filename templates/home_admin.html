@@ -61,6 +61,16 @@
       transform: translateY(-3px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     }
+    
+    .role-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      z-index: 10;
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen text-white flex justify-center items-start p-4 md:p-6">
@@ -96,48 +106,66 @@
   <div class="w-full max-w-5xl space-y-8 animate-fade-in">
 
     <!-- Header -->
-    <div class="text-center">
+    <div class="text-center relative">
       <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
         Admin Dashboard
       </h1>
-      <div class="mt-4 p-4 card-glass rounded-xl shadow-lg inline-block">
+      <div class="mt-4 p-4 card-glass rounded-xl shadow-lg inline-block relative">
         <p class="text-sm text-gray-300">Logged in as: <span class="font-medium text-cyan-300">{{ user.email }}</span></p>
         <div class="mt-2 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full"></div>
+        <span class="role-badge bg-gradient-to-r from-purple-600 to-indigo-600 font-bold">
+          {{ user.role | capitalize }}
+        </span>
       </div>
     </div>
 
     <!-- Admin Buttons -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Superadmin & Admin1: Manage Plus Time -->
+      {% if user.role in ['superadmin', 'admin1'] %}
       <a href="{{ url_for('manage_plus') }}"
-         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
         <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
         </div>
         <span>Manage Plus Time</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
       </a>
+      {% endif %}
 
+      <!-- Superadmin & Admin1: Manage Users -->
+      {% if user.role in ['superadmin', 'admin1', 'admin2'] %}
       <a href="{{ url_for('manage_users') }}"
-         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
         <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
           </svg>
         </div>
         <span>Manage Users</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
       </a>
+      {% endif %}
 
+      <!-- Superadmin, Admin1 & Admin2 & Admin3: Manage Channels -->
+      {% if user.role in ['superadmin', 'admin1', 'admin2', 'admin3'] %}
       <a href="{{ url_for('manage_channels') }}"
-         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
         <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
           </svg>
         </div>
         <span>Manage Channels</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">
+          {% if user.role == 'admin2' %}Admin2+{% else %}Admin1+{% endif %}
+        </span>
       </a>
+      {% endif %}
 
+      <!-- Account Settings (All roles) -->
       <a href="{{ url_for('account') }}"
          class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
         <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
@@ -149,18 +177,21 @@
         <span>Account Settings</span>
       </a>
 
-      <!-- Clone Data Button -->
+      <!-- Superadmin Only: Clone Data -->
+      {% if user.role == 'superadmin' %}
       <a href="{{ url_for('clone_data') }}"
-         class="glow-hover bg-gradient-to-r from-green-600 to-emerald-600 hover:shadow-glow py-4 px-6 rounded-xl border border-green-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+         class="glow-hover bg-gradient-to-r from-green-600 to-emerald-600 hover:shadow-glow py-4 px-6 rounded-xl border border-green-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
         <div class="p-2 bg-green-600/20 rounded-lg group-hover:bg-green-400/30 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
           </svg>
         </div>
         <span>Clone Data</span>
+        <span class="absolute top-2 right-2 text-xs bg-green-700 px-2 py-1 rounded-full">Superadmin</span>
       </a>
+      {% endif %}
 
-      <!-- Logout Button -->
+      <!-- Logout (All roles) -->
       <a href="{{ url_for('logout_current_user') }}"
          class="glow-hover bg-gradient-to-r from-red-600 to-pink-600 hover:shadow-glow py-4 px-6 rounded-xl border border-red-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
         <div class="p-2 bg-red-600/20 rounded-lg group-hover:bg-red-400/30 transition">

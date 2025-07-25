@@ -134,7 +134,7 @@
                         <span class="text-sm font-medium text-cyan-200">Categories</span>
                         <i class="fas fa-chevron-down text-xs text-cyan-300"></i>
                     </button>
-                    <div class="dropdown-content absolute mt-2 w-56 max-h-64 overflow-y-auto bg-gray-800/90 rounded-xl shadow-lg z-50 border border-gray-700/50 py-2">
+                    <div class="dropdown-content absolute right-4 mt-2 w-56 max-h-72 overflow-y-auto bg-gray-800/90 rounded-xl shadow-lg z-50 border border-gray-700/50 py-2">
                         {% for group_title, _ in categorized_channels.items() %}
                         <a href="#{{ group_title | lower | replace(' ', '-') }}" 
                            class="block px-4 py-2 text-sm text-gray-300 hover:bg-cyan-600/20 transition category-pill">

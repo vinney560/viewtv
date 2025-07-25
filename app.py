@@ -653,8 +653,7 @@ def proxy_redirect(stream_url):
         <p>If it doesn’t open, <a href="{{ full_url }}" target="_blank">click here</a>.</p>
     </body>
     </html>
-    """, full_url=full_url)
-        
+    """, full_url=full_url)        
 @app.route("/plus-playlist")
 @login_required
 @plus_required

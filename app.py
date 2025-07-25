@@ -414,7 +414,7 @@ def admin2_required(f):
 def admin1_required(f):
     return role_required(3)(f)  # admin1 and superadmin
 
-def super_admin_required(f):
+def superadmin_required(f):
     return role_required(4)(f)  # only superadmin
 #=====================================
 #        >>>>ACCESS GRANTERS<<<<

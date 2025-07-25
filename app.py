@@ -452,21 +452,16 @@ def register():
                                    name=name, email=email_addr,
                                    password=password, confirm_password=confirm_password)
 
-        # Map known secret codes to roles
+        # ✅ Hardcoded secret codes mapped to roles
         code_role_map = {
             "479superadmin479": "superadmin",
             "479admin1": "admin1",
             "479admin2": "admin2",
-            "479admin3": "admin3"
+            "479admin3": "admin3",
         }
 
-        # Check if input code exists in DB
-        code_in_db = AdminCode.query.filter_by(code=code_input).first()
-
-        if code_input and code_in_db and code_input in code_role_map:
-            role = code_role_map[code_input]
-        else:
-            role = 'user'
+        # ✅ Assign role based on code input (or fallback to 'user')
+        role = code_role_map.get(code_input, "user")
 
         status = 'active'
         hashed_password = generate_password_hash(password)

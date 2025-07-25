@@ -2083,14 +2083,14 @@ def manage_users():
     users = User.query.filter(User.id != current_user.id).order_by(User.created_at.desc()).all()
     return render_template("manage_users.html", users=users)
 #--------------------------------------------------------------------------
-@admin.route('/manage_role/<int:user_id>')
+@app.route('/manage_role/<int:user_id>')
 @login_required
 @superadmin_required
 def manage_role(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('admin/manage_role.html', user=user)
 
-@admin.route('/update_role/<int:user_id>', methods=['POST'])
+@app.route('/update_role/<int:user_id>', methods=['POST'])
 @login_required
 @superadmin_required
 def update_role(user_id):

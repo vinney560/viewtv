@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <title>Stream Tv | Footybite</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    frame-src 'self' http://server1.bdixsports.live https://server1.bdixsports.live;
+    script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
+    style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
+    img-src 'self' data:;
+    connect-src 'self';
+  ">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     html, body {
@@ -35,13 +44,50 @@
       left: 0;
     }
 
+    .iframe-fallback {
+      display: none;
+      position: absolute;
+      top: 80px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #111;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .iframe-fallback h3 {
+      color: #00f2fe;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .iframe-fallback a {
+      color: #4facfe;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px 20px;
+      border: 1px solid #4facfe;
+      border-radius: 5px;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .iframe-fallback a:hover {
+      background: rgba(79, 172, 254, 0.2);
+    }
+
     @media (max-width: 768px) {
       header {
         font-size: 1.8rem;
         padding: 15px;
       }
 
-      iframe {
+      iframe, .iframe-fallback {
         top: 70px;
         height: calc(100% - 70px);
       }
@@ -104,24 +150,69 @@
   <iframe
     id="movie-frame"
     src="http://server1.bdixsports.live/all/appevent_football.php"
+    allowfullscreen
   ></iframe>
+
+  <!-- Fallback Content -->
+  <div class="iframe-fallback" id="fallback">
+    <h3>Content Cannot Be Displayed</h3>
+    <p>This content cannot be displayed within this page due to security restrictions.</p>
+    <a href="http://server1.bdixsports.live/all/appevent_football.php" target="_blank" rel="noopener noreferrer">
+      Open Content in New Tab
+    </a>
+  </div>
 
   <!-- Fullscreen Button -->
   <button id="fullscreen-btn">Fullscreen</button>
 
   <script>
-    const iframe = document.getElementById('movie-frame');
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    document.addEventListener('DOMContentLoaded', function() {
+      const iframe = document.getElementById('movie-frame');
+      const fallback = document.getElementById('fallback');
+      const fullscreenBtn = document.getElementById('fullscreen-btn');
 
-    fullscreenBtn.onclick = () => {
-      if (iframe.requestFullscreen) {
-        iframe.requestFullscreen();
-      } else if (iframe.webkitRequestFullscreen) {
-        iframe.webkitRequestFullscreen();
-      } else if (iframe.msRequestFullscreen) {
-        iframe.msRequestFullscreen();
+      // Check if iframe loaded successfully
+      function checkIframeLoad() {
+        try {
+          // If we can access the iframe's document, it loaded successfully
+          if (iframe.contentWindow && iframe.contentWindow.document) {
+            // Additional check for actual content
+            if (iframe.contentWindow.document.body.children.length > 0) {
+              fallback.style.display = 'none';
+              return true;
+            }
+          }
+        } catch (e) {
+          // Cross-origin error means iframe loaded but we can't access it
+          fallback.style.display = 'none';
+          return true;
+        }
+        
+        // If we get here, iframe didn't load properly
+        fallback.style.display = 'flex';
+        iframe.style.display = 'none';
+        return false;
       }
-    };
+
+      // Initial check
+      setTimeout(checkIframeLoad, 2000);
+
+      // Fullscreen functionality
+      fullscreenBtn.onclick = () => {
+        if (iframe.requestFullscreen) {
+          iframe.requestFullscreen();
+        } else if (iframe.webkitRequestFullscreen) {
+          iframe.webkitRequestFullscreen();
+        } else if (iframe.msRequestFullscreen) {
+          iframe.msRequestFullscreen();
+        }
+      };
+
+      // Hide fullscreen button when fallback is shown
+      if (fallback.style.display === 'flex') {
+        fullscreenBtn.style.display = 'none';
+      }
+    });
   </script>
 </body>
 </html>

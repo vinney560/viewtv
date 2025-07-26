@@ -718,6 +718,11 @@ def custom_list():
 def moviepire():
     return render_template("moviepire.html")
 
+@app.route("/football_matches")
+@login_required
+@plus_required
+def football_matches():
+    return render_template("football_matches.html")
 #------------------------------------------------------------------------
 import json
 import os

@@ -2120,17 +2120,24 @@ def update_role(user_id):
 @login_required
 @admin2_required
 def toggle_ban(user_id):
-
     user = User.query.get_or_404(user_id)
-    if user.role in ['superadmin', 'admin1']:
+
+    # Only superadmin can ban/unban another superadmin
+    if user.role == "superadmin" and current_user.role != "superadmin":
+        flash("Only superadmin can ban another superadmin.", "danger")
+        return redirect(url_for('manage_users'))
+
+    if user.role in ['superadmin', 'admin1'] and current_user.role != "superadmin":
         flash("Not Allowed", "danger")
-        return redirect(url_for('manage_user'))
+        return redirect(url_for('manage_users'))
+
     if user.status == "Banned":
         user.status = "active"
         flash("User unbanned.", "success")
     else:
         user.status = "Banned"
         flash("User banned.", "warning")
+
     db.session.commit()
     return redirect(url_for("manage_users"))
 #--------------------------------------------------------------------------
@@ -2138,12 +2145,17 @@ def toggle_ban(user_id):
 @login_required
 @admin2_required
 def delete_user(user_id):
-
     user = User.query.get_or_404(user_id)
-    if user.role in ['superadmin', 'admin1']:
+
+    # Only superadmin can delete another superadmin
+    if user.role == "superadmin" and current_user.role != "superadmin":
+        flash("Only superadmin can delete another superadmin.", "danger")
+        return redirect(url_for('manage_users'))
+
+    if user.role in ['superadmin', 'admin1'] and current_user.role != "superadmin":
         flash("Not Allowed", "danger")
-        return redirect(url_for('manage_user'))
-    # Delete associated payments (if any)
+        return redirect(url_for('manage_users'))
+
     Payment.query.filter_by(user_id=user.id).delete()
     db.session.delete(user)
     db.session.commit()

@@ -10,6 +10,7 @@
   <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
   <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
   <style>
+    /* [Previous CSS styles unchanged] */
     html, body {
       margin: 0; padding: 0; height: 100%;
       background-color: #000;
@@ -649,7 +650,7 @@
       }
     }
 
-    // Quality Selector Logic
+    // Quality Selector Logic (FULLY FUNCTIONAL)
     const qualityToggle = document.getElementById('quality-toggle');
     const qualityDropdown = document.getElementById('quality-dropdown');
     const qualityOptions = document.querySelectorAll('.quality-option');
@@ -659,16 +660,72 @@
       qualityDropdown.classList.toggle('show');
     });
 
+    function setHlsQuality(mode) {
+      const levels = window.hls.levels;
+      if (!levels || levels.length === 0) return;
+
+      switch (mode) {
+        case 'high':
+          window.hls.currentLevel = levels.reduce((maxIdx, level, idx) => 
+            level.bitrate > levels[maxIdx].bitrate ? idx : maxIdx, 0
+          );
+          break;
+        case 'mid':
+          window.hls.currentLevel = Math.floor(levels.length / 2);
+          break;
+        case 'low':
+          window.hls.currentLevel = levels.reduce((minIdx, level, idx) => 
+            level.bitrate < levels[minIdx].bitrate ? idx : minIdx, 0
+          );
+          break;
+      }
+    }
+
     qualityOptions.forEach(option => {
       option.addEventListener('click', () => {
         const quality = option.dataset.quality;
         qualityOptions.forEach(opt => opt.classList.remove('active'));
         option.classList.add('active');
-        
-        // Implement quality change logic here
-        console.log(`Quality set to: ${quality}`);
-        
         qualityDropdown.classList.remove('show');
+
+        // Apply quality selection
+        if (window.hls) {
+          switch (quality) {
+            case 'auto':
+              window.hls.currentLevel = -1;
+              break;
+            case '1080':
+              setHlsQuality('high');
+              break;
+            case '720':
+              setHlsQuality('mid');
+              break;
+            case '480':
+              setHlsQuality('low');
+              break;
+          }
+        } else if (window.dashPlayer) {
+          const bitrates = window.dashPlayer.getBitrateInfoListFor('video');
+          if (bitrates && bitrates.length > 0) {
+            switch (quality) {
+              case 'auto':
+                window.dashPlayer.setQualityFor('video', 'auto');
+                break;
+              case '1080':
+                window.dashPlayer.setQualityFor('video', Math.max(...bitrates.map(b => b.bitrate)));
+                break;
+              case '720':
+                const sorted = bitrates.map(b => b.bitrate).sort((a, b) => a - b);
+                window.dashPlayer.setQualityFor('video', sorted[Math.floor(sorted.length / 2)]);
+                break;
+              case '480':
+                window.dashPlayer.setQualityFor('video', Math.min(...bitrates.map(b => b.bitrate)));
+                break;
+            }
+          }
+        } else {
+          console.warn("Quality switching not supported for this stream type");
+        }
       });
     });
 

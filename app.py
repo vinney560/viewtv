@@ -256,7 +256,9 @@ def uploaded_file(filename):
 def is_authenticated():
     return jsonify({'authenticated': current_user.is_authenticated})
 #----------------------------------------------------------------------
-
+@app.before_first_request
+def initialize_scheduler():
+    start_scrape_scheduler()
 #-----------------------------------------------------------------------
 @app.before_request
 def auto_logout_user():
@@ -1053,6 +1055,13 @@ def fetch_movies():
         reverse=True
     )[:CONFIG["MAX_MOVIES"]]
 
+def schedule_next_scrape():
+    """Schedule the next scrape job"""
+    Timer(
+        CONFIG["SCRAPE_INTERVAL_HOURS"] * 3600,  # Convert hours to seconds
+        run_scheduled_scrape
+    ).start()
+
 def run_scheduled_scrape():
     """Execute the scheduled scrape job"""
     try:
@@ -1068,13 +1077,6 @@ def run_scheduled_scrape():
     finally:
         # Reschedule the next run
         schedule_next_scrape()
-
-def schedule_next_scrape():
-    """Schedule the next scrape job"""
-    Timer(
-        CONFIG["SCRAPE_INTERVAL_HOURS"] * 3600,  # Convert hours to seconds
-        run_scheduled_scrape
-    ).start()
 
 def start_scrape_scheduler():
     """Start the automatic scraping scheduler"""
@@ -2479,5 +2481,4 @@ if __name__ == '__main__':
     if not os.path.exists(CONFIG["CACHE_FILE"]):
         app.logger.info("Initializing cache...")
         MovieCache.save(fetch_movies())
-    start_scrape_scheduler()    
     app.run(host='0.0.0.0', port=47947, debug=False)

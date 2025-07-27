@@ -197,7 +197,6 @@ class Payment(db.Model):
 #----------------------------------------------------------------------
 with app.app_context():
     db.create_all()
-    start_scrape_scheduler()
 #======================================
 @app.route('/robots.txt')
 def robots_txt():
@@ -2480,4 +2479,6 @@ if __name__ == '__main__':
     if not os.path.exists(CONFIG["CACHE_FILE"]):
         app.logger.info("Initializing cache...")
         MovieCache.save(fetch_movies())
+
+    start_scrape_scheduler()  # ✅ Schedule the automatic scraping
     app.run(host='0.0.0.0', port=47947, debug=False)

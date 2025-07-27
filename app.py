@@ -1641,7 +1641,19 @@ def player():
         current_year=datetime.now().year
     )
 #------------------------------------------------------------------------
-
+@app.route('/api/channel_stream')
+@login_required
+def channel_stream():
+    key = request.args.get('key')
+    channel = CUSTOM_CHANNELS.get(key)
+    if not channel:
+        abort(404)
+    
+    return jsonify({
+        'name': channel['name'],
+        'url': channel['url'],
+        'token': channel.get('token', '')
+    })
 #======================================
 #             >>>>PLUS FEATURE<<<<
 #======================================

@@ -748,7 +748,7 @@
       if (!streamUrl) {
         showError("No stream URL provided");
         return;
-      })
+      }
 
       const urlWithToken = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
       const ext = getExtension(urlWithToken);

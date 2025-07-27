@@ -175,7 +175,7 @@
                     <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
                          data-name="{{ channel.name | lower }}"
                          data-access="{{ channel.get('access', 'free') | lower }}">
-                        <a href="{{ url_for('plus_player') }}?{{ {'url': channel.url, 'token': channel.token}|urlencode }}" target="_blank" class="block h-full">
+                        <a href="{{ url_for('plus_player') }}?url={{ channel.url }}&token={{ channel.token }}" target="_blank" class="block h-full">
                             <div class="relative pt-[56.25%] bg-gray-900/20">
                                 {% if channel.logo %}
                                 <img src="{{ channel.logo }}" alt="{{ channel.name }}"

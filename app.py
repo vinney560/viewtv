@@ -1951,11 +1951,11 @@ def account():
 
         elif form_type == "change_password":
             current_pw = request.form.get("current_password")
-            new_pw = request.form.get("new_password")
+            new_pw = request.form.get("confirm_new_password")
             if len(new_pw) < 4:
                 flash("Password too short", "error")
-            if current_pw != new_pw:
-                flash("Password don't match", "error")
+            if current_pw == new_pw:
+                flash("New password can't be old password", "error")
             if check_password_hash(current_user.password, current_pw):
                 current_user.password = generate_password_hash(new_pw)
                 db.session.commit()

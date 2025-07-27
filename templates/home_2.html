@@ -67,12 +67,33 @@
       height: 60px;
       margin-top: -60px;
     }
+    
+    /* Responsive additions */
+    @media (max-width: 640px) {
+      .responsive-flex {
+        flex-direction: column;
+      }
+      .responsive-space {
+        margin-top: 1rem;
+        margin-left: 0;
+      }
+      .responsive-width {
+        width: 100%;
+      }
+      .responsive-padding {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .responsive-text {
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
-<body class="h-full min-h-screen text-white flex flex-col items-center p-4">
+<body class="h-full min-h-screen text-white flex flex-col items-center p-4 responsive-padding">
 
   <!-- Modern Toast Notifications -->
-  <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80">
+  <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80 md:w-96">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
@@ -143,7 +164,7 @@
   </header>
 
   <!-- Main Content -->
-  <main class="w-full max-w-2xl flex flex-col items-center space-y-6 px-4 flex-grow">
+  <main class="w-full max-w-2xl flex flex-col items-center space-y-6 px-4 flex-grow mb-20">
 
     <!-- Exclusive Sports -->
     <a href="{{ url_for('sports_playlist') }}" class="w-full group relative overflow-hidden py-5 flex items-center justify-center space-x-3 text-xl md:text-2xl font-bold rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-gray-900 glow-hover transition-all transform hover:-translate-y-1 hover:shadow-lg">
@@ -155,21 +176,21 @@
     </a>
 
     <!-- Category & Country Buttons -->
-    <div class="flex w-full space-x-4">
+    <div class="flex w-full space-x-4 responsive-flex">
       <!-- Category -->
-      <a href="{{ url_for('categories') }}" class="w-1/2 py-4 flex items-center justify-center space-x-2 bg-gray-800/60 hover:bg-cyan-700/50 text-cyan-300 font-semibold rounded-xl glow-hover transition-all border border-gray-700/30 hover:border-cyan-500/30">
+      <a href="{{ url_for('categories') }}" class="w-1/2 responsive-width py-4 flex items-center justify-center space-x-2 bg-gray-800/60 hover:bg-cyan-700/50 text-cyan-300 font-semibold rounded-xl glow-hover transition-all border border-gray-700/30 hover:border-cyan-500/30">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
         </svg>
-        <span>Category</span>
+        <span class="responsive-text">Category</span>
       </a>
 
       <!-- Country -->
-      <a href="{{ url_for('countries') }}" class="w-1/2 py-4 flex items-center justify-center space-x-2 bg-gray-800/60 hover:bg-cyan-700/50 text-cyan-300 font-semibold rounded-xl glow-hover transition-all border border-gray-700/30 hover:border-cyan-500/30">
+      <a href="{{ url_for('countries') }}" class="w-1/2 responsive-width responsive-space py-4 flex items-center justify-center space-x-2 bg-gray-800/60 hover:bg-cyan-700/50 text-cyan-300 font-semibold rounded-xl glow-hover transition-all border border-gray-700/30 hover:border-cyan-500/30">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <span>Country</span>
+        <span class="responsive-text">Country</span>
       </a>
     </div>
 
@@ -183,28 +204,28 @@
     </a>
 
     <!-- Movies Row -->
-    <div class="flex w-full space-x-4">
+    <div class="flex w-full space-x-4 responsive-flex">
       <!-- Plus Movies Button -->
-      <a href="{{ url_for('movieflix') }}" class="w-1/2 py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
+      <a href="{{ url_for('movieflix') }}" class="w-1/2 responsive-width py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
         </svg>
-        <span>Plus Movies</span>
+        <span class="responsive-text">Plus Movies</span>
       </a>
 
       <!-- Moviepire Button -->
-      <a href="https://ww1.goojara.to/watch-movies" class="w-1/2 py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-red-600 to-pink-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
+      <a href="https://ww1.goojara.to/watch-movies" class="w-1/2 responsive-width responsive-space py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-red-600 to-pink-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
         </svg>
-        <span>Moviepire</span>
+        <span class="responsive-text">Moviepire</span>
       </a>
     </div>
 
   </main>
 
   <!-- Footer with Wave Design -->
-  <div class="w-full max-w-4xl relative">
+  <div class="w-full max-w-4xl relative mt-auto">
     <div class="footer-wave"></div>
     <footer class="w-full p-6 card-glass rounded-t-2xl shadow-lg">
       <div class="flex justify-center mb-4">

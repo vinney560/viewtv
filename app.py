@@ -48,7 +48,7 @@ def choose_db_uri():
     supabase_uri = os.getenv('DATABASE_URL')  # Supabase DB (primary)
     render_uri = os.getenv('DATABASE_URL_3')      # Render DB (secondary)
 
-    # Try Supabase first
+    # Try Render Old DB first
     if supabase_uri:
         print("🔍 Trying Supabase DB (DATABASE_URL_3)...")
         try:

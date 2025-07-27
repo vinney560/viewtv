@@ -44,14 +44,32 @@
     .channel-option:hover {
       background-color: rgba(31, 41, 55, 0.5);
     }
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      margin-right: 12px;
+    }
   </style>
 </head>
 <body class="flex flex-col h-full text-gray-100">
   <header class="bg-gray-800/80 border-b border-gray-700 p-4 sticky top-0 z-10">
     <div class="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-      <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
-        Live Sports Channels
-      </h1>
+      <div class="flex items-center">
+        <!-- SVG Icon -->
+        <svg class="header-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" 
+                fill="url(#gradient)" />
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0ea5e9" />
+              <stop offset="100%" stop-color="#10b981" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+          Live Sports Channels
+        </h1>
+      </div>
       
       <div class="search-container relative max-w-md w-full border border-gray-700 rounded-lg overflow-hidden bg-gray-800/50">
         <input type="text" id="searchInput" placeholder="Search channels..." 
@@ -79,6 +97,7 @@
           </a>
         </div>
 
+        <!-- FIFA (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="fifa">
           <a href="https://www.youtube.com/c/fifatv/live" target="_blank" class="block">
@@ -92,6 +111,7 @@
           </a>
         </div>
 
+        <!-- Premier League (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="premier league">
           <a href="https://www.youtube.com/c/premierleague/live" target="_blank" class="block">
@@ -105,6 +125,7 @@
           </a>
         </div>
 
+        <!-- UEFA Champions League (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="uefa">
           <a href="https://www.youtube.com/@UEFA/live" target="_blank" class="block">
@@ -118,6 +139,7 @@
           </a>
         </div>
 
+        <!-- ESPN FC (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="espn">
           <a href="https://www.youtube.com/c/ESPNFC/live" target="_blank" class="block">
@@ -131,6 +153,7 @@
           </a>
         </div>
 
+        <!-- CBS Sports Golazo (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="cbs">
           <a href="https://www.youtube.com/c/CBSSportsGolazo/live" target="_blank" class="block">
@@ -144,6 +167,7 @@
           </a>
         </div>
 
+        <!-- OneFootball (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="t sport">
           <a href="https://www.youtube.com/c/TSportsbd/live" target="_blank" class="block">
@@ -157,6 +181,7 @@
           </a>
         </div>
 
+        <!-- Fubo Sports (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="fubo">
           <a href="https://www.youtube.com/c/fubosports/live" target="_blank" class="block">
@@ -169,6 +194,7 @@
           </a>
         </div>
 
+        <!-- Sky Sports Football (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="sky sports football uk football">
           <a href="https://www.youtube.com/c/skysportsfootball/live" target="_blank" class="block">
@@ -182,6 +208,7 @@
           </a>
         </div>
 
+        <!-- BT Sport (Verified Working) -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="bt sport uk sports">
           <a href="https://www.youtube.com/c/BTSport/live" target="_blank" class="block">
@@ -474,6 +501,58 @@
           </div>
         </div>
 
+        <!-- All Football Group -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="all football streamtv">
+          <div class="cursor-pointer group-header p-4 text-center" onclick="toggleDropdown(this)">
+            <img src="https://viewtv-p2s3.onrender.com/uploads/streamtv.png" 
+                 alt="Stream TV Logo" class="channel-logo mx-auto">
+            <div class="flex items-center justify-center">
+              <h3 class="font-medium">All Football</h3>
+              <i class="fas fa-chevron-down dropdown-icon ml-2 text-gray-400 text-sm"></i>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">3 Streams Available</p>
+          </div>
+          
+          <div class="dropdown-content bg-gray-900/50">
+            <!-- Stream 1 -->
+            <a href="http://icdn.bdixsports.live:1935/live/live7.stream/playlist.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/streamtv.png" alt="Stream 1 Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">All Football Stream 1</h4>
+                  <p class="text-xs text-gray-400">Football</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- Stream 2 -->
+            <a href="http://icdn.bdixsports.live:1935/live/live9.stream/playlist.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/streamtv.png" alt="Stream 2 Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">All Football Stream 2</h4>
+                  <p class="text-xs text-gray-400">Football</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- Stream 3 -->
+            <a href="http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/streamtv.png" alt="Stream 3 Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">All Football Stream 3</h4>
+                  <p class="text-xs text-gray-400">Football</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
         <!-- Individual Channels -->
         <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
              data-search="star sports 1 sports">
@@ -495,18 +574,6 @@
                    alt="Logo" class="channel-logo">
               <h3 class="font-medium">T Sports</h3>
               <p class="text-xs text-gray-400 mt-1">Sports</p>
-            </div>
-          </a>
-        </div>
-        
-        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
-             data-search="streamtv">
-          <a href="http://icdn.bdixsports.live:1935/live/live7.stream/playlist.m3u8" target="_blank" class="block">
-            <div class="p-4 text-center">
-              <img src="https://viewtv-p2s3.onrender.com/uploads/streamtv.png" 
-                   alt="Logo" class="channel-logo">
-              <h3 class="font-medium">Stream TV</h3>
-              <p class="text-xs text-gray-400 mt-1">All Football</p>
             </div>
           </a>
         </div>

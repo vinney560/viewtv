@@ -197,6 +197,7 @@ class Payment(db.Model):
 #----------------------------------------------------------------------
 with app.app_context():
     db.create_all()
+    start_scrape_scheduler()
 #======================================
 @app.route('/robots.txt')
 def robots_txt():
@@ -256,9 +257,7 @@ def uploaded_file(filename):
 def is_authenticated():
     return jsonify({'authenticated': current_user.is_authenticated})
 #----------------------------------------------------------------------
-@app.before_first_request
-def initialize_scheduler():
-    start_scrape_scheduler()
+
 #-----------------------------------------------------------------------
 @app.before_request
 def auto_logout_user():

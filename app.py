@@ -1608,7 +1608,6 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #--------------------------------------------------------------------------
 @app.route('/plus-player')
-@login_required
 def plus_player():
     name = request.args.get('name', 'Streaming')
     url = request.args.get('url')

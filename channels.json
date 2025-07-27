@@ -2714,6 +2714,12 @@
     "group-title": "Entertainment",
     "logo": "https://i.imgur.com/p13E4cf.png"
   },
+  "sporty_tv_live": {
+    "name": "Sporty TV",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UCwu87p766uwEyzG1p8dEMlg",
+    "group-title": "Sports",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/sporty.png"
+  },
   "FX_East": {
     "name": "FX East",
     "url": "https://fl5.moveonjoy.com/FX/index.m3u8",

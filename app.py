@@ -681,36 +681,7 @@ def proxy_redirect(stream_url):
     </body>
     </html>
     """, full_url=full_url)        
-@app.route("/plus-playlist")
-@login_required
-@plus_required
-def plus_playlist():
-    return redirect(url_for('custom_list'))
 
-from collections import defaultdict
-
-@app.route("/plus-channels")
-@login_required
-@plus_required
-def custom_list():
-    raw_channels = CUSTOM_CHANNELS  # dict of dicts
-    grouped = defaultdict(list)
-
-    for key, ch in raw_channels.items():  # Iterate with keys too
-        group = ch.get('group-title', 'Uncategorized')
-        # Include the key inside each channel dict
-        ch_with_key = ch.copy()
-        ch_with_key['key'] = key
-        grouped[group].append(ch_with_key)
-
-    # Optional: Sort channels in each group alphabetically by name
-    for group in grouped:
-        grouped[group] = sorted(grouped[group], key=lambda x: x.get('name', '').lower())
-
-    # Sort groups alphabetically
-    categorized_channels = dict(sorted(grouped.items(), key=lambda x: x[0].lower()))
-
-    return render_template('custom_list.html', categorized_channels=categorized_channels)
 #-------------------------------------------------------------------------
 @app.route("/embed/moviepire")
 @login_required
@@ -1605,6 +1576,37 @@ def play_channel(key):
         current_key=key 
     )
 #-------------------------------------------------------------------------
+@app.route("/plus-playlist")
+@login_required
+@plus_required
+def plus_playlist():
+    return redirect(url_for('custom_list'))
+
+from collections import defaultdict
+
+@app.route("/plus-channels")
+@login_required
+@plus_required
+def custom_list():
+    raw_channels = CUSTOM_CHANNELS  # dict of dicts
+    grouped = defaultdict(list)
+
+    for key, ch in raw_channels.items():  # Iterate with keys too
+        group = ch.get('group-title', 'Uncategorized')
+        # Include the key inside each channel dict
+        ch_with_key = ch.copy()
+        ch_with_key['key'] = key
+        grouped[group].append(ch_with_key)
+
+    # Optional: Sort channels in each group alphabetically by name
+    for group in grouped:
+        grouped[group] = sorted(grouped[group], key=lambda x: x.get('name', '').lower())
+
+    # Sort groups alphabetically
+    categorized_channels = dict(sorted(grouped.items(), key=lambda x: x[0].lower()))
+
+    return render_template('custom_list.html', categorized_channels=categorized_channels)
+#--------------------------------------------------------------------------
 @app.route('/plus-player')
 def plus_player():
     name = request.args.get('name', 'Streaming')
@@ -1639,17 +1641,6 @@ def player():
         current_year=datetime.now().year
     )
 #------------------------------------------------------------------------
-@app.route("/api/channel_stream_url")
-@login_required
-def channel_stream_url():
-    key = request.args.get("key")
-    channel = RANDOMIZED_CHANNELS.get(key)
-    if not channel:
-        return jsonify({"error": "Channel not found"}), 404
-    return jsonify({
-        "stream_url": channel["url"],
-        "name": channel["name"]
-    })
 
 #======================================
 #             >>>>PLUS FEATURE<<<<
@@ -1956,6 +1947,7 @@ def account():
                 flash("Password too short", "error")
             if current_pw == new_pw:
                 flash("New password can't be old password", "error")
+                return redirect(url_for("account"))
             if check_password_hash(current_user.password, current_pw):
                 current_user.password = generate_password_hash(new_pw)
                 db.session.commit()

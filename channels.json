@@ -142,7 +142,7 @@
   },
   "citizen-tv": {
     "name": "Citizen TV",
-    "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=1&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/citizen.png",
     "group-title": "News"
   },

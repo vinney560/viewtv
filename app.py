@@ -271,7 +271,7 @@ def generate_email_token(user):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     return serializer.dumps(user.email, salt='email-verification')
 #-----------------------------------------------------------------------
-def verify_email_token(token, expiration=300):
+def verify_email_token(token, expiration=1800):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
     try:
         email = serializer.loads(token, salt='email-verification', max_age=expiration)

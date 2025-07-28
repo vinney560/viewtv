@@ -929,16 +929,6 @@
     "url": "https://9a81dd4ee3884d0dbcacafaf0d81327a.mediatailor.us-east-1.amazonaws.com/v1/master/04fd913bb278d8775298c26fdca9d9841f37601f/RakutenTV-eu_BilliardsTV/playlist.m3u8",
     "logo": "https://images-3.rakuten.tv/storage/global-live-channel/translation/artwork/80af06f2-a12e-4406-bd13-b932fd69fffe-width200-quality90.png",
     "group-title": "Sports"
-  },  
-  "ABCEast": {
-    "name": "ABC",
-    "url": "https://fl5.moveonjoy.com/ABC/index.m3u8",
-    "group-title": ""
-  },
-  "ACC Networt": {
-    "name": "ACC Networt",
-    "url": "https://fl5.moveonjoy.com/ACC_NETWORT/index.m3u8",
-    "group-title": ""
   },
   "BETGospel": {
     "name": "BET Gospel",

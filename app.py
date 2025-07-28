@@ -45,7 +45,7 @@ load_dotenv()
 import traceback
 
 def choose_db_uri():
-    supabase_uri = os.getenv('DATABASE_URL')  # Supabase DB (primary)
+    supabase_uri = os.getenv('DATABASE_URL')  # Old Render DB (primary)
     render_uri = os.getenv('DATABASE_URL_3')      # Render DB (secondary)
 
     # Try Render Old DB first
@@ -1575,6 +1575,18 @@ def play_channel(key):
         channels=channels,       # Now a list of dicts with name, url, key
         current_key=key 
     )
+@app.route("/api/channel_stream_url")
+@login_required
+def channel_stream_url():
+    key = request.args.get("key")
+    channel = RANDOMIZED_CHANNELS.get(key)
+    if not channel:
+        return jsonify({"error": "Channel not found"}), 404
+    return jsonify({
+        "stream_url": channel["url"],
+        "name": channel["name"]
+    })
+
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")
 @login_required
@@ -1623,7 +1635,8 @@ def plus_player():
         token=token,
         current_year=datetime.now().year
     )
-
+#------------------------------------------------------------------------
+#extra player for external URL test
 @app.route('/player')
 def player():
     name = request.args.get('name', 'Streaming')
@@ -1640,20 +1653,6 @@ def player():
         token=token,
         current_year=datetime.now().year
     )
-#------------------------------------------------------------------------
-@app.route('/api/channel_stream')
-@login_required
-def channel_stream():
-    key = request.args.get('key')
-    channel = CUSTOM_CHANNELS.get(key)
-    if not channel:
-        abort(404)
-    
-    return jsonify({
-        'name': channel['name'],
-        'url': channel['url'],
-        'token': channel.get('token', '')
-    })
 #======================================
 #             >>>>PLUS FEATURE<<<<
 #======================================

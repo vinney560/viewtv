@@ -582,6 +582,9 @@ def home_2():
     if current_user.plus_type not in ["free", "paid"]:
         return redirect(url_for("home_1"))
     return render_template('home_2.html', user=current_user)
+@app.route("/curated")   
+def curated():
+    return render_template("test-player.html") 
 #-----------------------------------------------------------------------
 # Exclusive sport Logic
 

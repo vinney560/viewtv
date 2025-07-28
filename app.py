@@ -116,9 +116,8 @@ mail = Mail(app)
 csrf = CSRFProtect(app)
 limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
-
 login_manager.login_view = "login"
-
+CORS(app, resources={r"/*": {"origins": "https://viewtv-p2s3.onrender.com"}})
 # ============================
 # MODELS
 # ============================
@@ -256,7 +255,11 @@ def uploaded_file(filename):
 def is_authenticated():
     return jsonify({'authenticated': current_user.is_authenticated})
 #----------------------------------------------------------------------
-
+@app.after_request
+def set_frame_headers(response):
+    response.headers['X-Frame-Options'] = 'ALLOW-FROM https://viewtv-p2s3.onrender.com'
+    response.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://viewtv-p2s3.onrender.com"
+    return response
 #-----------------------------------------------------------------------
 @app.before_request
 def auto_logout_user():

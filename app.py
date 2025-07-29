@@ -193,6 +193,14 @@ class Payment(db.Model):
     status = db.Column(db.String(50), default="Pending")
     mpesa_receipt = db.Column(db.String(100))
 
+class FlashNotice(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True)
+
+    def is_expired(self):
+        return datetime.utcnow() > self.created_at + timedelta(hours=24)
 #----------------------------------------------------------------------
 with app.app_context():
     db.create_all()
@@ -261,6 +269,17 @@ def set_frame_headers(response):
     response.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://viewtv-p2s3.onrender.com"
     return response
 #-----------------------------------------------------------------------
+@app.before_request
+def flash_update_notice():
+    notice = FlashNotice.query.filter_by(is_active=True).order_by(FlashNotice.created_at.desc()).first()
+
+    if not notice or notice.is_expired():
+        return  # Nothing to flash or expired
+
+    if session.get('seen_flash_message') != str(notice.id):
+        flash(notice.message, "info")
+        session['seen_flash_message'] = str(notice.id)
+#----------------------------------------------------------------------------
 @app.before_request
 def auto_logout_user():
     if current_user.is_authenticated:
@@ -2459,6 +2478,37 @@ def download_channels():
         mimetype='application/json'
     )
 #---------------------------------------------------------------------------
+@app.route('/admin/set-notice', methods=['GET', 'POST'])
+def set_notice():
+    if request.method == 'POST':
+        msg = request.form.get('message', '').strip()
+
+        if not msg:
+            flash("⚠️ Message is required.", "danger")
+            return redirect(url_for('set_notice'))
+
+        try:
+            # Soft deactivate expired or previous notices
+            notices = FlashNotice.query.all()
+            for notice in notices:
+                if notice.is_active or notice.is_expired():
+                    notice.is_active = False
+            db.session.commit()
+
+            # Add new notice
+            new_notice = FlashNotice(message=msg, is_active=True)
+            db.session.add(new_notice)
+            db.session.commit()
+
+            flash("✅ Flash notice posted for 24 hours.", "success")
+            return redirect(url_for('set_notice'))
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f"❌ Error: {str(e)}", "danger")
+            return redirect(url_for('set_notice'))
+
+    return render_template("notice_update.html")
 #========================================
 
 @app.context_processor

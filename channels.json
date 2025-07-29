@@ -275,6 +275,136 @@
     "url": "https://linear-861.frequency.stream/dist/lg-uk/861/hls/master/playlist.m3u8",
     "group-title": "Entertainment"
   },  
+  "health-media": {
+    "name": "Health Media",
+    "url": "https://6n3yowknl9ok-hls-live.5centscdn.com/HMN/271ddf829afeece44d8732757fba1a66.sdp/playlist.m3u8",
+    "group-title": "Health"
+  },
+  "ten-sports-cricket": {
+    "name": "Ten-Sports Cricket",
+    "url": "https://app.hughag.store/api/6b9c461155/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "cts-sports": {
+    "name": "Cts sports",
+    "url": "http://88.212.7.10/live/test_ctsport_25p/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "t-sports": {
+    "name": "T sports",
+    "url": "http://163.172.59.25/crc1/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "t-sports-2": {
+    "name": "T Sports 2",
+    "url": "http://103.15.140.138/tsports/tracks-v1a1/mono.ts.m3u8",
+    "group-title": "Sports"
+  },
+  "t-sports-sd": {
+    "name": "T Sports SD",
+    "url": "http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "fox-sports-2": {
+    "name": "Fox sports 2",
+    "url": "http://212.102.60.231/FOX_SPORTS_2/tracks-v1a1/mono.ts.m3u8",
+    "group-title": "Sports"
+  },
+  "usa-fs-1": {
+    "name": "USA FS 1",
+    "url": "http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "bein-2": {
+    "name": "Bein 2",
+    "url": "http://57.129.73.112:8480/701/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "bein-2-hd": {
+    "name": "Bein 2 HD",
+    "url": "http://57.129.73.112:8480/702/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "bein-6": {
+    "name": "Bein 6",
+    "url": "http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "eurosports-1": {
+    "name": "Eurosports 1",
+    "url": "http://178.217.72.66:8080/Eurosport_HD/video.m3u8",
+    "group-title": "Sports"
+  },
+  "eurosports2": {
+    "name": "Eurosports2",
+    "url": "http://185.189.225.157/EuroSport2/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "all-sports": {
+    "name": "All Sports",
+    "url": "http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "star-sport": {
+    "name": "Star Sport",
+    "url": "http://41.205.93.154/STARSPORTS1/index.m3u8",
+    "group-title": "Sports"
+  },
+  "t-sports-sd-2": {
+    "name": "T Sports SD",
+    "url": "http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "decades": {
+    "name": "Decades",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-decades/index.m3u8",
+    "group-title": "Entertainment"
+  },
+  "true-crime-network": {
+    "name": "True Crime Network",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-truecrimenetwork/index.m3u8",
+    "group-title": "Crime"
+  },
+  "movies-hd": {
+    "name": "Movies HD",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-movies!/index.m3u8",
+    "group-title": "Movies"
+  },
+  "kajou-tv": {
+    "name": "Kajou TV",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-kajoutv/index.m3u8",
+    "group-title": "Entertainment"
+  },
+  "iman-tv": {
+    "name": "Iman TV",
+    "url": "https://live20.bozztv.com/gin-36bay3/gin-afghanimantv/index.m3u8",
+    "group-title": "Religious"
+  },
+  "willow-cricket": {
+    "name": "Willow Cricket",
+    "url": "https://fl3.moveonjoy.com/WILLOW_CRICKET/index.m3u8",
+    "group-title": "Sports"
+  },
+  "tbn-inspire": {
+    "name": "TBN Inspire",
+    "url": "https://livecdn.use1-0004.jwplive.com/live/sites/Yal8cmyO/media/yfFI83Xz/live.isml/.m3u8",
+    "group-title": "Religious"
+  },
+  "tom-and-jerry-2": {
+    "name": "Tom and Jerry 2",
+    "url": "https://live20.bozztv.com/giatvplayout7/giatv-208314/playlist.m3u8",
+    "group-title": "Animation"
+  },
+  "fox-news-channel": {
+    "name": "Fox News Channel",
+    "url": "http://23.237.104.106:8080/USA_FOX_NEWS/index.m3u8",
+    "group-title": "News"
+  },
+  "clubbing-tv-france": {
+    "name": "Clubbing TV France",
+    "url": "https://d1j2csarxnwazk.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-uze1m6xh4fiyr-ssai-prd/master.m3u8",
+    "group-title": "Music"
+  },  
   "position-tv": {
     "name": "Position Tv",
     "url": "https://stream3.shopch.jp/HLS/master.m3u8",

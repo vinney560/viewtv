@@ -50,7 +50,7 @@ def choose_db_uri():
 
     # Try Render Old DB first
     if supabase_uri:
-        print("🔍 Trying Supabase DB (DATABASE_URL_3)...")
+        print("🔍 Trying Render Old DB (DATABASE_URL)...")
         try:
             engine = create_engine(supabase_uri)
             engine.connect().close()
@@ -196,7 +196,7 @@ class Payment(db.Model):
 class FlashNotice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow + timedelta(hours=3))
+    created_at = db.Column(db.DateTime, default=nairobi_time)
     is_active = db.Column(db.Boolean, default=True)
 
     def is_expired(self):

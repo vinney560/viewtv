@@ -164,10 +164,20 @@
         </span>
       </a>
       {% endif %}
-      
-      <!-- Update Notice  -->
+
+      <!-- Superadmin & Admin1: Manage Notices -->
+      {% if user.role in ['superadmin', 'admin1'] %}
       <a href="{{ url_for('set_notice') }}"
-   class="glow-hover bg-cyan-600 hover:bg-cyan-500 py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-2 font-bold"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Manage Notices</a>
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <span>Manage Notices</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
+      </a>
+      {% endif %}
 
       <!-- Account Settings (All roles) -->
       <a href="{{ url_for('account') }}"

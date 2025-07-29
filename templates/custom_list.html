@@ -27,9 +27,17 @@
             box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.3);
             border-color: rgba(6, 182, 212, 0.3);
         }
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
         .channels-container {
             flex: 1;
             overflow-y: auto;
+        }
+        .search-box:focus {
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
         }
         .toast-entry {
             animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -48,7 +56,6 @@
         .dropdown-content {
             display: none;
             animation: fadeIn 0.2s ease-out;
-            right: 0;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
@@ -69,8 +76,9 @@
             background-clip: text;
             color: transparent;
         }
-        .search-box:focus {
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
+        .invalid-channel {
+            opacity: 0.7;
+            filter: grayscale(80%);
         }
     </style>
 </head>
@@ -120,14 +128,14 @@
     <header class="card-glass border-b border-gray-700/30 p-4 sticky top-0 z-40">
         <div class="container mx-auto flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
-                <a href="/home_2"><svg class="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
-                </svg></a>
+                </svg>
                 <h1 class="text-2xl font-bold gradient-text">ViewTV</h1>
             </div>
             
             <div class="flex items-center space-x-4">
-                <!-- Category Dropdown - Positioned inward -->
+                <!-- Category Dropdown -->
                 <div class="dropdown relative">
                     <button class="flex items-center space-x-2 px-4 py-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30">
                         <i class="fas fa-tag text-cyan-300"></i>
@@ -172,13 +180,41 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                     {% for channel in group_channels %}
-                    <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
-                         data-name="{{ channel.name | lower }}"
+                    {% set channel_url = channel.get('url', '') %}
+                    {% set channel_name = channel.get('name', '') %}
+                    {% set channel_token = channel.get('token', '') %}
+                    
+                    <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30
+                        {% if not channel_url %} invalid-channel {% endif %}"
+                         data-name="{{ channel_name | lower }}"
                          data-access="{{ channel.get('access', 'free') | lower }}">
-                        <a href="{{ url_for('plus_player') }}?{{ {'url': channel.url, 'token': channel.token}|urlencode }}" target="_blank" class="block h-full">
+                        
+                        {% if channel_url %}
+                            {% set url_parts = channel_url.split('://') %}
+                            {% if url_parts|length > 1 %}
+                                {% set domain_port = url_parts[1].split('/')[0] %}
+                                {% set domain = domain_port.split(':')[0] %}
+                                {% set is_ip = domain.replace('.', '').isdigit() %}
+                                {% set has_port = ':' in domain_port %}
+                                
+                                {% if is_ip or has_port %}
+                                    <a href="{{ channel_url }}" target="_blank" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
+                                {% else %}
+                                    <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" target="_blank" class="block h-full">
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" target="_blank" class="block h-full">
+                            {% endif %}
+                        {% else %}
+                            <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">
+                                <i class="fas fa-unlink text-xl mb-2"></i>
+                                <p class="text-xs">No URL provided</p>
+                            </div>
+                        {% endif %}
+                        
                             <div class="relative pt-[56.25%] bg-gray-900/20">
-                                {% if channel.logo %}
-                                <img src="{{ channel.logo }}" alt="{{ channel.name }}"
+                                {% if channel.get('logo') %}
+                                <img src="{{ channel.logo }}" alt="{{ channel_name }}"
                                      class="absolute inset-0 w-full h-full object-contain p-4">
                                 {% else %}
                                 <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
@@ -192,10 +228,11 @@
                                 </div>
                             </div>
                             <div class="p-3">
-                                <h3 class="font-medium text-sm truncate">{{ channel.name }}</h3>
+                                <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
                                 <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
                             </div>
-                        </a>
+                        
+                        {% if channel_url %}</a>{% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -323,6 +360,25 @@
                 toast.classList.add('toast-exit');
                 setTimeout(() => toast.remove(), 500);
             });
+        }
+
+        // Validate direct IP links before opening
+        function validateLink(event, url) {
+            try {
+                // Basic URL validation
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    showToast('Invalid URL format', 'error');
+                    event.preventDefault();
+                    return false;
+                }
+
+                // Additional checks can be added here if needed
+                return true;
+            } catch (e) {
+                showToast('Error opening channel', 'error');
+                event.preventDefault();
+                return false;
+            }
         }
     </script>
 </body>

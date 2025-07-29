@@ -485,10 +485,16 @@ def register():
         db.session.commit()
 
         send_verification_email(new_user)
-        flash(f"Account created as {role}. Check your email to verify.", "success")
-        return redirect(url_for('home'))
+        flash(f"Account created as {new_user.role}. Check your email to verify.", "success")
+        return redirect(url_for('notice_register', user_id=new_user.id))
 
     return render_template("register.html")
+
+@app.route('/notice-register')
+def notice_register():
+    user_id = request.args.get('user_id')
+    new_user = User.query.get(user_id)
+    return render_template("notice_register.html", new_user=new_user)
 
 #----------------------------------------------------------------------
 def get_role_home(role, is_plus):

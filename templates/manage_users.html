@@ -152,7 +152,7 @@
                   <span class="text-cyan-400">{{ user.email[0].upper() }}</span>
                 </div>
                 <div>
-                  <div class="font-medium">{{ user.email }}</div>
+                  <div class="font-medium"><a href="mailto:{{ user.email }}" class="text-inherit hover:underline">{{ user.email }}</a></div>
                   <div class="text-xs text-gray-400">Joined: {{ user.created_at.strftime('%Y-%m-%d') }}</div>
                 </div>
               </div>

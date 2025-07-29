@@ -196,7 +196,7 @@ class Payment(db.Model):
 class FlashNotice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow + timedelta(hours=3))
     is_active = db.Column(db.Boolean, default=True)
 
     def is_expired(self):

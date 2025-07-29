@@ -2505,10 +2505,11 @@ def set_notice():
 
         except Exception as e:
             db.session.rollback()
-            flash(f"❌ Error: {str(e)}", "danger")
+            flash(f" Error: {str(e)}", "danger")
             return redirect(url_for('set_notice'))
 
     return render_template("notice_update.html")
+
 #========================================
 
 @app.context_processor

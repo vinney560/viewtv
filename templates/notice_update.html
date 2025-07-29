@@ -105,14 +105,7 @@
     </div>
 
     <!-- Current Notice -->
-    {% set active_notice = namespace(value=None) %}
-    {% for n in FlashNotice.query.order_by(FlashNotice.created_at.desc()).all() %}
-      {% if n.is_active and not n.is_expired() and not active_notice.value %}
-        {% set active_notice.value = n %}
-      {% endif %}
-    {% endfor %}
-
-    {% if active_notice.value %}
+    {% if active_notice %}
       <div class="p-4 rounded-xl bg-gray-800/50 border-l-4 border-cyan-500">
         <div class="flex items-start">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,8 +113,8 @@
           </svg>
           <div class="ml-3">
             <p class="font-medium text-white">Current Notice</p>
-            <p class="text-gray-300 mt-1">{{ active_notice.value.message|e }}</p>
-            <p class="text-xs text-gray-400 mt-2">Posted on: {{ active_notice.value.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p class="text-gray-300 mt-1">{{ active_notice.message|e }}</p>
+            <p class="text-xs text-gray-400 mt-2">Posted on: {{ active_notice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
           </div>
         </div>
       </div>
@@ -129,6 +122,7 @@
 
     <!-- Update Form -->
     <form method="POST" action="{{ url_for('set_notice') }}" class="space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div>
         <label class="block text-sm font-medium mb-2 text-cyan-300">New Notice Message</label>
         <textarea name="message" rows="4" required placeholder="Enter new flash notice message..." 

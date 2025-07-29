@@ -2481,35 +2481,23 @@ def download_channels():
 @app.route('/admin/set-notice', methods=['GET', 'POST'])
 def set_notice():
     if request.method == 'POST':
-        msg = request.form.get('message', '').strip()
-
+        msg = request.form.get('message')
         if not msg:
-            flash("⚠️ Message is required.", "danger")
+            flash("Message required", "error")
             return redirect(url_for('set_notice'))
 
-        try:
-            # Soft deactivate expired or previous notices
-            notices = FlashNotice.query.all()
-            for notice in notices:
-                if notice.is_active or notice.is_expired():
-                    notice.is_active = False
-            db.session.commit()
+        FlashNotice.query.update({FlashNotice.is_active: False})
+        db.session.add(FlashNotice(message=msg))
+        db.session.commit()
+        flash("✅ Flash notice set!", "success")
+        return redirect(url_for('set_notice'))
 
-            # Add new notice
-            new_notice = FlashNotice(message=msg, is_active=True)
-            db.session.add(new_notice)
-            db.session.commit()
+    # Get the latest active notice (and not expired)
+    active_notice = FlashNotice.query.filter_by(is_active=True).order_by(FlashNotice.created_at.desc()).first()
+    if active_notice and active_notice.is_expired():
+        active_notice = None
 
-            flash("✅ Flash notice posted for 24 hours.", "success")
-            return redirect(url_for('set_notice'))
-
-        except Exception as e:
-            db.session.rollback()
-            flash(f" Error: {str(e)}", "danger")
-            return redirect(url_for('set_notice'))
-
-    return render_template("notice_update.html")
-
+    return render_template("notice_update.html", active_notice=active_notice)
 #========================================
 
 @app.context_processor

@@ -749,7 +749,7 @@ def load_movies_data():
     """Load and validate movies data with caching"""
     # Check if movies file exists
     if not os.path.exists(MOVIES_FILE):
-        current_app.logger.error(f"Movies file not found at {os.path.abspath(MOVIES_FILE)}")
+        app.logger.error(f"Movies file not found at {os.path.abspath(MOVIES_FILE)}")
         return {}
 
     # Check cache freshness
@@ -761,20 +761,20 @@ def load_movies_data():
             with open(CACHE_FILE, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
-            current_app.logger.warning(f"Cache load failed: {e}")
+            app.logger.warning(f"Cache load failed: {e}")
 
     # Load and process original file
     try:
         with open(MOVIES_FILE, 'r', encoding='utf-8') as f:
             raw_data = json.load(f)
     except Exception as e:
-        current_app.logger.error(f"Failed to load movies: {e}")
+        app.logger.error(f"Failed to load movies: {e}")
         return {}
 
     processed = {}
     for original_key, movie in raw_data.items():
         if not isinstance(movie, dict):
-            current_app.logger.warning(f"Skipping invalid movie entry: {original_key}")
+            app.logger.warning(f"Skipping invalid movie entry: {original_key}")
             continue
 
         try:
@@ -789,12 +789,12 @@ def load_movies_data():
             }
             
             if not clean_movie['url']:
-                current_app.logger.warning(f"Skipping movie with empty URL: {original_key}")
+                app.logger.warning(f"Skipping movie with empty URL: {original_key}")
                 continue
                 
             processed[clean_movie['id']] = clean_movie
         except Exception as e:
-            current_app.logger.warning(f"Error processing movie {original_key}: {e}")
+            _app.logger.warning(f"Error processing movie {original_key}: {e}")
             continue
 
     # Save to cache
@@ -802,7 +802,7 @@ def load_movies_data():
         with open(CACHE_FILE, 'w', encoding='utf-8') as f:
             json.dump(processed, f, indent=2, ensure_ascii=False)
     except Exception as e:
-        current_app.logger.warning(f"Failed to save cache: {e}")
+        app.logger.warning(f"Failed to save cache: {e}")
 
     return processed
 
@@ -2321,7 +2321,7 @@ def save_playlist():
         flash("Invalid JSON format in playlist file", "error")
     except Exception as e:
         db.session.rollback()
-        current_app.logger.error(f"Error saving playlist: {str(e)}")
+        print("Error saving Channels")
         flash(f"Failed to save playlist: {str(e)}", "error")
     
     return redirect(url_for('manage_channels'))    

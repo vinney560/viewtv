@@ -30,7 +30,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFError, CSRFProtect
 from itsdangerous import URLSafeTimedSerializer
 from requests.auth import HTTPBasicAuth
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -203,7 +203,8 @@ class FlashNotice(db.Model):
         return datetime.utcnow() > self.created_at + timedelta(hours=24)
 #----------------------------------------------------------------------
 with app.app_context():
-    ALTER TABLE streams ALTER COLUMN key TYPE VARCHAR(500);
+    db.session.execute(text("ALTER TABLE streams ALTER COLUMN key TYPE VARCHAR(500);"))
+    db.session.commit()
     db.create_all()
 #======================================
 @app.route('/robots.txt')

@@ -3229,6 +3229,138 @@
     "group-title": "Entertainment",
     "logo": "https://i.imgur.com/74Z8ATB.png"
   },
+  "music-india": {
+    "name": "Music India",
+    "url": "https://cdn-2.pishow.tv/live/226/master.m3u8",
+    "group-title": "Music",
+    "logo": ""
+  },  
+  "cctv-plus-1": {
+    "name": "CCTV+ 1",
+    "url": "https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8",
+    "group-title": "News",
+    "country": "China"
+  },
+  "cctv-plus-2": {
+    "name": "CCTV+ 2",
+    "url": "https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL2.smil/playlist.m3u8",
+    "group-title": "News",
+    "country": "China"
+  },
+  "cctv-1": {
+    "name": "CCTV-1综合",
+    "url": "http://42.176.185.28:9901/tsfile/live/1022_1.m3u8",
+    "group-title": "General",
+    "country": "China"
+  },
+  "the-lone-ranger": {
+    "name": "The Lone Ranger",
+    "url": "https://xumo-xumoent-ch829-wojlf.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "Western",
+    "country": "USA"
+  },
+  "outdoor-america": {
+    "name": "Outdoor America",
+    "url": "https://linear-600.frequency.stream/dist/xumo/600/hls/master/playlist.m3u8",
+    "group-title": "Outdoors",
+    "country": "USA"
+  },
+  "ninja-kidz-tv": {
+    "name": "Ninja Kidz TV",
+    "url": "https://playworksdigital-ninjakidztv-1-us.xumo.wurl.tv/playlist.m3u8",
+    "group-title": "Kids",
+    "country": "USA"
+  },
+  "nbc-comedy-vault": {
+    "name": "NBC Comedy Vault",
+    "url": "https://xumo-xumoent-vc-105-z0vpm.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "Comedy",
+    "country": "USA"
+  },
+  "nbc-sports": {
+    "name": "NBC Sports",
+    "url": "https://xumo-xumoent-vc-122-sjv70.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "Sports",
+    "country": "USA"
+  },
+  "investigation-documentary": {
+    "name": "Investigation",
+    "url": "https://amg00346-vizioono-investigation-xumo-us.amagi.tv/playlist.m3u8",
+    "group-title": "Documentary",
+    "country": "USA"
+  },
+  "fork-flight": {
+    "name": "Fork & Flight",
+    "url": "https://amg00346-vizioono-forkandfligt-xumo-us.amagi.tv/playlist.m3u8",
+    "group-title": "Food/Travel",
+    "country": "USA"
+  },
+  "doctor-who-classic": {
+    "name": "Doctor Who Classic",
+    "url": "https://bbc-classicdrwho-1-us.xumo.wurl.tv/playlist.m3u8",
+    "group-title": "Sci-Fi",
+    "country": "UK"
+  },
+  "bad-girls-club": {
+    "name": "Bad Girls Club",
+    "url": "https://xumo-xumoent-vc-118-jed5p.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "Reality",
+    "country": "USA"
+  },
+  "american-crimes": {
+    "name": "American Crimes",
+    "url": "https://xumo-xumoent-vc-113-at8kn.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "True Crime",
+    "country": "USA"
+  },
+  "sudan-tv-1": {
+    "name": "Sudan Tv 1",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/sudan_tv/hls_roku/index.m3u8",
+    "group-title": "General",
+    "country": "Sudan"
+  },
+  "dabanga-sudan": {
+    "name": "Dabanga Sudan",
+    "url": "https://hls.dabangasudan.org/hls/stream.m3u8",
+    "group-title": "News",
+    "country": "Sudan"
+  },
+  "al-almiya-2": {
+    "name": "Al Almiya 2",
+    "url": "http://82.212.74.98:8000/live/7815.m3u8",
+    "group-title": "General",
+    "country": "Sudan"
+  },
+  "ameritrade": {
+    "name": "Ameritrade",
+    "url": "https://tdameritrade-vizio.amagi.tv/playlist.m3u8",
+    "group-title": "Business"
+  },
+  "bon-appetit": {
+    "name": "bon appétit",
+    "url": "https://condenast-bonappetit-vizio.amagi.tv/playlist.m3u8",
+    "group-title": "Food"
+  },
+  "xplore": {
+    "name": "Xplore",
+    "url": "https://xplore-vizio.amagi.tv/playlist.m3u8",
+    "group-title": "Documentary"
+  },
+  "action-hollywood-movie": {
+    "name": "Action Hollywood Movie",
+    "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8",
+    "group-title": "Movies"
+  },
+  "zoomoo": {
+    "name": "ZooMoo",
+    "url": "https://amg01553-blueantmediaasi-zoomoonz-samsungnz-rdufn.amagi.tv/playlist/amg01553-blueantmediaasi-zoomoonz-samsungnz/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "real-wild": {
+    "name": "Real Wild",
+    "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg00426-littledotstudio-realwildnz-samsungnz/playlist.m3u8",
+    "group-title": "Nature"
+  },
   "ZooMoo": {
     "name": "ZooMoo",
     "url": "https://amg01553-blueantmediaasi-zoomoonz-samsungnz-rdufn.amagi.tv/playlist/amg01553-blueantmediaasi-zoomoonz-samsungnz/playlist.m3u8",

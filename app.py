@@ -168,7 +168,7 @@ class User(db.Model, UserMixin):
 
 class Streams(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    key = db.Column(db.String(250), nullable=True, unique=True)
+    key = db.Column(db.String(500), nullable=True, unique=True)
     name = db.Column(db.String(500), nullable=True)
     url = db.Column(db.String(25000), nullable=True)
     category = db.Column(db.String(555), nullable=True)
@@ -203,6 +203,7 @@ class FlashNotice(db.Model):
         return datetime.utcnow() > self.created_at + timedelta(hours=24)
 #----------------------------------------------------------------------
 with app.app_context():
+    ALTER TABLE streams ALTER COLUMN key TYPE VARCHAR(500);
     db.create_all()
 #======================================
 @app.route('/robots.txt')

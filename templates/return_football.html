@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium Sports Streaming | ViewTV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .card-glass {
+      background: rgba(31, 41, 55, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glow-hover {
+      transition: all 0.3s ease;
+    }
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+    }
+    .btn-glass {
+      background: rgba(31, 41, 55, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    .btn-glass:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background: rgba(31, 41, 55, 0.8);
+    }
+    .pulse-text {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+  </style>
+</head>
+<body class="h-full min-h-screen text-white flex flex-col items-center justify-center p-4">
+
+  <div class="w-full max-w-2xl card-glass rounded-2xl shadow-xl p-8 text-center">
+    <!-- Header -->
+    <div class="mb-10">
+      <h1 class="text-4xl font-bold mb-2 gradient-text">Premium Sports Streaming</h1>
+      <p class="text-lg text-gray-300">Experience the game like never before</p>
+    </div>
+
+    <!-- Button Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+      <!-- Sports Playlist Button -->
+      <a href="/sports_playlist" class="btn-glass rounded-xl p-6 flex flex-col items-center justify-center glow-hover">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          <circle cx="12" cy="8" r="1" fill="currentColor"></circle>
+          <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
+          <circle cx="12" cy="16" r="1" fill="currentColor"></circle>
+        </svg>
+        <span class="text-xl font-medium">Sports Playlist</span>
+        <p class="text-sm text-gray-400 mt-2">Curated collection of sports content</p>
+      </a>
+
+      <!-- Live Football Button -->
+      <a href="http://server1.bdixsports.live/all/appevent_football.php" target="_blank" class="btn-glass rounded-xl p-6 flex flex-col items-center justify-center glow-hover">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+        </svg>
+        <span class="text-xl font-medium">Live Football</span>
+        <p class="text-sm text-gray-400 mt-2">Real-time matches & events</p>
+      </a>
+    </div>
+
+    <!-- Back Button -->
+    <button id="backBtn" class="inline-flex items-center px-5 py-2.5 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 transition transform hover:-translate-y-0.5 hover:shadow-lg mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back
+    </button>
+
+    <!-- Promise Text -->
+    <p class="text-sm text-gray-400 mt-4 pulse-text" id="promiseText">We're building the future of sports streaming — delivering crystal-clear, real-time feeds with unmatched reliability. Our mission is simple: to become your most trusted destination for live football coverage, replays, and upcoming matches — all in one place.</p>
+  </div>
+
+  <script>
+    // Back button functionality
+    document.getElementById('backBtn').addEventListener('click', function() {
+      window.history.back();
+    });
+
+    // Enhanced promise text animation
+    const promiseText = document.getElementById('promiseText');
+    let colors = ['text-cyan-400', 'text-emerald-400', 'text-gray-400'];
+    let currentColor = 0;
+    
+    setInterval(() => {
+      promiseText.classList.remove(colors[currentColor]);
+      currentColor = (currentColor + 1) % colors.length;
+      promiseText.classList.add(colors[currentColor]);
+    }, 2000);
+  </script>
+</body>
+</html>

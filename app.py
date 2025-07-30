@@ -677,6 +677,10 @@ def get_grouped_channels():
 
     return grouped
 #----------------------------------------------------------------------
+@app.route("/return-football")
+def return_football():
+    return render_template("return_football.html")
+
 @app.route("/sports_playlist")
 @plus_required
 @login_required

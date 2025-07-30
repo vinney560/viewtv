@@ -3,148 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Football | ViewTV</title>
+    <title>Live Football | ViewTV Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
+            color: #f8fafc;
         }
-        .event-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(30, 41, 59, 0.7);
+        .header-gradient {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        }
+        .card {
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .event-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-        }
-        .event-card.Live::before {
-            background: linear-gradient(to bottom, #ef4444, #dc2626);
-        }
-        .event-card.Upcoming::before {
-            background: linear-gradient(to bottom, #f59e0b, #d97706);
-        }
-        .event-card.Replay::before {
-            background: linear-gradient(to bottom, #3b82f6, #2563eb);
-        }
-        .event-card:hover {
+        .card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
         }
-        .status-badge {
-            font-size: 0.875rem;
+        .card.Live {
+            border-left: 4px solid var(--danger);
+        }
+        .card.Upcoming {
+            border-left: 4px solid var(--warning);
+        }
+        .card.Replay {
+            border-left: 4px solid var(--primary);
+        }
+        .badge {
+            font-size: 0.75rem;
             font-weight: 600;
-            letter-spacing: 0.05em;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
         }
-        .status-badge.Live {
-            background: linear-gradient(to right, #ef4444, #dc2626);
+        .badge.Live {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
         }
-        .status-badge.Upcoming {
-            background: linear-gradient(to right, #f59e0b, #d97706);
+        .badge.Upcoming {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
         }
-        .status-badge.Replay {
-            background: linear-gradient(to right, #3b82f6, #2563eb);
+        .badge.Replay {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--primary);
+        }
+        .stream-button {
+            background: rgba(30, 58, 138, 0.5);
+            transition: all 0.2s ease;
+        }
+        .stream-button:hover {
+            background: rgba(30, 58, 138, 0.7);
         }
         .loading-spinner {
-            display: inline-block;
             width: 1rem;
             height: 1rem;
             border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            animation: spin 1s linear infinite;
             border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        .toast {
+            animation: toast 3s forwards;
+        }
+        @keyframes toast {
+            0%, 90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
     </style>
 </head>
-<body class="text-gray-100">
-    <div class="container mx-auto px-4 py-12 max-w-4xl">
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-emerald-400 mb-3">
-                ⚽ Football Events
-            </h1>
-            <p class="text-lg text-gray-400">Click any match to watch (opens stream directly)</p>
+<body>
+    <!-- Header -->
+    <header class="header-gradient shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                        <span>ViewTV <span class="text-blue-300">Pro</span></span>
+                    </h1>
+                    <p class="text-sm text-blue-200 mt-1">Premium Football Streaming</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="hidden md:flex items-center gap-2 text-sm">
+                        <span class="h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
+                        <span>Live Server</span>
+                    </div>
+                </div>
+            </div>
         </div>
+    </header>
 
-        <!-- Events Grid -->
-        <div class="grid gap-5" id="events-container">
-            {% for event in events %}
-            <div class="event-card {{ event.status }} rounded-xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:shadow-lg"
-                 data-href="{{ event.href }}">
-                <div class="flex-1">
-                    <h3 class="text-xl font-semibold text-white">
-                        {{ event.text }}
-                    </h3>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Page Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold flex items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14a5 5 0 100-10 5 5 0 000 10z" />
+                        </svg>
+                        <span>Live Football Matches</span>
+                    </h2>
+                    <p class="text-gray-400 mt-2">Select a match to start streaming</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="status-badge {{ event.status }} text-white px-4 py-2 rounded-full shadow-md">
-                        {{ event.status }}
-                    </span>
-                    <span class="loading-spinner hidden"></span>
+                    <span class="text-xs bg-gray-700 px-2 py-1 rounded">Updated: <span id="update-time">Just now</span></span>
                 </div>
             </div>
-            {% else %}
-            <div class="event-card rounded-xl p-8 text-center">
-                <p class="text-gray-400 text-lg">No football events available at this time</p>
+
+            <!-- Events Grid -->
+            <div class="grid gap-4" id="events-container">
+                {% for event in events %}
+                <div class="card {{ event.status }} p-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex-1">
+                            <h3 class="font-medium text-lg">{{ event.text }}</h3>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="badge {{ event.status }}">{{ event.status }}</span>
+                                <span class="text-xs text-gray-400">{{ event.time || 'Live Now' }}</span>
+                            </div>
+                        </div>
+                        <button class="stream-button flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium"
+                                data-href="{{ event.href }}"
+                                onclick="handleStreamClick(this)">
+                            <span>Watch Stream</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="loading-spinner-container hidden mt-3 justify-center">
+                        <div class="loading-spinner"></div>
+                        <span class="text-sm text-gray-400 ml-2">Preparing stream...</span>
+                    </div>
+                    <div class="error-message hidden text-sm text-red-400 mt-2"></div>
+                </div>
+                {% else %}
+                <div class="card p-6 text-center">
+                    <p class="text-gray-400">No football events available at this time</p>
+                    <button class="mt-4 text-blue-400 hover:text-blue-300 text-sm font-medium" onclick="location.reload()">
+                        Refresh
+                    </button>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 card p-4 shadow-lg hidden toast">
+        <div class="flex items-center gap-3">
+            <div class="h-3 w-3 rounded-full bg-green-400 animate-pulse"></div>
+            <p class="text-sm" id="toast-message">Stream is ready!</p>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const eventCards = document.querySelectorAll('.event-card[data-href]');
+        // Update timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('update-time').textContent = 
+                now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        updateTimestamp();
+        setInterval(updateTimestamp, 60000);
+
+        // Handle stream clicks
+        async function handleStreamClick(button) {
+            const card = button.closest('.card');
+            const spinner = card.querySelector('.loading-spinner-container');
+            const errorMsg = card.querySelector('.error-message');
+            const originalUrl = button.getAttribute('data-href');
             
-            eventCards.forEach(card => {
-                card.addEventListener('click', async function(e) {
-                    const originalUrl = this.getAttribute('data-href');
-                    const spinner = this.querySelector('.loading-spinner');
+            // Reset state
+            errorMsg.classList.add('hidden');
+            errorMsg.textContent = '';
+            spinner.classList.remove('hidden');
+            button.disabled = true;
+
+            try {
+                // Extract the m3u8 URL
+                let streamUrl = originalUrl;
+                
+                // If it's a player page, extract the media parameter
+                if (originalUrl.includes('appevent_football_player.php')) {
+                    const urlObj = new URL(originalUrl);
+                    streamUrl = urlObj.searchParams.get('media');
                     
-                    // Show loading spinner
-                    spinner.classList.remove('hidden');
-                    
-                    try {
-                        // Extract the m3u8 URL from the original URL
-                        const urlParams = new URL(originalUrl).searchParams;
-                        let mediaUrl = urlParams.get('media');
-                        
-                        // If the URL is already the direct stream, use it directly
-                        if (!mediaUrl && originalUrl.includes('.m3u8')) {
-                            mediaUrl = originalUrl;
-                        }
-                        
-                        // Validate we got a proper stream URL
-                        if (mediaUrl && mediaUrl.includes('.m3u8')) {
-                            // Open the direct stream URL in a new tab
-                            const newTab = window.open('', '_blank');
-                            newTab.location.href = mediaUrl;
-                        } else {
-                            throw new Error('No valid stream URL found');
-                        }
-                    } catch (error) {
-                        console.error('Error processing stream URL:', error);
-                        alert('Could not load the stream. Please try again later.');
-                    } finally {
-                        // Hide spinner (though tab will have opened by now)
-                        spinner.classList.add('hidden');
+                    if (!streamUrl) {
+                        throw new Error('Stream URL not found in the link');
                     }
-                });
-            });
-        });
+                }
+
+                // Validate it's an m3u8 stream
+                if (!streamUrl.includes('.m3u8')) {
+                    throw new Error('Not a valid stream URL');
+                }
+
+                // Open in new tab after a small delay for better UX
+                setTimeout(() => {
+                    window.open(streamUrl, '_blank');
+                    showToast('Stream opened in new tab');
+                }, 300);
+
+            } catch (error) {
+                console.error('Stream error:', error);
+                errorMsg.textContent = 'Failed to load stream. Please try again.';
+                errorMsg.classList.remove('hidden');
+                showToast('Error loading stream', 'error');
+            } finally {
+                spinner.classList.add('hidden');
+                setTimeout(() => {
+                    button.disabled = false;
+                }, 2000); // Prevent rapid clicks
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.textContent = message;
+            toast.className = `fixed bottom-4 right-4 card p-4 shadow-lg flex items-center gap-3 toast ${
+                type === 'error' ? 'bg-red-500/10 border-l-4 border-red-500' : 'bg-blue-500/10 border-l-4 border-blue-500'
+            }`;
+            
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Auto-refresh every 5 minutes
+        setTimeout(() => {
+            showToast('Refreshing matches...');
+            setTimeout(() => location.reload(), 2000);
+        }, 300000);
     </script>
 </body>
 </html>

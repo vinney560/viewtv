@@ -203,8 +203,6 @@ class FlashNotice(db.Model):
         return datetime.utcnow() > self.created_at + timedelta(hours=24)
 #----------------------------------------------------------------------
 with app.app_context():
-    db.session.execute(text("ALTER TABLE streams ALTER COLUMN key TYPE VARCHAR(500);"))
-    db.session.commit()
     db.create_all()
 #======================================
 @app.route('/robots.txt')
@@ -2323,7 +2321,7 @@ def save_playlist():
         flash("Invalid JSON format in playlist file", "error")
     except Exception as e:
         db.session.rollback()
-        print("Error saving Channels")
+        print(f"Error saving Channels: {str(e)}")
         flash(f"Failed to save playlist: {str(e)}", "error")
     
     return redirect(url_for('manage_channels'))    

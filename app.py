@@ -619,7 +619,7 @@ def curated():
 from bs4 import BeautifulSoup
 
 @app.route('/football-events')
-def home():
+def football_events():
     url = "http://server1.bdixsports.live/all/appevent_football.php"
     response = requests.get(url)
 

@@ -616,6 +616,52 @@ def curated():
 #-----------------------------------------------------------------------
 # Exclusive sport Logic
 
+from bs4 import BeautifulSoup
+
+@app.route('/football-events')
+def home():
+    url = "http://server1.bdixsports.live/all/appevent_football.php"
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return "Failed to fetch data"
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    links = soup.find_all('a')
+    events = []
+
+    for link in links:
+        text = link.get_text(strip=True)
+        href = link.get('href')
+
+        if not text or not href:
+            continue
+
+        # Check for event status
+        status = None
+        if "live" in text.lower():
+            status = "Live"
+        elif "upcoming" in text.lower():
+            status = "Upcoming"
+        elif "replay" in text.lower():
+            status = "Replay"
+
+        if status is None:
+            continue
+
+        # Clean up the event text
+        clean_text = text.replace("[Live]", "").replace("[live]", "")
+        clean_text = clean_text.replace("[Upcoming]", "").replace("[upcoming]", "")
+        clean_text = clean_text.replace("[Replay]", "").replace("[replay]", "").strip()
+
+        events.append({
+            "text": clean_text,
+            "href": href,
+            "status": status
+        })
+
+    return render_template("football_events.html", events=events)
+#=======================================
 import sports  # from sports.py file
 
 # Keyword mappings for competitions

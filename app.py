@@ -1881,7 +1881,7 @@ def home():
     random_channels = dict(random.sample(all_channels, min(15, len(all_channels))))
 
     if current_user.is_authenticated:
-        if current_user.role == "admin":
+        if current_user.role in ["superadmin", "admin1", "admin2", "admin3"]:
             return redirect(url_for("home_admin"))
         elif current_user.plus_type in ["free", "paid"]:
             return redirect(url_for("home_2"))

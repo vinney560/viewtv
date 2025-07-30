@@ -168,12 +168,12 @@ class User(db.Model, UserMixin):
 
 class Streams(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    key = db.Column(db.String(25), nullable=True, unique=True)
-    name = db.Column(db.String(255), nullable=True)
-    url = db.Column(db.String(2500), nullable=True)
-    category = db.Column(db.String(255), nullable=True)
+    key = db.Column(db.String(250), nullable=True, unique=True)
+    name = db.Column(db.String(500), nullable=True)
+    url = db.Column(db.String(25000), nullable=True)
+    category = db.Column(db.String(555), nullable=True)
     created_at = db.Column(db.DateTime, default=nairobi_time)
-    logo = db.Column(db.String(1255), nullable=True)
+    logo = db.Column(db.String(10255), nullable=True)
     access = db.Column(db.String(15), nullable=True)
     status = db.Column(db.Boolean, default=True, nullable=True)
 

@@ -1695,19 +1695,24 @@ def plus_play(key):
         return "Channel database corrupted", 500
 #------------------------------------------------------------------------
 #extra player for external URL test
+from urllib.parse import quote
+
 @app.route('/player/<name>')
 def player(name):
-    name = request.args.get('name', 'Streaming')
-    url = request.args.get('url')
+    raw_name = request.args.get('name', 'Streaming')
+    raw_url = request.args.get('url')
     token = request.args.get('token', '')
 
-    if not url:
+    if not raw_url:
         flash("Missing streaming URL.")
         return render_template("404.html")
+
+    encoded_url = quote(raw_url, safe=':/?&=')  # Allow basic URL characters
+
     return render_template(
         'plus-player.html',
-        name=name,
-        url=url,
+        name=raw_name,
+        url=encoded_url,
         token=token,
         current_year=datetime.now().year
     )

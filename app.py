@@ -1671,26 +1671,21 @@ def custom_list():
 @plus_required
 def plus_play(key):
     try:
-        # Get URL from query parameters first
-        stream_url = request.args.get('url')
+        channel = CUSTOM_CHANNELS.get(key)
+        if not channel:
+            flash("Channel not found", "error")
+            return redirect(url_for('custom_list'))
         
-        # Fallback to CUSTOM_CHANNELS if not in URL params
+        stream_url = channel.get('url')
         if not stream_url:
-            channel = CUSTOM_CHANNELS.get(key)
-            if not channel:
-                flash("Channel not found", "error")
-                return redirect(url_for('custom_list'))
-            
-            stream_url = channel.get('url')
-            if not stream_url:
-                flash("No stream URL configured", "error")
-                return redirect(url_for('custom_list'))
+            flash("No stream URL configured", "error")
+            return redirect(url_for('custom_list'))
         
         return render_template(
             "plus_player.html",
             url=stream_url,
-            token=request.args.get('token', ''),
-            name=request.args.get('name', 'Unnamed Channel'),
+            token=channel.get('token', ''),
+            name=channel.get('name', 'Unnamed Channel'),
             current_year=datetime.now().year
         )
         

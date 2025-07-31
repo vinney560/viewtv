@@ -1685,16 +1685,39 @@ def plus_player():
 
 @app.route("/plus-channel/<key>")
 @login_required
+@plus_required
 def plus_play(key):
+    # Get channel data with proper error handling
     channel = CUSTOM_CHANNELS.get(key)
     if not channel:
+        flash("Channel not found", "error")
         abort(404)
+    
+    # Validate required fields
+    if not channel.get("url"):
+        flash("This channel has no stream URL configured", "error")
+        return redirect(url_for('custom_list'))
+    
+    # Prepare token if needed
+    token = ""
+    if channel.get("requires_token", False):
+        token = ""
+    
+    # Prepare additional metadata
+    channel_metadata = {
+        'name': channel.get("name", "Unnamed Channel"),
+        'logo': channel.get("logo", ""),
+        'description': channel.get("description", ""),
+        'country': channel.get("country", ""),
+        'category': channel.get("group-title", "Uncategorized")
+    }
+    
     return render_template(
         "plus_player.html",
-        name=channel["name"],
         url=channel["url"],
+        token=token,
         current_year=datetime.now().year,
-        token=""
+        **channel_metadata
     )
 #------------------------------------------------------------------------
 #extra player for external URL test

@@ -2908,13 +2908,6 @@
     "group-title": "Lifestyle",
     "logo": "https://i.imgur.com/OSet4en.png"
   },
-  "astro_sport": {
-    "name": "Astro Sport",
-    "url": "http://c1.frsports.info/wcl31/tracks-v1a1/mono.m3u8",
-    "group-title": "Sports",
-    "token": "99eab42e4d6652ff801a2478e65b66b39c4d6a23e93e4ebb0f520b8a58e8d721-1753988224-1753988147",
-    "logo": ""
-  },
   "pridetv_latam_hd": {
     "name": "PRIDEtv LATAM HD",
     "url": "https://backend.energeek.cl/webtv/pridetvweb/index.m3u8?token=ZZDemoIPTVGH",
@@ -3160,12 +3153,6 @@
     "url": "http://78.130.250.2:8023/play/a02m/index.m3u8",
     "group-title": "Outdoor",
     "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Love_Nature_TV.png/512px-Love_Nature_TV.png"
-  },
-  "love_nature_en_espanol": {
-    "name": "Love Nature en Espanol",
-    "url": "https://amg01515-amg01515c17-xumo-us-2489.playouts.now.amagi.tv/bamus-lovenaturespanish-roku/playlist.m3u8",
-    "group-title": "",
-    "logo": "https://i.imgur.com/7uNdcWB.png"
   },
   "6PR": {
     "name": "6PR",

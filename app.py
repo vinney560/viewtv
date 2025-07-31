@@ -1649,7 +1649,7 @@ def custom_list():
     grouped = defaultdict(list)
 
     for key, ch in raw_channels.items():  # Iterate with keys too
-        group = ch.get('group-title', 'Uncategorized')
+        group = (ch.get('group-title', 'Uncategorized')[:15] + '...') if len(ch.get('group-title', 'Uncategorized')) > 15 else ch.get('group-title', 'Uncategorized')
         # Include the key inside each channel dict
         ch_with_key = ch.copy()
         ch_with_key['key'] = key

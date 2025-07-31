@@ -263,7 +263,28 @@ def uploaded_file(filename):
 def is_authenticated():
     return jsonify({'authenticated': current_user.is_authenticated})
 #----------------------------------------------------------------------
+@app.after_request
+def set_strict_security_headers(response):
+    if 'X-Frame-Options' in response.headers:
+        del response.headers['X-Frame-Options']
 
+    # Content Security Policy (CSP) with Tailwind CDN support
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "
+        "style-src 'self' https://cdn.tailwindcss.com; "
+        "script-src 'self' https://cdn.tailwindcss.com; "
+        "frame-ancestors https://viewtv-p2s3.onrender.com https://viewstream-1.onrender.com; "
+        "object-src 'none'; "
+        "base-uri 'self';"
+    )
+
+    # Extra security headers
+    response.headers['Referrer-Policy'] = 'no-referrer'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'  # Fallback for older browsers
+    response.headers['Permissions-Policy'] = 'geolocation=()'
+
+    return response
 #-----------------------------------------------------------------------
 @app.before_request
 def flash_update_notice():

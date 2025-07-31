@@ -1667,31 +1667,26 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #--------------------------------------------------------------------------
 @app.route("/plus-channel/<key>")
-@login_required
-@plus_required
 def plus_play(key):
-    try:
-        channel = CUSTOM_CHANNELS.get(key)
-        if not channel:
-            flash("Channel not found", "error")
-            return redirect(url_for('custom_list'))
-        
-        stream_url = channel.get('url')
-        if not stream_url:
-            flash("No stream URL configured", "error")
-            return redirect(url_for('custom_list'))
-        
-        return render_template(
-            "plus_player.html",
-            url=stream_url,
-            token=channel.get('token', ''),
-            name=channel.get('name', 'Unnamed Channel'),
-            current_year=datetime.now().year
-        )
-        
-    except Exception as e:
-        flash(f"Error loading channel: {str(e)}", "error")
+    channel = CUSTOM_CHANNELS.get(key)
+    
+    # 1. Check if channel exists
+    if not channel:
+        flash(f"Channel '{key}' not found in JSON", "error")
         return redirect(url_for('custom_list'))
+
+    # 2. Check if URL exists and is non-empty
+    if not channel.get("url"):
+        flash(f"Channel '{key}' has no URL in JSON", "error")
+        return redirect(url_for('custom_list'))
+
+    # 3. Proceed only if checks pass
+    return render_template(
+        "plus_player.html",
+        url=channel["url"],       # Required
+        token=channel.get("token", ""),  # Optional
+        name=channel.get("name", key)    # Fallback to key
+    )
 #------------------------------------------------------------------------
 #extra player for external URL test
 @app.route('/player')

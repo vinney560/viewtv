@@ -1696,7 +1696,7 @@ def plus_play(key):
     ]
 
     return render_template(
-        "player_player.html",
+        "plus_player.html",
         name=channel["name"],
         url=channel["url"],
         channels=channels,

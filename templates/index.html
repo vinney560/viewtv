@@ -147,7 +147,7 @@
 
             <div class="mt-4 flex justify-end">
               {% if ch.url %}
-                <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank"
+                <a href="{{ url_for('player', name=ch.name, url=ch.url) }}" target="_blank"
                    class="inline-flex items-center py-2 px-5 rounded-full bg-cyan-400/10 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900 font-medium transition-all duration-300 border border-cyan-400/20">
                   Watch Now <span class="ml-2">→</span>
                 </a>

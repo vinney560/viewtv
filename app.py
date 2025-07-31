@@ -1688,28 +1688,21 @@ def plus_player():
 @plus_required
 def plus_play(key):
     try:
-        # Get channel from CUSTOM_CHANNELS using the key
         channel = CUSTOM_CHANNELS.get(key)
-        
         if not channel:
             flash("Channel not found", "error")
             return redirect(url_for('custom_list'))
         
-        # Get required stream URL from channel data
         stream_url = channel.get('url')
         if not stream_url:
             flash("No stream URL configured", "error")
             return redirect(url_for('custom_list'))
         
-        # Get optional parameters
-        token = channel.get('token', '')
-        name = channel.get('name', 'Unnamed Channel')
-        
         return render_template(
             "plus_player.html",
             url=stream_url,
-            token=token,
-            name=name,
+            token=channel.get('token', ''),
+            name=channel.get('name', 'Unnamed Channel'),
             current_year=datetime.now().year
         )
         

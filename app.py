@@ -264,16 +264,16 @@ def is_authenticated():
     return jsonify({'authenticated': current_user.is_authenticated})
 #----------------------------------------------------------------------
 @app.after_request
-def set_strict_frame_protection(response):
-    if 'X-Frame-Options' in response.headers:
-        del response.headers['X-Frame-Options']
+def set_headers(response):
+    # Clear old frame headers if set
+    response.headers.pop('X-Frame-Options', None)
 
-    # ✅ Allow all resources, only restrict iframe embedding (framing)
+    # CSP: allow embedding only from allowed domains
     response.headers['Content-Security-Policy'] = (
         "frame-ancestors https://viewtv-p2s3.onrender.com https://viewstream-1.onrender.com;"
     )
 
-    # Fallback for older browsers
+    # Legacy fallback: block all iframe embedding (gets overridden by CSP in modern browsers)
     response.headers['X-Frame-Options'] = 'DENY'
 
     return response
@@ -1616,7 +1616,7 @@ def play_channel(key):
     ]
 
     return render_template(
-        "custom_player.html",
+        "player.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
         channels=channels,       # Now a list of dicts with name, url, key

@@ -268,12 +268,12 @@ def set_strict_security_headers(response):
     if 'X-Frame-Options' in response.headers:
         del response.headers['X-Frame-Options']
     
-    # Content Security Policy (CSP)
+    # Content Security Policy (CSP) with multiple allowed embedding domains
     response.headers['Content-Security-Policy'] = (
-        "default-src 'self'; "                                 # Load resources only from own domain
-        "frame-ancestors https://viewtv-p2s3.onrender.com; "  # Only this domain can embed iframe
-        "object-src 'none'; "                                 # Disallow <object>, <embed>, <applet>
-        "base-uri 'self';"                                    # Restrict base tag to own origin
+        "default-src 'self'; "
+        "frame-ancestors https://viewtv-p2s3.onrender.com https://viewstream-1.onrender.com; "
+        "object-src 'none'; "
+        "base-uri 'self';"
     )
     
     # Extra security headers

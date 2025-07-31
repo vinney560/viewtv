@@ -1668,25 +1668,38 @@ def custom_list():
 #--------------------------------------------------------------------------
 @app.route("/plus-channel/<key>")
 def plus_play(key):
-    channel = CUSTOM_CHANNELS.get(key)
-    
-    # 1. Check if channel exists
-    if not channel:
-        flash(f"Channel '{key}' not found in JSON", "error")
-        return redirect(url_for('custom_list'))
+    """Load channel directly from channels.json for every request."""
+    try:
+        # 1. Fresh load of channels.json (no global dependency)
+        with open('channels.json', 'r') as f:
+            channels = json.load(f)
+        
+        # 2. Get channel (exact key match, case-sensitive)
+        channel = channels.get(key)
+        
+        # 3. Validate
+        if not channel:
+            flash(f"Channel '{key}' not found", "error")
+            return redirect(url_for('custom_list'))
+        
+        if not channel.get("url"):
+            flash(f"No stream URL for '{key}'", "error")
+            return redirect(url_for('custom_list'))
 
-    # 2. Check if URL exists and is non-empty
-    if not channel.get("url"):
-        flash(f"Channel '{key}' has no URL in JSON", "error")
-        return redirect(url_for('custom_list'))
+        # 4. Stream (original behavior preserved)
+        return render_template(
+            "plus_player.html",
+            url=channel["url"],          # Required
+            token=channel.get("token", ""),  # Optional
+            name=channel.get("name", key)    # Fallback to key
+        )
 
-    # 3. Proceed only if checks pass
-    return render_template(
-        "plus_player.html",
-        url=channel["url"],       # Required
-        token=channel.get("token", ""),  # Optional
-        name=channel.get("name", key)    # Fallback to key
-    )
+    except FileNotFoundError:
+        flash("Channel database not found", "error")
+        return redirect(url_for('custom_list'))
+    except json.JSONDecodeError:
+        flash("Channel database is corrupted", "error")
+        return redirect(url_for('custom_list'))
 #------------------------------------------------------------------------
 #extra player for external URL test
 @app.route('/player')

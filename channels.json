@@ -1783,7 +1783,7 @@
   "3abn_kids": {
     "name": "3ABN Kids",
     "url": "https://3abn.bozztv.com/3abn2/Kids_live/smil:Kids_live.smil/playlist.m3u8",
-    "group-title": "Animation;Kids;Religious",
+    "group-title": "Animation;Religious",
     "logo": "https://i.imgur.com/SUPQAok.png"
   },
   "3abn_praise_him": {
@@ -2911,7 +2911,7 @@
   "pridetv_latam_hd": {
     "name": "PRIDEtv LATAM HD",
     "url": "https://backend.energeek.cl/webtv/pridetvweb/index.m3u8?token=ZZDemoIPTVGH",
-    "group-title": "Entertainment;Lifestyle;Music",
+    "group-title": "Entertainment;Lifestyle",
     "logo": "https://neotv.cl/img/pridetv-512.png"
   },
   "revry": {

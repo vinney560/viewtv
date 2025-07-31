@@ -1727,7 +1727,6 @@ def plus_player():
         token=token,
         current_year=datetime.now().year
     )
-
 #======================================
 #             >>>>PLUS FEATURE<<<<
 #======================================
@@ -2073,7 +2072,7 @@ def home_admin():
     # Count users marked as 'active'
     active_today = User.query.filter_by(status='active').count()
     
-    # Total channels from CUSTOM_CHANNELS dictionary
+    # Total channels
     total_channels = len(CUSTOM_CHANNELS)
     
     # Plus subscribers

@@ -1668,42 +1668,35 @@ def custom_list():
 #--------------------------------------------------------------------------
 @app.route("/plus-channel/<key>")
 def plus_play(key):
-    """Load channel directly from channels.json for every request."""
     try:
-        # 1. Fresh load of channels.json (no global dependency)
-        with open('channels.json', 'r') as f:
+        with open('channels.json') as f:
             channels = json.load(f)
         
-        # 2. Get channel (exact key match, case-sensitive)
         channel = channels.get(key)
-        
-        # 3. Validate
         if not channel:
-            flash(f"Channel '{key}' not found", "error")
-            return redirect(url_for('custom_list'))
-        
-        if not channel.get("url"):
-            flash(f"No stream URL for '{key}'", "error")
-            return redirect(url_for('custom_list'))
-
-        # 4. Stream (original behavior preserved)
+            return "Channel not found", 404
+            
+        if not channel.get('url'):
+            return "No URL configured", 400
+            
+        # Validate URL format
+        if not (channel['url'].startswith('http://') or channel['url'].startswith('https://')):
+            return "Invalid URL format", 400
+            
         return render_template(
-            "plus_player.html",
-            url=channel["url"],          # Required
-            token=channel.get("token", ""),  # Optional
-            name=channel.get("name", key)    # Fallback to key
-        )
-
+            "plus-player.html",
+            url=channel['url'],
+            token=channel.get('token', ''),
+            name=channel.get('name', key)
+        )    
     except FileNotFoundError:
-        flash("Channel database not found", "error")
-        return redirect(url_for('custom_list'))
+        return "Channel database missing", 500
     except json.JSONDecodeError:
-        flash("Channel database is corrupted", "error")
-        return redirect(url_for('custom_list'))
+        return "Channel database corrupted", 500
 #------------------------------------------------------------------------
 #extra player for external URL test
-@app.route('/player')
-def player():
+@app.route('/plus-player')
+def plus_player():
     name = request.args.get('name', 'Streaming')
     url = request.args.get('url')
     token = request.args.get('token', '')

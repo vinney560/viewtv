@@ -12,6 +12,7 @@
   "meru-tv": {
     "name": "Meru Tv",
     "url": "https://goliveafrica.media:9998/live/628e5c1991061/index.m3u8",
+    "country": "Kenya",
     "group-title": "News"
   },
   "reflect-tv": {
@@ -144,12 +145,14 @@
     "name": "Citizen TV",
     "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=1&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/citizen.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "citizen-tv-extra": {
     "name": "Citizen Extra",
     "url": "https://www.youtube.com/embed/MDA0XHrnNl4",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/citizen.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "classic_movie": {
@@ -531,7 +534,7 @@
     "group-title": "Movies"
   },
   "dazn-fight": {
-    "name": "Dazn Fight",
+    "name": "Dazn Ringside",
     "url": "https://aegis-cloudfront-1.tubi.video/adc77f33-ab7b-4553-b886-a31d73b5be93/playlist.m3u8",
     "group-title": "Sports"
   },
@@ -597,12 +600,12 @@
     "group-title": "Nature"
   },
   "billiard-tv": {
-    "name": "Billiard TV",
+    "name": "world Billiard TV",
     "url": "https://9769bd6405b245ea9adca1889a0b491b.mediatailor.us-east-1.amazonaws.com/v1/master/f4e8c53a8367a5b58e20ce054ea3ce25a3e904d3/Samsung-in_BilliardTV/playlist.m3u8",
     "group-title": "Sports"
   },
   "billiard-tv-2": {
-    "name": "Billiard TV 2",
+    "name": "World Billiard TV 2",
     "url": "https://1621590671.rsc.cdn77.org/HLS/BILLIARDTV.m3u8",
     "group-title": "Sports"
   },
@@ -700,12 +703,14 @@
     "name": "Inooro Tv",
     "url": "https://kenyalivetv.co.ke/tv/inooro-tv-live",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/inooro.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "kameme-tv": {
     "name": "Kameme TV",
     "url": "https://kamemetv.co.ke/live/",
     "logo": "",
+    "country": "Kenya",
     "group-title": "News"
   },
   "kartoon_channel": {
@@ -717,6 +722,7 @@
     "name": "Kass TV",
     "url": "https://www.youtube.com/embed/4smx4SyYMbc",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/kass.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "ketchap": {
@@ -738,18 +744,21 @@
     "name": "K24 TV",
     "url": "https://www.youtube.com/embed/_lB9oSok1FM?controls=1&modestbranding=1&rel=0&fs=1&disablekb=0&iv_load_policy=3",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/k24.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "ktn": {
     "name": "KTN Home",
     "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/ktn.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "kbc": {
     "name": "KBC channel 1",
     "url": "https://kenyalivetv.co.ke/embed/kbc-channel-1-live",
     "logo": "https://kbc.co.ke/wp-content/uploads/2024/11/KBC-LOGO.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "life_end_time": {
@@ -807,12 +816,14 @@
     "name": "NTV Digital",
     "url": "https://ntvkenya.co.ke/live/",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/ntv.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "ntv-kenya": {
     "name": "NTV",
     "url": "https://www.youtube.com/embed/p4BWnK2xeHw",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/ntv.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "outdoor_channel": {
@@ -844,24 +855,28 @@
     "name": "Ramogi Fm Tv",
     "url": "https://citizen.digital/tv/ramogi-fm-audio-visual-24",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogifm.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "ramogi-tv": {
     "name": "Ramogi Tv",
     "url": "https://citizentv.castr.com/5ea49827ff3b5d7b22708777/live_9b761ff063f511eca12909b8ef1524b4/index.m3u8",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogi.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "ebru-tv": {
     "name": "Ebru Tv",
     "url": "https://kenyalivetv.co.ke/embed/ebru-tv-live",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/ebru.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "kyeni-tv": {
     "name": "Kyeni Tv",
     "url": "https://vip.worldlivetv.stream/channel/KyeniTV_ke",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/kyeni.png",
+    "country": "Kenya",
     "group-title": "News"
   },
   "red_plus": {

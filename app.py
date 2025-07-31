@@ -1687,19 +1687,11 @@ def plus_player():
 @login_required
 @plus_required
 def plus_play(key):
-    # Get channel from your CUSTOM_CHANNELS dictionary
-    channel = CUSTOM_CHANNELS.get(key)
-    
-    if not channel:
-        flash("Channel not found", "error")
-        return redirect(url_for('custom_list'))
-    
-    # Get the stream URL and token
-    stream_url = channel.get('url')
-    token = channel.get('token', '')
+    # We just need to verify the URL exists
+    stream_url = request.args.get('url')
     
     if not stream_url:
-        flash("This channel has no stream URL configured", "error")
+        flash("No stream URL provided for this channel", "error")
         return redirect(url_for('custom_list'))
     
     # Check if this is a direct IP/port URL that should open directly
@@ -1711,15 +1703,14 @@ def plus_play(key):
         has_port = ':' in domain_port
         
         if is_ip or has_port:
-            # This is a direct IP/port URL - redirect to it directly
             return redirect(stream_url)
     
     # For regular URLs, use the player template
     return render_template(
         "plus_player.html",
         url=stream_url,
-        token=token,
-        name=channel.get('name', 'Unnamed Channel'),
+        token=request.args.get('token', ''),
+        name=request.args.get('name', 'Unnamed Channel'),
         current_year=datetime.now().year
     )
 #------------------------------------------------------------------------

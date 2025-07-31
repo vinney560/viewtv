@@ -1685,29 +1685,31 @@ def plus_player():
 
 @app.route("/plus-channel/<key>")
 @login_required
-@plus_required 
+@plus_required
 def plus_play(key):
     try:
-        # Get parameters from both URL path and query string
-        stream_url = request.args.get('url')
-        token = request.args.get('token', '')
+        # Get channel from CUSTOM_CHANNELS using the key
+        channel = CUSTOM_CHANNELS.get(key)
         
+        if not channel:
+            flash("Channel not found", "error")
+            return redirect(url_for('custom_list'))
+        
+        # Get required stream URL from channel data
+        stream_url = channel.get('url')
         if not stream_url:
-            # Fallback to check CUSTOM_CHANNELS if needed
-            channel = CUSTOM_CHANNELS.get(key)
-            if channel:
-                stream_url = channel.get('url')
-                token = channel.get('token', '')
-            
-            if not stream_url:
-                flash("No stream URL available", "error")
-                return redirect(url_for('custom_list'))
+            flash("No stream URL configured", "error")
+            return redirect(url_for('custom_list'))
+        
+        # Get optional parameters
+        token = channel.get('token', '')
+        name = channel.get('name', 'Unnamed Channel')
         
         return render_template(
             "plus_player.html",
             url=stream_url,
             token=token,
-            name=request.args.get('name', CUSTOM_CHANNELS.get(key, {}).get('name', 'Unnamed Channel')),
+            name=name,
             current_year=datetime.now().year
         )
         

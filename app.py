@@ -1705,7 +1705,7 @@ def player(name):
         flash("Missing streaming URL.")
         return render_template("404.html")
     return render_template(
-        'plus_player.html',
+        'plus-player.html',
         name=name,
         url=url,
         token=token,

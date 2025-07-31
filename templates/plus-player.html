@@ -469,7 +469,7 @@
             }
           }
         });
-        window.dashPlayer.setQualityFor('video', 'auto');
+        window.dashPlayer.setAutoSwitchQualityFor('video', false), window.dashPlayer.setQualityFor('video', window.dashPlayer.getBitrateInfoListFor('video').length - 1);
       }
       
       if (player.src && !window.hls && !window.dashPlayer) {

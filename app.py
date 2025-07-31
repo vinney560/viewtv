@@ -743,7 +743,6 @@ def football_matches():
     return redirect("http://server1.bdixsports.live/all/appevent_football.php")
 #------------------------------------------------------------------------
 import json
-import os
 import time
 from collections import defaultdict
 
@@ -894,7 +893,6 @@ def get_movies():
 def get_movie_count():
     return jsonify({'count': len(MOVIES_DATA)})
 #-------------------------------------------------------------------------
-import time
 import logging
 from datetime import datetime, timedelta
 from threading import Timer

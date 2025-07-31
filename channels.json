@@ -2910,8 +2910,9 @@
   },
   "astro_sport": {
     "name": "Astro Sport",
-    "url": "http://c1.frsports.info/wcl31/tracks-v1a1/mono.m3u8?token=99eab42e4d6652ff801a2478e65b66b39c4d6a23e93e4ebb0f520b8a58e8d721-1753988224-1753988147",
+    "url": "http://c1.frsports.info/wcl31/tracks-v1a1/mono.m3u8",
     "group-title": "Sports",
+    "token": "99eab42e4d6652ff801a2478e65b66b39c4d6a23e93e4ebb0f520b8a58e8d721-1753988224-1753988147",
     "logo": ""
   },
   "pridetv_latam_hd": {

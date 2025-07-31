@@ -1695,7 +1695,7 @@ def plus_play(key):
         return "Channel database corrupted", 500
 #------------------------------------------------------------------------
 #extra player for external URL test
-@app.route('/player')
+@app.route('/player/<name>')
 def player():
     name = request.args.get('name', 'Streaming')
     url = request.args.get('url')

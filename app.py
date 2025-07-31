@@ -1667,6 +1667,8 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #--------------------------------------------------------------------------
 @app.route("/plus-channel/<key>")
+@login_required
+@plus_required
 def plus_play(key):
     try:
         with open('channels.json') as f:

@@ -1696,7 +1696,7 @@ def plus_play(key):
 #------------------------------------------------------------------------
 #extra player for external URL test
 @app.route('/player/<name>')
-def player():
+def player(name):
     name = request.args.get('name', 'Streaming')
     url = request.args.get('url')
     token = request.args.get('token', '')

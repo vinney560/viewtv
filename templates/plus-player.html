@@ -23,7 +23,6 @@
       aspect-ratio: 16 / 9;
       margin: auto;
       background: black;
-      border-radius: 0.5rem;
       overflow: hidden;
     }
     #player, #iframe-player {
@@ -379,7 +378,7 @@
       <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
       
       <!-- Custom Controls -->
-      <div id="custom-controls">
+      <div id="custom-controls" class="hidden">
         <button id="play-pause">
           <svg id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
             <path d="M8 5v14l11-7z"/>
@@ -424,6 +423,7 @@
     const audioOnlyIndicator = document.getElementById('audio-only-indicator');
     const spinner = document.getElementById('spinner');
     const disabledOverlay = document.getElementById('disabled-overlay');
+    const customControls = document.getElementById('custom-controls');
 
     // Custom Controls Elements
     const playPauseBtn = document.getElementById('play-pause');
@@ -450,6 +450,7 @@
     let isBuffering = false;
     let isPlaying = false;
     let isDraggingProgress = false;
+    let isIframePlayer = false;
 
     // Get URL and token from Flask template variables
     const streamUrl = "{{ url }}";
@@ -520,7 +521,7 @@
         const ratePerHour = player.currentTime ? 
           (segmentBytesLoaded / player.currentTime * 3600 / (1024 * 1024)).toFixed(2) : '0.00';
         
-        dataUsageDisplay.textContent = `Current: ${currentMB}MB | Total: ${totalMB}MB | Rate: ${ratePerHour}MB/h`;
+        dataUsageDisplay.textContent = `Data: ${currentMB}MB | Total: ${totalMB}MB | Rate: ${ratePerHour}MB/h`;
         segmentBytesLoaded = 0;
       }, 1000);
 
@@ -653,6 +654,10 @@
         window.hls.config.maxMaxBufferLength = 30;
         window.hls.config.maxBufferSize = 3500000;
         window.hls.config.maxBufferLength = 15;
+        window.hls.config.backBufferLength = 10;
+        window.hls.config.abrMaxWithRealBitrate = false;
+        window.hls.config.abrBandWidthFactor = 0.7;
+        window.hls.config.abrBandWidthUpFactor = 0.6;
       }
       
       if (window.dashPlayer) {
@@ -686,6 +691,10 @@
         window.hls.config.maxMaxBufferLength = 20;
         window.hls.config.maxBufferSize = 3000000;
         window.hls.config.maxBufferLength = 20;
+        window.hls.config.backBufferLength = 8;
+        window.hls.config.abrMaxWithRealBitrate = false;
+        window.hls.config.abrBandWidthFactor = 0.6;
+        window.hls.config.abrBandWidthUpFactor = 0.5;
       }
       
       if (window.dashPlayer) {
@@ -726,6 +735,10 @@
         window.hls.config.maxMaxBufferLength = 10;
         window.hls.config.maxBufferSize = 2000000;
         window.hls.config.maxBufferLength = 10;
+        window.hls.config.backBufferLength = 5;
+        window.hls.config.abrMaxWithRealBitrate = false;
+        window.hls.config.abrBandWidthFactor = 0.5;
+        window.hls.config.abrBandWidthUpFactor = 0.4;
       }
       
       if (window.dashPlayer) {
@@ -763,6 +776,10 @@
         window.hls.config.maxMaxBufferLength = 5;
         window.hls.config.maxBufferSize = 1000000;
         window.hls.config.maxBufferLength = 5;
+        window.hls.config.backBufferLength = 3;
+        window.hls.config.abrMaxWithRealBitrate = false;
+        window.hls.config.abrBandWidthFactor = 0.4;
+        window.hls.config.abrBandWidthUpFactor = 0.3;
       }
       
       if (window.dashPlayer) {
@@ -996,6 +1013,8 @@
       });
 
       if (ext === 'm3u8') {
+        isIframePlayer = false;
+        customControls.classList.remove('hidden');
         if (Hls.isSupported()) {
           const hls = new Hls({
             maxMaxBufferLength: 160,
@@ -1041,6 +1060,8 @@
           showError("HLS not supported on this browser");
         }
       } else if (ext === 'mpd') {
+        isIframePlayer = false;
+        customControls.classList.remove('hidden');
         try {
           const dashPlayer = dashjs.MediaPlayer().create();
           window.dashPlayer = dashPlayer;
@@ -1070,14 +1091,18 @@
           showError("DASH playback error: " + e.message);
         }
       } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
+        isIframePlayer = false;
+        customControls.classList.remove('hidden');
         player.src = urlWithToken;
         player.style.display = 'block';
         player.play().then(startTrackingDataUsage).catch(e => {
           showError("Playback failed: " + e.message);
         });
       } else {
+        isIframePlayer = true;
         iframe.src = urlWithToken;
         iframe.style.display = 'block';
+        customControls.classList.add('hidden');
       }
       
       if (navigator.connection) {
@@ -1137,16 +1162,20 @@
       }
 
       function resetHideTimeout() {
+        if (isIframePlayer) return;
+        
         fullscreenBtn.classList.remove('hide');
         dataSaverBtn.classList.remove('hide');
         audioOnlyBtn.classList.remove('hide');
         qualityToggle.classList.remove('hide');
+        customControls.classList.remove('hide');
         clearTimeout(hideTimeout);
         hideTimeout = setTimeout(() => {
           fullscreenBtn.classList.add('hide');
           dataSaverBtn.classList.add('hide');
           audioOnlyBtn.classList.add('hide');
           qualityToggle.classList.add('hide');
+          customControls.classList.add('hide');
         }, 3000);
       }
 

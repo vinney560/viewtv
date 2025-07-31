@@ -264,9 +264,24 @@ def is_authenticated():
     return jsonify({'authenticated': current_user.is_authenticated})
 #----------------------------------------------------------------------
 @app.after_request
-def set_frame_headers(response):
-    response.headers['X-Frame-Options'] = 'ALLOW-FROM https://viewtv-p2s3.onrender.com'
-    response.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://viewtv-p2s3.onrender.com"
+def set_strict_security_headers(response):
+    if 'X-Frame-Options' in response.headers:
+        del response.headers['X-Frame-Options']
+    
+    # Content Security Policy (CSP)
+    response.headers['Content-Security-Policy'] = (
+        "default-src 'self'; "                                 # Load resources only from own domain
+        "frame-ancestors https://viewtv-p2s3.onrender.com; "  # Only this domain can embed iframe
+        "object-src 'none'; "                                 # Disallow <object>, <embed>, <applet>
+        "base-uri 'self';"                                    # Restrict base tag to own origin
+    )
+    
+    # Extra security headers
+    response.headers['Referrer-Policy'] = 'no-referrer'
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'  # Fallback for older browsers, blocks all framing
+    response.headers['Permissions-Policy'] = 'geolocation=()'
+    
     return response
 #-----------------------------------------------------------------------
 @app.before_request
@@ -678,6 +693,8 @@ def get_grouped_channels():
     return grouped
 #----------------------------------------------------------------------
 @app.route("/return-football")
+@login_required
+@plus_required
 def return_football():
     return render_template("return_football.html")
 

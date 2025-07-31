@@ -1616,7 +1616,7 @@ def play_channel(key):
     ]
 
     return render_template(
-        "player.html",
+        "plus-player.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
         channels=channels,       # Now a list of dicts with name, url, key

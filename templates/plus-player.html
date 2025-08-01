@@ -1107,7 +1107,7 @@
       }
 
       function resetHideTimeout() {
-        if (isIframePlayer) return [fullscreenBtn, dataSaverBtn, audioOnlyBtn, qualityToggle, customControls].forEach(el => el.classList.add('hide'));
+        if (isIframePlayer) return [dataSaverBtn, audioOnlyBtn, qualityToggle, customControls].forEach(el => el.classList.add('hide'));
         
         fullscreenBtn.classList.remove('hide');
         dataSaverBtn.classList.remove('hide');

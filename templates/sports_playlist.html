@@ -92,7 +92,7 @@
                 <p class="text-xs text-gray-400 truncate">{{ ch.country }}</p>
               </div>
             </div>
-            <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors">▶ Play</a>
+            <a href="{{ url_for('plus_player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors">▶ Play</a>
           </div>
           {% endfor %}
         </div>

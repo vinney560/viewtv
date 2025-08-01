@@ -872,6 +872,13 @@
     "country": "Kenya",
     "group-title": "News"
   },
+  "wrestling": {
+    "name": "Wrestling Web",
+    "url": "https://viewtv-p2s3.onrender.com:443/wrestling",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/wrestling.png",
+    "country": "Website",
+    "group-title": "Wrestling"
+  },
   "kyeni-tv": {
     "name": "Kyeni Tv",
     "url": "https://vip.worldlivetv.stream/channel/KyeniTV_ke",

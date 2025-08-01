@@ -1368,6 +1368,12 @@ def fetch_live_streams_cached(category):
     save_cache()
     return streams
 
+@app.route("/wrestling")
+@login_required
+@plus_required
+def live_matches():
+    return render_template("wrestling.html")
+
 @app.route("/live_matches")
 def live_matches():
     return render_template("live_matches.html")

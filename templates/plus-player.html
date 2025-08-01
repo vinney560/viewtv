@@ -41,6 +41,15 @@
         aspect-ratio: 16 / 9;
       }
     }
+    @media (min-width: 1600px) {
+      #player-container { 
+        width: 100vw;
+        height: 100vh;
+        aspect-ratio: unset;
+        max-width: none;
+        border-radius: 0;
+      }
+    }
 
     :fullscreen #player-container,
     :-webkit-full-screen #player-container {

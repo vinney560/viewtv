@@ -437,14 +437,6 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Embedded content detection
-    const isPageEmbedded = window.self !== window.top;
-    if (isPageEmbedded) {
-      document.getElementById('embedded-message').classList.remove('hidden');
-      document.getElementById('player-container').classList.add('hidden');
-      document.querySelector('header').classList.add('hidden');
-      document.querySelector('footer').classList.add('hidden');
-    }
 
     // Enhanced Data Tracking Variables
     let totalBytesLoaded = 0;

@@ -426,6 +426,7 @@
     const spinner = document.getElementById('spinner');
     const disabledOverlay = document.getElementById('disabled-overlay');
     const customControls = document.getElementById('custom-controls');
+    const playerContainer = document.getElementById('player-container');
 
     // Custom Controls Elements
     const playPauseBtn = document.getElementById('play-pause');
@@ -453,6 +454,7 @@
     let isPlaying = false;
     let isDraggingProgress = false;
     let isIframePlayer = false;
+    let hideControlsTimeout;
 
     // Get URL and token from Flask template variables
     const streamUrl = "{{ url }}";
@@ -703,7 +705,7 @@
         const bitrates = window.dashPlayer.getBitrateInfoListFor('video');
         if (bitrates && bitrates.length > 1) {
           const sortedBitrates = bitrates.map(b => b.bitrate).sort((a, b) => a - b);
-          const midBitrate = sortedBitrates[Math.floor(sortedBitrates.length / 3)];
+          const midBitrate = sortedBitrates[Math.floor(sortedBitrates.length / 2)];
           window.dashPlayer.setQualityFor('video', midBitrate);
         }
         
@@ -952,6 +954,17 @@
       player.volume = volumeSlider.value;
     }
 
+    // Controls auto-hide functionality
+    function showControls() {
+      customControls.classList.remove('hide');
+      clearTimeout(hideControlsTimeout);
+      hideControlsTimeout = setTimeout(() => {
+        if (!isDraggingProgress && !player.paused) {
+          customControls.classList.add('hide');
+        }
+      }, 3000);
+    }
+
     (function initializePlayer() {
       // Use template variables instead of query parameters
       if (!streamUrl) {
@@ -982,16 +995,19 @@
         playIcon.classList.add('hidden');
         pauseIcon.classList.remove('hidden');
         isPlaying = true;
+        showControls();
       });
       player.addEventListener('pause', () => {
         playIcon.classList.remove('hidden');
         pauseIcon.classList.add('hidden');
         isPlaying = false;
+        customControls.classList.remove('hide');
       });
       player.addEventListener('ended', () => {
         playIcon.classList.remove('hidden');
         pauseIcon.classList.add('hidden');
         isPlaying = false;
+        customControls.classList.remove('hide');
       });
       
       playPauseBtn.addEventListener('click', togglePlayPause);
@@ -1013,6 +1029,12 @@
       document.addEventListener('mouseup', () => {
         isDraggingProgress = false;
       });
+      
+      // Controls auto-hide listeners
+      playerContainer.addEventListener('mousemove', showControls);
+      playerContainer.addEventListener('touchstart', showControls);
+      progressContainer.addEventListener('mousedown', () => isDraggingProgress = true);
+      document.addEventListener('mouseup', () => isDraggingProgress = false);
 
       if (ext === 'm3u8') {
         isIframePlayer = false;
@@ -1173,11 +1195,13 @@
         customControls.classList.remove('hide');
         clearTimeout(hideTimeout);
         hideTimeout = setTimeout(() => {
-          fullscreenBtn.classList.add('hide');
-          dataSaverBtn.classList.add('hide');
-          audioOnlyBtn.classList.add('hide');
-          qualityToggle.classList.add('hide');
-          customControls.classList.add('hide');
+          if (!isDraggingProgress && !player.paused) {
+            fullscreenBtn.classList.add('hide');
+            dataSaverBtn.classList.add('hide');
+            audioOnlyBtn.classList.add('hide');
+            qualityToggle.classList.add('hide');
+            customControls.classList.add('hide');
+          }
         }, 3000);
       }
 

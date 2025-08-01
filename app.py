@@ -85,7 +85,12 @@ app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
 app.config['SQLALCHEMY_DATABASE_URI'] = choose_db_uri()
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
-
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_size': 10,          # Max connections (adjust for your DB tier)
+    'max_overflow': 5,        # Temporary extra connections if pool is full
+    'pool_recycle': 300,      # Recycle connections after 5 mins (avoid timeouts)
+    'pool_pre_ping': True     # Test connections before reuse
+}
 UPLOAD_FOLDER = os.path.join(app.root_path, 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):

@@ -251,13 +251,12 @@
       justify-content: space-between;
       align-items: center;
       z-index: 10;
-      opacity: 1;
+      opacity: 0;
       transition: opacity 0.3s ease;
     }
     
-    #custom-controls.hide {
-      opacity: 0;
-      pointer-events: none;
+    #player-container:hover #custom-controls {
+      opacity: 1;
     }
     
     #play-pause {
@@ -454,7 +453,6 @@
     let isPlaying = false;
     let isDraggingProgress = false;
     let isIframePlayer = false;
-    let hideTimeout;
 
     // Get URL and token from Flask template variables
     const streamUrl = "{{ url }}";
@@ -849,7 +847,7 @@
           break;
         case 'low':
           window.hls.currentLevel = levels.reduce((minIdx, level, idx) => 
-            level.bitrate < levels[minIndex].bitrate ? idx : minIndex, 0
+            level.bitrate < levels[minIdx].bitrate ? idx : minIdx, 0
           );
           break;
       }
@@ -954,45 +952,6 @@
       player.volume = volumeSlider.value;
     }
 
-    function resetHideTimeout() {
-      if (isIframePlayer) return;
-      
-      fullscreenBtn.classList.remove('hide');
-      dataSaverBtn.classList.remove('hide');
-      audioOnlyBtn.classList.remove('hide');
-      qualityToggle.classList.remove('hide');
-      customControls.classList.remove('hide');
-      clearTimeout(hideTimeout);
-      hideTimeout = setTimeout(() => {
-        fullscreenBtn.classList.add('hide');
-        dataSaverBtn.classList.add('hide');
-        audioOnlyBtn.classList.add('hide');
-        qualityToggle.classList.add('hide');
-        customControls.classList.add('hide');
-      }, 3000);
-    }
-
-    function handleVideoClick() {
-      togglePlayPause();
-      resetHideTimeout();
-    }
-
-    function handleDocumentClick(e) {
-      // If click is outside all controls, hide them immediately
-      const isClickInControls = customControls.contains(e.target) || 
-                               e.target.closest('header') || 
-                               qualityDropdown.contains(e.target);
-      
-      if (!isClickInControls && !isIframePlayer) {
-        fullscreenBtn.classList.add('hide');
-        dataSaverBtn.classList.add('hide');
-        audioOnlyBtn.classList.add('hide');
-        qualityToggle.classList.add('hide');
-        customControls.classList.add('hide');
-        clearTimeout(hideTimeout);
-      }
-    }
-
     (function initializePlayer() {
       // Use template variables instead of query parameters
       if (!streamUrl) {
@@ -1035,7 +994,6 @@
         isPlaying = false;
       });
       
-      player.addEventListener('click', handleVideoClick);
       playPauseBtn.addEventListener('click', togglePlayPause);
       progressContainer.addEventListener('click', seekToPosition);
       volumeSlider.addEventListener('input', updateVolume);
@@ -1055,9 +1013,6 @@
       document.addEventListener('mouseup', () => {
         isDraggingProgress = false;
       });
-
-      // Click outside controls to hide
-      document.addEventListener('click', handleDocumentClick);
 
       if (ext === 'm3u8') {
         isIframePlayer = false;
@@ -1171,6 +1126,7 @@
       const fullscreenBtn = document.getElementById('fullscreen-toggle');
       const fullscreenIcon = document.getElementById('fullscreen-icon');
       const playerContainer = document.getElementById('player-container');
+      let hideTimeout;
 
       const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6';
       const exitFullscreenPath = 'M6 18L18 6M6 6l12 12';
@@ -1205,6 +1161,24 @@
           }
           document.exitFullscreen();
         }
+      }
+
+      function resetHideTimeout() {
+        if (isIframePlayer) return;
+        
+        fullscreenBtn.classList.remove('hide');
+        dataSaverBtn.classList.remove('hide');
+        audioOnlyBtn.classList.remove('hide');
+        qualityToggle.classList.remove('hide');
+        customControls.classList.remove('hide');
+        clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => {
+          fullscreenBtn.classList.add('hide');
+          dataSaverBtn.classList.add('hide');
+          audioOnlyBtn.classList.add('hide');
+          qualityToggle.classList.add('hide');
+          customControls.classList.add('hide');
+        }, 3000);
       }
 
       fullscreenBtn.addEventListener('click', toggleFullscreen);

@@ -86,7 +86,7 @@ app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
 app.config['SQLALCHEMY_DATABASE_URI'] = choose_db_uri()
 app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_size': 10,          # Max connections (adjust for your DB tier)
+    'pool_size': 15,          # Max connections (adjust for DB tier)
     'max_overflow': 5,        # Temporary extra connections if pool is full
     'pool_recycle': 300,      # Recycle connections after 5 mins (avoid timeouts)
     'pool_pre_ping': True     # Test connections before reuse
@@ -539,6 +539,7 @@ def get_role_home(role, is_plus):
         return url_for('home_1')  # Normal user home
 
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("30 per minute")
 def login():
     next_page = request.args.get("next") or request.form.get("next")
 
@@ -692,12 +693,14 @@ def get_grouped_channels():
     return grouped
 #----------------------------------------------------------------------
 @app.route("/return-football")
+@limiter.limit("30 per minute")
 @login_required
 @plus_required
 def return_football():
     return render_template("return_football.html")
 
 @app.route("/sports_playlist")
+@limiter.limit("30 per minute")
 @plus_required
 @login_required
 def sports_playlist():
@@ -742,6 +745,7 @@ def moviepire():
 
 from flask import redirect
 @app.route("/football_matches")
+@limiter.limit("30 per minute")
 @login_required
 @plus_required
 def football_matches():

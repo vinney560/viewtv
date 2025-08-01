@@ -742,7 +742,7 @@
   },
   "k24-tv": {
     "name": "K24 TV",
-    "url": "https://www.youtube.com/embed/_lB9oSok1FM?controls=1&modestbranding=1&rel=0&fs=1&disablekb=0&iv_load_policy=3",
+    "url": "https://m.youtube.com:443/@K24tv/live",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/k24.png",
     "country": "Kenya",
     "group-title": "News"

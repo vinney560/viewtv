@@ -1616,6 +1616,8 @@ def home_1():
 #======================================
 #  For home_1 - basic users and home_2 - Plus          access users
 
+import re
+
 @app.route("/channel/<key>")
 @login_required
 def play_channel(key):
@@ -1623,6 +1625,13 @@ def play_channel(key):
     if not channel:
         abort(404)
 
+    stream_url = channel["url"]
+
+    # Check for port number like :443 or :999 etc.
+    if re.search(r":\d{2,5}", stream_url):
+        return redirect(stream_url)  # Open the raw stream directly
+
+    # Else render in custom player
     channels = [
         {"key": k, "name": v["name"], "url": v["url"]}
         for k, v in RANDOMIZED_CHANNELS.items()
@@ -1631,10 +1640,11 @@ def play_channel(key):
     return render_template(
         "custom_player.html",
         channel_name=channel["name"],
-        stream_url=channel["url"],
-        channels=channels,       # Now a list of dicts with name, url, key
-        current_key=key 
+        stream_url=stream_url,
+        channels=channels,
+        current_key=key
     )
+
 @app.route("/api/channel_stream_url")
 @login_required
 def channel_stream_url():
@@ -1642,9 +1652,16 @@ def channel_stream_url():
     channel = RANDOMIZED_CHANNELS.get(key)
     if not channel:
         return jsonify({"error": "Channel not found"}), 404
+
+    stream_url = channel["url"]
+    
+    # Detect if it contains a port number (e.g., :443)
+    is_direct = bool(re.search(r":\d{2,5}", stream_url))
+
     return jsonify({
-        "stream_url": channel["url"],
-        "name": channel["name"]
+        "stream_url": stream_url,
+        "name": channel["name"],
+        "is_direct": is_direct
     })
 
 #-------------------------------------------------------------------------

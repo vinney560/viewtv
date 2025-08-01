@@ -269,6 +269,9 @@
         const data = await response.json();
         const newStreamURL = data.stream_url;
         const newName = data.name || "Streaming";
+        const isDirect = data.is_direct;
+        
+        if (isDirect) return window.location.href = newStreamURL;
 
         document.querySelector("h1").textContent = newName;
 

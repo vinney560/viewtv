@@ -708,7 +708,7 @@
   },
   "kameme-tv": {
     "name": "Kameme TV",
-    "url": "https://youtu.be/1bHChOomAcQ",
+    "url": "hhttps://youtu.be:443/1bHChOomAcQ",
     "logo": "",
     "country": "Kenya",
     "group-title": "News"
@@ -720,7 +720,7 @@
   },
   "kass-tv": {
     "name": "Kass TV",
-    "url": "https://youtu.be/eoSaOhDsu_8",
+    "url": "https://youtu.be:443/eoSaOhDsu_8,
     "logo": "https://viewtv-p2s3.onrender.com/uploads/kass.png",
     "country": "Kenya",
     "group-title": "News"

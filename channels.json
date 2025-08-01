@@ -872,6 +872,13 @@
     "country": "Kenya",
     "group-title": "News"
   },
+  "sporty-tv": {
+    "name": "Sporty Tv",
+    "url": "https://m.youtube.com:443/channel/UCwu87p766uwEyzG1p8dEMlg/live",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/sporty.png",
+    "country": "YouTube",
+    "group-title": "Sports"
+  },
   "wrestling": {
     "name": "Wrestling Web",
     "url": "https://viewtv-p2s3.onrender.com:443/wrestling",

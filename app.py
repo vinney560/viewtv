@@ -1371,7 +1371,7 @@ def fetch_live_streams_cached(category):
 @app.route("/wrestling")
 @login_required
 @plus_required
-def live_matches():
+def wrestling():
     return render_template("wrestling.html")
 
 @app.route("/live_matches")

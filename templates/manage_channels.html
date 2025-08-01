@@ -195,7 +195,7 @@
             <p class="text-xs text-gray-500 mt-1">Key: {{ key }}</p>
           </div>
           <div class="flex gap-2 mt-3 sm:mt-0">
-            <a href="{{ url_for('player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" target="_blank" 
+            <a href="{{ url_for('plus_play', key=key) }}" target="_blank" 
                class="glow-hover bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded font-semibold flex items-center gap-1 transition-all">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />

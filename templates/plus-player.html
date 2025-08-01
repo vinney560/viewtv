@@ -251,12 +251,7 @@
       justify-content: space-between;
       align-items: center;
       z-index: 10;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    
-    #player-container:hover #custom-controls {
-      opacity: 1;
+      opacity: 1; /* Always visible */
     }
     
     #play-pause {
@@ -272,40 +267,10 @@
       cursor: pointer;
     }
     
-    #time-display {
-      font-size: 14px;
-      margin: 0 10px;
-    }
-    
-    #progress-container {
-      flex-grow: 1;
-      height: 4px;
-      background: rgba(255,255,255,0.3);
-      border-radius: 2px;
-      position: relative;
-      cursor: pointer;
-      margin: 0 10px;
-    }
-    
-    #progress-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      background: #3b82f6;
-      border-radius: 2px;
-      width: 0%;
-    }
-    
     #volume-container {
       display: flex;
       align-items: center;
       margin-right: 10px;
-    }
-    
-    #volume-slider {
-      width: 80px;
-      margin-left: 5px;
     }
   </style>
 </head>
@@ -389,15 +354,15 @@
             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
           </svg>
         </button>
-        <span id="time-display">00:00 / 00:00</span>
-        <div id="progress-container">
-          <div id="progress-bar"></div>
-        </div>
         <div id="volume-container">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-          </svg>
-          <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+          <button id="volume-toggle">
+            <svg id="volume-on-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+            <svg id="volume-off-icon" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -432,10 +397,9 @@
     const playPauseBtn = document.getElementById('play-pause');
     const playIcon = document.getElementById('play-icon');
     const pauseIcon = document.getElementById('pause-icon');
-    const timeDisplay = document.getElementById('time-display');
-    const progressContainer = document.getElementById('progress-container');
-    const progressBar = document.getElementById('progress-bar');
-    const volumeSlider = document.getElementById('volume-slider');
+    const volumeToggleBtn = document.getElementById('volume-toggle');
+    const volumeOnIcon = document.getElementById('volume-on-icon');
+    const volumeOffIcon = document.getElementById('volume-off-icon');
 
     // Data Saver Configuration
     const DATA_SAVER_LEVELS = {
@@ -452,9 +416,7 @@
     let isAudioOnlyMode = false;
     let isBuffering = false;
     let isPlaying = false;
-    let isDraggingProgress = false;
     let isIframePlayer = false;
-    let hideControlsTimeout;
 
     // Get URL and token from Flask template variables
     const streamUrl = "{{ url }}";
@@ -928,41 +890,15 @@
       }
     }
 
-    function updateProgressBar() {
-      if (isDraggingProgress) return;
-      
-      const progress = (player.currentTime / player.duration) * 100;
-      progressBar.style.width = `${progress}%`;
-      
-      // Update time display
-      const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      };
-      
-      timeDisplay.textContent = `${formatTime(player.currentTime)} / ${formatTime(player.duration)}`;
-    }
-
-    function seekToPosition(e) {
-      const rect = progressContainer.getBoundingClientRect();
-      const pos = (e.clientX - rect.left) / rect.width;
-      player.currentTime = pos * player.duration;
-    }
-
-    function updateVolume() {
-      player.volume = volumeSlider.value;
-    }
-
-    // Controls auto-hide functionality
-    function showControls() {
-      customControls.classList.remove('hide');
-      clearTimeout(hideControlsTimeout);
-      hideControlsTimeout = setTimeout(() => {
-        if (!isDraggingProgress && !player.paused) {
-          customControls.classList.add('hide');
-        }
-      }, 3000);
+    function toggleMute() {
+      player.muted = !player.muted;
+      if (player.muted) {
+        volumeOnIcon.classList.add('hidden');
+        volumeOffIcon.classList.remove('hidden');
+      } else {
+        volumeOnIcon.classList.remove('hidden');
+        volumeOffIcon.classList.add('hidden');
+      }
     }
 
     (function initializePlayer() {
@@ -989,52 +925,24 @@
       player.addEventListener('error', hideSpinner);
 
       // Setup custom controls events
-      player.addEventListener('timeupdate', updateProgressBar);
-      player.addEventListener('durationchange', updateProgressBar);
       player.addEventListener('play', () => {
         playIcon.classList.add('hidden');
         pauseIcon.classList.remove('hidden');
         isPlaying = true;
-        showControls();
       });
       player.addEventListener('pause', () => {
         playIcon.classList.remove('hidden');
         pauseIcon.classList.add('hidden');
         isPlaying = false;
-        customControls.classList.remove('hide');
       });
       player.addEventListener('ended', () => {
         playIcon.classList.remove('hidden');
         pauseIcon.classList.add('hidden');
         isPlaying = false;
-        customControls.classList.remove('hide');
       });
       
       playPauseBtn.addEventListener('click', togglePlayPause);
-      progressContainer.addEventListener('click', seekToPosition);
-      volumeSlider.addEventListener('input', updateVolume);
-      
-      // Handle progress bar dragging
-      progressContainer.addEventListener('mousedown', (e) => {
-        isDraggingProgress = true;
-        seekToPosition(e);
-      });
-      
-      document.addEventListener('mousemove', (e) => {
-        if (isDraggingProgress) {
-          seekToPosition(e);
-        }
-      });
-      
-      document.addEventListener('mouseup', () => {
-        isDraggingProgress = false;
-      });
-      
-      // Controls auto-hide listeners
-      playerContainer.addEventListener('mousemove', showControls);
-      playerContainer.addEventListener('touchstart', showControls);
-      progressContainer.addEventListener('mousedown', () => isDraggingProgress = true);
-      document.addEventListener('mouseup', () => isDraggingProgress = false);
+      volumeToggleBtn.addEventListener('click', toggleMute);
 
       if (ext === 'm3u8') {
         isIframePlayer = false;
@@ -1111,6 +1019,9 @@
           dashPlayer.initialize(player, urlWithToken, true);
           player.style.display = 'block';
           startTrackingDataUsage();
+          
+          // Fix for muted MPD streams
+          player.muted = false;
         } catch(e) {
           showError("DASH playback error: " + e.message);
         }
@@ -1127,6 +1038,15 @@
         iframe.src = urlWithToken;
         iframe.style.display = 'block';
         customControls.classList.add('hidden');
+      }
+      
+      // Initialize volume icons
+      if (player.muted) {
+        volumeOnIcon.classList.add('hidden');
+        volumeOffIcon.classList.remove('hidden');
+      } else {
+        volumeOnIcon.classList.remove('hidden');
+        volumeOffIcon.classList.add('hidden');
       }
       
       if (navigator.connection) {
@@ -1195,13 +1115,11 @@
         customControls.classList.remove('hide');
         clearTimeout(hideTimeout);
         hideTimeout = setTimeout(() => {
-          if (!isDraggingProgress && !player.paused) {
-            fullscreenBtn.classList.add('hide');
-            dataSaverBtn.classList.add('hide');
-            audioOnlyBtn.classList.add('hide');
-            qualityToggle.classList.add('hide');
-            customControls.classList.add('hide');
-          }
+          fullscreenBtn.classList.add('hide');
+          dataSaverBtn.classList.add('hide');
+          audioOnlyBtn.classList.add('hide');
+          qualityToggle.classList.add('hide');
+          customControls.classList.add('hide');
         }, 3000);
       }
 

@@ -19,7 +19,7 @@
     #player-container {
       position: relative;
       width: 100%;
-      max-width: 1600px;
+      max-width: none;
       aspect-ratio: 16 / 9;
       margin: auto;
       background: black;
@@ -31,13 +31,16 @@
       width: 100%;
       height: 100%;
       background: black;
+      object-fit: cover;
     }
     .hidden {
       display: none;
     }
     @media (max-width: 640px) {
       #player-container {
-        aspect-ratio: 16 / 9;
+        aspect-ratio: unset;
+        width: 100vw;
+        height: 100vh;
       }
     }
 

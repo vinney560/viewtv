@@ -1619,22 +1619,20 @@ def save_channels(channels):
 
 CUSTOM_CHANNELS = load_channels()
 
-# Sort all channel keys alphabetically
-sorted_keys = sorted(CUSTOM_CHANNELS.keys())[:300]
-
-# Create a dictionary of all channels, sorted A-Z
-ALL_CHANNELS = {
-    key: CUSTOM_CHANNELS[key]
-    for key in sorted_keys
-}
-
 @app.route('/home_1')
 @login_required
 @plus_channel()
 def home_1():
     if current_user.plus_type in ["free", "paid"]:
         return redirect(url_for("home_2"))
-    return render_template('home_1.html', user=current_user, channels=ALL_CHANNELS)
+    
+    # Sort channels alphabetically by channel name
+    sorted_channels = dict(sorted(
+        CUSTOM_CHANNELS.items(),
+        key=lambda item: item[1]['name'].lower()  # Case-insensitive sort
+    ))
+    
+    return render_template('home_1.html', user=current_user, channels=sorted_channels)
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
 #======================================
@@ -1646,27 +1644,25 @@ import re
 @plus_channel()
 @login_required
 def play_channel(key):
-    channel = CUSTOM_CHANNELS.get(key)
+    # Case-insensitive lookup
+    key_lower = key.lower()
+    channel = next(
+        (v for k, v in CUSTOM_CHANNELS.items() if k.lower() == key_lower),
+        None
+    )
+    
     if not channel:
         abort(404)
 
-    stream_url = channel["url"]
-
-    # Check for port number like :443 or :999 etc.
-    if re.search(r":\d{2,5}", stream_url):
-        return redirect(stream_url)  # Open the raw stream directly
-
-    # Else render in custom player
-    channels = [
-        {"key": k, "name": v["name"], "url": v["url"]}
-        for k, v in CUSTOM_CHANNELS.items()
-    ]
+    # Improved port detection
+    if re.search(r":\d+", channel["url"]):
+        return redirect(channel["url"])
 
     return render_template(
         "custom_player.html",
         channel_name=channel["name"],
-        stream_url=stream_url,
-        channels=channels,
+        stream_url=channel["url"],
+        channels=CUSTOM_CHANNELS,
         current_key=key
     )
 
@@ -1675,19 +1671,22 @@ def play_channel(key):
 @plus_channel()
 def channel_stream_url():
     key = request.args.get("key")
-    channel = CUSTOM_CHANNELS.get(key)
+    if not key:
+        return jsonify({"error": "Missing channel key"}), 400
+
+    key_lower = key.lower()
+    channel = next(
+        (v for k, v in CUSTOM_CHANNELS.items() if k.lower() == key_lower),
+        None
+    )
+    
     if not channel:
         return jsonify({"error": "Channel not found"}), 404
 
-    stream_url = channel["url"]
-    
-    # Detect if it contains a port number (e.g., :443)
-    is_direct = bool(re.search(r":\d{2,5}", stream_url))
-
     return jsonify({
-        "stream_url": stream_url,
+        "stream_url": channel["url"],
         "name": channel["name"],
-        "is_direct": is_direct
+        "is_direct": bool(re.search(r":\d+", channel["url"]))
     })
 
 #-------------------------------------------------------------------------

@@ -46,7 +46,6 @@
     .video-container {
       aspect-ratio: 16/9;
     }
-    /* Hide back button during playback */
     .back-btn {
       opacity: 1;
       transition: opacity 0.3s ease;
@@ -57,22 +56,45 @@
     body:hover .back-btn {
       opacity: 1;
     }
+    .channel-active {
+      background: rgba(8, 145, 178, 0.15);
+      border-left: 3px solid #22d3ee;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #22d3ee;
+      padding: 12px 20px;
+      border-radius: 8px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .toast.show {
+      opacity: 1;
+    }
   </style>
 </head>
 
 <body class="text-white min-h-screen flex flex-col">
 
-  <!-- Back Button - now with dynamic hiding -->
+  <!-- Back Button -->
   <button id="backBtn" onclick="tryClose()" class="back-btn fixed top-6 left-6 z-50 flex items-center text-cyan-300 hover:text-cyan-200 transition-all duration-200 group bg-gray-900/80 rounded-full p-2">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
     </svg>
   </button>
 
-  <!-- Main Content -->
-  <div class="flex flex-col flex-1 pt-16"> <!-- Added pt-16 to lower the video container -->
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
 
-    <!-- Video Player Section - now larger -->
+  <!-- Main Content -->
+  <div class="flex flex-col flex-1 pt-16">
+
+    <!-- Video Player Section -->
     <section class="w-full bg-black">
       <div class="relative w-full max-w-7xl mx-auto video-container" style="max-height: 75vh;">
         <video id="video" controls autoplay playsinline class="w-full h-full object-cover bg-black"></video>
@@ -90,7 +112,10 @@
     <!-- Info and Controls Section -->
     <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-4">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
-        <h1 class="text-xl sm:text-2xl font-bold text-cyan-100 mb-2 sm:mb-0 truncate max-w-[70%]">{{ name }}</h1>
+        <div class="flex items-center">
+          <h1 id="channelTitle" class="text-xl sm:text-2xl font-bold text-cyan-100 mb-2 sm:mb-0 truncate max-w-[70%]">{{ name }}</h1>
+          <div id="channelBadge" class="ml-3 px-2 py-1 rounded-full text-xs font-semibold hidden"></div>
+        </div>
         
         <!-- Quality Selector -->
         <div id="qualityContainer" class="flex items-center space-x-2 bg-gray-900/80 rounded-lg px-3 py-2 border border-cyan-900/50">
@@ -114,15 +139,16 @@
         
         <div id="channelList" class="channel-list max-h-[400px] overflow-y-auto pr-2">
           {% for ch in channels %}
-            <div class="group relative mb-3 rounded-lg overflow-hidden transition-all duration-300 hover:bg-gray-800/60">
+            <div id="channel-{{ ch.key }}" class="channel-item group relative mb-3 rounded-lg overflow-hidden transition-all duration-300 hover:bg-gray-800/60">
               <div class="flex items-center justify-between p-4">
                 <div class="flex items-center min-w-0">
                   <span class="text-cyan-300 font-semibold mr-3 w-6 text-right">{{ loop.index }}.</span>
                   <span class="font-medium text-gray-100 truncate" title="{{ ch.name }}">{{ ch.name }}</span>
                 </div>
                 <button
+                  data-key="{{ ch.key }}"
                   onclick="switchChannel('{{ ch.key }}')"
-                  class="bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-4 py-2 rounded-md transition-all duration-200 glow-hover flex items-center"
+                  class="watch-btn bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-4 py-2 rounded-md transition-all duration-200 glow-hover flex items-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
@@ -147,6 +173,7 @@
   </div>
 
   <script>
+    // DOM Elements
     const video = document.getElementById("video");
     const iframe = document.getElementById("iframe");
     const qualitySelect = document.getElementById("qualitySelect");
@@ -154,6 +181,22 @@
     const bufferSpinner = document.getElementById("bufferSpinner");
     const backBtn = document.getElementById("backBtn");
     const body = document.body;
+    const toast = document.getElementById("toast");
+    const channelTitle = document.getElementById("channelTitle");
+    const channelBadge = document.getElementById("channelBadge");
+
+    // Current channel state
+    let currentChannelKey = "{{ current_key }}";
+    let currentChannelAccess = "";
+
+    // Show toast notification
+    function showToast(message, type = 'info') {
+      toast.textContent = message;
+      toast.className = `toast show ${type}`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
 
     // Handle back button visibility
     function handlePlaybackState() {
@@ -170,7 +213,7 @@
     video.addEventListener('playing', handlePlaybackState);
     video.addEventListener('waiting', handlePlaybackState);
 
-    // Also handle mouse movement to show/hide back button
+    // Mouse movement handler
     let mouseTimer;
     body.addEventListener('mousemove', () => {
       backBtn.style.opacity = '1';
@@ -193,6 +236,18 @@
       return url && url.toLowerCase().includes(".m3u8");
     }
 
+    // Update active channel in list
+    function updateActiveChannel(key) {
+      document.querySelectorAll('.channel-item').forEach(item => {
+        item.classList.remove('channel-active');
+      });
+      
+      const activeItem = document.getElementById(`channel-${key}`);
+      if (activeItem) {
+        activeItem.classList.add('channel-active');
+      }
+    }
+
     // Initialize player on page load
     function initializePlayer(streamURL) {
       if (isM3U8(streamURL) && Hls.isSupported()) {
@@ -200,12 +255,14 @@
           window.hls.destroy();
           window.hls = null;
         }
+        
         const hls = new Hls();
         window.hls = hls;
         hls.loadSource(streamURL);
         hls.attachMedia(video);
         video.classList.remove("hidden");
         iframe.classList.add("hidden");
+        qualityContainer.classList.remove("hidden");
 
         // Clear and add auto option
         qualitySelect.innerHTML = '';
@@ -255,33 +312,85 @@
       }
     }
 
-    // Initial load with the current stream URL from the server
-    initializePlayer("{{ stream_url }}");
-
     // Switch channel without reload
     async function switchChannel(key) {
+      // Disable all watch buttons during loading
+      document.querySelectorAll('.watch-btn').forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('opacity-50');
+      });
+
       bufferSpinner.style.display = "flex";
+      
+      // Normalize the key for API consistency
+      const normalizedKey = key.toLowerCase().replace(/\s+/g, '-');
 
       try {
-        const response = await fetch(`/api/channel_stream_url?key=${encodeURIComponent(key)}`);
-        if (!response.ok) throw new Error("Channel not found");
+        const response = await fetch(`/api/channel_stream_url?key=${encodeURIComponent(normalizedKey)}`);
+        
+        // Handle API errors properly
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Channel not found");
+        }
 
         const data = await response.json();
         const newStreamURL = data.stream_url;
         const newName = data.name || "Streaming";
         const isDirect = data.is_direct;
         
-        if (isDirect) return window.location.href = newStreamURL;
+        if (isDirect) {
+          return window.location.href = newStreamURL;
+        }
 
-        document.querySelector("h1").textContent = newName;
+        // Update UI
+        channelTitle.textContent = newName;
+        currentChannelKey = normalizedKey;
+        updateActiveChannel(normalizedKey);
+        
+        // Update access badge if available
+        if (data.access) {
+          channelBadge.className = `ml-3 px-2 py-1 rounded-full text-xs font-semibold ${
+            data.access === 'paid' ? 'bg-yellow-500/20 text-yellow-400' :
+            data.access === 'free' ? 'bg-green-500/20 text-green-400' :
+            'bg-purple-500/20 text-purple-400'
+          }`;
+          channelBadge.textContent = data.access.toUpperCase();
+          channelBadge.classList.remove('hidden');
+        } else {
+          channelBadge.classList.add('hidden');
+        }
 
         initializePlayer(newStreamURL);
+        showToast(`Switched to ${newName}`, 'success');
+
       } catch (error) {
-        alert("Error switching channel: " + error.message);
+        console.error("Channel switch error:", error);
+        showToast(error.message, 'error');
       } finally {
-        setTimeout(() => { bufferSpinner.style.display = "none"; }, 1000);
+        setTimeout(() => {
+          bufferSpinner.style.display = "none";
+          document.querySelectorAll('.watch-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+          });
+        }, 1000);
       }
     }
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      initializePlayer("{{ stream_url }}");
+      updateActiveChannel(currentChannelKey);
+      
+      // Highlight current channel in list
+      if (currentChannelKey) {
+        const currentItem = document.getElementById(`channel-${currentChannelKey}`);
+        if (currentItem) {
+          currentItem.classList.add('channel-active');
+        }
+      }
+    });
   </script>
 </body>
 </html>

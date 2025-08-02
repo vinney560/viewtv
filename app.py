@@ -1815,6 +1815,112 @@ def plus_player():
         token=token,
         current_year=datetime.now().year
     )
+
+#======================================
+
+import secrets
+
+# Configuration
+BASIC_CHANNELS_FILE = 'custom_channels_basic.json'
+TOKENS_FILE = 'channel_tokens.json'
+CHANNELS = {}
+TOKEN_MAP = {}
+
+def load_or_create_tokens():
+    """Load tokens from file or generate new ones"""
+    tokens = {}
+    
+    if os.path.exists(TOKENS_FILE):
+        try:
+            with open(TOKENS_FILE, 'r') as f:
+                tokens = json.load(f)
+        except:
+            pass  # If file is corrupt, we'll regenerate tokens
+            
+    return tokens
+
+def load_channels():
+    """Load channels and attach persistent tokens"""
+    if not os.path.exists(BASIC_CHANNELS_FILE):
+        return {}
+    
+    with open(BASIC_CHANNELS_FILE, 'r') as f:
+        channels = json.load(f)
+    
+    valid_channels = {}
+    tokens = load_or_create_tokens()
+    new_tokens = False
+    
+    for key, data in channels.items():
+        if not all(field in data for field in ['name', 'url']):
+            continue
+            
+        # Generate new token if none exists
+        if key not in tokens:
+            tokens[key] = secrets.token_urlsafe(16)
+            new_tokens = True
+            
+        # Attach token to channel data
+        data['token'] = tokens[key]
+        valid_channels[key] = data
+    
+    # Save new tokens if generated
+    if new_tokens:
+        with open(TOKENS_FILE, 'w') as f:
+            json.dump(tokens, f)
+    
+    return valid_channels
+
+# Initialize channels and tokens
+CHANNELS = load_channels()
+TOKEN_MAP = {data['token']: key for key, data in CHANNELS.items()}
+
+# Custom endpoint for channel URLs
+@app.route("/madeup_url")
+def madeup_url():
+    base_url = "https://viewtv-p2s3.onrender.com"
+    channel_urls = []
+    
+    for key, channel in CHANNELS.items():
+        m3u8_url = f"{base_url}/channel/{channel['token']}/{key}.m3u8"
+        channel_urls.append({
+            "name": channel["name"],
+            "url": m3u8_url,
+            "token": channel['token']
+        })
+    
+    return render_template('made_channels.html', 
+                         channel_urls=channel_urls,
+                         base_url=base_url)
+
+# Route to serve the .m3u8 wrapper
+@app.route("/channel/<token>/<key>.m3u8")
+def channel_m3u8(token, key):
+    if token not in TOKEN_MAP:
+        return "Invalid token", 403
+    
+    if TOKEN_MAP[token] != key:
+        return "Token-key mismatch", 403
+
+    channel = CHANNELS.get(key)
+    if not channel:
+        return "Channel not found", 404
+
+    # Create HLS wrapper
+    m3u8_content = f"""#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=1280x720
+{channel['url']}?token={token}
+"""
+    return m3u8_content, 200, {'Content-Type': 'application/vnd.apple.mpegurl'}
+
+
+
+#======================================
+
+
+
+
 #======================================
 #             >>>>PLUS FEATURE<<<<
 #======================================

@@ -47,7 +47,7 @@
         @apply bg-gradient-to-r from-purple-500 to-purple-700 text-purple-100;
       }
       .play-btn {
-        @apply w-full px-4 py-2 rounded text-sm font-medium transition-all duration-300;
+        @apply px-4 py-2 rounded text-sm font-medium transition-all duration-300 flex items-center;
         background: rgba(8, 145, 178, 0.85);
         box-shadow: 0 4px 10px rgba(6, 148, 182, 0.25);
       }
@@ -56,7 +56,7 @@
         box-shadow: 0 6px 15px rgba(6, 148, 182, 0.4);
       }
       .channel-card {
-        @apply rounded-xl p-4 flex flex-col h-full transition-all duration-300 relative;
+        @apply rounded-xl p-4 transition-all duration-300 relative;
         background: rgba(31, 41, 55, 0.4);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
@@ -69,10 +69,23 @@
         transform: translateY(-3px);
       }
       .channel-content {
-        @apply flex flex-col h-full;
+        @apply flex items-start gap-4;
       }
       .logo-container {
-        @apply flex items-center justify-center mx-auto mb-3;
+        @apply flex-shrink-0;
+      }
+      .channel-info {
+        @apply flex-grow;
+      }
+      .channel-actions {
+        @apply flex justify-end mt-3;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
       }
     }
   </style>
@@ -132,7 +145,7 @@
   <div class="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-10">
 
     <!-- Glass Morph Title Container -->
-    <div class="glass-morph rounded-2xl p-6 mb-8 shadow-glass">
+    <div class="glass-morph rounded-2xl p-6 mb-8 shadow-glass fade-in">
       <h1 class="text-3xl font-bold text-cyan-400 mb-2 text-center">Available Channels</h1>
       <p class="text-center text-gray-400 max-w-2xl mx-auto">
         Browse our premium collection of channels. Enjoy seamless streaming with crystal clear quality.
@@ -142,7 +155,7 @@
     <!-- Channel Grid -->
     <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {% for key, info in channels.items() %}
-      <div class="channel-card group">
+      <div class="channel-card fade-in" style="animation-delay: {{ loop.index * 50 }}ms">
         <!-- Access Badge -->
         {% if info.get('access') %}
           <div class="access-badge 
@@ -154,32 +167,34 @@
         {% endif %}
         
         <div class="channel-content">
+          <!-- Channel Logo (rounded-full) -->
           <div class="logo-container">
             <img 
               src="{{ info.logo or url_for('uploaded_file', filename='default_tv_icon.png') }}" 
               alt="{{ info.name }} Logo" 
-              class="w-20 h-16 rounded-lg object-contain"
+              class="w-16 h-16 rounded-full object-cover border-2 border-cyan-500/30"
               onerror="this.src='{{ url_for('uploaded_file', filename='default_tv_icon.png') }}'"
             />
           </div>
           
-          <div class="flex flex-col flex-grow mt-2">
-            <div class="mb-3">
-              <h2 class="text-lg font-semibold text-white mb-1 truncate text-center">{{ info.name }}</h2>
-              <p class="text-sm text-gray-400 text-center line-clamp-2 px-1">
-                {{ info.get('group-title', 'Entertainment at its finest') }}
-              </p>
-            </div>
-            
-            <!-- Use exact key for URL -->
-            <a href="{{ url_for('play_channel', key=key) }}" 
-               class="play-btn text-white flex items-center justify-center mt-auto">
-              <span>Watch Now</span>
-              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              </svg>
-            </a>
+          <!-- Channel Name and Category -->
+          <div class="channel-info">
+            <h2 class="text-lg font-semibold text-white mb-1 truncate">{{ info.name }}</h2>
+            <p class="text-sm text-gray-400 line-clamp-2">
+              {{ info.get('group-title', 'Entertainment') }}
+            </p>
           </div>
+        </div>
+        
+        <!-- Watch Button -->
+        <div class="channel-actions">
+          <a href="{{ url_for('play_channel', key=key) }}" 
+             class="play-btn text-white">
+            <span>Watch Now</span>
+            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            </svg>
+          </a>
         </div>
       </div>
       {% endfor %}
@@ -213,14 +228,6 @@
           toast.classList.add('opacity-0', 'translate-x-10');
           setTimeout(() => toast.remove(), 500);
         }, 4000);
-      });
-      
-      // Add animation to channel cards on load
-      const cards = document.querySelectorAll('.channel-card');
-      cards.forEach((card, index) => {
-        setTimeout(() => {
-          card.classList.remove('opacity-0');
-        }, 100 * index);
       });
     });
   </script>

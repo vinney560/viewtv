@@ -1662,7 +1662,7 @@ def play_channel(key):
                     for k, v in BASIC_CHANNELS.items()]
     
     return render_template(
-        "player.html",
+        "custom_player.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
         channels=channels_list,

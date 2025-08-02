@@ -1623,68 +1623,56 @@ def save_channels(channels):
 CUSTOM_CHANNELS = load_channels()
 
 BASIC_CHANNELS_FILE = 'custom_channels_basic.json'
+BASIC_CHANNELS = {}
 
-def load_basic_channels():
-    """Load basic channels with validation"""
+def load_channels():
+    """Load and validate channels from JSON file"""
     if not os.path.exists(BASIC_CHANNELS_FILE):
         return {}
     
     with open(BASIC_CHANNELS_FILE, 'r') as f:
         channels = json.load(f)
     
-    # Simple validation
-    return {
-        k: v for k, v in channels.items()
-        if all(field in v for field in ['name', 'url'])
-    }
+    return {k: v for k, v in channels.items() 
+            if all(field in v for field in ['name', 'url'])}
 
 # Load channels at startup
-BASIC_CHANNELS = load_basic_channels()
+BASIC_CHANNELS = load_channels()
 
 @app.route('/home_1')
 @login_required
 def home_1():
-    # Get first 50 channels sorted alphabetically
-    channels = dict(sorted(
-        BASIC_CHANNELS.items(),
-        key=lambda item: item[1]['name'].lower()
-    )[:50])
-    
-    return render_template('home_1.html', 
-                         user=current_user, 
-                         channels=channels)
+    """Homepage with channel listing"""
+    channels = dict(sorted(BASIC_CHANNELS.items(), 
+                         key=lambda item: item[1]['name'].lower()))
+    return render_template('home_1.html', channels=channels)
 
 @app.route("/channel/<key>")
 @login_required
-@plus_channel()
 def play_channel(key):
+    """Main player route"""
     if key not in BASIC_CHANNELS:
         flash("Channel not found", "error")
-        return redirect(url_for("home_1"))
+        return redirect(url_for("home"))
     
     channel = BASIC_CHANNELS[key]
-    url = channel["url"]
     
-    # Check if URL contains a port number (e.g., :8080)
-    if re.search(r":\d+", url):
-        # This appears to be a direct stream URL with a port
-        return redirect(url)
-    
-    # Convert channels to list of dicts with 'key' included
-    channels_list = [{"key": k, "name": v["name"]} for k, v in BASIC_CHANNELS.items()]
+    # Convert to list of dicts for template
+    channels_list = [{"key": k, "name": v["name"]} 
+                    for k, v in BASIC_CHANNELS.items()]
     
     return render_template(
-        "custom_player.html",
+        "player.html",
         channel_name=channel["name"],
-        stream_url=url,
+        stream_url=channel["url"],
         channels=channels_list,
         current_key=key
     )
-    
+
 @app.route("/api/channel_stream_url")
 @login_required
-@plus_channel()
 def channel_stream_url():
+    """API endpoint for channel switching"""
     key = request.args.get("key")
     if not key:
         return jsonify({
@@ -1698,20 +1686,31 @@ def channel_stream_url():
             "success": False,
             "error": "Channel not found",
             "code": 404,
-            "available_keys": list(BASIC_CHANNELS.keys())  # Helpful for debugging
+            "available_keys": list(BASIC_CHANNELS.keys())
         }), 404
     
     channel = BASIC_CHANNELS[key]
     url = channel["url"]
+    
+    # Enhanced stream type detection
+    is_direct = bool(
+        re.search(r":\d+", url) or          # Port number
+        url.startswith(('rtmp://', 'rtsp://')) or  # RTMP/RTSP
+        not url.lower().endswith(('.m3u8', '.mpd'))  # Not HLS/DASH
+    )
     
     return jsonify({
         "success": True,
         "stream_url": url,
         "name": channel["name"],
         "access": channel.get("access", "").lower(),
-        "is_direct": bool(re.search(r":\d+", url)),
-        "type": "hls" if url.lower().endswith('.m3u8') else "direct"
+        "is_direct": is_direct,
+        "type": "hls" if not is_direct and url.lower().endswith('.m3u8') else "direct",
+        "logo": channel.get("logo", ""),
+        "group": channel.get("group-title", "")
     })
+
+
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")
 @login_required

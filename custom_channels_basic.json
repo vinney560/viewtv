@@ -116,6 +116,171 @@
     "access": "free",
     "group-title": "News"
   },
+  "aa": {
+    "name": "B+ TV",
+    "access": "paid",
+    "url": "https://tv.btnrwanda.com:3432/live/bpluslive.m3u8",
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "group-title": "Entertainment"
+  },
+  "wwe": {
+    "name": "Cable 14 Hamilton",
+    "access": "paid",
+    "url": "https://flowcaster1-ch.cdn.clearcable.net/C14/smil:C14.smil/playlist.m3u8?iimae0UC2aendtime=1665196120&iimae0UC2ahash=NzcDbuotaJAVf1DsNxuGHBlfCXSvHDIt5sqMUMgrRMU=&iimae0UC2astarttime=1665181720",
+    "logo": "https://i.imgur.com/bJ7ygTq.png",
+    "group-title": ""
+  },
+  "jee": {
+    "name": "CAtv",
+    "access": "paid",
+    "url": "https://video2.getstreamhosting.com:19360/8216/8216.m3u8",
+    "logo": "https://caribbeanadvantage.com/images/CAtv-logo-512.png",
+    "group-title": "General"
+  },
+  "iu": {
+    "name": "CBN Gospel",
+    "access": "paid",
+    "url": "https://59d39900ebfb8.streamlock.net/ccbn/ccbn/playlist.m3u8",
+    "logo": "https://i.imgur.com/SHBAblV.png",
+    "group-title": "Religious"
+  },
+  "iop": {
+    "name": "CBN TV",
+    "access": "paid",
+    "url": "https://5790d294af2dc.streamlock.net/CBNVI/CBNVI/playlist.m3u8",
+    "logo": "https://i.imgur.com/SHBAblV.png",
+    "group-title": "General"
+  },
+  "yuh": {
+    "name": "CeeJay TV",
+    "access": "paid",
+    "url": "https://asiakwa.com/ceejaytv/index.fmp4.m3u8",
+    "logo": "https://i.imgur.com/YgLMMOr.png",
+    "group-title": "Entertainment"
+  },
+  "forfor": {
+    "name": "Channel 44",
+    "access": "paid",
+    "url": "https://d1k6kax80wecy5.cloudfront.net/WFqZJc/index.m3u8",
+    "logo": "https://i.imgur.com/P2wUGh9.png",
+    "group-title": "General"
+  },
+  "ppo": {
+    "name": "Channel 82 SD",
+    "access": "paid",
+    "url": "https://service.webvideocore.net/CL1olYogIrDWvwqiIKK7eBmnWbRkKKsu3nqabm9GlX02JOj3CDNXzodJMDEN2dk3/a_bq9clxfbupwg.m3u8",
+    "logo": "https://i.imgur.com/8Ff5b3e.png",
+    "group-title": "Entertainment"
+  },
+  "qer": {
+    "name": "Deluxe Dance",
+    "access": "paid",
+    "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/64733/64733_264_live.m3u8",
+    "logo": "https://i.imgur.com/Qu7t15Y.png",
+    "group-title": "Music"
+  },
+  "bbb": {
+    "name": "Deluxe Rap",
+    "access": "paid",
+    "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/65183/65183_264_live.m3u8",
+    "logo": "https://i.imgur.com/s3h67hx.png",
+    "group-title": "Music"
+  },
+  "dwEn": {
+    "name": "DW English",
+    "access": "paid",
+    "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+    "logo": "https://i.imgur.com/8MRNFb9.png",
+    "group-title": "News"
+  },
+  "yyj": {
+    "name": "EbS",
+    "access": "paid",
+    "url": "https://streams.prd.commavservices.eu/live/ebs/index.m3u8",
+    "logo": "https://i.imgur.com/DIIRPNN.png",
+    "group-title": "Legislative"
+  },
+  "uojn": {
+    "name": "EbS+",
+    "access": "paid",
+    "url": "https://streams.prd.commavservices.eu/live/ebsplus/index.m3u8",
+    "logo": "https://i.imgur.com/7V012zQ.png",
+    "group-title": "Legislative"
+  },
+  "bsb": {
+    "name": "Expo Channel",
+    "access": "paid",
+    "url": "https://tvsnhlslivetest.akamaized.net/hls/live/2034711/EXPO-MSL4/master.m3u8",
+    "logo": "https://i.imgur.com/2KzCShW.png",
+    "group-title": "Shop"
+  },
+  "tyu": {
+    "name": "FashionTV Europe",
+    "access": "paid",
+    "url": "https://fashiontv-fashiontv-5-nl.samsung.wurl.tv/playlist.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Fashion_TV_logo.svg/512px-Fashion_TV_logo.svg.png",
+    "group-title": "Lifestyle"
+  },
+  "fifa-a": {
+    "name": "FIFA +",
+    "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8",
+    "logo": "https://i.imgur.com/l5iax42.png",
+    "group-title": "Sports"
+  },
+  "yuig": {
+    "name": "Firstlight",
+    "access": "paid",
+    "url": "https://uni01rtmp.tulix.tv/firstlight/firstlight.smil/playlist.m3u8",
+    "logo": "https://i.imgur.com/gtDROeT.png",
+    "group-title": "Religious"
+  },
+  "jhu": {
+    "name": "Fish TV",
+    "url": "https://tv.localstreamgh.com/fishtv/index.m3u8",
+    "logo": "https://i.imgur.com/A4VeRnS.png",
+    "group-title": "General"
+  },
+  "uiipi": {
+    "name": "For You TV",
+    "access": "paid",
+    "url": "https://stream.az-multimedia.com:3793/live/foryoutvlive.m3u8",
+    "logo": "https://i.imgur.com/1oMboXL.png",
+    "group-title": "News"
+  },
+  "gsgs": {
+    "name": "Fresh",
+    "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/freshtv/playlist.m3u8",
+    "logo": "https://i.imgur.com/2ig8jUH.png",
+    "group-title": "General"
+  },
+  "bsbs": {
+    "name": "Hard Knocks Fighting Championship",
+    "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/2ee2b8d4-acc4-4296-9dc8-66f1ffd0fff8/5.m3u8",
+    "logo": "https://images-1.rakuten.tv/storage/global-live-channel/translation/artwork/13b0a6c7-4307-4c8d-9fc4-df2a4f8e8b38-hard-knocks-fighting-1602077398-width200-quality90.jpeg",
+    "access": "paid",
+    "group-title": "Wrestling"
+  },
+  "enbs": {
+    "name": "Kordia TV",
+    "access": "paid",
+    "url": "https://ptvlive.kordia.net.nz/out/v1/3fc2254c865a457c8d7fbbce227a2aae/index.m3u8",
+    "logo": "https://i.imgur.com/BQ0qWzX.png",
+    "group-title": "General"
+  },
+  "ebhs": {
+    "name": "Kozoom TV",
+    "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/fdd6f243-f971-4a1a-9510-97ac01d6b37f/manifest.m3u8",
+    "access": "paid",
+    "logo": "https://i.imgur.com/M1Ee79b.png",
+    "group-title": "Sports"
+  },
+  "lolwe-tv": {
+    "name": "Lolwe TV",
+    "url": "https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8",
+    "access": "paid",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/lolwe.png",
+    "group-title": "News"
+  },
   "kameme-tv": {
     "name": "Kameme TV",
     "url": "https://m.youtube.com:443/@KamemeTv/live",

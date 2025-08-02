@@ -1687,29 +1687,30 @@ def play_channel(key):
 def channel_stream_url():
     key = request.args.get("key")
     if not key:
-        return jsonify({"error": "Missing channel key"}), 400
+        return jsonify({
+            "success": False,
+            "error": "Missing channel key",
+            "code": 400
+        }), 400
     
     if key not in BASIC_CHANNELS:
-        return jsonify({"error": "Channel not found"}), 404
+        return jsonify({
+            "success": False,
+            "error": "Channel not found",
+            "code": 404,
+            "available_keys": list(BASIC_CHANNELS.keys())  # Helpful for debugging
+        }), 404
     
     channel = BASIC_CHANNELS[key]
     url = channel["url"]
     
-    # Enhanced URL detection logic
-    is_direct = bool(
-        re.search(r":\d+", url) or  # Port number detection
-        url.startswith(('rtmp://', 'rtsp://')) or  # RTMP/RTSP streams
-        not url.lower().endswith(('.m3u8', '.mpd'))  # Not standard HLS/DASH
-    )
-    
     return jsonify({
+        "success": True,
         "stream_url": url,
         "name": channel["name"],
-        "access": channel.get("access", "").lower(),  # Ensure lowercase for consistency
-        "is_direct": is_direct,
-        "type": "hls" if not is_direct and url.lower().endswith('.m3u8') else "direct",
-        "logo": channel.get("logo", ""),  # Include logo if available
-        "group": channel.get("group-title", "")  # Include channel group
+        "access": channel.get("access", "").lower(),
+        "is_direct": bool(re.search(r":\d+", url)),
+        "type": "hls" if url.lower().endswith('.m3u8') else "direct"
     })
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")

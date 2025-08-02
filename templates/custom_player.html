@@ -180,68 +180,130 @@
     const qualityContainer = document.getElementById("qualityContainer");
     const bufferSpinner = document.getElementById("bufferSpinner");
     const backBtn = document.getElementById("backBtn");
-    const body = document.body;
     const toast = document.getElementById("toast");
     const channelTitle = document.getElementById("channelTitle");
     const channelBadge = document.getElementById("channelBadge");
 
-    // Current channel state
+    // Player state
+    let currentHls = null;
     let currentChannelKey = "{{ current_key }}";
-    let currentChannelAccess = "";
 
-    // Show toast notification
+    // Toast notification
     function showToast(message, type = 'info') {
       toast.textContent = message;
       toast.className = `toast show ${type}`;
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3000);
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    // Handle back button visibility
-    function handlePlaybackState() {
-      if (video.paused) {
-        body.classList.remove("video-playing");
+    // Clean up previous player instance
+    function cleanupPlayer() {
+      if (currentHls) {
+        currentHls.destroy();
+        currentHls = null;
+      }
+      video.src = '';
+      iframe.src = '';
+    }
+
+    // Initialize player based on stream type
+    function initializePlayer(streamUrl) {
+      cleanupPlayer();
+      bufferSpinner.style.display = "flex";
+
+      if (isHlsStream(streamUrl) {
+        setupHlsPlayer(streamUrl);
+      } else if (isDirectStream(streamUrl)) {
+        setupDirectStream(streamUrl);
       } else {
-        body.classList.add("video-playing");
+        showToast("Unsupported stream format", "error");
+        bufferSpinner.style.display = "none";
       }
     }
 
-    // Set up event listeners for playback state
-    video.addEventListener('play', handlePlaybackState);
-    video.addEventListener('pause', handlePlaybackState);
-    video.addEventListener('playing', handlePlaybackState);
-    video.addEventListener('waiting', handlePlaybackState);
+    function isHlsStream(url) {
+      return url && (url.includes('.m3u8') || 
+             (Hls.isSupported() && !url.includes(':') && !url.startsWith('rtmp')));
+    }
 
-    // Mouse movement handler
-    let mouseTimer;
-    body.addEventListener('mousemove', () => {
-      backBtn.style.opacity = '1';
-      clearTimeout(mouseTimer);
-      mouseTimer = setTimeout(() => {
-        if (!video.paused) {
-          backBtn.style.opacity = '0';
+    function isDirectStream(url) {
+      return url && (url.includes(':') || 
+                    url.startsWith('rtmp') || 
+                    url.startsWith('rtsp')));
+    }
+
+    function setupHlsPlayer(streamUrl) {
+      if (Hls.isSupported()) {
+        currentHls = new Hls();
+        currentHls.loadSource(streamUrl);
+        currentHls.attachMedia(video);
+        
+        currentHls.on(Hls.Events.MANIFEST_PARSED, () => {
+          updateQualityOptions(currentHls.levels);
+          bufferSpinner.style.display = "none";
+        });
+        
+        currentHls.on(Hls.Events.ERROR, (event, data) => {
+          handlePlayerError(data);
+        });
+        
+        video.classList.remove('hidden');
+        iframe.classList.add('hidden');
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native HLS support for Safari
+        video.src = streamUrl;
+        video.addEventListener('loadedmetadata', () => {
+          bufferSpinner.style.display = "none";
+        });
+        video.classList.remove('hidden');
+        iframe.classList.add('hidden');
+      } else {
+        throw new Error("HLS not supported in this browser");
+      }
+    }
+
+    function setupDirectStream(streamUrl) {
+      iframe.src = streamUrl;
+      iframe.onload = () => bufferSpinner.style.display = "none";
+      iframe.classList.remove('hidden');
+      video.classList.add('hidden');
+    }
+
+    function handlePlayerError(errorData) {
+      console.error('Player error:', errorData);
+      let errorMsg = 'Stream error';
+      
+      if (errorData.type === Hls.ErrorTypes.NETWORK_ERROR) {
+        errorMsg = 'Network error - try again';
+      } else if (errorData.type === Hls.ErrorTypes.MEDIA_ERROR) {
+        errorMsg = 'Format not supported';
+      }
+      
+      showToast(errorMsg, 'error');
+      bufferSpinner.style.display = 'none';
+    }
+
+    function updateQualityOptions(levels) {
+      qualitySelect.innerHTML = '';
+      const autoOption = document.createElement('option');
+      autoOption.value = -1;
+      autoOption.textContent = 'Auto';
+      autoOption.selected = true;
+      qualitySelect.appendChild(autoOption);
+      
+      levels.forEach((level, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${level.height}p (${Math.round(level.bitrate/1000)}kbps)`;
+        qualitySelect.appendChild(option);
+      });
+      
+      qualitySelect.onchange = () => {
+        if (currentHls) {
+          currentHls.currentLevel = parseInt(qualitySelect.value);
         }
-      }, 2000);
-    });
-
-    function tryClose() {
-      window.close();
-      setTimeout(() => {
-        if (!window.closed) history.back();
-      }, 300);
+      };
     }
 
-    function isM3U8(url) {
-      return url && url.toLowerCase().includes(".m3u8");
-    }
-    
-    function hasPort(url) {
-      // Regular expression to detect port numbers in URLs
-      return /:\d+/.test(url);
-    }
-
-    // Update active channel in list
     function updateActiveChannel(key) {
       document.querySelectorAll('.channel-item').forEach(item => {
         item.classList.remove('channel-active');
@@ -253,108 +315,46 @@
       }
     }
 
-    // Initialize player on page load
-    function initializePlayer(streamURL) {
-      if (isM3U8(streamURL) && Hls.isSupported()) {
-        if (window.hls) {
-          window.hls.destroy();
-          window.hls = null;
-        }
-        
-        const hls = new Hls();
-        window.hls = hls;
-        hls.loadSource(streamURL);
-        hls.attachMedia(video);
-        video.classList.remove("hidden");
-        iframe.classList.add("hidden");
-        qualityContainer.classList.remove("hidden");
-
-        // Clear and add auto option
-        qualitySelect.innerHTML = '';
-        const autoOption = document.createElement("option");
-        autoOption.value = -1;
-        autoOption.text = "Auto";
-        autoOption.selected = true;
-        qualitySelect.appendChild(autoOption);
-
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
-          hls.levels.forEach((level, index) => {
-            const option = document.createElement("option");
-            option.value = index;
-            option.text = `${level.height}p`;
-            qualitySelect.appendChild(option);
-          });
-        });
-
-        qualitySelect.onchange = function () {
-          const selected = parseInt(this.value);
-          window.hls.currentLevel = selected;
-        };
-
-        hls.on(Hls.Events.BUFFER_STALLED, () => bufferSpinner.style.display = "flex");
-        hls.on(Hls.Events.BUFFER_APPENDED, () => bufferSpinner.style.display = "none");
-        hls.on(Hls.Events.BUFFER_EOS, () => bufferSpinner.style.display = "none");
-
-      } else if (isM3U8(streamURL) && video.canPlayType("application/vnd.apple.mpegurl")) {
-        if (window.hls) {
-          window.hls.destroy();
-          window.hls = null;
-        }
-        video.src = streamURL;
-        video.classList.remove("hidden");
-        iframe.classList.add("hidden");
-        qualityContainer.classList.remove("hidden");
-
-      } else {
-        if (window.hls) {
-          window.hls.destroy();
-          window.hls = null;
-        }
-        video.classList.add("hidden");
-        qualityContainer.classList.add("hidden");
-        iframe.src = streamURL;
-        iframe.classList.remove("hidden");
-      }
-    }
-
-    // Switch channel without reload
     async function switchChannel(key) {
-      // Disable all watch buttons during loading
-      document.querySelectorAll('.watch-btn').forEach(btn => {
-        btn.disabled = true;
-        btn.classList.add('opacity-50');
-      });
-
-      bufferSpinner.style.display = "flex";
-      
       try {
+        // UI Loading state
+        document.querySelectorAll('.watch-btn').forEach(btn => {
+          btn.disabled = true;
+          btn.classList.add('opacity-50');
+        });
+        bufferSpinner.style.display = 'flex';
+        
+        // Fetch channel data
         const response = await fetch(`/api/channel_stream_url?key=${encodeURIComponent(key)}`);
         
-        // Handle API errors properly
+        // Handle HTTP errors
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Channel not found");
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `Server error: ${response.status}`);
         }
-
-        const data = await response.json();
-        const newStreamURL = data.stream_url;
-        const newName = data.name || "Streaming";
         
-        // PORT DETECTION: If URL contains a port, open directly
-        if (hasPort(newStreamURL)) {
-          window.location.href = newStreamURL;
+        const data = await response.json();
+        
+        // Handle API errors
+        if (!data || !data.stream_url) {
+          throw new Error(data.error || 'Invalid channel data');
+        }
+        
+        // Handle direct streams
+        if (data.is_direct) {
+          window.location.href = data.stream_url;
           return;
         }
         
         // Update UI
-        channelTitle.textContent = newName;
         currentChannelKey = key;
+        channelTitle.textContent = data.name;
         updateActiveChannel(key);
         
-        // Update access badge if available
+        // Update access badge
         if (data.access) {
           channelBadge.className = `ml-3 px-2 py-1 rounded-full text-xs font-semibold ${
-            data.access === 'paid' ? 'bg-yellow-500/20 text-yellow-400' :
+            data.access === 'paid' ? 'bg-red-500/20 text-red-400' :
             data.access === 'free' ? 'bg-green-500/20 text-green-400' :
             'bg-purple-500/20 text-purple-400'
           }`;
@@ -364,8 +364,8 @@
           channelBadge.classList.add('hidden');
         }
 
-        initializePlayer(newStreamURL);
-        showToast(`Switched to ${newName}`, 'success');
+        initializePlayer(data.stream_url);
+        showToast(`Now playing: ${data.name}`, 'success');
 
       } catch (error) {
         console.error("Channel switch error:", error);
@@ -381,9 +381,15 @@
       }
     }
 
+    function tryClose() {
+      window.close();
+      setTimeout(() => {
+        if (!window.closed) history.back();
+      }, 300);
+    }
+
     // Initial load
     document.addEventListener('DOMContentLoaded', () => {
-      // PORT DETECTION: For initial page load, the backend already handles redirects
       initializePlayer("{{ stream_url }}");
       updateActiveChannel(currentChannelKey);
       

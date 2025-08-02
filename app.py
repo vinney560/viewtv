@@ -1659,7 +1659,7 @@ def play_channel(key):
     # Else render in custom player
     channels = [
         {"key": k, "name": v["name"], "url": v["url"]}
-        for k, v in RANDOMIZED_CHANNELS.items()
+        for k, v in CUSTOM_CHANNELS.items()
     ]
 
     return render_template(

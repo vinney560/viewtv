@@ -441,7 +441,7 @@ def plus_channel(channel_key_param='key'):
                     
                     # Redirect to referrer if available, else fallback to index
                     referrer = request.headers.get("Referer")
-                    return redirect(referrer or url_for("index"))
+                    return redirect(referrer or url_for("home"))
                 
                 return view_func(*args, **kwargs)
 
@@ -1617,31 +1617,16 @@ def save_channels(channels):
         json.dump(channels, f, indent=2)
 
 # Expose as alias
-CUSTOM_CHANNELS = load_channels()
-
-import random
-
-# 17 channels from CUSTOM_CHANNELS
-selected_keys = [
-    "afro-beats", "bollywood", "citizen-tv", "disney-jr", "ebru-tv", "emmanual-tv",
-    "figth-network", "fifa-a", "inooro-tv", "kameme-tv", "k24-tv", "kass-tv", "kbc",
-    "ktn", "kyeni-tv", "lolwe-tv", "movie-box", "nick-jr-east", "ntv-kenya",
-    "ramogi-tv", "racing-com", "sporty", "tom-and-jerry"
-]
-
-RANDOMIZED_CHANNELS = {
-    key: CUSTOM_CHANNELS[key]
-    for key in selected_keys
-    if key in CUSTOM_CHANNELS
-}
+all_channels = dict(list(load_channels().items())[:200])
 
 @app.route('/home_1')
 @login_required
+@plus_channel()
 def home_1():
     if current_user.plus_type in ["free", "paid"]:
         return redirect(url_for("home_2"))
-    return render_template('home_1.html', user=current_user, channels=RANDOMIZED_CHANNELS)
 
+    return render_template('home_1.html', user=current_user, channels=all_channels)
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
 #======================================

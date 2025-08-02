@@ -1635,7 +1635,7 @@ def home_1():
     channels = dict(sorted(
         valid_channels.items(),
         key=lambda item: item[1]['name'].lower()
-    )[:50])  # <-- Only this line changed
+    )[:10])  # <-- Only this line changed
     
     return render_template('home_1.html', user=current_user, channels=channels)
 

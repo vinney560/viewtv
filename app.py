@@ -1616,8 +1616,26 @@ def save_channels(channels):
     with open(CHANNELS_FILE, 'w') as f:
         json.dump(channels, f, indent=2)
 
+CUSTOM_CHANNELS = load_channels()
+
 # Expose as alias
-all_channels = dict(list(load_channels().items())[:200])
+def get_sorted_channel_data(limit=200):
+    """Loads channels from file, sorts them A–Z by 'name', returns first N."""
+    raw_channels = load_channels()
+    
+    # Sort channels alphabetically by their display name (case-insensitive)
+    sorted_channel_pairs = sorted(
+        raw_channels.items(),
+        key=lambda pair: pair[1].get("name", "").lower()
+    )
+    
+    # Take the first N channels
+    limited_sorted_channels = dict(sorted_channel_pairs[:limit])
+    
+    return limited_sorted_channels
+
+# Load sorted channel list once
+sorted_channel_list = get_sorted_channel_data()
 
 @app.route('/home_1')
 @login_required
@@ -1626,8 +1644,11 @@ def home_1():
     if current_user.plus_type in ["free", "paid"]:
         return redirect(url_for("home_2"))
 
-    return render_template('home_1.html', user=current_user, channels=all_channels)
-    
+    return render_template(
+        'home_1.html',
+        user=current_user,
+        channels=sorted_channel_list
+    )
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
 #======================================

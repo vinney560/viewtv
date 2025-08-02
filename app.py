@@ -1649,6 +1649,7 @@ def home_1():
 
 @app.route("/channel/<key>")
 @login_required
+@plus_channel()
 def play_channel(key):
     """Main player route"""
     if key not in BASIC_CHANNELS:
@@ -1671,6 +1672,7 @@ def play_channel(key):
 
 @app.route("/api/channel_stream_url")
 @login_required
+@plus_channel()
 def channel_stream_url():
     """API endpoint for channel switching"""
     key = request.args.get("key")

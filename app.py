@@ -1893,7 +1893,7 @@ def madeup_url():
                          channel_urls=channel_urls,
                          base_url=base_url)
 
-# Route to serve the .m3u8 wrapper
+
 @app.route("/channel/<token>/<key>.m3u8")
 def channel_m3u8(token, key):
     if token not in TOKEN_MAP:
@@ -1906,13 +1906,17 @@ def channel_m3u8(token, key):
     if not channel:
         return "Channel not found", 404
 
-    # Create HLS wrapper
+    # VLC-compatible HLS wrapper
     m3u8_content = f"""#EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=1280x720
-{channel['url']}?token={token}
+#EXT-X-INDEPENDENT-SEGMENTS
+#EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2"
+{channel['url']}
 """
-    return m3u8_content, 200, {'Content-Type': 'application/vnd.apple.mpegurl'}
+    return m3u8_content, 200, {
+        'Content-Type': 'application/vnd.apple.mpegurl',
+        'Access-Control-Allow-Origin': '*'
+    }
 
 
 

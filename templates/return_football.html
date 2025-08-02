@@ -67,8 +67,8 @@
       <p class="text-sm text-gray-300">Experience the game like never before</p>
     </div>
 
-    <!-- Button Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+    <!-- Button Grid - Updated to 4 columns -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       <!-- Sports Playlist Button -->
       <a href="/sports_playlist" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -100,6 +100,15 @@
         <span class="text-lg font-medium">Live Football HD</span>
         <p class="text-xs text-gray-400 mt-1">Real-time HD matches</p>
       </a>
+
+      <!-- NEW: Live Football Matches Button -->
+      <a href="https://livetv860.me/enx/allupcomingsports/1/" target="_blank" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span class="text-lg font-medium">Live Football Matches</span>
+        <p class="text-xs text-gray-400 mt-1">Upcoming & Live</p>
+      </a>
     </div>
 
     <!-- Back Button -->
@@ -111,7 +120,7 @@
     </button>
 
     <!-- Promise Text -->
-    <p class="text-xs md:text-sm text-gray-400 mt-3 pulse-text" id="promiseText">We're building the future of sports streaming — delivering crystal-clear, real-time feeds with unmatched reliability. Our mission is simple: to become your most trusted destination for live football coverage, replays, and upcoming matches — all in one place.</p>
+    <p class="text-xs md:text-sm text-gray-400 mt-3 pulse-text" id="promiseText">We're building the future of sports streaming — delivering crystal-clear, real-time feeds with unmatched reliability. Our mission is simple: to become your most trusted destination for live football coverage, replays, and upcoming matches — all in one place. **With this Version, you are advised to use an Ad Blocker</p>
   </div>
 
   <script>
@@ -122,7 +131,7 @@
 
     // Enhanced promise text animation
     const promiseText = document.getElementById('promiseText');
-    let colors = ['text-cyan-400', 'text-emerald-400', 'text-purple-400'];
+    let colors = ['text-cyan-400', 'text-emerald-400', 'text-purple-400', 'text-yellow-400'];
     let currentColor = 0;
     
     setInterval(() => {

@@ -1625,17 +1625,17 @@ CUSTOM_CHANNELS = load_channels()
 @app.route('/home_1')
 @login_required
 def home_1():
-    # Load and validate channels
+    # Load, validate, and limit to 50 channels
     valid_channels = {
         k: v for k, v in CUSTOM_CHANNELS.items()
         if all(field in v for field in ['name', 'url'])
     }
     
-    # Sort channels alphabetically by name
+    # Sort channels alphabetically by name and take first 50
     channels = dict(sorted(
         valid_channels.items(),
         key=lambda item: item[1]['name'].lower()
-    ))
+    )[:50])  # <-- Only this line changed
     
     return render_template('home_1.html', user=current_user, channels=channels)
 

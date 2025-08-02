@@ -322,11 +322,8 @@
 
       bufferSpinner.style.display = "flex";
       
-      // Normalize the key for API consistency
-      const normalizedKey = key.toLowerCase().replace(/\s+/g, '-');
-
       try {
-        const response = await fetch(`/api/channel_stream_url?key=${encodeURIComponent(normalizedKey)}`);
+        const response = await fetch(`/api/channel_stream_url?key=${encodeURIComponent(key)}`);
         
         // Handle API errors properly
         if (!response.ok) {
@@ -337,16 +334,11 @@
         const data = await response.json();
         const newStreamURL = data.stream_url;
         const newName = data.name || "Streaming";
-        const isDirect = data.is_direct;
         
-        if (isDirect) {
-          return window.location.href = newStreamURL;
-        }
-
         // Update UI
         channelTitle.textContent = newName;
-        currentChannelKey = normalizedKey;
-        updateActiveChannel(normalizedKey);
+        currentChannelKey = key;
+        updateActiveChannel(key);
         
         // Update access badge if available
         if (data.access) {

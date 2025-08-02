@@ -346,84 +346,84 @@
   "cts-sports": {
     "name": "Cts sports",
     "access": "paid",
-    "url": "https://viewtv-p2s3.onrender.com/channel/uHitNfwOxef52RWmj7wauw/cts-sports.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/uHitNfwOxef52RWmj7wauw/cts-sports.m3u8",
     "group-title": "Sports"
   },
   "t-sports": {
     "name": "T sports",
-    "url": "https://viewtv-p2s3.onrender.com/channel/Al0dePaJo-uQsH_CkYVD6A/t-sports.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/Al0dePaJo-uQsH_CkYVD6A/t-sports.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "t-sports-2": {
     "name": "T Sports 2",
-    "url": "https://viewtv-p2s3.onrender.com/channel/OeZ58Nznjvc5FlcCNj1gvw/t-sports-2.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/OeZ58Nznjvc5FlcCNj1gvw/t-sports-2.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "t-sports-sd": {
     "name": "T Sports SD",
-    "url": "https://viewtv-p2s3.onrender.com/channel/zTI-XpMRW8bK0ZJ8wzbYNw/t-sports-sd.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/zTI-XpMRW8bK0ZJ8wzbYNw/t-sports-sd.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "fox-sports-2": {
     "name": "Fox sports 2",
     "access": "paid",
-    "url": "https://viewtv-p2s3.onrender.com/channel/IMqL-Fr7hbK3zxMNM8Z9XA/fox-sports-2.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/IMqL-Fr7hbK3zxMNM8Z9XA/fox-sports-2.m3u8",
     "group-title": "Sports"
   },
   "usa-fs-1": {
     "name": "USA FS 1",
     "access": "paid",
-    "url": "https://viewtv-p2s3.onrender.com/channel/6udDVHP16Ha25TYbYhtZmQ/usa-fs-1.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/6udDVHP16Ha25TYbYhtZmQ/usa-fs-1.m3u8",
     "group-title": "Sports"
   },
   "bein-2": {
     "name": "Bein 2",
-    "url": "https://viewtv-p2s3.onrender.com/channel/nB4Ux_yHFSKvRz-VhGVkTQ/bein-2.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/nB4Ux_yHFSKvRz-VhGVkTQ/bein-2.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "bein-2-hd": {
     "name": "Bein 2 HD",
-    "url": "https://viewtv-p2s3.onrender.com/channel/lSgkSLP4-BzlVr1Gd-QKdQ/bein-2-hd.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/lSgkSLP4-BzlVr1Gd-QKdQ/bein-2-hd.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "bein-6": {
     "name": "Bein 6",
-    "url": "https://viewtv-p2s3.onrender.com/channel/ZBoz7U6VtsosAKAFuXgHzw/bein-6.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/ZBoz7U6VtsosAKAFuXgHzw/bein-6.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "eurosports-1": {
     "name": "Eurosports 1",
-    "url": "https://viewtv-p2s3.onrender.com/channel/IsgYeRHmqtGZ5DogyTdQHA/eurosports-1.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/IsgYeRHmqtGZ5DogyTdQHA/eurosports-1.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "eurosports2": {
     "name": "Eurosports2",
-    "url": "https://viewtv-p2s3.onrender.com/channel/ovbuTgMUSwpK-XHU6itw9g/eurosports2.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/ovbuTgMUSwpK-XHU6itw9g/eurosports2.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "all-sports": {
     "name": "All Sports",
-    "url": "https://viewtv-p2s3.onrender.com/channel/C4l41dy1heE0LDckndvWnQ/all-sports.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/C4l41dy1heE0LDckndvWnQ/all-sports.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "star-sport": {
     "name": "Star Sport",
-    "url": "https://viewtv-p2s3.onrender.com/channel/KHHyuN-2PiWp4TjG_dLu7Q/star-sport.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/KHHyuN-2PiWp4TjG_dLu7Q/star-sport.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "t-sports-sd-2": {
     "name": "T Sports SD",
-    "url": "https://viewtv-p2s3.onrender.com/channel/1UYOSaZtcsUY9dSwOXe5Tw/t-sports-sd-2.m3u8",
+    "url": "https://viewtv-p2s3.onrender.com:443/channel/1UYOSaZtcsUY9dSwOXe5Tw/t-sports-sd-2.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },

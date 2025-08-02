@@ -1641,7 +1641,7 @@ def load_basic_channels():
 # Load channels at startup
 BASIC_CHANNELS = load_basic_channels()
 
-@app.route('/home')
+@app.route('/home_1')
 @login_required
 def home_1():
     # Get first 50 channels sorted alphabetically
@@ -1663,12 +1663,14 @@ def play_channel(key):
     
     channel = BASIC_CHANNELS[key]
     
-    # Directly return the player template
+    # Convert channels to list of dicts with 'key' included
+    channels_list = [{"key": k, "name": v["name"]} for k, v in BASIC_CHANNELS.items()]
+    
     return render_template(
         "custom_player.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
-        channels=BASIC_CHANNELS,
+        channels=channels_list,  # Pass the list instead of the dict
         current_key=key
     )
     

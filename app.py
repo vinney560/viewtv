@@ -1608,11 +1608,7 @@ def load_channels():
     if not os.path.exists(CHANNELS_FILE):
         return {}
     with open(CHANNELS_FILE, 'r') as f:
-        raw_channels = json.load(f)
-    return {
-        k.lower().strip().replace(' ', '-'): v 
-        for k, v in raw_channels.items()
-    }
+        return json.load(f)
 def save_channels(channels):
     with open(CHANNELS_FILE, 'w') as f:
         json.dump(channels, f, indent=2)

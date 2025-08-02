@@ -1669,7 +1669,6 @@ def play_channel(key):
 
 @app.route("/api/channel_stream_url")
 @login_required
-@plus_channel(file='custom_channels_basic.json')
 def channel_stream_url():
     """API endpoint for channel switching"""
     key = request.args.get("key")
@@ -1679,25 +1678,33 @@ def channel_stream_url():
             "error": "Missing channel key",
             "code": 400
         }), 400
-    
-    if key not in BASIC_CHANNELS:
+
+    channel = BASIC_CHANNELS.get(key)
+    if not channel:
         return jsonify({
             "success": False,
             "error": "Channel not found",
             "code": 404,
             "available_keys": list(BASIC_CHANNELS.keys())
         }), 404
-    
-    channel = BASIC_CHANNELS[key]
+
+    # Access control logic here instead of @plus_channel
+    if channel.get("access") == "paid" and not getattr(current_user, "is_plus", False):
+        return jsonify({
+            "success": False,
+            "error": "This channel requires a Plus subscription.",
+            "code": 403
+        }), 403
+
     url = channel["url"]
-    
+
     # Enhanced stream type detection
     is_direct = bool(
-        re.search(r":\d+", url) or          # Port number
-        url.startswith(('rtmp://', 'rtsp://')) or  # RTMP/RTSP
-        not url.lower().endswith(('.m3u8', '.mpd'))  # Not HLS/DASH
+        re.search(r":\d+", url) or
+        url.startswith(('rtmp://', 'rtsp://')) or
+        not url.lower().endswith(('.m3u8', '.mpd'))
     )
-    
+
     return jsonify({
         "success": True,
         "stream_url": url,
@@ -1708,7 +1715,6 @@ def channel_stream_url():
         "logo": channel.get("logo", ""),
         "group": channel.get("group-title", "")
     })
-
 
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")

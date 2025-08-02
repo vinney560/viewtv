@@ -40,6 +40,9 @@
       .premium-badge {
         @apply bg-gradient-to-r from-yellow-500 to-yellow-700 text-yellow-100;
       }
+      .paid-badge {  <!-- ADDED THIS NEW BADGE FOR PAID ACCESS -->
+        @apply bg-gradient-to-r from-red-500 to-red-700 text-red-100;
+      }
       .free-badge {
         @apply bg-gradient-to-r from-green-500 to-green-700 text-green-100;
       }
@@ -140,8 +143,9 @@
         <!-- Access Badge -->
         {% if info.get('access') %}
           <div class="access-badge 
-            {% if info.access == 'paid' %}premium-badge
+            {% if info.access == 'paid' %}paid-badge  <!-- CHANGED TO paid-badge -->
             {% elif info.access == 'free' %}free-badge
+            {% elif info.access == 'premium' %}premium-badge
             {% else %}exclusive-badge{% endif %}">
             {{ info.access or 'free' }}
           </div>
@@ -162,7 +166,6 @@
             <p class="text-xs sm:text-sm text-gray-400 line-clamp-2">{{ info.get('group-title', 'Entertainment at its finest') }}</p>
           </div>
           
-          <!-- Normalized key for URL -->
           <a href="{{ url_for('play_channel', key=key) }}" 
              class="play-btn text-white flex items-center">
             <span>▶ Play</span>

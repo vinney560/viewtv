@@ -441,7 +441,7 @@ def plus_channel(channel_key_param='key'):
                     
                     # Redirect to referrer if available, else fallback to index
                     referrer = request.headers.get("Referer")
-                    return redirect(referrer or url_for("get_plus"))
+                    return redirect(referrer or url_for("home"))
                 
                 return view_func(*args, **kwargs)
 
@@ -1656,12 +1656,19 @@ def home_1():
 
 @app.route("/channel/<key>")
 @login_required
+@plus_channel
 def play_channel(key):
     if key not in BASIC_CHANNELS:
         flash("Channel not found", "error")
         return redirect(url_for("home_1"))
     
     channel = BASIC_CHANNELS[key]
+    url = channel["url"]
+    
+    # Check if URL contains a port number (e.g., :8080)
+    if re.search(r":\d+", url):
+        # This appears to be a direct stream URL with a port
+        return redirect(url)
     
     # Convert channels to list of dicts with 'key' included
     channels_list = [{"key": k, "name": v["name"]} for k, v in BASIC_CHANNELS.items()]
@@ -1669,13 +1676,14 @@ def play_channel(key):
     return render_template(
         "custom_player.html",
         channel_name=channel["name"],
-        stream_url=channel["url"],
-        channels=channels_list,  # Pass the list instead of the dict
+        stream_url=url,
+        channels=channels_list,
         current_key=key
     )
     
 @app.route("/api/channel_stream_url")
 @login_required
+@plus_channel
 def channel_stream_url():
     key = request.args.get("key")
     if not key:
@@ -1685,10 +1693,16 @@ def channel_stream_url():
         return jsonify({"error": "Channel not found"}), 404
     
     channel = BASIC_CHANNELS[key]
+    url = channel["url"]
+    
+    # Check if URL contains a port number (e.g., :8080)
+    is_direct = bool(re.search(r":\d+", url))
+    
     return jsonify({
-        "stream_url": channel["url"],
+        "stream_url": url,
         "name": channel["name"],
-        "access": channel.get("access", "")  # Add access field if it exists
+        "access": channel.get("access", ""),
+        "is_direct": is_direct  # Add this flag to indicate direct stream
     })
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")

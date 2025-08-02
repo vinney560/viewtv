@@ -2,42 +2,126 @@
   "30a_music": {
     "name": "30A Music",
     "url": "https://30a-tv.com/music.m3u8",
+    "access": "paid",
     "group-title": "Music"
   },
   "abc_news": {
     "name": "ABC News Live",
     "url": "https://abcnews.go.com/Live",
+    "access": "free",
     "group-title": "News"
   },
   "meru-tv": {
     "name": "Meru Tv",
     "url": "https://goliveafrica.media:9998/live/628e5c1991061/index.m3u8",
     "country": "Kenya",
+    "access": "free",
     "group-title": "News"
   },
   "reflect-tv": {
     "name": "Reflect Tv",
     "url": "https://edge-a3.evrideo.tv/8f37c9f0-fe22-44f4-b64a-76ad11730daf_1000026630_HLS/manifest.m3u8",
+    "access": "free",
     "group-title": "News"
   },
   "dodoma-tv": {
     "name": "Dodoma Tv",
     "url": "https://goliveafrica.media:9998/live/625965017ed69/index.m3u8",
+    "access": "free",
     "group-title": ""
   },
   "kids-soccer": {
     "name": "Kids Soccer",
     "url": "https://www.youtube.com/embed/YKlMmvkw66M?rel=0&autoplay=1&modestbranding=1&controls=1&showinfo=0",
+    "access": "premium",
     "group-title": "Kids"
   },
   "afro-beats": {
     "name": "Afro Beats",
     "url": "https://stream.ecable.tv/afrobeats/index.m3u8",
+    "access": "free",
     "group-title": "Music"
   },
   "akilikids": {
     "name": "Akili Kids! TV",
     "url": "https://akilikids.co.ke/live/",
+    "access": "free",
     "group-title": "Kids"
+  },
+  "cbeebies": {
+    "name": "CBeebies Kids",
+    "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8",
+    "access": "paid",
+    "group-title": "Kids"
+  },
+  "citizen-tv": {
+    "name": "Citizen TV",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=1&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/citizen.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "ntv-kenya": {
+    "name": "NTV",
+    "url": "https://www.youtube.com/embed/p4BWnK2xeHw",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ntv.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "pbs_kids": {
+    "name": "PBS Kids",
+    "access": "paid",
+    "url": "https://kidslive-aka.amagi.tv/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "kass-tv": {
+    "name": "Kass TV",
+    "url": "https://m.youtube.com:443/@kasstvwebstream/live",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/kass.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "k24-tv": {
+    "name": "K24 TV",
+    "url": "https://m.youtube.com:443/@K24tv/live",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/k24.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "ktn": {
+    "name": "KTN Home",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ktn.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "kbc": {
+    "name": "KBC channel 1",
+    "url": "https://kenyalivetv.co.ke/embed/kbc-channel-1-live",
+    "logo": "https://kbc.co.ke/wp-content/uploads/2024/11/KBC-LOGO.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "inooro-tv": {
+    "name": "Inooro Tv",
+    "url": "https://kenyalivetv.co.ke/tv/inooro-tv-live",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/inooro.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "kameme-tv": {
+    "name": "Kameme TV",
+    "url": "https://m.youtube.com:443/@KamemeTv/live",
+    "logo": "",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
   }
 }

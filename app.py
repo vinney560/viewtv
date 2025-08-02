@@ -441,7 +441,7 @@ def plus_channel(channel_key_param='key'):
                     
                     # Redirect to referrer if available, else fallback to index
                     referrer = request.headers.get("Referer")
-                    return redirect(referrer or url_for("home"))
+                    return redirect(referrer or url_for("get_plus"))
                 
                 return view_func(*args, **kwargs)
 
@@ -1624,6 +1624,7 @@ CUSTOM_CHANNELS = load_channels()
 
 @app.route('/home_1')
 @login_required
+@plus_channel
 def home_1():
     # Load, validate, and limit to 50 channels
     valid_channels = {

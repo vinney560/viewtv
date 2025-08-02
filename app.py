@@ -1728,7 +1728,7 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #--------------------------------------------------------------------------
 @app.route("/plus-channel/<key>")
-@plus_channel
+@plus_channel()
 def plus_play(key):
     try:
         with open('channels.json') as f:
@@ -1756,7 +1756,7 @@ def plus_play(key):
     except json.JSONDecodeError:
         return "Channel database corrupted", 500
 #------------------------------------------------------------------------
-#extra player for external URL test
+#extra player for external URL test and not updated routes-requests
 from urllib.parse import quote
 
 @app.route('/player/<name>')

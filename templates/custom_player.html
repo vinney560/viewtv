@@ -235,6 +235,11 @@
     function isM3U8(url) {
       return url && url.toLowerCase().includes(".m3u8");
     }
+    
+    function hasPort(url) {
+      // Regular expression to detect port numbers in URLs
+      return /:\d+/.test(url);
+    }
 
     // Update active channel in list
     function updateActiveChannel(key) {
@@ -335,6 +340,12 @@
         const newStreamURL = data.stream_url;
         const newName = data.name || "Streaming";
         
+        // PORT DETECTION: If URL contains a port, open directly
+        if (hasPort(newStreamURL)) {
+          window.location.href = newStreamURL;
+          return;
+        }
+        
         // Update UI
         channelTitle.textContent = newName;
         currentChannelKey = key;
@@ -372,6 +383,7 @@
 
     // Initial load
     document.addEventListener('DOMContentLoaded', () => {
+      // PORT DETECTION: For initial page load, the backend already handles redirects
       initializePlayer("{{ stream_url }}");
       updateActiveChannel(currentChannelKey);
       

@@ -1695,14 +1695,21 @@ def channel_stream_url():
     channel = BASIC_CHANNELS[key]
     url = channel["url"]
     
-    # Check if URL contains a port number (e.g., :8080)
-    is_direct = bool(re.search(r":\d+", url))
+    # Enhanced URL detection logic
+    is_direct = bool(
+        re.search(r":\d+", url) or  # Port number detection
+        url.startswith(('rtmp://', 'rtsp://')) or  # RTMP/RTSP streams
+        not url.lower().endswith(('.m3u8', '.mpd'))  # Not standard HLS/DASH
+    )
     
     return jsonify({
         "stream_url": url,
         "name": channel["name"],
-        "access": channel.get("access", ""),
-        "is_direct": is_direct  # Add this flag to indicate direct stream
+        "access": channel.get("access", "").lower(),  # Ensure lowercase for consistency
+        "is_direct": is_direct,
+        "type": "hls" if not is_direct and url.lower().endswith('.m3u8') else "direct",
+        "logo": channel.get("logo", ""),  # Include logo if available
+        "group": channel.get("group-title", "")  # Include channel group
     })
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")

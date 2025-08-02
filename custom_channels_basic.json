@@ -223,6 +223,7 @@
   },
   "fifa-a": {
     "name": "FIFA +",
+    "access": "premium",
     "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8",
     "logo": "https://i.imgur.com/l5iax42.png",
     "group-title": "Sports"

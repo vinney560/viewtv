@@ -1627,6 +1627,7 @@ def home_1():
         return redirect(url_for("home_2"))
 
     return render_template('home_1.html', user=current_user, channels=all_channels)
+    
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
 #======================================

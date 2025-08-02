@@ -1672,7 +1672,6 @@ def play_channel(key):
 
 @app.route("/api/channel_stream_url")
 @login_required
-@plus_channel()
 def channel_stream_url():
     """API endpoint for channel switching"""
     key = request.args.get("key")

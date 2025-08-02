@@ -346,84 +346,84 @@
   "cts-sports": {
     "name": "Cts sports",
     "access": "paid",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/uHitNfwOxef52RWmj7wauw/cts-sports.m3u8",
+    "url": "http://88.212.7.10/live/test_ctsport_25p/playlist.m3u8",
     "group-title": "Sports"
   },
   "t-sports": {
     "name": "T sports",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/Al0dePaJo-uQsH_CkYVD6A/t-sports.m3u8",
+    "url": "http://163.172.59.25/crc1/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "t-sports-2": {
     "name": "T Sports 2",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/OeZ58Nznjvc5FlcCNj1gvw/t-sports-2.m3u8",
+    "url": "http://103.15.140.138/tsports/tracks-v1a1/mono.ts.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "t-sports-sd": {
     "name": "T Sports SD",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/zTI-XpMRW8bK0ZJ8wzbYNw/t-sports-sd.m3u8",
+    "url": "http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "fox-sports-2": {
     "name": "Fox sports 2",
     "access": "paid",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/IMqL-Fr7hbK3zxMNM8Z9XA/fox-sports-2.m3u8",
+    "url": "http://212.102.60.231/FOX_SPORTS_2/tracks-v1a1/mono.ts.m3u8",
     "group-title": "Sports"
   },
   "usa-fs-1": {
     "name": "USA FS 1",
     "access": "paid",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/6udDVHP16Ha25TYbYhtZmQ/usa-fs-1.m3u8",
+    "url": "http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8",
     "group-title": "Sports"
   },
   "bein-2": {
     "name": "Bein 2",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/nB4Ux_yHFSKvRz-VhGVkTQ/bein-2.m3u8",
+    "url": "http://57.129.73.112:8480/701/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "bein-2-hd": {
     "name": "Bein 2 HD",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/lSgkSLP4-BzlVr1Gd-QKdQ/bein-2-hd.m3u8",
+    "url": "http://57.129.73.112:8480/702/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "bein-6": {
     "name": "Bein 6",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/ZBoz7U6VtsosAKAFuXgHzw/bein-6.m3u8",
+    "url": "http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "eurosports-1": {
     "name": "Eurosports 1",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/IsgYeRHmqtGZ5DogyTdQHA/eurosports-1.m3u8",
+    "url": "http://178.217.72.66:8080/Eurosport_HD/video.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "eurosports2": {
     "name": "Eurosports2",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/ovbuTgMUSwpK-XHU6itw9g/eurosports2.m3u8",
+    "url": "http://185.189.225.157/EuroSport2/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "all-sports": {
     "name": "All Sports",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/C4l41dy1heE0LDckndvWnQ/all-sports.m3u8",
+    "url": "http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "star-sport": {
     "name": "Star Sport",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/KHHyuN-2PiWp4TjG_dLu7Q/star-sport.m3u8",
+    "url": "http://41.205.93.154/STARSPORTS1/index.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "t-sports-sd-2": {
     "name": "T Sports SD",
-    "url": "https://viewtv-p2s3.onrender.com:443/channel/1UYOSaZtcsUY9dSwOXe5Tw/t-sports-sd-2.m3u8",
+    "url": "http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
@@ -476,7 +476,7 @@
   },
   "fox-news-channel": {
     "name": "Fox News Channel",
-    "url": "https://viewtv-p2s3.onrender.com/channel/RAG3qFUaUVoiYwzyUjJc6A/fox-news-channel.m3u8",
+    "url": "http://23.237.104.106:8080/USA_FOX_NEWS/index.m3u8",
     "access": "paid",
     "group-title": "News"
   },

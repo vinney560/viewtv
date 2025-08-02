@@ -421,6 +421,37 @@ def plus_required(f):
             return redirect(url_for("get_plus"))
         return f(*args, **kwargs)
     return decorated_function
+
+def plus_channel(channel_key_param='key'):
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapped_view(*args, **kwargs):
+            try:
+                with open('channels.json') as f:
+                    channels = json.load(f)
+                
+                key = kwargs.get(channel_key_param)
+                channel = channels.get(key)
+                if not channel:
+                    return "Channel not found", 404
+
+                access = channel.get("access", "free")
+                if access == "paid" and not getattr(current_user, "is_plus", False):
+                    flash("🔒 This channel requires a Plus subscription.", "warning")
+                    
+                    # Redirect to referrer if available, else fallback to index
+                    referrer = request.headers.get("Referer")
+                    return redirect(referrer or url_for("index"))
+                
+                return view_func(*args, **kwargs)
+
+            except FileNotFoundError:
+                return "Channel database missing", 500
+            except json.JSONDecodeError:
+                return "Channel database corrupted", 500
+
+        return wrapped_view
+    return decorator
 #------------------------------------------------------------------------
 ROLE_HIERARCHY = {
     'admin3': 1,
@@ -1697,8 +1728,7 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #--------------------------------------------------------------------------
 @app.route("/plus-channel/<key>")
-@login_required
-@plus_required
+@plus_channel
 def plus_play(key):
     try:
         with open('channels.json') as f:

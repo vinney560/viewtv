@@ -1642,7 +1642,7 @@ def load_basic_channels():
 # Load channels at startup
 BASIC_CHANNELS = load_basic_channels()
 
-@app.route('/home_1')
+@app.route('/home')
 @login_required
 def home_1():
     # Get first 50 channels sorted alphabetically

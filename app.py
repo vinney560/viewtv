@@ -1632,10 +1632,9 @@ def load_basic_channels():
     with open(BASIC_CHANNELS_FILE, 'r') as f:
         channels = json.load(f)
     
-    # Normalize keys and validate structure
+    # Simple validation
     return {
-        k.lower().strip().replace(' ', '-').replace('_', '-'): v
-        for k, v in channels.items()
+        k: v for k, v in channels.items()
         if all(field in v for field in ['name', 'url'])
     }
 
@@ -1654,29 +1653,23 @@ def home_1():
     return render_template('home_1.html', 
                          user=current_user, 
                          channels=channels)
-#======================================
-#               >>>>PLAYERS AVAILABLE<<<<
-#======================================
+
 @app.route("/channel/<key>")
 @login_required
 def play_channel(key):
-    normalized_key = key.lower().strip().replace(' ', '-').replace('_', '-')
-    
-    if normalized_key not in BASIC_CHANNELS:
+    if key not in BASIC_CHANNELS:
         flash("Channel not found", "error")
         return redirect(url_for("home_1"))
     
-    channel = BASIC_CHANNELS[normalized_key]
+    channel = BASIC_CHANNELS[key]
     
-    if re.search(r":\d+", channel["url"]):
-        return redirect(channel["url"])
-    
+    # Directly return the player template
     return render_template(
         "custom_player.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
         channels=BASIC_CHANNELS,
-        current_key=normalized_key
+        current_key=key
     )
     
 @app.route("/api/channel_stream_url")
@@ -1686,19 +1679,13 @@ def channel_stream_url():
     if not key:
         return jsonify({"error": "Missing channel key"}), 400
     
-    normalized_key = key.lower().strip().replace(' ', '-').replace('_', '-')
+    if key not in BASIC_CHANNELS:
+        return jsonify({"error": "Channel not found"}), 404
     
-    if normalized_key not in BASIC_CHANNELS:
-        return jsonify({
-            "error": "Channel not found",
-            "available_keys": list(BASIC_CHANNELS.keys())
-        }), 404
-    
-    channel = BASIC_CHANNELS[normalized_key]
+    channel = BASIC_CHANNELS[key]
     return jsonify({
         "stream_url": channel["url"],
-        "name": channel["name"],
-        "is_direct": bool(re.search(r":\d+", channel["url"]))
+        "name": channel["name"]
     })
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")

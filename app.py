@@ -1751,7 +1751,7 @@ def custom_list():
 @app.route("/plus-channel/<key>")
 def plus_play(key):
     try:
-        with open('channels.json') as f:
+        with open('original_channels.json') as f:
             channels = json.load(f)
         
         channel = channels.get(key)

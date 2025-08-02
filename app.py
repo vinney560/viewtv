@@ -1749,11 +1749,16 @@ def custom_list():
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 #--------------------------------------------------------------------------
 @app.route("/plus-channel/<key>")
+@plus_channel()
 def plus_play(key):
     try:
         with open('original_channels.json') as f:
             channels = json.load(f)
         
+        # Normalize keys to lowercase for consistent access
+        channels = {k.lower(): v for k, v in channels.items()}
+        key = key.lower()  # Normalize incoming key
+
         channel = channels.get(key)
         if not channel:
             return "Channel not found", 404

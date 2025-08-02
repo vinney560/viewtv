@@ -1656,7 +1656,6 @@ def home_1():
 
 @app.route("/channel/<key>")
 @login_required
-@plus_channel()
 def play_channel(key):
     if key not in BASIC_CHANNELS:
         flash("Channel not found", "error")
@@ -1683,7 +1682,6 @@ def play_channel(key):
     
 @app.route("/api/channel_stream_url")
 @login_required
-@plus_channel()
 def channel_stream_url():
     key = request.args.get("key")
     if not key:

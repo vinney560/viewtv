@@ -1603,6 +1603,7 @@ def stream_router():
 #           >>>>BASIC USER ENDPOINTS<<<<
 #=======================================
 import json
+import random
 
 CHANNELS_FILE = 'channels.json'
 
@@ -1620,21 +1621,27 @@ CUSTOM_CHANNELS = load_channels()
 
 import random
 
-#17 channels from CUSTOM_CHANNELS
-
-selected_keys = sorted(CUSTOM_CHANNELS.keys())[:300]
+# 17 channels from CUSTOM_CHANNELS
+selected_keys = [
+    "afro-beats", "bollywood", "citizen-tv", "disney-jr", "ebru-tv", "emmanual-tv",
+    "figth-network", "fifa-a", "inooro-tv", "kameme-tv", "k24-tv", "kass-tv", "kbc",
+    "ktn", "kyeni-tv", "lolwe-tv", "movie-box", "nick-jr-east", "ntv-kenya",
+    "ramogi-tv", "racing-com", "sporty", "tom-and-jerry"
+]
 
 RANDOMIZED_CHANNELS = {
     key: CUSTOM_CHANNELS[key]
     for key in selected_keys
+    if key in CUSTOM_CHANNELS
 }
+
 @app.route('/home_1')
 @login_required
 @plus_channel()
 def home_1():
     if current_user.plus_type in ["free", "paid"]:
         return redirect(url_for("home_2"))
-        return render_template('home_1.html', user=current_user, channels=RANDOMIZED_CHANNELS)
+    return render_template('home_1.html', user=current_user, channels=RANDOMIZED_CHANNELS)
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
 #======================================

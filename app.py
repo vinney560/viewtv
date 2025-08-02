@@ -422,12 +422,12 @@ def plus_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def plus_channel(channel_key_param='key'):
+def plus_channel(channel_key_param='key', file='channels.json'):
     def decorator(view_func):
         @wraps(view_func)
         def wrapped_view(*args, **kwargs):
             try:
-                with open('channels.json') as f:
+                with open(file) as f:
                     channels = json.load(f)
                 
                 key = kwargs.get(channel_key_param)
@@ -438,17 +438,14 @@ def plus_channel(channel_key_param='key'):
                 access = channel.get("access", "free")
                 if access == "paid" and not getattr(current_user, "is_plus", False):
                     flash("🔒 This channel requires a Plus subscription.", "warning")
-                    
-                    # Redirect to referrer if available, else fallback to index
-                    referrer = request.headers.get("Referer")
-                    return redirect(referrer or url_for("home"))
-                
+                    return redirect(request.headers.get("Referer") or url_for("home"))
+
                 return view_func(*args, **kwargs)
 
             except FileNotFoundError:
-                return "Channel database missing", 500
+                return f"Channel file '{file}' not found", 500
             except json.JSONDecodeError:
-                return "Channel database corrupted", 500
+                return f"Channel file '{file}' is corrupted", 500
 
         return wrapped_view
     return decorator
@@ -1649,7 +1646,7 @@ def home_1():
 
 @app.route("/channel/<key>")
 @login_required
-@plus_channel()
+@plus_channel(file='custom_channels_basic.json')
 def play_channel(key):
     """Main player route"""
     if key not in BASIC_CHANNELS:
@@ -1672,6 +1669,7 @@ def play_channel(key):
 
 @app.route("/api/channel_stream_url")
 @login_required
+@plus_channel(file='custom_channels_basic.json')
 def channel_stream_url():
     """API endpoint for channel switching"""
     key = request.args.get("key")

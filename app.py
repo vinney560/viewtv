@@ -1618,37 +1618,25 @@ def save_channels(channels):
 
 CUSTOM_CHANNELS = load_channels()
 
-# Expose as alias
-def get_sorted_channel_data(limit=200):
-    """Loads channels from file, sorts them A–Z by 'name', returns first N."""
-    raw_channels = load_channels()
-    
-    # Sort channels alphabetically by their display name (case-insensitive)
-    sorted_channel_pairs = sorted(
-        raw_channels.items(),
-        key=lambda pair: pair[1].get("name", "").lower()
-    )
-    
-    # Take the first N channels
-    limited_sorted_channels = dict(sorted_channel_pairs[:limit])
-    
-    return limited_sorted_channels
+import random
 
-# Load sorted channel list once
-sorted_channel_list = get_sorted_channel_data()
+#17 channels from CUSTOM_CHANNELS
+
+selected_keys = sorted(CUSTOM_CHANNELS.keys())
+
+RANDOMIZED_CHANNELS = {
+key: CUSTOM_CHANNELS[key]
+for key in selected_keys
+if key in CUSTOM_CHANNELS
+}
 
 @app.route('/home_1')
 @login_required
 @plus_channel()
 def home_1():
-    if current_user.plus_type in ["free", "paid"]:
-        return redirect(url_for("home_2"))
-
-    return render_template(
-        'home_1.html',
-        user=current_user,
-        channels=sorted_channel_list
-    )
+if current_user.plus_type in ["free", "paid"]:
+return redirect(url_for("home_2"))
+return render_template('home_1.html', user=current_user, channels=RANDOMIZED_CHANNELS)
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
 #======================================

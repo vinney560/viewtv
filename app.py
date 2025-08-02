@@ -1626,12 +1626,13 @@ CUSTOM_CHANNELS = load_channels()
 @login_required
 @plus_channel()
 def home_1():
-    # Validate and sort channels
+    # Load and validate channels
     valid_channels = {
-        k: v for k, v in CUSTOM_CHANNELS.items() 
+        k: v for k, v in CUSTOM_CHANNELS.items()
         if all(field in v for field in ['name', 'url'])
     }
     
+    # Sort channels alphabetically by name
     channels = dict(sorted(
         valid_channels.items(),
         key=lambda item: item[1]['name'].lower()
@@ -1645,53 +1646,60 @@ def home_1():
 #  For home_1 - basic users and home_2 - Plus          access users
 
 import re
+from urllib.parse import unquote
+import logging
+
 @app.route("/channel/<key>")
 @plus_channel()
 @login_required
 def play_channel(key):
-    normalized_key = key.lower().strip().replace(' ', '-')
-    channel = CUSTOM_CHANNELS.get(normalized_key)
+    # Normalize the key for lookup
+    normalized_key = key.lower().strip().replace(' ', '-').replace('_', '-')
     
-    if not channel:
-        abort(404)
-        
+    # Validate channel exists
+    if normalized_key not in CUSTOM_CHANNELS:
+        flash("Channel not found", "error")
+        return redirect(url_for("home_1"))  # Redirect home instead of 404
+    
+    channel = CUSTOM_CHANNELS[normalized_key]
+    
+    # Handle direct streams (URLs with ports)
     if re.search(r":\d+", channel["url"]):
         return redirect(channel["url"])
-        
-    return render_template("custom_player.html",
+    
+    # Render player with normalized key
+    return render_template(
+        "custom_player.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
         channels=CUSTOM_CHANNELS,
-        current_key=normalized_key  # Use normalized key here
+        current_key=normalized_key  # Ensures consistency
     )
-
-from urllib.parse import unquote
-import logging
-
+    
 @app.route("/api/channel_stream_url")
+@login_required
 def channel_stream_url():
     key = request.args.get("key")
-    print(f"Raw API key input: {key}")  # Debug
-    print(f"All channel keys: {list(CUSTOM_CHANNELS.keys())}")  # Debug
+    if not key:
+        return jsonify({"error": "Missing channel key"}), 400
     
-    normalized_key = unquote(key).lower().strip().replace(' ', '-')
-    print(f"Normalized lookup key: {normalized_key}")  # Debug
+    # Normalize the key (same as play_channel)
+    normalized_key = key.lower().strip().replace(' ', '-').replace('_', '-')
     
-    channel = CUSTOM_CHANNELS.get(normalized_key)
-    if not channel:
+    # Validate channel
+    if normalized_key not in CUSTOM_CHANNELS:
         return jsonify({
             "error": "Channel not found",
             "received_key": key,
-            "normalized_key": normalized_key,
             "available_keys": list(CUSTOM_CHANNELS.keys())
         }), 404
     
+    channel = CUSTOM_CHANNELS[normalized_key]
     return jsonify({
         "stream_url": channel["url"],
         "name": channel["name"],
         "is_direct": bool(re.search(r":\d+", channel["url"]))
     })
-
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")
 @login_required

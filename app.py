@@ -1624,7 +1624,6 @@ CUSTOM_CHANNELS = load_channels()
 
 @app.route('/home_1')
 @login_required
-@plus_channel()
 def home_1():
     # Load and validate channels
     valid_channels = {
@@ -1650,7 +1649,6 @@ from urllib.parse import unquote
 import logging
 
 @app.route("/channel/<key>")
-@plus_channel()
 @login_required
 def play_channel(key):
     # Normalize the key for lookup

@@ -1687,7 +1687,8 @@ def channel_stream_url():
     channel = BASIC_CHANNELS[key]
     return jsonify({
         "stream_url": channel["url"],
-        "name": channel["name"]
+        "name": channel["name"],
+        "access": channel.get("access", "")  # Add access field if it exists
     })
 #-------------------------------------------------------------------------
 @app.route("/plus-playlist")

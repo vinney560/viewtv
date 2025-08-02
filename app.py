@@ -1619,20 +1619,13 @@ def save_channels(channels):
 
 CUSTOM_CHANNELS = load_channels()
 
-import random
+# Sort all channel keys alphabetically
+sorted_keys = sorted(CUSTOM_CHANNELS.keys())[:300]
 
-# 17 channels from CUSTOM_CHANNELS
-selected_keys = [
-    "afro-beats", "bollywood", "citizen-tv", "disney-jr", "ebru-tv", "emmanual-tv",
-    "figth-network", "fifa-a", "inooro-tv", "kameme-tv", "k24-tv", "kass-tv", "kbc",
-    "ktn", "kyeni-tv", "lolwe-tv", "movie-box", "nick-jr-east", "ntv-kenya",
-    "ramogi-tv", "racing-com", "sporty", "tom-and-jerry"
-]
-
-RANDOMIZED_CHANNELS = {
+# Create a dictionary of all channels, sorted A-Z
+ALL_CHANNELS = {
     key: CUSTOM_CHANNELS[key]
-    for key in selected_keys
-    if key in CUSTOM_CHANNELS
+    for key in sorted_keys
 }
 
 @app.route('/home_1')
@@ -1641,7 +1634,7 @@ RANDOMIZED_CHANNELS = {
 def home_1():
     if current_user.plus_type in ["free", "paid"]:
         return redirect(url_for("home_2"))
-    return render_template('home_1.html', user=current_user, channels=RANDOMIZED_CHANNELS)
+    return render_template('home_1.html', user=current_user, channels=ALL_CHANNELS)
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
 #======================================
@@ -1650,9 +1643,10 @@ def home_1():
 import re
 
 @app.route("/channel/<key>")
+@plus_channel()
 @login_required
 def play_channel(key):
-    channel = RANDOMIZED_CHANNELS.get(key)
+    channel = CUSTOM_CHANNELS.get(key)
     if not channel:
         abort(404)
 
@@ -1678,9 +1672,10 @@ def play_channel(key):
 
 @app.route("/api/channel_stream_url")
 @login_required
+@plus_channel()
 def channel_stream_url():
     key = request.args.get("key")
-    channel = RANDOMIZED_CHANNELS.get(key)
+    channel = CUSTOM_CHANNELS.get(key)
     if not channel:
         return jsonify({"error": "Channel not found"}), 404
 

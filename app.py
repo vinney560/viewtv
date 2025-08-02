@@ -1698,7 +1698,7 @@ def channel_stream_url():
     
     if not channel:
         logger.warning(f"Channel not found: {key} (normalized: {normalized_input})")
-        return jsonify({"error": "Channel not found"}), 404
+        return jsonify({"error": "Channels not found"}), 404
 
     # Improved port detection
     has_port = bool(re.search(r":\d+", channel["url"]))

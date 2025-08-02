@@ -1,0 +1,4035 @@
+{
+  "30a_music": {
+    "name": "30A Music",
+    "url": "https://30a-tv.com/music.m3u8",
+    "group-title": "Music"
+  },
+  "abc_news": {
+    "name": "ABC News Live",
+    "url": "https://abcnews.go.com/Live",
+    "group-title": "News"
+  },
+  "meru-tv": {
+    "name": "Meru Tv",
+    "url": "https://goliveafrica.media:9998/live/628e5c1991061/index.m3u8",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "reflect-tv": {
+    "name": "Reflect Tv",
+    "url": "https://edge-a3.evrideo.tv/8f37c9f0-fe22-44f4-b64a-76ad11730daf_1000026630_HLS/manifest.m3u8",
+    "group-title": "News"
+  },
+  "dodoma-tv": {
+    "name": "Dodoma Tv",
+    "url": "https://goliveafrica.media:9998/live/625965017ed69/index.m3u8",
+    "group-title": ""
+  },
+  "kids-soccer": {
+    "name": "Kids Soccer",
+    "url": "https://www.youtube.com/embed/YKlMmvkw66M?rel=0&autoplay=1&modestbranding=1&controls=1&showinfo=0",
+    "access": "free",
+    "group-title": "Kids"
+  },
+  "afro-beats": {
+    "name": "Afro Beats",
+    "url": "https://stream.ecable.tv/afrobeats/index.m3u8",
+    "access": "free",
+    "group-title": "Music"
+  },
+  "akilikids": {
+    "name": "Akili Kids! TV",
+    "url": "https://akilikids.co.ke/live/",
+    "access": "free",
+    "group-title": "Kids"
+  },
+  "bricks": {
+    "name": "TV Bricks",
+    "url": "https://cdn.freevisiontv.co.za/sttv/smil:brics.stream.smil/playlist.m3u8",
+    "access": "free",
+    "group-title": "News"
+  },
+  "car-city": {
+    "name": "Car City TV",
+    "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/b6397b24-18b0-49c2-80bf-0333ae568e37/5.m3u8",
+    "access": "free",
+    "group-title": "Kids"
+  },
+  "al-jazeera-english": {
+    "name": "Al Jazeera English",
+    "url": "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8",
+    "access": "free",
+    "logo": "https://i.imgur.com/7bRVpnu.png",
+    "group-title": "Entertainment"
+  },
+  "al_jazeera": {
+    "name": "Al Jazeera English",
+    "url": "https://www.aljazeera.com/live",
+    "logo": "https://i.imgur.com/7bRVpnu.png",
+    "access": "free",
+    "group-title": "Entertainment"
+  },
+  "animax": {
+    "name": "Animax",
+    "url": "https://amg02159-kcglobal-amg02159c1-samsung-in-521.playouts.now.amagi.tv/playlist/amg02159-kcglobal-animax-samsungin/playlist.m3u8",
+    "access": "free",
+    "group-title": "Kids"
+  },
+  "baby_first": {
+    "name": "Baby First TV",
+    "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/c8d16110-566c-4e95-a1df-55d175e9e201/manifest.m3u8",
+    "access": "free",
+    "group-title": "Kids"
+  },
+  "baby_shark": {
+    "name": "Baby Shark Kids",
+    "url": "https://newidco-babysharktv-1-eu.rakuten.wurl.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Kids"
+  },
+  "b3_music": {
+    "name": "B3 Music",
+    "url": "https://live20.bozztv.com/akamaissh101/ssh101/d3tvnet/playlist.m3u8",
+    "group-title": "Music"
+  },
+  "bbc_doctor_who": {
+    "name": "BBC Doctor Who",
+    "url": "https://amg00793-amg00793c15-rakuten-es-5359.playouts.now.amagi.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "General"
+  },
+  "bein_sports": {
+    "name": "beIN SPORTS",
+    "url": "https://aegis-cloudfront-1.tubi.video/82c7f2de-f4ea-44a4-8200-069c5c0bb639/playlist.m3u8",
+    "access": "paid",
+    "logo": "https://i.imgur.com/QWo0x7S.jpg",
+    "group-title": "Sports"
+  },
+  "bet_her": {
+    "name": "BET her",
+    "url": "https://fl3.moveonjoy.com/BET_HER/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment"
+  },
+  "biz_tv": {
+    "name": "Biz TV",
+    "url": "https://thegateway.app/BizAndYou/BizTV/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/yaNXOnO.png"
+  },
+  "bloomberg_tv_us": {
+    "name": "Bloomberg TV US",
+    "url": "https://bloomberg-bloomberg-3-br.samsung.wurl.tv/manifest/playlist.m3u8",
+    "group-title": "News"
+  },
+  "boomerang": {
+    "name": "Boomerang",
+    "url": "https://dai.google.com/linear/hls/event/d4J7lXUyQp2dZQ-pXJ-ItA/master.m3u8",
+    "group-title": "News"
+  },
+  "bollywood_classic": {
+    "name": "Bollywood Classic",
+    "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-classic/manifest.m3u8",
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "access": "paid",
+    "group-title": "Movies"
+  },
+  "bollywood_hd": {
+    "name": "Bollywood HD",
+    "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-hd/manifest.m3u8",
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "access": "paid",
+    "group-title": "Movies"
+  },
+  "btn": {
+    "name": "BTN",
+    "url": "https://2-fss-2.streamhoster.com/pl_138/205510-3094608-1/playlist.m3u8",
+    "access": "paid",
+    "group-title": "General"
+  },
+  "cbeebies": {
+    "name": "CBeebies Kids",
+    "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8",
+    "access": "paid",
+    "group-title": "Kids"
+  },
+  "chinola": {
+    "name": "CHINOLA TV",
+    "url": "https://tv.wracanal10.com:3300/live/chinolatvlive.m3u8",
+    "access": "paid",
+    "group-title": "Kids"
+  },
+  "citizen-tv": {
+    "name": "Citizen TV",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=1&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/citizen.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "citizen-tv-extra": {
+    "name": "Citizen Extra",
+    "url": "https://www.youtube.com/embed/MDA0XHrnNl4",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/citizen.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "classic_movie": {
+    "name": "Classic Movie",
+    "url": "https://30a-tv.com/feeds/pzaz/30atvmovies.m3u8",
+    "access": "paid",
+    "group-title": "Movies"
+  },
+  "clan_hevc": {
+    "name": "Clan HEVC",
+    "url": "https://d3nnqrdb77sy13.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-eimbp20cszixb/Clan_ES.m3u8",
+    "access": "paid",
+    "group-title": "General"
+  },
+  "cmt_east": {
+    "name": "CMT East",
+    "url": "https://fl3.moveonjoy.com/CMT/index.m3u8",
+    "access": "paid",
+    "group-title": "General"
+  },
+  "dazn_combat": {
+    "name": "Dazn Combat",
+    "url": "https://dazn-combat-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-dazn-combat-rakuten/CDN/master.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "disney": {
+    "name": "Disney Kids",
+    "url": "https://fl5.moveonjoy.com/DISNEY/index.m3u8",
+    "access": "paid",
+    "group-title": "kids"
+  },
+  "disney-jr": {
+    "name": "Disney JR",
+    "url": "https://fl3.moveonjoy.com/DISNEY_JR/index.m3u8",
+    "access": "paid",
+    "group-title": "kids"
+  },
+  "disney_junior": {
+    "name": "Disney Junior",
+    "url": "https://disneynow-lh.akamaihd.net/i/disneyjr_1@356032/master.m3u8",
+    "access": "paid",
+    "group-title": "kids"
+  },
+  "emmanuel-tv": {
+    "name": "Emmanuel Tv",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-emmanuel/index.m3u8",
+    "group-title": "Religious"
+  },
+  "entertainment_tonight": {
+    "name": "Entertainment Tonight",
+    "url": "https://cbsta49f-cbsta49f-ms.global.ssl.fastly.net/amagi7b98-AmagiMixible/master/amagi7b98-AmagiMixible.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment"
+  },
+  "espn_u": {
+    "name": "ESPN U",
+    "url": "https://fl4.moveonjoy.com/ESPN_U/index.m3u8",
+    "group-title": "Sports",
+    "access": "paid",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/espn.png"
+  },
+  "espn_2": {
+    "name": "ESPN 2",
+    "url": "https://fl5.moveonjoy.com/ESPN_2/index.m3u8",
+    "group-title": "Sports",
+    "access": "paid",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/espn.png"
+  },
+  "espn_news": {
+    "name": "ESPN NEWS",
+    "url": "https://fl5.moveonjoy.com/ESPN_NEWS/index.m3u8",
+    "group-title": "Sports",
+    "access": "paid",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/espn.png"
+  },
+  "fashion-find": {
+    "name": "Fasion Find",
+    "access": "paid",
+    "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
+    "group-title": "Fashion"
+  },
+  "fite_wrestle": {
+    "name": "FITE [wrestling]",
+    "access": "paid",
+    "url": "https://d3d85c7qkywguj.cloudfront.net/scheduler/scheduleMaster/263.m3u8",
+    "group-title": "Wrestling"
+  },
+  "france24-english": {
+    "name": "France 24 English",
+    "access": "paid",
+    "url": "https://live.france24.com/hls/live/2037218-b/F24_EN_HI_HLS/master_5000.m3u8",
+    "group-title": "General"
+  },
+  "fox_soul": {
+    "name": "Fox Soul",
+    "access": "paid",
+    "url": "https://fl1.moveonjoy.com/FOX_SOUL/index.m3u8",
+    "group-title": "General"
+  },
+  "fox23": {
+    "name": "Fox23",
+    "access": "paid",
+    "url": "https://live.field59.com/kbsi/kbsi1/playlist.m3u8",
+    "group-title": "General"
+  },
+  "fuel-tv-sports": {
+    "name": "Fuel Tv [sports]",
+    "url": "https://amg01074-fueltv-fueltvemeaen-rakuten-b6j62.amagi.tv/hls/amagi_hls_data_rakutenAA-fueltvemeaen/CDN/master.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "game-plus": {
+    "name": "Game +",
+    "access": "paid",
+    "url": "https://a-cdn.klowdtv.com/live2/fntsy_720p/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "gem-drama": {
+    "name": "Gem Drama",
+    "access": "paid",
+    "url": "https://ca-rt.onetv.app/gemdrama/index-0.m3u8",
+    "group-title": "Entertainment"
+  },
+  "gem-jr": {
+    "name": "GEM JR",
+    "access": "paid",
+    "url": "https://ca-rt.onetv.app/gemjunior/index-0.m3u8",
+    "group-title": "Entertainment"
+  },
+  "gem-kids": {
+    "name": "GEM Kids",
+    "access": "paid",
+    "url": "https://ca-rt.onetv.app/gemkids/index-0.m3u8",
+    "group-title": "Entertainment"
+  },
+  "great-movies": {
+    "name": "Great Movies",
+    "access": "paid",
+    "url": "https://amg01753-narrativeuk-amg01753c3-lg-gb-1833.playouts.now.amagi.tv/playlist/amg01753-narrativeuk-greatmovies-lggb/playlist.m3u8",
+    "group-title": "Movies"
+  },
+  "great-mystery": {
+    "name": "Great Mystery",
+    "access": "paid",
+    "url": "https://linear-861.frequency.stream/dist/lg-uk/861/hls/master/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "vevo-hip-hop": {
+    "name": "Vevo Hip Hop",
+    "access": "paid",
+    "url": "https://d3mzlmrngyf08j.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-55k4m9whplndi/playlist.m3u8",
+    "group-title": "Music"
+  },
+  "galavision": {
+    "name": "Galavision",
+    "access": "paid",
+    "url": "http://tv.nstvlatino.com:8080/live/Mitv2462/I8G5FfZBMw/3793.m3u8",
+    "group-title": "Entertainment"
+  },
+  "health-media": {
+    "name": "Health Media",
+    "url": "https://6n3yowknl9ok-hls-live.5centscdn.com/HMN/271ddf829afeece44d8732757fba1a66.sdp/playlist.m3u8",
+    "group-title": "Health"
+  },
+  "ten-sports-cricket": {
+    "name": "Ten-Sports Cricket",
+    "access": "paid",
+    "url": "https://app.hughag.store/api/6b9c461155/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "cts-sports": {
+    "name": "Cts sports",
+    "access": "paid",
+    "url": "http://88.212.7.10/live/test_ctsport_25p/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "t-sports": {
+    "name": "T sports",
+    "url": "http://163.172.59.25/crc1/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "t-sports-2": {
+    "name": "T Sports 2",
+    "url": "http://103.15.140.138/tsports/tracks-v1a1/mono.ts.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "t-sports-sd": {
+    "name": "T Sports SD",
+    "url": "http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "fox-sports-2": {
+    "name": "Fox sports 2",
+    "access": "paid",
+    "url": "http://212.102.60.231/FOX_SPORTS_2/tracks-v1a1/mono.ts.m3u8",
+    "group-title": "Sports"
+  },
+  "usa-fs-1": {
+    "name": "USA FS 1",
+    "access": "paid",
+    "url": "http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "bein-2": {
+    "name": "Bein 2",
+    "url": "http://57.129.73.112:8480/701/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "bein-2-hd": {
+    "name": "Bein 2 HD",
+    "url": "http://57.129.73.112:8480/702/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "bein-6": {
+    "name": "Bein 6",
+    "url": "http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "eurosports-1": {
+    "name": "Eurosports 1",
+    "url": "http://178.217.72.66:8080/Eurosport_HD/video.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "eurosports2": {
+    "name": "Eurosports2",
+    "url": "http://185.189.225.157/EuroSport2/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "all-sports": {
+    "name": "All Sports",
+    "url": "http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "star-sport": {
+    "name": "Star Sport",
+    "url": "http://41.205.93.154/STARSPORTS1/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "t-sports-sd-2": {
+    "name": "T Sports SD",
+    "url": "http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "decades": {
+    "name": "Decades",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-decades/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment"
+  },
+  "true-crime-network": {
+    "name": "True Crime Network",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-truecrimenetwork/index.m3u8",
+    "access": "paid",
+    "group-title": "Crime"
+  },
+  "movies-hd": {
+    "name": "Movies HD",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-movies!/index.m3u8",
+    "access": "paid",
+    "group-title": "Movies"
+  },
+  "kajou-tv": {
+    "name": "Kajou TV",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-kajoutv/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment"
+  },
+  "iman-tv": {
+    "name": "Iman TV",
+    "url": "https://live20.bozztv.com/gin-36bay3/gin-afghanimantv/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious"
+  },
+  "willow-cricket": {
+    "name": "Willow Cricket",
+    "url": "https://fl3.moveonjoy.com/WILLOW_CRICKET/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "tbn-inspire": {
+    "name": "TBN Inspire",
+    "url": "https://livecdn.use1-0004.jwplive.com/live/sites/Yal8cmyO/media/yfFI83Xz/live.isml/.m3u8",
+    "access": "paid",
+    "group-title": "Religious"
+  },
+  "tom-and-jerry-2": {
+    "name": "Tom and Jerry 2",
+    "url": "https://live20.bozztv.com/giatvplayout7/giatv-208314/playlist.m3u8",
+    "group-title": "Animation"
+  },
+  "fox-news-channel": {
+    "name": "Fox News Channel",
+    "url": "http://23.237.104.106:8080/USA_FOX_NEWS/index.m3u8",
+    "access": "paid",
+    "group-title": "News"
+  },
+  "clubbing-tv-france": {
+    "name": "Clubbing TV France",
+    "url": "https://d1j2csarxnwazk.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-uze1m6xh4fiyr-ssai-prd/master.m3u8",
+    "access": "paid",
+    "group-title": "Music"
+  },  
+  "position-tv": {
+    "name": "Position Tv",
+    "url": "https://stream3.shopch.jp/HLS/master.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment"
+  },
+  "scientology-tv": {
+    "name": "Scientology Tv Science",
+    "url": "https://stream6.scientology.org/master.m3u8",
+    "access": "paid",
+    "group-title": "Education"
+  },
+  "cycling-channel": {
+    "name": "Cycling Channel",
+    "url": "https://cyclingtv.playout.vju.tv/cyclingtv/main.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "toon-googles": {
+    "name": "Toon Googles",
+    "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=37",
+    "access": "paid",
+    "group-title": "General"
+  },
+  "tin-tv": {
+    "name": "Tin Tv",
+    "url": "https://tulixcdn.akamaized.net/tintv6/tintv/tintv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment"
+  },
+  "village-of-hasting": {
+    "name": "Village of Hasting",
+    "url": "https://stream.swagit.com/live-edge/hastingsonhudsonny/smil:std-4x3-1-a/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Local"
+  },
+  "weather-spy": {
+    "name": "Weather Spy",
+    "url": "https://beaece44.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X1dlYXRoZXJTcHlfSExT/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Weather"
+  },
+  "wild-earth": {
+    "name": "Wild Earth",
+    "access": "paid",
+    "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01290-wildearth-oando/playlist.m3u8",
+    "group-title": "Nature"
+  },
+  "shameroo-bollywood": {
+    "name": "Shameroo Bollywood",
+    "access": "paid",
+    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00864-shemarooenterta-shemabollywood-ono/playlist.m3u8",
+    "group-title": "Movies"
+  },
+  "doctor-who-classic": {
+    "name": "Doctor Who Classic",
+    "access": "paid",
+    "url": "https://aegis-cloudfront-1.tubi.video/7e9ef0f5-4d13-4083-aa3f-9375e652a4c9/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "binge": {
+    "name": "Binge",
+    "access": "paid",
+    "url": "https://videostack1.cdnstream1.com:1936/binge-tv/binge-tv/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "antenna-tv": {
+    "name": "Antenna Tv",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/Antenna_TV/index.m3u8",
+    "group-title": "Entertainment"
+  },
+  "cinecanal": {
+    "name": "CineCanal",
+    "access": "paid",
+    "url": "https://cors-proxy.cooks.fyi/https://streamer1.nexgen.bz/CINECANAL/index.m3u8",
+    "group-title": "Movies"
+  },
+  "cow-boy-channel": {
+    "name": "Cow Boy channel",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/Cowboy_Channel/index.m3u8",
+    "group-title": "Entertainment"
+  },
+  "nickelodeon": {
+    "name": "Nickelodeon",
+    "access": "paid",
+    "url": "http://23.237.104.106:8080/USA_NICKELODEON/index.m3u8",
+    "group-title": "Kids"
+  },
+  "axs-tv": {
+    "name": "AXS TV",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/Axs_TV/index.m3u8",
+    "group-title": "Music"
+  },
+  "stryk-tv": {
+    "name": "Stryk Tv",
+    "access": "paid",
+    "url": "https://fffffff110156200.tvustream.com:8298/ryfy.m3u8",
+    "group-title": "Entertainment"
+  },
+  "pixl": {
+    "name": "PiXL",
+    "access": "paid",
+    "url": "https://frndlymsl.akamaized.net/hls/live/2006426/pixlmsl/pixlmsl/playlist.m3u8?hdnts=st=1606053234~exp=3216054041~acl=*~hmac=208d261d9f98d76a5ac30aa2ce51751f88ee50cfc24812b7cbea8b0397489a07",
+    "group-title": "Entertainment"
+  },
+  "daystar-tv": {
+    "name": "Daystar TV",
+    "access": "paid",
+    "url": "https://live20.bozztv.com/dvrfl05/gin-daystar/index.m3u8",
+    "group-title": "Religious"
+  },
+  "wsb-dt1": {
+    "name": "WSB-DT1",
+    "access": "paid",
+    "url": "https://dvrfl03.bozztv.com/hondu/hondu-rick-abc/index.m3u8",
+    "group-title": "News"
+  },
+  "amu-tv": {
+    "name": "Amu TV",
+    "access": "paid",
+    "url": "https://fl1002.bozztv.com/gin-amutv/tracks-v1a1/mono.m3u8",
+    "group-title": "Entertainment"
+  },
+  "zarin-tv": {
+    "name": "Zarin TV",
+    "access": "paid",
+    "url": "https://fl1002.bozztv.com/gf-zarintv/index.m3u8",
+    "group-title": "Entertainment"
+  },
+  "b4u-movies": {
+    "name": "B4U Movies",
+    "access": "paid",
+    "url": "https://cdnb4u.wiseplayout.com/B4U_Movies/master.m3u8",
+    "group-title": "Movies"
+  },
+  "dazn-fight": {
+    "name": "Dazn Ringside",
+    "access": "paid",
+    "url": "https://aegis-cloudfront-1.tubi.video/adc77f33-ab7b-4553-b886-a31d73b5be93/playlist.m3u8",
+    "group-title": "Wrestling"
+  },
+  "deen-tv": {
+    "name": "Deen TV",
+    "access": "paid",
+    "url": "https://ap02.iqplay.tv:8082/iqb8002/d33ntv/playlist.m3u8",
+    "group-title": "Religious"
+  },
+  "ion-tv": {
+    "name": "iON TV",
+    "access": "paid",
+    "url": "https://ap02.iqplay.tv:8082/iqb8002/i09/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "loveworld-tv": {
+    "name": "Loveworld TV",
+    "access": "paid",
+    "url": "https://cdn3.wowza.com/5/L1Uzd2FrbVlLRG1W/live/smil:lwukweb.smil/playlist.m3u8",
+    "country": "UK",
+    "group-title": "Entertainment"
+  },
+  "pop": {
+    "name": "Pop",
+    "access": "paid",
+    "url": "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01753-narrativeentert-popkids-lggb/playlist.m3u8",
+    "group-title": "Kids"
+  },  
+  "abn-africa": {
+    "name": "ABN Africa",
+    "access": "paid",
+    "url": "https://mediaserver.abnvideos.com/streams/abnafrica.m3u8",
+    "group-title": "News"
+  },
+  "akaku-53": {
+    "name": "Akaku 53",
+    "access": "paid",
+    "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/akaku/live/ch1/video.m3u8",
+    "group-title": "Local"
+  },
+  "akaku-54": {
+    "name": "Akaku 54",
+    "access": "paid",
+    "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/akaku/live/ch2/video.m3u8",
+    "group-title": "Local"
+  },
+  "akaku-55": {
+    "name": "Akaku 55",
+    "access": "paid",
+    "url": "https://castus-vod-dev.s3.amazonaws.com/vod_clients/akaku/live/ch3/video.m3u8",
+    "group-title": "Local"
+  },
+  "american-horrors": {
+    "name": "American Horrors",
+    "access": "paid",
+    "url": "http://107.167.7.162:8081/playlist/amhor/playlist.m3u8",
+    "group-title": "Horror"
+  },
+  "amga-tv": {
+    "name": "Amga TV",
+    "access": "paid",
+    "url": "https://streamer1.connectto.com/AMGA_WEB_1202/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "better-health-tv": {
+    "name": "Better Health TV",
+    "access": "paid",
+    "url": "https://tgn.bozztv.com/betterlife/betterhealth/betterhealth/index.m3u8",
+    "group-title": "Health"
+  },
+  "better-life-nature-channel": {
+    "name": "Better Life Nature Channel",
+    "access": "paid",
+    "url": "https://tgn.bozztv.com/betterlife/betternature/betternature/index.m3u8",
+    "group-title": "Nature"
+  },
+  "billiard-tv": {
+    "name": "world Billiard TV",
+    "access": "paid",
+    "url": "https://9769bd6405b245ea9adca1889a0b491b.mediatailor.us-east-1.amazonaws.com/v1/master/f4e8c53a8367a5b58e20ce054ea3ce25a3e904d3/Samsung-in_BilliardTV/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "billiard-tv-2": {
+    "name": "World Billiard TV 2",
+    "access": "paid",
+    "url": "https://1621590671.rsc.cdn77.org/HLS/BILLIARDTV.m3u8",
+    "group-title": "Sports"
+  },
+  "california-music-channel": {
+    "name": "California Music Channel",
+    "access": "paid",
+    "url": "https://cmc-ono.amagi.tv/hls/amagi_hls_data_cmcAAAAAA-cmc-ono/CDN/playlist.m3u8",
+    "group-title": "Music"
+  },
+  "catholic-tv": {
+    "name": "Catholic TV",
+    "access": "paid",
+    "url": "https://catholictvhd-lh.akamaized.net/hls/live/2043390/CTVLiveHD/master.m3u8",
+    "group-title": "Religious"
+  },
+  "cbs-sports-golazo": {
+    "name": "CBS Sports Golazo",
+    "access": "paid",
+    "url": "https://dai.google.com/linear/hls/event/GxrCGmwST0ixsrc_QgB6qw/master.m3u8",
+    "group-title": "Sports"
+  },
+  "catholic-faith-network": {
+    "name": "Catholic Faith Network",
+    "access": "paid",
+    "url": "https://uni8rtmp.tulix.tv/cfntv/cfntv/playlist.m3u8",
+    "group-title": "Religious"
+  },
+  "christian-youth-channel": {
+    "name": "Christian Youth Channel",
+    "access": "paid",
+    "url": "http://media.smc-host.com:1935/cycnow.com/cyc2/playlist.m3u8",
+    "group-title": "Religious"
+  },
+  "cinelife": {
+    "name": "CineLife",
+    "access": "paid",
+    "url": "https://magnolia-cinelife.amagi.tv/hls/amagi_hls_data_magnoliaA-cinelife-oando/CDN/playlist.m3u8",
+    "group-title": "Movies"
+  },
+  "cooking-panda": {
+    "name": "Cooking Panda",
+    "access": "paid",
+    "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=46",
+    "group-title": "Food"
+  },
+  "cult-classic-movie": {
+    "name": "Cult Classic Movie",
+    "access": "paid",
+    "url": "https://app.viloud.tv/hls/channel/053140e08adc29e3eac61eb05ff12f51.m3u8",
+    "group-title": "Movies"
+  },
+  "duck-hunting-tv": {
+    "name": "Duck Hunting TV",
+    "access": "paid",
+    "url": "https://main.duckhunting.playout.vju.tv/duckhuntingtv/main.m3u8",
+    "group-title": "Outdoors"
+  },
+  "fox-business": {
+    "name": "Fox Business",
+    "url": "http://41.205.93.154/FOXBUSINESS/index.m3u8",
+    "access": "paid",
+    "group-title": "Business"
+  },
+  "glory-kickboxing": {
+    "name": "Glory Kickboxing",
+    "access": "paid",
+    "url": "https://6f972d29.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0dsb3J5S2lja2JveGluZ19ITFM/playlist.m3u8",
+    "group-title": "Wrestling"
+  },
+  "go2travel": {
+    "name": "Go2Travel",
+    "access": "paid",
+    "url": "https://go2thls.wns.live/hls/stream.m3u8",
+    "group-title": "Travel"
+  },
+  "hope-channel": {
+    "name": "Hope Channel",
+    "url": "https://jstre.am/live/jsl:EC0Mq0i6HJU.m3u8",
+    "group-title": "Religious"
+  },
+  "hope-channel-english": {
+    "name": "Hope Channel English",
+    "url": "https://jstre.am/live/jsl:cZXINbwrFj6.m3u8",
+    "group-title": "Religious"
+  },
+  "lacrosse-tv": {
+    "name": "Lacrosse TV",
+    "access": "paid",
+    "url": "https://1840769862.rsc.cdn77.org/FTF/LSN_SCTE.m3u8",
+    "group-title": "Sports"
+  },
+  "lifevision-tv": {
+    "name": "LifevisionTV",
+    "access": "paid",
+    "url": "https://tgn.bozztv.com/lifevision/lifevision/index.m3u8",
+    "group-title": "Lifestyle"
+  },
+  "hells-kitchen": {
+    "name": "Hell's Kitchen",
+    "url": "https://itv-hellskitchen-rakuten.amagi.tv/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "hsn-east": {
+    "name": "HSN East",
+    "access": "paid",
+    "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lshsn1uswest/master.m3u8",
+    "group-title": "Entertainment"
+  },
+  "inooro-tv": {
+    "name": "Inooro Tv",
+    "url": "https://kenyalivetv.co.ke/tv/inooro-tv-live",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/inooro.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "kameme-tv": {
+    "name": "Kameme TV",
+    "url": "https://m.youtube.com:443/@KamemeTv/live",
+    "logo": "",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "kartoon_channel": {
+    "name": "Kartoon Channel",
+    "access": "paid",
+    "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-kartoonchannel-samsungnz/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "kass-tv": {
+    "name": "Kass TV",
+    "url": "https://m.youtube.com:443/@kasstvwebstream/live",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/kass.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "ketchap": {
+    "name": "Ketchup",
+    "access": "paid",
+    "url": "https://stream.ads.ottera.tv/playlist.m3u8?network_id=13171",
+    "group-title": "Entertainment"
+  },
+  "kidsflix": {
+    "name": "KidsFlix",
+    "access": "paid",
+    "url": "https://stream-us-east-1.getpublica.com/playlist.m3u8?network_id=50",
+    "group-title": "Kids"
+  },
+  "kiss-tv": {
+    "name": "Kiss Tv",
+    "url": "https://tv.broadcasting.ro/kisstv/a629c031-2170-4ee9-a36d-87a891aa3131.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment"
+  },
+  "k24-tv": {
+    "name": "K24 TV",
+    "url": "https://m.youtube.com:443/@K24tv/live",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/k24.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "ktn": {
+    "name": "KTN Home",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ktn.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "kbc": {
+    "name": "KBC channel 1",
+    "url": "https://kenyalivetv.co.ke/embed/kbc-channel-1-live",
+    "logo": "https://kbc.co.ke/wp-content/uploads/2024/11/KBC-LOGO.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "life_end_time": {
+    "name": "Life! End Time",
+    "access": "paid",
+    "url": "https://2-fss-1.streamhoster.com/pl_122/200226-1427780-1/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "lol_network": {
+    "name": "LOL! Network",
+    "url": "https://lol-lolnetwork-2-nl.samsung.wurl.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment"
+  },
+  "military_history": {
+    "name": "Military History",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/Military_History/index.m3u8",
+    "group-title": "Documentary",
+    "logo": "https://i.imgur.com/S1SnpoA.png"
+  },
+  "movie-box": {
+    "name": "Movie Box",
+    "url": "https://cdn3.skygo.mn/live/disk1/Moviebox/HLS-FTA/Moviebox.m3u8",
+    "group-title": "Movies"
+  },
+  "movies-bang": {
+    "name": "Movies! ",
+    "access": "paid",
+    "url": "https://dvrfl03.bozztv.com/hdirect/hdirect-ovair1-movies!/index.m3u8",
+    "group-title": "Movies"
+  },
+  "pltv-usa-movies": {
+    "name": "Movies HD",
+    "access": "paid",
+    "url": "https://i.mjh.nz/PlutoTV/us.m3u8",
+    "group-title": "Movies"
+  },
+  "moviesphere-hd": {
+    "name": "MovieSphere HD",
+    "access": "paid",
+    "url": "https://moviesphereuk-samsunguk.amagi.tv/playlist.m3u8",
+    "group-title": "Movies"
+  },
+  "nbc-sports": {
+    "name": "NBC Sports",
+    "access": "paid",
+    "url": "https://www.nbcsports.com/live",
+    "group-title": "Sports"
+  },
+  "nick-jr-east": {
+    "name": "Nick Jr.",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/NICK_JR/index.m3u8",
+    "group-title": "Kids"
+  },
+  "ninja-kidz-tv": {
+    "name": "Ninja Kidz TV",
+    "access": "paid",
+    "url": "https://playworksdigital-ninjakidztv-1-us.xumo.wurl.tv/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "ntv": {
+    "name": "NTV Digital",
+    "access": "paid",
+    "url": "https://ntvkenya.co.ke/live/",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ntv.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "ntv-kenya": {
+    "name": "NTV",
+    "url": "https://www.youtube.com/embed/p4BWnK2xeHw",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ntv.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "outdoor_channel": {
+    "name": "Outdoor Channel",
+    "access": "paid",
+    "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg00718-outdoorchannela-outdoortvnz-samsungnz/playlist.m3u8",
+    "group-title": "Travel"
+  },
+  "pbs_kids": {
+    "name": "PBS Kids",
+    "access": "paid",
+    "url": "https://kidslive-aka.amagi.tv/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "pbs_kids_1": {
+    "name": "PBS Kids 1",
+    "access": "paid",
+    "url": "https://livestream.pbskids.org/out/v1/1e3d77b418ad4a819b3f4c80ac0373b5/est.m3u8",
+    "group-title": "Kids"
+  },
+  "pbs_kids_2": {
+    "name": "PBS Kids 2",
+    "access": "paid",
+    "url": "https://2-fss-2.streamhoster.com/pl_140/amlst:200914-1298290/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "racing_america": {
+    "name": "Racing America",
+    "access": "paid",
+    "url": "https://livetv-fa.tubi.video/racing-america/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "ramogifmtv": {
+    "name": "Ramogi Fm Tv",
+    "access": "paid",
+    "url": "https://citizen.digital/tv/ramogi-fm-audio-visual-24",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogifm.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "ramogi-tv": {
+    "name": "Ramogi Tv",
+    "url": "https://citizentv.castr.com/5ea49827ff3b5d7b22708777/live_9b761ff063f511eca12909b8ef1524b4/index.m3u8",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ramogi.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "ebru-tv": {
+    "name": "Ebru Tv",
+    "url": "https://ebru.co.ke:443/livestream/",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/ebru.png",
+    "country": "Website",
+    "access": "paid",
+    "group-title": "News"
+  },
+  "sporty-tv": {
+    "name": "Sporty Tv",
+    "url": "https://m.youtube.com:443/channel/UCwu87p766uwEyzG1p8dEMlg/live",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/sporty.png",
+    "country": "YouTube",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "wrestling": {
+    "name": "Wrestling Web",
+    "url": "https://viewtv-p2s3.onrender.com:443/wrestling",
+    "access": "paid",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/wrestling.png",
+    "country": "Website",
+    "group-title": "Wrestling"
+  },
+  "kyeni-tv": {
+    "name": "Kyeni Tv",
+    "url": "https://vip.worldlivetv.stream/channel/KyeniTV_ke",
+    "access": "paid",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/kyeni.png",
+    "country": "Kenya",
+    "group-title": "News"
+  },
+  "red_plus": {
+    "name": "RED +",
+    "access": "paid",
+    "url": "https://inforedvos.lcdn.claro.net.co/Content/HLS_HLS_DIR/Live/channel(REDMASHDWEB)/master.m3u8",
+    "group-title": "Entertainment"
+  },
+  "tennis_channel": {
+    "name": "Tennis Channel",
+    "access": "paid",
+    "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01444-tennischannelth-tennischannelnl-samsungnl/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "tiny_pop": {
+    "name": "Tiny Pop",
+    "access": "paid",
+    "url": "https://amg01753-narrativeuk-amg01753c1-lg-gb-1830.playouts.now.amagi.tv/playlist/amg01753-narrativeuk-tinypop-lggb/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "tom-and-jerry": {
+    "name": "Tom and Jerry",
+    "access": "paid",
+    "url": "https://live20.bozztv.com/giatvplayout7/giatv-208314/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "tv_mana_english": {
+    "name": "Tv Maña [English]",
+    "access": "paid",
+    "url": "https://w1.manasat.com/tvmana-english/smil:tvmana-english.smil/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "twenty_four_hour_movies": {
+    "name": "24 Hour Free Movie",
+    "access": "paid",
+    "url": "https://d1j2u714xk898n.cloudfront.net/scheduler/scheduleMaster/145.m3u8",
+    "group-title": "Movies"
+  },
+  "whole_world_tv": {
+    "name": "Whole World Tv [Gospel]",
+    "access": "paid",
+    "url": "https://mn-nl.mncdn.com/wholewordtv/wholewordtv/index.m3u8",
+    "group-title": "Entertainment"
+  },
+  "zee_one": {
+    "name": "Zee One",
+    "access": "paid",
+    "url": "https://ef56ef401101403a8b06f1dec29ef1eb.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/Samsung-de_ZeeOne/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "hh": {
+    "name": "1KZN TV",
+    "access": "paid",
+    "url": "https://cdn.freevisiontv.co.za/sttv/smil:1kzn.stream.smil/playlist.m3u8",
+    "logo": "https://admango.cdn.mangomolo.com/analytics/uploads/188/6544bebaae.jpg",
+    "group-title": "Entertainment"
+  },
+  "yw": {
+    "name": "Al Jazeera English",
+    "access": "paid",
+    "url": "https://d1cy85syyhvqz5.cloudfront.net/v1/master/7b67fbda7ab859400a821e9aa0deda20ab7ca3d2/aljazeeraLive/AJE/index.m3u8",
+    "logo": "https://i.imgur.com/7bRVpnu.png",
+    "group-title": "News"
+  },
+  "ne": {
+    "name": "Anytime TV",
+    "access": "paid",
+    "url": "https://tv.anytimemedia.co.za:3673/hybrid/play.m3u8",
+    "logo": "https://i.imgur.com/LloHzi4.png",
+    "group-title": "Travel"
+  },
+  "qm": {
+    "name": "BOKTV",
+    "access": "paid",
+    "url": "https://livestream2.bokradio.co.za/hls/Bok5c.m3u8",
+    "logo": "https://i.imgur.com/mcNjuuO.png",
+    "group-title": "Music"
+  },
+  "bollywood": {
+    "name": "Bollywood HD SD",
+    "access": "paid",
+    "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-hd/manifest.m3u8",
+    "logo": "https://i.imgur.com/scDKOLS.png",
+    "group-title": "Movies"
+  },
+  "aa": {
+    "name": "B+ TV",
+    "access": "paid",
+    "url": "https://tv.btnrwanda.com:3432/live/bpluslive.m3u8",
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "group-title": "Entertainment"
+  },
+  "wwe": {
+    "name": "Cable 14 Hamilton",
+    "access": "paid",
+    "url": "https://flowcaster1-ch.cdn.clearcable.net/C14/smil:C14.smil/playlist.m3u8?iimae0UC2aendtime=1665196120&iimae0UC2ahash=NzcDbuotaJAVf1DsNxuGHBlfCXSvHDIt5sqMUMgrRMU=&iimae0UC2astarttime=1665181720",
+    "logo": "https://i.imgur.com/bJ7ygTq.png",
+    "group-title": ""
+  },
+  "jee": {
+    "name": "CAtv",
+    "access": "paid",
+    "url": "https://video2.getstreamhosting.com:19360/8216/8216.m3u8",
+    "logo": "https://caribbeanadvantage.com/images/CAtv-logo-512.png",
+    "group-title": "General"
+  },
+  "iu": {
+    "name": "CBN Gospel",
+    "access": "paid",
+    "url": "https://59d39900ebfb8.streamlock.net/ccbn/ccbn/playlist.m3u8",
+    "logo": "https://i.imgur.com/SHBAblV.png",
+    "group-title": "Religious"
+  },
+  "iop": {
+    "name": "CBN TV",
+    "access": "paid",
+    "url": "https://5790d294af2dc.streamlock.net/CBNVI/CBNVI/playlist.m3u8",
+    "logo": "https://i.imgur.com/SHBAblV.png",
+    "group-title": "General"
+  },
+  "yuh": {
+    "name": "CeeJay TV",
+    "access": "paid",
+    "url": "https://asiakwa.com/ceejaytv/index.fmp4.m3u8",
+    "logo": "https://i.imgur.com/YgLMMOr.png",
+    "group-title": "Entertainment"
+  },
+  "forfor": {
+    "name": "Channel 44",
+    "access": "paid",
+    "url": "https://d1k6kax80wecy5.cloudfront.net/WFqZJc/index.m3u8",
+    "logo": "https://i.imgur.com/P2wUGh9.png",
+    "group-title": "General"
+  },
+  "ppo": {
+    "name": "Channel 82 SD",
+    "access": "paid",
+    "url": "https://service.webvideocore.net/CL1olYogIrDWvwqiIKK7eBmnWbRkKKsu3nqabm9GlX02JOj3CDNXzodJMDEN2dk3/a_bq9clxfbupwg.m3u8",
+    "logo": "https://i.imgur.com/8Ff5b3e.png",
+    "group-title": "Entertainment"
+  },
+  "qer": {
+    "name": "Deluxe Dance",
+    "access": "paid",
+    "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/64733/64733_264_live.m3u8",
+    "logo": "https://i.imgur.com/Qu7t15Y.png",
+    "group-title": "Music"
+  },
+  "bbb": {
+    "name": "Deluxe Rap",
+    "access": "paid",
+    "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/65183/65183_264_live.m3u8",
+    "logo": "https://i.imgur.com/s3h67hx.png",
+    "group-title": "Music"
+  },
+  "dwEn": {
+    "name": "DW English",
+    "access": "paid",
+    "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+    "logo": "https://i.imgur.com/8MRNFb9.png",
+    "group-title": "News"
+  },
+  "yyj": {
+    "name": "EbS",
+    "access": "paid",
+    "url": "https://streams.prd.commavservices.eu/live/ebs/index.m3u8",
+    "logo": "https://i.imgur.com/DIIRPNN.png",
+    "group-title": "Legislative"
+  },
+  "uojn": {
+    "name": "EbS+",
+    "access": "paid",
+    "url": "https://streams.prd.commavservices.eu/live/ebsplus/index.m3u8",
+    "logo": "https://i.imgur.com/7V012zQ.png",
+    "group-title": "Legislative"
+  },
+  "bsb": {
+    "name": "Expo Channel",
+    "access": "paid",
+    "url": "https://tvsnhlslivetest.akamaized.net/hls/live/2034711/EXPO-MSL4/master.m3u8",
+    "logo": "https://i.imgur.com/2KzCShW.png",
+    "group-title": "Shop"
+  },
+  "tyu": {
+    "name": "FashionTV Europe",
+    "access": "paid",
+    "url": "https://fashiontv-fashiontv-5-nl.samsung.wurl.tv/playlist.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Fashion_TV_logo.svg/512px-Fashion_TV_logo.svg.png",
+    "group-title": "Lifestyle"
+  },
+  "fifa-a": {
+    "name": "FIFA +",
+    "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8",
+    "logo": "https://i.imgur.com/l5iax42.png",
+    "group-title": "Sports"
+  },
+  "yuig": {
+    "name": "Firstlight",
+    "access": "paid",
+    "url": "https://uni01rtmp.tulix.tv/firstlight/firstlight.smil/playlist.m3u8",
+    "logo": "https://i.imgur.com/gtDROeT.png",
+    "group-title": "Religious"
+  },
+  "jhu": {
+    "name": "Fish TV",
+    "url": "https://tv.localstreamgh.com/fishtv/index.m3u8",
+    "logo": "https://i.imgur.com/A4VeRnS.png",
+    "group-title": "General"
+  },
+  "uiipi": {
+    "name": "For You TV",
+    "access": "paid",
+    "url": "https://stream.az-multimedia.com:3793/live/foryoutvlive.m3u8",
+    "logo": "https://i.imgur.com/1oMboXL.png",
+    "group-title": "News"
+  },
+  "gsgs": {
+    "name": "Fresh",
+    "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/freshtv/playlist.m3u8",
+    "logo": "https://i.imgur.com/2ig8jUH.png",
+    "group-title": "General"
+  },
+  "bsbs": {
+    "name": "Hard Knocks Fighting Championship",
+    "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/2ee2b8d4-acc4-4296-9dc8-66f1ffd0fff8/5.m3u8",
+    "logo": "https://images-1.rakuten.tv/storage/global-live-channel/translation/artwork/13b0a6c7-4307-4c8d-9fc4-df2a4f8e8b38-hard-knocks-fighting-1602077398-width200-quality90.jpeg",
+    "access": "paid",
+    "group-title": "Wrestling"
+  },
+  "enbs": {
+    "name": "Kordia TV",
+    "access": "paid",
+    "url": "https://ptvlive.kordia.net.nz/out/v1/3fc2254c865a457c8d7fbbce227a2aae/index.m3u8",
+    "logo": "https://i.imgur.com/BQ0qWzX.png",
+    "group-title": "General"
+  },
+  "ebhs": {
+    "name": "Kozoom TV",
+    "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/fdd6f243-f971-4a1a-9510-97ac01d6b37f/manifest.m3u8",
+    "access": "paid",
+    "logo": "https://i.imgur.com/M1Ee79b.png",
+    "group-title": "Sports"
+  },
+  "lolwe-tv": {
+    "name": "Lolwe TV",
+    "url": "https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8",
+    "access": "paid",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/lolwe.png",
+    "group-title": "News"
+  },
+  "enhs": {
+    "name": "My Righteous TV SD",
+    "url": "https://live20.bozztv.com/ssh101/ssh101/myrighteous/playlist.m3u8",
+    "logo": "https://i.imgur.com/wKSLNHB.png",
+    "group-title": "Religious"
+  },
+  "seh": {
+    "name": "NHK World-Japan SD",
+    "url": "https://cdn4.skygo.mn/live/disk1/NHK_World/HLSv3-FTA/NHK_World.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/NHK_World-Japan_TV.svg/512px-NHK_World-Japan_TV.svg.png",
+    "group-title": "Culture"
+  },
+  "ywtw": {
+    "name": "NRT Mexico Internacional",
+    "access": "paid",
+    "url": "https://59e88b197fb16.streamlock.net:4443/live/canal24/playlist.m3u8",
+    "logo": "https://i.imgur.com/W2E0fSy.png",
+    "group-title": "News"
+  },
+  "bssb": {
+    "name": "POP STAR",
+    "access": "paid",
+    "url": "https://muzzik-live.morescreens.com/mts-3/playlist.m3u8",
+    "logo": "https://i.imgur.com/E9ha9Or.png",
+    "group-title": "Music"
+  },
+  "snbb": {
+    "name": "Red Bull TV",
+    "access": "paid",
+    "url": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8",
+    "logo": "https://i.postimg.cc/8c78JM28/image.png",
+    "group-title": "Sports"
+  },
+  "campuslore": {
+    "name": "CampusLore",
+    "access": "paid",
+    "url": "https://linear-235.frequency.stream/dist/glewedtv/235/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle"
+  },
+  "canal_do_inter": {
+    "name": "Canal do Inter",
+    "access": "paid",
+    "url": "https://video01.soultv.com.br/internacional/internacional/playlist.m3u8",
+    "group-title": "General"
+  },
+  "colimdo_tv": {
+    "name": "Colimdo TV",
+    "access": "paid",
+    "url": "https://cnn.livestreaminggroup.info:3132/live/colimdotvlive.m3u8",
+    "group-title": "Entertainment"
+  },
+  "fight-network": {
+    "name": "Fight Network",
+    "access": "paid",
+    "url": "https://d12a2vxqkkh1bo.cloudfront.net/hls/main.m3u8",
+    "group-title": "Sports"
+  },
+  "fuel_tv": {
+    "name": "FUEL TV",
+    "access": "paid",
+    "url": "https://amg01074-fueltv-amg01074c1-firetv-us-3150.playouts.now.amagi.tv/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "game_plus": {
+    "name": "Game+",
+    "access": "paid",
+    "url": "https://a-cdn.klowdtv.com/live2/fntsy_720p/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "gem_fit": {
+    "name": "GEM Fit",
+    "access": "paid",
+    "url": "https://ca-rt.onetv.app/gemfit/index-0.m3u8",
+    "group-title": "Fashion"
+  },
+  "hard_knocks": {
+    "name": "Hard Knocks",
+    "access": "paid",
+    "url": "https://d3uyzhwvmemdyf.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/Hard-Knocks-DistroTV/109.m3u8",
+    "group-title": "Wrestling"
+  },
+  "k19": {
+    "name": "K19",
+    "access": "paid",
+    "url": "https://1853185335.rsc.cdn77.org/K192/tv/playlist.m3u8",
+    "group-title": "General"
+  },
+  "ktv_sport": {
+    "name": "KTV Sport",
+    "access": "paid",
+    "url": "https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8",
+    "logo": "https://i.imgur.com/R1hGX1d.png",
+    "group-title": "Sports"
+  },
+  "ktv_sport_plus": {
+    "name": "KTV Sport Plus",
+    "access": "paid",
+    "url": "https://kwtsplta.cdn.mangomolo.com/spl/smil:spl.stream.smil/chunklist.m3u8",
+    "logo": "https://i.imgur.com/R1hGX1d.png",
+    "group-title": "Sports"
+  },
+  "more_than_sports_tv": {
+    "name": "More Than Sports TV",
+    "access": "paid",
+    "url": "https://mts1.iptv-playoutcenter.de/mts/mts-web/playlist.m3u8",
+    "logo": "https://i.imgur.com/hRNUo9n.png",
+    "group-title": "Sports"
+  },
+  "racing-com": {
+    "name": "Racing.com",
+    "access": "paid",
+    "url": "https://racingvic-i.akamaized.net/hls/live/598695/racingvic/index1500.m3u8",
+    "group-title": "Sports"
+  },
+  "red_bull_tv": {
+    "name": "Red Bull TV",
+    "access": "paid",
+    "url": "https://3ea22335.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWdiX1JlZEJ1bGxUVl9ITFM/playlist.m3u8",
+    "logo": "https://i.imgur.com/7NeBmWX.jpg",
+    "group-title": "Sports"
+  },
+  "rta_sport": {
+    "name": "RTA Sport",
+    "access": "paid",
+    "url": "https://rtatv.akamaized.net/Content/HLS/Live/channel(RTA3)/index.m3u8",
+    "logo": "",
+    "group-title": "Sports"
+  },
+  "sport_en_france": {
+    "name": "Sport en France",
+    "url": "https://sp1564435593.mytvchain.info/live/sp1564435593/index.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/a/ad/Logo_of_French_sports_television_channel_Sport_en_France.png",
+    "group-title": "Sports"
+  },
+  "ssc_action_waleed": {
+    "name": "SSC Action Waleed",
+    "access": "paid",
+    "url": "https://shls-live-event2-prod-dub.shahid.net/out/v1/0456ede1a39145d98b3d8c8062ddc998/index.m3u8",
+    "group-title": "Movies"
+  },
+  "talksport": {
+    "name": "talkSPORT",
+    "access": "paid",
+    "url": "https://af7a8b4e.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/TEctZ2JfdGFsa1NQT1JUX0hMUw/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "trace_sport_stars": {
+    "name": "Trace Sport Stars",
+    "access": "paid",
+    "url": "https://trace-sportstars-samsungnz.amagi.tv/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "tsn1": {
+    "name": "TSN1",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TSN_1/index.m3u8",
+    "group-title": "Sports"
+  },
+  "tsn2": {
+    "name": "TSN2",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TSN_2/index.m3u8",
+    "group-title": "Sports"
+  },
+  "tsn3": {
+    "name": "TSN3",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TSN_3/index.m3u8",
+    "group-title": "Sports"
+  },
+  "tsn5": {
+    "name": "TSN5",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TSN_5/index.m3u8",
+    "group-title": "Sports"
+  },
+  "tsn_the_ocho_sd": {
+    "name": "TSN The Ocho SD",
+    "access": "paid",
+    "url": "https://d3pnbvng3bx2nj.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-rds8g35qfqrnv/TSN_The_Ocho.m3u8",
+    "group-title": "General"
+  },
+  "t_sports_7": {
+    "name": "T Sports 7",
+    "access": "paid",
+    "url": "https://lb1-live-mv.v2h-cdn.com/hls/ffef/tsport/tsport.m3u8",
+    "group-title": "Sports"
+  },
+  "cosmos_tv_sd": {
+    "name": "Cosmos Tv",
+    "access": "paid",
+    "url": "https://tv.mediacp.eu:19360/cosmos/cosmos.m3u8",
+    "logo": "https://i0.wp.com/fmcosmos.com/wp-content/uploads/2021/11/COSMOS-TV.png",
+    "group-title": "Movies"
+  },
+  "crave_2": {
+    "name": "Crave 2",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/CRAVE_2/index.m3u8",
+    "logo": "https://i.imgur.com/e1qJ5Bp.png",
+    "group-title": "Movies"
+  },
+  "crave_4": {
+    "name": "Crave 4",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/CRAVE_4/index.m3u8",
+    "logo": "https://i.imgur.com/MyH3Q2p.png",
+    "group-title": "Movies"
+  },
+  "abc_me_sydney": {
+    "name": "ABC ME Sydney",
+    "access": "paid",
+    "url": "https://c.mjh.nz/abc-me.m3u8",
+    "logo": "https://i.imgur.com/6NyFLAm.png",
+    "group-title": "Kids"
+  },
+  "etv_2": {
+    "name": "ETV 2",
+    "access": "paid",
+    "url": "https://sb.err.ee/live/etv2.m3u8",
+    "logo": "https://i.imgur.com/fUjGHDa.png",
+    "group-title": "Culture"
+  },
+  "ghost_tv": {
+    "name": "Ghost TV",
+    "access": "paid",
+    "url": "https://stmv.video.expressolider.com.br/ghostv/ghostv/playlist.m3u8",
+    "logo": "https://i.imgur.com/ZVO8GVI.png",
+    "group-title": "Movies"
+  },
+  "kika": {
+    "name": "KiKA",
+    "access": "paid",
+    "url": "https://kikageohls.akamaized.net/hls/live/2022693/livetvkika_de/master.m3u8",
+    "logo": "https://i.imgur.com/vZdNp5S.png",
+    "group-title": "Kids"
+  },
+  "mytime_movie_network": {
+    "name": "MyTime Movie Network",
+    "access": "paid",
+    "url": "https://appletree-mytime-samsungbrazil.amagi.tv/playlist.m3u8",
+    "logo": "https://i.imgur.com/aiGQtzI.png",
+    "group-title": "Movies"
+  },
+  "rai_movie": {
+    "name": "Rai Movie",
+    "access": "paid",
+    "url": "http://188.60.179.180:8000/play/xxRaiMOviexx",
+    "logo": "https://i.imgur.com/0FjxXU9.png",
+    "group-title": "Movies"
+  },
+  "smile_tv": {
+    "name": "Smile TV",
+    "access": "paid",
+    "url": "https://s1.cystream.net/live/smile/playlist.m3u8",
+    "logo": "https://i.imgur.com/IAb4Gbf.png",
+    "group-title": "Kids"
+  },
+  "tnt_kids_tv": {
+    "name": "TNT Kids TV",
+    "access": "paid",
+    "url": "https://restreamer1.tnt.ba/hls/tntkids.m3u8",
+    "logo": "https://i.imgur.com/irTDbpn.png",
+    "group-title": "Kids"
+  },
+  "tnt_tv_sport": {
+    "name": "TNT",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/TNT/index.m3u8",
+    "logo": "https://i.imgur.com/irTDbpn.png",
+    "group-title": ""
+  },
+  "thsdv": {
+    "name": "Sky Open",
+    "access": "paid",
+    "url": "https://tv.wyatts-server.com/stream/channelid/1977627680?auth=Lo47lPuhjUwYZIPv+NymH3qAyhMe1svINVM4Kac2fvA=&profile=pass",
+    "logo": "https://i.imgur.com/eYyYojh.png",
+    "group-title": "General"
+  },
+  "startv": {
+    "name": "Star TV",
+    "access": "paid",
+    "url": "http://62.233.57.226:8001/play/a008",
+    "logo": "https://i.imgur.com/6BBnG6f.png",
+    "group-title": "Entertainment"
+  },
+  "thsdvg": {
+    "name": "TG4",
+    "access": "paid",
+    "url": "https://dx4452e0qv6r9.cloudfront.net/tg4_vod_national.m3u8",
+    "logo": "https://i.imgur.com/XiAKb4E.png",
+    "group-title": "Sports"
+  },
+  "yryegg": {
+    "name": "TVM",
+    "access": "paid",
+    "url": "http://80.79.6.221:25461/smash/public/19",
+    "logo": "https://i.imgur.com/kpe0fYu.png",
+    "group-title": "General"
+  },
+  "dnbd": {
+    "name": "World Billiards",
+    "access": "paid",
+    "url": "https://9a81dd4ee3884d0dbcacafaf0d81327a.mediatailor.us-east-1.amazonaws.com/v1/master/04fd913bb278d8775298c26fdca9d9841f37601f/RakutenTV-eu_BilliardsTV/playlist.m3u8",
+    "logo": "https://images-3.rakuten.tv/storage/global-live-channel/translation/artwork/80af06f2-a12e-4406-bd13-b932fd69fffe-width200-quality90.png",
+    "group-title": "Sports"
+  },
+  "BETGospel": {
+    "name": "BET Gospel",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/BET_GOSPEL/index.m3u8",
+    "group-title": "Religious"
+  },
+  "Big_ten_Network": {
+    "name": "Big Ten Network",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/BIG_TEN_NETWORK/index.m3u8",
+    "group-title": ""
+  },
+  "Boomerang-kids": {
+    "name": "Boomerang-kids",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/BOOMERANG/index.m3u8",
+    "group-title": "kids"
+  },
+  "Bravo": {
+    "name": "Bravo",
+    "url": "https://fl5.moveonjoy.com/BRAVO/index.m3u8",
+    "access": "paid",
+    "group-title": ""
+  },
+  "CBS_Sports_Network": {
+    "name": "CBS Sports Network",
+    "url": "https://fl5.moveonjoy.com/CBS_SPORTS_NETWORK/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "CMT": {
+    "name": "CMT",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/CMT/index.m3u8",
+    "group-title": ""
+  },
+  "Cooking_Channel": {
+    "name": "Cooking Channel",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/COOKING_CHANNEL/index.m3u8",
+    "group-title": "Food"
+  },
+  "C-SPAN": {
+    "name": "C-SPAN",
+    "url": "https://fl5.moveonjoy.com/C-SPAN/index.m3u8",
+    "access": "paid",
+    "group-title": ""
+  },
+  "DiscoveryLife": {
+    "name": "Discovery Life",
+    "url": "https://fl5.moveonjoy.com/DISCOVERY_LIFE/index.m3u8",
+    "access": "paid",
+    "group-title": "Documentary"
+  },
+  "DisneyXD": {
+    "name": "DisneyXD",
+    "url": "https://fl5.moveonjoy.com/DISNEYXD/index.m3u8",
+    "access": "paid",
+    "group-title": "Animation"
+  },
+  "EPIX": {
+    "name": "EPIX",
+    "url": "https://fl5.moveonjoy.com/EPIX/index.m3u8",
+    "access": "paid",
+    "group-title": ""
+  },
+  "EPIX_2": {
+    "name": "EPIX 2",
+    "url": "https://fl5.moveonjoy.com/EPIX_2/index.m3u8",
+    "access": "paid",
+    "group-title": ""
+  },
+  "EPIX_Drive_In": {
+    "name": "EPIX Drive-In",
+    "url": "https://fl5.moveonjoy.com/EPIX_DRIVE_IN/index.m3u8",
+    "access": "paid",
+    "group-title": ""
+  },
+  "EPIX_Hits": {
+    "name": "EPIX Hits",
+    "url": "https://fl5.moveonjoy.com/EPIX_HITS/index.m3u8",
+    "access": "paid",
+    "group-title": "Music"
+  },
+  "Food_Network": {
+    "name": "Food Network",
+    "url": "https://fl5.moveonjoy.com/FOOD_NETWORK/index.m3u8",
+    "access": "paid",
+    "group-title": "Food"
+  },
+  "FYI": {
+    "name": "FYI",
+    "url": "https://fl5.moveonjoy.com/FYI/index.m3u8",
+    "access": "paid",
+    "group-title": ""
+  },
+  "HBO": {
+    "name": "HBO",
+    "url": "https://fl5.moveonjoy.com/HBO/index.m3u8",
+    "access": "paid",
+    "group-title": ""
+  },
+  "HBO_2": {
+    "name": "HBO 2",
+    "url": "https://fl5.moveonjoy.com/HBO_2/index.m3u8",
+    "access": "paid",
+    "group-title": "Series"
+  },
+  "HBO": {
+    "name": "HBO Comedy",
+    "url": "https://fl5.moveonjoy.com/HBO_COMEDY/index.m3u8",
+    "access": "paid",
+    "group-title": "Comedy"
+  },
+  "HBO": {
+    "name": "HBO Family",
+    "url": "https://fl5.moveonjoy.com/HBO_FAMILY/index.m3u8",
+    "access": "paid",
+    "group-title": "General"
+  },
+  "HBO_Zone": {
+    "name": "HBO Zone",
+    "url": "https://fl5.moveonjoy.com/HBO_ZONE/index.m3u8",
+    "access": "paid",
+    "group-title": "Animation"
+  },
+  "HGTV": {
+    "name": "HGTV East",
+    "url": "https://fl5.moveonjoy.com/HGTV/index.m3u8",
+    "access": "paid",
+    "group-title": ""
+  },
+  "Investigation_Discovery": {
+    "name": "Investigation Discovery",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/INVESTIGATION_DISCOVERY/index.m3u8",
+    "group-title": "Documentary"
+  },
+  "LifetimeEast": {
+    "name": "Lifetime East",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/LIFETIME/index.m3u8",
+    "group-title": "General"
+  },
+  "Lifetime_Movie_Network": {
+    "name": "Lifetime Movie Network",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/LIFETIME_MOVIE_NETWORK/index.m3u8",
+    "group-title": "Movies"
+  },
+  "MLBNetwork": {
+    "name": "MLB Network",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/MLB_NETWORK/index.m3u8",
+    "group-title": ""
+  },
+  "Motor_Trend": {
+    "name": "MotorTrend",
+    "url": "https://fl5.moveonjoy.com/MOTOR_TREND/index.m3u8",
+    "group-title": "Sports"
+  },
+  "MSNBC": {
+    "name": "MSNBC",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/MSNBC/index.m3u8",
+    "group-title": ""
+  },
+  "MTV": {
+    "name": "MTV",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/MTV/index.m3u8",
+    "group-title": ""
+  },
+  "MTV_2": {
+    "name": "MTV 2",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/MTV_2/index.m3u8",
+    "group-title": ""
+  },
+  "MTV_Classic": {
+    "name": "MTV Classic",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/MTV_CLASSIC/index.m3u8",
+    "group-title": ""
+  },
+  "MTV_Live": {
+    "name": "MTV Live",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/MTV_LIVE/index.m3u8",
+    "group-title": ""
+  },
+  "MTV_U": {
+    "name": "MTV U",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/MTV_U/index.m3u8",
+    "group-title": "Entertainment"
+  },
+  "NBATV": {
+    "name": "NBA TV",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/NBA_TV/index.m3u8",
+    "group-title": "Sports"
+  },
+  "News_Nation": {
+    "name": "News Nation",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/NEWS_NATION/index.m3u8",
+    "group-title": "News"
+  },
+  "Oxygen": {
+    "name": "Oxygen",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/OXYGEN/index.m3u8",
+    "group-title": ""
+  },
+  "Paramount": {
+    "name": "Paramount",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/PARAMOUNT_NETWORK/index.m3u8",
+    "group-title": "ANIMATION;ANIME"
+  },
+  "Revolt": {
+    "name": "Revolt",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/REVOLT/index.m3u8",
+    "group-title": ""
+  },
+  "SECNetwork": {
+    "name": "SEC Network",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/SEC_NETWORK/index.m3u8",
+    "group-title": "Sports"
+  },
+  "Showtime": {
+    "name": "Showtime",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/SHOWTIME/index.m3u8",
+    "group-title": ""
+  },
+  "Showtime2": {
+    "name": "Showtime 2",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/SHOWTIME_2/index.m3u8",
+    "group-title": ""
+  },
+  "ShowtimeExtreme": {
+    "name": "Showtime Extreme",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/SHOWTIME_EXTREME/index.m3u8",
+    "group-title": ""
+  },
+  "ShowtimeNext": {
+    "name": "Showtime Next",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/SHOWTIME_NEXT/index.m3u8",
+    "group-title": ""
+  },
+  "ShowtimeWomen": {
+    "name": "Showtime Women",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/SHOWTIME_WOMEN/index.m3u8",
+    "group-title": ""
+  },
+  "Stadium_sports": {
+    "name": "Stadium-sports",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/STADIUM/index.m3u8",
+    "group-title": "Sports"
+  },
+  "Starz": {
+    "name": "Starz",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/STARZ/index.m3u8",
+    "group-title": ""
+  },
+  "StarzComedy": {
+    "name": "Starz Comedy",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/STARZ_COMEDY/index.m3u8",
+    "group-title": "Comedy"
+  },
+  "StarzEdge": {
+    "name": "Starz Edge",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/STARZ_EDGE/index.m3u8",
+    "group-title": ""
+  },
+  "StarzEncore": {
+    "name": "Starz Encore",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/STARZ_ENCORE/index.m3u8",
+    "group-title": ""
+  },
+  "StarzEncoreAction": {
+    "name": "Starz Encore Action",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/STARZ_ENCORE_ACTION/index.m3u8",
+    "group-title": "Movies"
+  },
+  "StarzEncoreWesterns": {
+    "name": "Starz Encore Westerns",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/STARZ_ENCORE_WESTERNS/index.m3u8",
+    "group-title": "Entertainment"
+  },
+  "Sundance_Comedy": {
+    "name": "Sundance",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/SUNDANCE/index.m3u8",
+    "group-title": "Comedy"
+  },
+  "SYFY": {
+    "name": "SYFY",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/SYFY/index.m3u8",
+    "group-title": ""
+  },
+  "TLC": {
+    "name": "TLC",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TLC/index.m3u8",
+    "group-title": ""
+  },
+  "TNT-movies": {
+    "name": "TNT",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TNT/index.m3u8",
+    "group-title": "Movies"
+  },
+  "unifi": {
+    "name": "Unifi Sports 1",
+    "url": "https://unifi-live04.secureswiftcontent.com/UnifiHD/live11.mpd",
+    "access": "paid",
+    "logo": "https://static.wikia.nocookie.net/logopedia/images/8/8a/Unifi-Sports_1.png/revision/latest?cb=20210712111848",
+    "group-title": "Wrestling"
+  },
+  "mr-bean-ep1": {
+    "name": "Mr Bean Ep1",
+    "url": "https://obs.line-scdn.net/0hBo8Nn7agHUAFNzflqd9iFzZhHi82Ww5DYQFMXlVZRHYsBFMTP1lWJihlS3gvDlxTOFkFcnI-Eyc/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep2": {
+    "name": "Mr Bean Ep2",
+    "url": "https://obs.line-scdn.net/0hbqNH_kmTPV5zMRf_MktCCU9nPjFAXS5dFwdsQCNff2xZAnkMR1N7MVY5MT1ZCH0KClYiOVU3YW4L/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep3": {
+    "name": "Mr Bean Ep3",
+    "url": "https://obs.line-scdn.net/0hEFUt5pUJGmloDTDJ6_NlPlVbGQZbYQlqDDtLdzhjWFlHOFo3UWJdCU4NTAsWPl45XS5UX0wPF11NNQ/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep4": {
+    "name": "Mr Bean Ep4",
+    "url": "https://obs.line-scdn.net/0hfqoimabxOV5SEBPxQCJGCW5GOjFhfCpdNiZoQAJ-Z2Z_KXYIaH93O3cYMm18JnkLK3cmOXIVYGp7/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep5": {
+    "name": "Mr Bean Ep5",
+    "url": "https://obs.line-scdn.net/0h73hPl04KaBxVKUKxc3AXS2l_a3NmRXsfMR85AgVHKix9HixCb0klenAhYy96ES9NLE53e3ctNnss/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep6": {
+    "name": "Mr Bean Ep6",
+    "url": "https://obs.line-scdn.net/0hLtzGV2r8E1tHPjnyJ8lsDHtoEDR0UgBYIwhCRRdQUWhrCl0Ke19ZNGI2GGtuB1AFPlkMPDI2SGNr/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep7": {
+    "name": "Mr Bean Ep7",
+    "url": "https://obs.line-scdn.net/0hYLp4zIT_BmNNTSzKLJt5NH4bBQx-IRVgKXtXfR0jXlBpeEQwcCJJBWAYWFBheUhwcHtIVWBPXlM/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep8": {
+    "name": "Mr Bean Ep8",
+    "url": "https://obs.line-scdn.net/0hY46GFAe2BhsLPiyySox5TDdoBXQ4UhUYbwhXBVtQWC0kDkNKM1lLeS42CnsjC0BMclkZfH44Wn4i/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep9": {
+    "name": "Mr Bean Ep9",
+    "url": "https://obs.line-scdn.net/0hW6Y20xPfCBlkSyKxEut3TlgdC3ZXJxsaAH1ZBzQlVSlKf05HWCtEfUFDAylLeUdHHSwXfhIbVX1P/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep10": {
+    "name": "Mr Bean Ep10",
+    "url": "https://obs.line-scdn.net/0h3Zzdt8IAbHVHHUbDZuwTIntLbxp0cX92Iys9axdzMUVpKi4kfnkqEGIVZ0RiKCshPnpzEjcZME1t/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep11": {
+    "name": "Mr Bean Ep11",
+    "url": "https://obs.line-scdn.net/0hP5-YYGpTDxoQICWvNFZwTSN2DHUjTBwZdBZeBEBOVyM7E0hEL0FDfD11USg_EEEJLRZBKDEhUSo/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep12": {
+    "name": "Mr Bean Ep12",
+    "url": "https://obs.line-scdn.net/0hmHDf0lNdMmd5HxjTGQZNMEVJMQhKcyFkHSljeSlxcFJWKnA3TXx_A1wXOVRSLnwzAHgtAAsXaVUA/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep13": {
+    "name": "Mr Bean Ep13",
+    "url": "https://obs.line-scdn.net/0hFBCtdz7kGW1-DTPeYwlmOk1bGgJNYQpuGjtIcy5jT1RbPFkyRG1UC1NYR1lTPVZ-QztWClkLQl8/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "mr-bean-ep14": {
+    "name": "Mr Bean Ep14",
+    "url": "https://obs.line-scdn.net/0h2gObp0LwbUhyG0f6hhQSH05NbidBd35LFi08ViJ1MHldKSocTX8iKVcTYSxbLyoYC3xyLlQYMn1W/720p.m3u8",
+    "group-title": "Mr. Bean",
+    "logo": "https://obs.line-scdn.net/0hosSO19wfMFxuNhsDZ41PC1RgMzNdWiNfCgBhQj5YbmgWBH4LVwQtbUwyaGgUA3cCAAR3PEw1K20TAHIJAQUt/w644"
+  },
+  "TV_Land": {
+    "name": "TVLand",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TV_LAND/index.m3u8",
+    "group-title": ""
+  },
+  "TVOne": {
+    "name": "TVOne",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TV_ONE/index.m3u8",
+    "group-title": ""
+  },
+  "VH_1": {
+    "name": "VH1",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/VH1/index.m3u8",
+    "group-title": ""
+  },
+  "Vice": {
+    "name": "Vice",
+    "url": "https://fl5.moveonjoy.com/VICE/index.m3u8",
+    "group-title": ""
+  },
+  "Weather Channel": {
+    "name": "Weather Channel",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/WEATHER_CHANNEL/index.m3u8",
+    "group-title": "News"
+  },
+  "We_TV": {
+    "name": "WeTV",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/WE_TV/index.m3u8",
+    "group-title": ""
+  },
+  "YES_Network": {
+    "name": "YES Network",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/YES_NETWORK/index.m3u8",
+    "group-title": ""
+  },
+  "shhes": {
+    "name": "Zee One",
+    "access": "paid",
+    "url": "https://89ec2d15e090480bb419d940b8793b9c.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RakutenTV-eu_ZeeWorld-1/playlist.m3u8",
+    "logo": "https://images-2.rakuten.tv/storage/global-live-channel/translation/artwork/b2b4d09d-3471-4dbf-a831-3191cfc66bec-width200-quality90.jpeg",
+    "group-title": "Drama"
+  },
+  "bddh": {
+    "name": "Z Nation",
+    "access": "paid",
+    "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883098",
+    "logo": "https://images-1.rakuten.tv/storage/global-live-channel/translation/artwork/dff3a92e-c4aa-49c4-b1b6-4a847428b8d5-width200-quality90.png",
+    "group-title": "News"
+  },
+  "3abn_english": {
+    "name": "3ABN English",
+    "access": "paid",
+    "url": "https://3abn.bozztv.com/3abn2/3abn_live/smil:3abn_live.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/bgJQIyW.png"
+  },
+  "3abn_international": {
+    "name": "3ABN International",
+    "access": "paid",
+    "url": "https://3abn.bozztv.com/3abn2/Int_live/smil:Int_live.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/8YMLPA3.png"
+  },
+  "3abn_kids": {
+    "name": "3ABN Kids",
+    "access": "paid",
+    "url": "https://3abn.bozztv.com/3abn2/Kids_live/smil:Kids_live.smil/playlist.m3u8",
+    "group-title": "Animation;Religious",
+    "logo": "https://i.imgur.com/SUPQAok.png"
+  },
+  "3abn_praise_him": {
+    "name": "3ABN Praise Him Music Network",
+    "url": "https://3abn.bozztv.com/3abn1/PraiseHim/smil:PraiseHim.smil/playlist.m3u8",
+    "group-title": "Music;Religious",
+    "logo": "https://i.imgur.com/iBcqT8L.png"
+  },
+  "3abn_proclaim": {
+    "name": "3ABN Proclaim! Network",
+    "url": "https://3abn.bozztv.com/3abn2/Pro_live/smil:Pro_live.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://yt3.googleusercontent.com/ytc/AIdro_mb4TLclxAUPvlnV84blg4YSnZYjspMitP_sS2rX_5IYQ=s512-c-k-c0x00ffffff-no-rj"
+  },
+  "3abn_tv_uganda": {
+    "name": "3ABN TV Uganda",
+    "access": "paid",
+    "url": "https://3abn.bozztv.com/3abn/3abn_uganda_live/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/mml9lI2.png"
+  },
+  "abn_africa": {
+    "name": "ABN Africa",
+    "access": "paid",
+    "url": "https://mediaserver.abnvideos.com/streams/abnafrica.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/SLrX8Ef.png"
+  },
+  "abn_bible_movies": {
+    "name": "ABN Bible Movies Channel",
+    "url": "https://mediaserver.abnvideos.com/streams/abnbiblemovies.m3u8",
+    "group-title": "Movies;Religious",
+    "logo": "https://i.imgur.com/NCqZdaL.png"
+  },
+  "acnn": {
+    "name": "ACNN",
+    "access": "paid",
+    "url": "https://webstreaming.viewmedia.tv/web_014/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/91JLpxr.png"
+  },
+  "acts_tv": {
+    "name": "ACTS TV",
+    "access": "paid",
+    "url": "https://mediagh.us:19360/deliverancetv/deliverancetv.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/c1gnTho.jpg"
+  },
+  "ahlulbayt_tv": {
+    "name": "Ahlulbayt TV",
+    "access": "paid",
+    "url": "https://cdn5.iqsat.net/iqb02/35fae546b99b61a038d52353487e8190.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/lNGJGjy.png"
+  },
+  "akaal_channel": {
+    "name": "Akaal Channel",
+    "access": "paid",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/akaal_tv/hls1_smart_akaal/akaal_tv.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/K81vNbk.png"
+  },
+  "almagd_tv_middle_east": {
+    "name": "Almagd TV Middle East",
+    "access": "paid",
+    "url": "https://597f64b67707a.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/3pUik3b.png"
+  },
+  "almagd_tv_north_america": {
+    "name": "Almagd TV North America",
+    "access": "paid",
+    "url": "https://5aafcc5de91f1.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/3pUik3b.png"
+  },
+  "alpha_digital": {
+    "name": "Alpha Digital",
+    "access": "paid",
+    "url": "https://streamfi-alphatvdgtl1.zettawiseroutes.com:8181/hls/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/sLt242H.png"
+  },
+  "amazing_discoveries_tv": {
+    "name": "Amazing Discoveries TV",
+    "access": "paid",
+    "url": "https://uni01rtmp.tulix.tv/amazingdtv/amazingdtv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/I0oPFTj.png"
+  },
+  "approval_tv": {
+    "name": "Approval TV",
+    "access": "paid",
+    "url": "https://live.approvaltv.com/approvaltv/index.m3u8",
+    "group-title": "General;Religious",
+    "logo": "https://live.approvaltv.com/logov.png"
+  },
+  "aptim_tv": {
+    "name": "APTIM TV",
+    "access": "paid",
+    "url": "https://stream.commec.tv/6447b2559d8b0711e2fa75cc/live_222c2dc0b69f11ee8c3c99218c8c67c4/index.fmp4.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/gWgvm0I.png"
+  },
+  "ark_tv": {
+    "name": "Ark TV",
+    "access": "paid",
+    "url": "https://stream.hydeinnovations.com/arktv-international/index.fmp4.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/yCHNZXD.png"
+  },
+  "bet_gospel": {
+    "name": "BET Gospel",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/BET_GOSPEL/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/jbOkq8C.png"
+  },
+  "better_life_tv": {
+    "name": "Better Life TV",
+    "access": "paid",
+    "url": "https://tgn.bozztv.com/betterlife/betterlife/betterlife/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://yt3.googleusercontent.com/YQLtMymrkfaL2UwsK7pOcvPsePMRSdWehXK1Hds9h0F_IzNnN56tw6vzFhRar3d9HRFCAuG7=s512"
+  },
+  "btl_tv": {
+    "name": "BTL TV",
+    "access": "paid",
+    "url": "https://goliveafrica.media:9998/live/638da5440743c/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/4r09woD.jpg"
+  },
+  "bx_inspire": {
+    "name": "BX Inspire",
+    "access": "paid",
+    "url": "https://reflect-stream-bronxnet.cablecast.tv/live-18/live/live.m3u8",
+    "group-title": "General;Religious",
+    "logo": "https://i.imgur.com/PF71rdZ.png"
+  },
+  "caribbean_gospel_tv": {
+    "name": "Caribbean Gospel TV",
+    "access": "paid",
+    "url": "https://5a1178b42cc03.streamlock.net/CGTV2024/CGTV2024/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/mVQ8J4k.png"
+  },
+  "catholic_faith_network": {
+    "name": "Catholic Faith Network",
+    "url": "https://uni8rtmp.tulix.tv/cfntv/cfntv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/0/07/Catholic_Faith_Network_2018.png"
+  },
+  "catholic_tv": {
+    "name": "Catholic TV",
+    "url": "https://catholictvhd-lh.akamaized.net/hls/live/2043390/CTVLiveHD/master.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RI9GbLX.jpg"
+  },
+  "caught_up_tv": {
+    "name": "Caught-Up TV",
+    "access": "paid",
+    "url": "https://webstreaming-3.viewmedia.tv/web_031/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/7jeoulU.png"
+  },
+  "cbn_family": {
+    "name": "CBN Family",
+    "access": "paid",
+    "url": "https://bcovlive-a.akamaihd.net/r602a47f47fee47bb83239eb1b1e1ac83/us-east-1/734546207001/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/adHRFrS.png"
+  },
+  "cbn_news": {
+    "name": "CBN News",
+    "access": "paid",
+    "url": "https://bcovlive-a.akamaihd.net/re8d9f611ee4a490a9bb59e52db91414d/us-east-1/734546207001/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/gG2SWgG.png"
+  },
+  "ccco_aspire_tv": {
+    "name": "CCCO Aspire TV",
+    "access": "paid",
+    "url": "https://panel.freedomflixtv.org:3948/hybrid/play.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/33FHk1A.jpg"
+  },
+  "cdm_internacional": {
+    "name": "CDM Internacional",
+    "access": "paid",
+    "url": "https://59825a54e4454.streamlock.net:8443/marcos536/marcos536/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/N7IneVk.png"
+  },
+  "chosen_tv_english": {
+    "name": "Chosen TV English SD",
+    "access": "paid",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-chosentv/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/cc/chosen-tv-ng.png"
+  },
+  "christian_youth_channel": {
+    "name": "Christian Youth Channel CYC",
+    "access": "paid",
+    "url": "http://media3.smc-host.com:1935/cycnow.com/smil:cyc.smil/playlist.m3u8",
+    "group-title": "Kids;Religious",
+    "logo": "https://i.imgur.com/61eV77C.png"
+  },
+  "church_of_uganda_family_television": {
+    "name": "Church of Uganda Family Television",
+    "url": "https://stream.castr.com/66b2205a464da535308e57e1/live_2c12d7a053f511ef9a978b0191f4a826/index.fmp4.m3u8",
+    "access": "paid",
+    "group-title": "Family;Religious",
+    "logo": "https://i.imgur.com/l53Eur6.png"
+  },
+  "clergy_tv": {
+    "name": "Clergy TV",
+    "url": "https://goliveafrica.media:9998/live/650452cf2ddb2/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/RcxBEUo.jpg"
+  },
+  "cloveworld_tv": {
+    "name": "cLoveworld TV",
+    "access": "paid",
+    "url": "https://live-hls-5rxy.livepush.io/live_cdn/em_LJ5aZjqp0LdiQ/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/MKKap2F.png"
+  },
+  "coza_tv": {
+    "name": "Coza TV",
+    "access": "paid",
+    "url": "https://webstreaming-7.viewmedia.tv/web_097/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/QVBdpuF.png"
+  },
+  "csat_tv": {
+    "name": "CSat TV",
+    "access": "paid",
+    "url": "http://media.smc-host.com:1935/csat.tv/smil:csat.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/fp2EaLJ.png"
+  },
+  "ctn": {
+    "name": "CTN",
+    "access": "paid",
+    "url": "https://ctntv.getstreamhosting.com:1936/CTNTV/CTNTV/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/mHCabmJ.png"
+  },
+  "dare_to_dream_network": {
+    "name": "Dare To Dream Network",
+    "access": "paid",
+    "url": "https://3abn.bozztv.com/3abn2/d2d_live/smil:d2d_live.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/JwCLwQ2.png"
+  },
+  "daystar_tv": {
+    "name": "Daystar TV SD",
+    "url": "https://live20.bozztv.com/dvrfl05/gin-daystar/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/IjzCv8f.png"
+  },
+  "destiny_voices_tv": {
+    "name": "Destiny Voices TV",
+    "url": "https://apps.digitaltv.co.ke/live/2004.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/yedftwj.jpg"
+  },
+  "dove_tv": {
+    "name": "Dove TV",
+    "access": "paid",
+    "url": "https://webstreaming-7.viewmedia.tv/web_093/Stream/live93_3/high/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/wOlMfCR.png"
+  },
+  "dream_tv": {
+    "name": "Dream TV",
+    "access": "paid",
+    "url": "https://streamfi-dreamtv1.zettawiseroutes.com:8181/hls/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/XRUDhqQ.png"
+  },
+  "dr_gene_scott": {
+    "name": "Dr. Gene Scott",
+    "access": "paid",
+    "url": "https://wescottcc.piksel.tech/hls/live/2041478/adp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Db3EI19.png"
+  },
+  "dunamis_tv": {
+    "name": "Dunamis TV",
+    "access": "paid",
+    "url": "https://atechgroupuk.site/DTV.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/thGAXeM.png"
+  },
+  "ebn_tv": {
+    "name": "EBN TV",
+    "access": "paid",
+    "url": "https://goliveafrica.media:9998/live/65d8475d1e6cb/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/NvxqoEn.png"
+  },
+  "elevate_tv": {
+    "name": "Elevate TV",
+    "access": "paid",
+    "url": "https://goliveafrica.media:9998/live/64a98a7eac12a/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/M7xaQ7o.jpg"
+  },
+  "elijah_tv": {
+    "name": "Elijah TV SD",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-elijah/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/kprss2J.png"
+  },
+  "eman_channel": {
+    "name": "Eman Channel",
+    "access": "paid",
+    "url": "https://ap02.iqplay.tv:8082/iqb8002/3m9n/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/ugn0DWe.png"
+  },
+  "emmanuel_tv": {
+    "name": "Emmanuel TV SD",
+    "access": "paid",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-emmanuel/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/c7XjM8Y.png"
+  },
+  "enlace": {
+    "name": "Enlace",
+    "access": "paid",
+    "url": "https://livecdn.enlace.plus/enlace/smil:enlace-hd.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/YwUVTmS.png"
+  },
+  "eternal_life_tv_network": {
+    "name": "Eternal Life TV Network",
+    "access": "paid",
+    "url": "https://livecdn.live247stream.com/eternallife/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/49XTqzs.png"
+  },
+  "ewtn": {
+    "name": "EWTN",
+    "access": "paid",
+    "url": "https://cdn3.wowza.com/1/QjRzVXJtVml5SUVx/WGJRSWxz/hls/live/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/sua70RO.png"
+  },
+  "faith_tv": {
+    "name": "Faith TV",
+    "url": "https://cdn.freevisiontv.co.za/sttv/smil:faith.stream.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://admango.cdn.mangomolo.com/analytics/uploads/188/6544bcf232.jpg"
+  },
+  "fazal_tv": {
+    "name": "Fazal TV",
+    "access": "paid",
+    "url": "http://cdn9.live247stream.com/punjabitvcanada/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/c0fvKia.png"
+  },
+  "fire_tv": {
+    "name": "Fire TV SD",
+    "url": "https://live20.bozztv.com/dvrfl06/astv/astv-rock/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/om2y5Bp.png"
+  },
+  "flame_tv": {
+    "name": "Flame TV",
+    "url": "https://webstreaming.viewmedia.tv/web_010/Stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/ORKcnzr.png"
+  },
+  "foursquare_tv": {
+    "name": "Foursquare TV",
+    "url": "https://webstreaming-3.viewmedia.tv/web_033/Stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/ORer9ag.png"
+  },
+  "freedom_experience_tv": {
+    "name": "Freedom Experience TV",
+    "url": "https://panel.freedomflixtv.org:3934/hybrid/play.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/1SiJpPy.png"
+  },
+  "gawahi_tv": {
+    "name": "Gawahi TV",
+    "access": "paid",
+    "url": "https://livecdn.live247stream.com/gawahi/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/0W6zzHS.png"
+  },
+  "gbn_tv": {
+    "name": "GBN TV",
+    "access": "paid",
+    "url": "https://cdn3.wowza.com/5/Ny9jK1A1Q3h4N1VZ/live/myStream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/DsFyyHy.png"
+  },
+  "gcn_america": {
+    "name": "GCN America",
+    "access": "paid",
+    "url": "http://liveen24-manminglobal3.ktcdn.co.kr/liveen24/gcnus_1300k.stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/DWSWrtV.png"
+  },
+  "gmtv": {
+    "name": "GMTV",
+    "access": "paid",
+    "url": "https://webstreaming-11.viewmedia.tv/web_160/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.ibb.co/cvDyWs1/IMG-20230628-152516.jpg"
+  },
+  "gnf_tv": {
+    "name": "GNF TV",
+    "access": "paid",
+    "url": "https://oqgdrb8my4rm-hls-live.5centscdn.com/GNF02/bcea197d8b00f79cb716c6288a861000.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/vCB7u0e.png"
+  },
+  "god_tv_africa": {
+    "name": "GOD TV Africa",
+    "url": "https://webstreaming.viewmedia.tv/web_006/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/hW4g2oe.png"
+  },
+  "goodlife_45": {
+    "name": "GoodLife 45",
+    "access": "paid",
+    "url": "https://2-fss-2.streamhoster.com/pl_118/201450-1248872-1/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/AQfVNMK.png"
+  },
+  "gospel_truth_tv": {
+    "name": "Gospel Truth TV",
+    "access": "paid",
+    "url": "https://na.linear.zype.com/bf94f9f4-383c-40e0-9d49-279a4f33ab8d/f29b8836-d990-4c8d-b421-192a8f43edc4-zype/manifest.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/LI52X2q.png"
+  },
+  "grace_network": {
+    "name": "Grace Network",
+    "access": "paid",
+    "url": "https://livecdn.live247stream.com/grace/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/QSaZPJ4.png"
+  },
+  "gugudde_tv": {
+    "name": "Gugudde TV",
+    "url": "https://jk3lzqq4lw79-hls-live.5centscdn.com/gugudde/c9a1fdac6e082dd89e7173244f34d7b3.sdp/chunks.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/XEakc6Q.png"
+  },
+  "healing_jesus_tv": {
+    "name": "Healing Jesus TV",
+    "url": "https://webstreaming-3.viewmedia.tv/web_041/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/ZZryVU9.png"
+  },
+  "heaven_bound_tv": {
+    "name": "Heaven Bound TV",
+    "url": "https://goliveafrica.media:9998/live/62580b337c021/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/pwnesmW.jpg"
+  },
+  "hilaal_tv": {
+    "name": "Hilaal TV",
+    "url": "https://cdn5.iqsat.net/iq/aa89b15058a61b904359307cc0a5e80a.sdp/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/tlylDbi.png"
+  },
+  "his_grace_tv": {
+    "name": "His Grace TV",
+    "url": "https://goliveafrica.media:9998/live/6593c35f9c090/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/uIlU5im.jpg"
+  },
+  "homebase_tv": {
+    "name": "Homebase TV SD",
+    "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_022/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/MaLNfJG.png"
+  },
+  "hope4life_tv": {
+    "name": "Hope4Life TV",
+    "url": "http://144.217.14.88/hls/hope4life.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/p24tAjs.jpg"
+  },
+  "hope_channel_africa": {
+    "name": "Hope Channel Africa",
+    "url": "https://jstre.am/live/jsl:i1onRBELcGV.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/SFacyYO.png"
+  },
+  "hope_channel_australia": {
+    "name": "Hope Channel Australia",
+    "url": "https://videodelivery.net/9fb3596948ddf463fde0ec4b85625b24/manifest/video.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/8Zs7rDm.png"
+  },
+  "hope_channel_ghana": {
+    "name": "Hope Channel Ghana",
+    "url": "https://videodelivery.net/dfbdca87f2a6291aa4fdc8fe3290769b/manifest/video.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/d1P9ekm.png"
+  },
+  "hope_channel_international": {
+    "name": "Hope Channel International",
+    "url": "https://jstre.am/live/jsl:cZXINbwrFj6.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/PNihgl2.png"
+  },
+  "hope_channel_north_america": {
+    "name": "Hope Channel North America",
+    "url": "https://jstre.am/live/jsl:0sUSK6VA7GT.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/2qXqajS.png"
+  },
+  "hope_channel_norway": {
+    "name": "Hope Channel Norway",
+    "url": "http://media1.adventist.no:1935/live/hope1/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/fQPIZn9.png"
+  },
+  "horemowtv": {
+    "name": "HoremowTV",
+    "url": "https://tvsw6-hls.secdn.net/tvsw6-chorigin/play/prod-2859eecc9b514f2bb955290066ef172d/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/LzTqsW9.png"
+  },
+  "huda_tv": {
+    "name": "Huda TV",
+    "url": "https://cdn.bestream.io:19360/elfaro1/elfaro1.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/1UUjU26.png"
+  },
+  "ibn_tv": {
+    "name": "IBN TV",
+    "url": "http://138.68.138.119:8080/live/5a8993709ea19/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/hkV51ij.png"
+  },
+  "ibn_tv_africa": {
+    "name": "IBN TV Africa",
+    "url": "http://68.183.41.209:8080/live/5d9a537c64b9c/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/eKy2ocd.png"
+  },
+  "icnet_2": {
+    "name": "ICnet 2",
+    "url": "https://icnet2hls.wns.live/hls/stream.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Ke5xn4E.png"
+  },
+  "ictv": {
+    "name": "ICTV",
+    "url": "https://goliveafrica.media:9998/live/659a7f33bed3f/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/0kMhqK3.png"
+  },
+  "iipc_tv": {
+    "name": "IIPC TV SD",
+    "url": "https://rpn.bozztv.com/dvrfl03/iipctv/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/mIih39Y.png"
+  },
+  "isaac_tv": {
+    "name": "Isaac TV",
+    "url": "https://livecdn.live247stream.com/isaac/tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RHDbsiO.png"
+  },
+  "islam_channel": {
+    "name": "Islam Channel",
+    "access": "paid",
+    "url": "https://live.islamchannel.tv/live11/islamtv_english/bitrate1.isml/live.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/bJdFH7x.png"
+  },
+  "its_supernatural_network": {
+    "name": "It's Supernatural! Network",
+    "access": "paid",
+    "url": "https://content.uplynk.com/channel/fbc0f835332e476397b12216f9042f78.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/JWrdL9a.png"
+  },
+  "jbs": {
+    "name": "JBS",
+    "access": "paid",
+    "url": "http://uni8rtmp.tulix.tv:1935/shalomtv-pc/smil:shalomtv.smil/master.m3u8",
+    "group-title": "Religious",
+    "logo": "https://yt3.googleusercontent.com/ytc/AIdro_lDWY-W9dD7UvLlp1NuWLJs1wV6t_KjeOT-1iVVIGuLZ8U=s512-c-k-c0x00ffffff-no-rj"
+  },
+  "jcm_tv": {
+    "name": "JCM TV",
+    "access": "paid",
+    "url": "https://goliveafrica.media:9998/live/646c92d07b16c/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/28YB7dD.jpg"
+  },
+  "jewish_life_television": {
+    "name": "Jewish Life Television",
+    "url": "https://jlt-jltv-xumo.otteravision.com/jlt/jltv/jltv.m3u8",
+    "access": "paid",
+    "group-title": "Culture;Religious",
+    "logo": "https://yt3.googleusercontent.com/i6ETvgNzA8vvGCo-Ih6eo2XZUwz2VVMnstLyNZVXBlwa4uOeUIEl-3tzphB8phJaibe-FPQ5Fw=s512-c-k-c0x00ffffff-no-rj"
+  },
+  "joshua_tv": {
+    "name": "Joshua TV",
+    "url": "https://livecdn.live247stream.com/joshua/tv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/x9xPR2h.png"
+  },
+  "k21jq_d1": {
+    "name": "K21JQ-D1",
+    "url": "https://1189614805.rsc.cdn77.org/hls/bmt.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/k9Ze0cr.png"
+  },
+  "kbsv_dt1": {
+    "name": "KBSV-DT1",
+    "url": "http://66.242.170.53/hls/live/temp/index.m3u8",
+    "access": "paid",
+    "group-title": "General;Religious",
+    "logo": "https://i.imgur.com/6lklsyN.png"
+  },
+  "kicc_tv": {
+    "name": "KICC TV",
+    "url": "https://live.mdc.akamaized.net/hls/livestream/kicctv/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/4kU1VNx.png"
+  },
+  "king_tv": {
+    "name": "King TV",
+    "access": "paid",
+    "url": "https://streamer12.vdn.dstreamone.net/kingtv/kingtv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/dujrwRE.png"
+  },
+  "kpcb_dt1": {
+    "name": "KPCB-DT1",
+    "url": "https://2-fss-1.streamhoster.com/pl_122/200562-1176456-1/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/w1bK8YN.png"
+  },
+  "kqsl_dt1": {
+    "name": "KQSL-DT1",
+    "url": "https://uni01rtmp.tulix.tv/kqsltv/kqsltv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/TLN_2015.png/512px-TLN_2015.png"
+  },
+  "ksce_dt1": {
+    "name": "KSCE-DT1",
+    "url": "https://2-fss-2.streamhoster.com/pl_138/200226-1359204-1/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/FioxUa3.png"
+  },
+  "ksce_dt3": {
+    "name": "KSCE-DT3",
+    "url": "https://2-fss-1.streamhoster.com/pl_122/200226-1427780-1/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/P0vZXU0.png"
+  },
+  "ktbn_dt3": {
+    "name": "KTBN-DT3",
+    "url": "https://tbn-jw.cdn.vustreams.com/live/smile/live.isml/.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/WYM3tj8.png"
+  },
+  "kvtn_dt1": {
+    "name": "KVTN-DT1",
+    "url": "https://api.new.livestream.com/accounts/15669040/events/4554297/live.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/CjKQuEP.png"
+  },
+  "liberation_tv": {
+    "name": "Liberation TV",
+    "url": "https://webstreaming.viewmedia.tv/web_011/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/MjbLGOu.png"
+  },
+  "lifevisiontv": {
+    "name": "LifevisionTV",
+    "url": "https://tgn.bozztv.com/lifevision/lifevision/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/pF6Wowj.jpg"
+  },
+  "living_faith_tv": {
+    "name": "Living Faith TV",
+    "url": "https://cdn-unified-hls.streamspot.com/ingest1/0b5c0f18e9/playlist.m3u8?origin=1",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/FuNpesJ.png"
+  },
+  "llbn_his_light": {
+    "name": "LLBN His Light",
+    "url": "https://brightstar-hislight-pull-secure.akamaized.net/brightstarhislight/stream.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/YkLZjRw.png"
+  },
+  "llbn_his_word": {
+    "name": "LLBN His Word",
+    "url": "https://brightstar-hisword-pull-secure.akamaized.net/brightstarhisword/stream.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/GbyHlS2.png"
+  },
+  "logos_tv_english": {
+    "name": "Logos TV English",
+    "url": "https://5aafcc5de91f1.streamlock.net/logoschannel.com/logoseng/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/LDfEK81.png"
+  },
+  "loveworld_asia": {
+    "name": "LoveWorld Asia",
+    "url": "https://cdnstack.internetmultimediaonline.org/auxano/Hindilanx/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/ll/love_world_ng_asia.png"
+  },
+  "loveworld_casa": {
+    "name": "LoveWorld CASA",
+    "url": "https://j78dp6reyq5r-hls-live.5centscdn.com/kview/5c6d78cffa59e129f040fcec2d788532.sdp/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/ll/loveworld-casa-ng.png"
+  },
+  "loveworld_euro": {
+    "name": "LoveWorld Euro",
+    "url": "https://cdnstack.internetmultimediaonline.org/auxano/Cespain/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/ll/love_world_ng_euro.png"
+  },
+  "loveworldsat": {
+    "name": "LoveworldSAT SD",
+    "url": "https://cdnstack.internetmultimediaonline.org/lwsat/lwsat.stream/chunklist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Fg65XCS.png"
+  },
+  "loveworld_xp": {
+    "name": "Loveworld XP",
+    "url": "https://bus-asia-east-1-cimzmgnuu-cdn.sa.metacdn.com/live/ngrp:livestream2022_main_all_transcode/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://www.lyngsat.com/logo/tv/ll/loveworld-xp-ng.png"
+  },
+  "mabesh_tv": {
+    "name": "Mabesh TV SD",
+    "url": "https://tv.localstreamgh.com/MabeshTV/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Y2ATesY.png"
+  },
+  "madani_channel_bangla": {
+    "name": "Madani Channel Bangla",
+    "url": "https://streaming.madanichannel.tv/static/streaming-playlists/hls/d3e49b76-ac06-4689-a641-9200445b647f/master.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/vIJTVia.png"
+  },
+  "madani_channel_english": {
+    "name": "Madani Channel English",
+    "url": "https://streaming.madanichannel.tv/static/streaming-playlists/hls/c6a600b0-82cb-454a-8953-2bb2bb372edc/master.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/Abi9j0A.png"
+  },
+  "maranatha_tv": {
+    "name": "Maranatha TV SD",
+    "url": "https://media.streambrothers.com:1936/8298/8298/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/MargDV9.png"
+  },
+  "masters_tv": {
+    "name": "Master's TV",
+    "url": "https://mn-nl.mncdn.com/commectv_live/masterstv/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://www.lyngsat.com/logo/tv/mm/masters-tv-ng.png"
+  },
+  "mercy_and_truth_ministries_television": {
+    "name": "Mercy and Truth Ministries Television",
+    "url": "https://angel.btbn.tv:5443/mtmtv/streams/live.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/krcVhrx.png"
+  },
+  "mission_tv": {
+    "name": "Mission TV",
+    "access": "paid",
+    "url": "https://6096a9cf11ae5.streamlock.net:1943/live/missiontv/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Hb38BNo.png"
+  },
+  "mmc_tv_usa": {
+    "name": "MMC TV USA",
+    "url": "https://live.relentlessinnovations.net:1936/rspe-tv/rspe-tv/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/0MwrSYE.png"
+  },
+  "mogpa_tv": {
+    "name": "MOGPA TV SD",
+    "url": "https://bk7l2r2nyx53-hls-live.5centscdn.com/ablazetv/f7b44cfafd5c52223d5498196c8a2e7b.sdp/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/34PmVAq.png"
+  },
+  "mogpa_tv_plus": {
+    "name": "MOGPA TV Plus SD",
+    "url": "https://bk7l2r2nyx53-hls-live.5centscdn.com/mogpatvplus/2567a5ec9705eb7ac2c984033e06189d.sdp/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/0YLSM3R.png"
+  },
+  "more_grace_tv": {
+    "name": "More Grace TV",
+    "url": "https://atechgroupuk.site/ETV.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/DNTeCQt.png"
+  },
+  "morning_cloud_tv": {
+    "name": "Morning Cloud TV SD",
+    "url": "https://viewmedia7219.bozztv.com/wmedia/viewmedia100/web_026/Stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Lxfd2ip.png"
+  },
+  "mta1_world": {
+    "name": "MTA1 World",
+    "url": "https://chlivemta1.akamaized.net/hls/live/2008145/mta1/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/bYiRfAg.png"
+  },
+  "mta2_europe": {
+    "name": "MTA2 Europe",
+    "url": "https://chlivemta1.akamaized.net/hls/live/2008145/mta2/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/aVts0sz.png"
+  },
+  "mta4_africa": {
+    "name": "MTA4 Africa",
+    "url": "https://chlivemta.akamaized.net/hls/live/2010555/mtaafrica1/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/lmVeQQX.png"
+  },
+  "mta5_africa": {
+    "name": "MTA5 Africa",
+    "url": "https://chlivemta.akamaized.net/hls/live/2010555/mtaafrica2/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/9Cobb2i.png"
+  },
+  "mta6_asia": {
+    "name": "MTA6 Asia",
+    "url": "https://livemtaasia.akamaized.net/hls/live/2039224/mta6asia/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/nhCNPJI.png"
+  },
+  "mta7_asia": {
+    "name": "MTA7 Asia",
+    "url": "https://livemtaasia.akamaized.net/hls/live/2039224/mtaasia2/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/3Nl8Tpu.png"
+  },
+  "mta8_america": {
+    "name": "MTA8 America",
+    "url": "https://chlivemta.akamaized.net/hls/live/2016718/mta8/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/CF6X9wB.png"
+  },
+  "muthingi_tv": {
+    "name": "Muthingi TV",
+    "url": "https://apps.digitaltv.co.ke/live/2005.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/bnkbclB.jpg"
+  },
+  "mwangaza_tv": {
+    "name": "Mwangaza TV",
+    "url": "https://goliveafrica.media:9998/live/6516be24a6bac/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/GjXfuSh.png"
+  },
+  "my_righteous_tv": {
+    "name": "My Righteous TV SD",
+    "url": "https://live20.bozztv.com/ssh101/ssh101/myrighteous/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/wKSLNHB.png"
+  },
+  "new_frontiers_tv": {
+    "name": "New Frontiers TV",
+    "url": "https://media2.streambrothers.com:1936/8044/8044/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/dYRIJjh.png"
+  },
+  "new_vision_tv": {
+    "name": "New Vision TV",
+    "url": "https://webstreaming-2.viewmedia.tv/web_027/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://www.lyngsat.com/logo/tv/nn/new-vision-tv-ng.png"
+  },
+  "noor_tv": {
+    "name": "Noor TV",
+    "url": "https://sscsott.com/srt/noortvuk/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/DlKgIuQ.png"
+  },
+  "noursat_english": {
+    "name": "Noursat English",
+    "access": "paid",
+    "url": "https://svs.itworkscdn.net/noursatenglive/noursateng.smil/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RC5Kw82.png"
+  },
+  "nrbtv": {
+    "name": "NRBTV",
+    "url": "https://uni6rtmp.tulix.tv/nrbnetwork/myStream.sdp/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/2PL1Au7.png"
+  },
+  "ocn_tv": {
+    "name": "OCN TV SD",
+    "url": "https://5d12bc59c4748.streamlock.net/redirect/ocnbroadcasting.com/ocnbroadcasting2?type=m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/iSB5Obl.png"
+  },
+  "omid_javedan": {
+    "name": "Omid Javedan",
+    "url": "http://livestream.5centscdn.com/shaditv/23abe62a446fc05ce0a6c810f4045308.sdp/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/K7502YG.png"
+  },
+  "pent_tv": {
+    "name": "Pent TV",
+    "url": "https://iptv-trans.ecntv.net/live/penttv.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/Jw6d3dR.png"
+  },
+  "phenomenal_life_tv": {
+    "name": "Phenomenal Life TV",
+    "url": "https://5be80bd118c27.streamlock.net:433/phenomenaltv/phenomenal/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/JHbhLuK.jpg"
+  },
+  "pillar_tv": {
+    "name": "Pillar TV",
+    "url": "https://goliveafrica.media:9998/live/627e198474bd1/index.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/9kCxFqj.png"
+  },
+  "praise_jesus_tower_tv": {
+    "name": "Praise Jesus Tower TV",
+    "url": "https://vsrv1.az-streamingserver.com:3555/live/dyjoqlgklive.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/KT4qIve.png"
+  },
+  "ptl_tv_network": {
+    "name": "PTL TV Network",
+    "url": "https://storage.sardius.media/archives/-KyMV-J0vDqnClcSXs8p/events/site_1a4721d3BA/playlist.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/EhISpCd.png"
+  },
+  "quo_vadis_tv": {
+    "name": "Quo Vadis TV SD",
+    "url": "https://tgn.bozztv.com/qvtv/qvtv-web/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/pEqDDHl.png"
+  },
+  "redemption_television_ministry": {
+    "name": "Redemption Television Ministry",
+    "url": "https://live.nixsat.com/play/rtm/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/63SmAby.png"
+  },
+  "rlw_tv": {
+    "name": "RLW TV",
+    "url": "https://webstreaming-8.viewmedia.tv/web_119/Stream/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/VcwqoEF.png"
+  },
+  "rtn_chicago": {
+    "name": "RTN Chicago",
+    "url": "https://5bb3298db4821.streamlock.net/3707/live1/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.ibb.co/wwchqYk/889dc1-937ba3d8d4ed4331a668a1c544766318-mv2.png"
+  },
+  "safeer_tv": {
+    "name": "Safeer TV",
+    "url": "https://cdn3.wowza.com/1/YStGZlJRdktzZkdK/VXROZWNW/hls/live/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://image.roku.com/developer_channels/prod/8389e15af8fe49ac7c36d201c24ebf62fbe5b22897c2879ca26ae936e0ed308d.png"
+  },
+  "safetv": {
+    "name": "SafeTV",
+    "url": "http://18.191.91.130:1935/live/safetv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/sDGZCpL.png"
+  },
+  "salt_tv": {
+    "name": "Salt TV",
+    "url": "https://live.salttelevision.com/app/stream/abr.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/AK9nE6Y.png"
+  },
+  "sayare_tv": {
+    "name": "Sayare TV",
+    "url": "https://goliveafrica.media:9998/live/636dedfa327d7/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/M2Fnxj7.png"
+  },
+  "sbn_tv": {
+    "name": "SBN TV SD",
+    "url": "https://live20.bozztv.com/trn03/gin-sbntv/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/tspT2dF.png"
+  },
+  "sbn_tv_international": {
+    "name": "SBN TV International SD",
+    "url": "http://trn03.bozztv.com/gin-sbntv/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/NJu6oYB.png"
+  },
+  "spirit_of_glory_tv": {
+    "name": "Spirit Of Glory TV",
+    "url": "https://panel.freedomflixtv.org:3937/hybrid/play.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/tR3Vfco.png"
+  },
+  "spirit_tv_uganda": {
+    "name": "Spirit TV",
+    "access": "paid",
+    "url": "https://tv.tuhlprintltd.com/hls/stream.m3u8",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/RGfoWmD.png"
+  },
+  "spirit_tv_us": {
+    "name": "Spirit TV",
+    "access": "paid",
+    "url": "https://cdnlive.myspirit.tv/LS-ATL-43240-2/index.m3u8",
+    "group-title": "Music;Religious",
+    "logo": "https://i.imgur.com/yCp6vXz.png"
+  },
+  "tbn_inspire": {
+    "name": "TBN Inspire SD",
+    "url": "https://live20.bozztv.com/dvrfl05/gin-tbninspire/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/GSM0Pkr.png"
+  },
+  "the_now_network": {
+    "name": "The Now Network",
+    "url": "https://mediaprod1.nowcast.cc:5443/LiveApp/streams/anZPy7eaVWLyDMZB1697488814699.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/Wp6d0F8.png"
+  },
+  "the_word_network": {
+    "name": "The Word Network",
+    "url": "https://clouditize.piksel.tech/hls/live/2043070/ClouditizeStream1/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/ltFBrrj.png"
+  },
+  "trust_tv": {
+    "name": "Trust TV",
+    "url": "https://panel.freedomflixtv.org:3900/hybrid/play.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/01k6voZ.png"
+  },
+  "tvcarib_gospel": {
+    "name": "TVCARiB Gospel",
+    "url": "https://cdn.mycloudstream.io/hls/live/broadcast/wokrhjkd/index.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/fvGlwKo.png"
+  },
+  "w14dk_d1": {
+    "name": "W14DK-D1",
+    "url": "https://2-fss-2.streamhoster.com/pl_118/amlst:204972-1949480/playlist.m3u8",
+    "group-title": "Religious",
+    "access": "paid",
+    "logo": "https://i.imgur.com/TjQP7kS.png"
+  },
+  "whole_word_tv": {
+    "name": "Whole Word TV",
+    "url": "https://mn-nl.mncdn.com/wholewordtv/wholewordtv/index.m3u8",
+    "access": "paid",
+    "group-title": "Religious",
+    "logo": "https://i.imgur.com/71MRtuK.png"
+  },
+  "kmby_ld5": {
+    "name": "KMBY-LD5",
+    "url": "https://2-fss-2.streamhoster.com/pl_138/205510-3094608-1/playlist.m3u8",
+    "group-title": "Animation",
+    "access": "paid",
+    "logo": "https://i.imgur.com/px0CSti.png"
+  },
+  "10_bold_sydney": {
+    "name": "10 Bold Sydney",
+    "url": "https://dce3793146fef017.mediapackage.us-west-2.amazonaws.com/out/v1/55cdf73af7894775ba6de8f57482b66a/CMAF_HLS/index.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle;Relax",
+    "logo": "https://i.imgur.com/2xglh33.png"
+  },
+  "30a_luxe_life_discovered": {
+    "name": "30A Luxe Life Discovered",
+    "url": "https://30a-tv.com/feeds/vidaa/luxelife.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://m.media-amazon.com/images/I/51FJ5A0mEyL.jpg"
+  },
+  "better_health_tv": {
+    "name": "Better Health TV",
+    "url": "https://tgn.bozztv.com/betterlife/betterhealth/betterhealth/index.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/dThvIsV.png"
+  },
+  "bridezillas_uk": {
+    "name": "Bridezillas UK",
+    "url": "https://run-br-uk.otteravision.com/run/br_uk/br_uk_720.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/gppwrJa.png"
+  },
+  "cine_life": {
+    "name": "CineLife",
+    "url": "https://magnolia-cinelife.amagi.tv/hls/amagi_hls_data_magnoliaA-cinelife-oando/CDN/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/RIUNuMQ.png"
+  },
+  "cleo_tv": {
+    "name": "Cleo TV",
+    "url": "https://fl3.moveonjoy.com/Cleo_TV/index.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/US0T6DC.png"
+  },
+  "ctn_lifestyle": {
+    "name": "CTN Lifestyle",
+    "url": "https://ctntv.getstreamhosting.com:1936/Lifestyle/Lifestyle/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/i1TBfGl.png"
+  },
+  "fashion_finds": {
+    "name": "Fashion Finds",
+    "access": "paid",
+    "url": "https://qvc-amd-live.akamaized.net/hls/live/2034113/lsqvc5us/master.m3u8",
+    "group-title": "Lifestyle;Shop",
+    "logo": "https://i.imgur.com/GvDRZgq.png"
+  },
+  "fashiontv_europe": {
+    "name": "FashionTV Europe",
+    "url": "https://fashiontv-fashiontv-5-nl.samsung.wurl.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Fashion_TV_logo.svg/512px-Fashion_TV_logo.svg.png"
+  },
+  "fashiontv_pg16": {
+    "name": "FashionTV PG16",
+    "url": "https://fash1043.cloudycdn.services/slive/ftv_pg16_adaptive.smil/media.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/GFTAN5Q.png"
+  },
+  "fashiontv_uhd": {
+    "name": "FashionTV UHD",
+    "url": "https://fash2043.cloudycdn.services/slive/ftv_ftv_4k_hevc_73d_42080_default_466_hls.smil/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/vQuyyWO.png"
+  },
+  "fyi_east": {
+    "name": "FYI East",
+    "url": "https://fl3.moveonjoy.com/FYI/index.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/PggQk7F.png"
+  },
+  "global_fashion_channel": {
+    "name": "Global Fashion Channel",
+    "url": "https://pubgfc.teleosmedia.com/linear/globalfashionchannel/globalfashionchannel/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/s4eGYEP.jpg"
+  },
+  "localish": {
+    "name": "Localish",
+    "url": "https://apollo.production-public.tubi.io/live/ac-localish.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/ACEbGD5.png"
+  },
+  "luxe_tv": {
+    "name": "Luxe TV",
+    "url": "https://alchimie-luxe-fr-rakuten.amagi.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/24ehonx.png"
+  },
+  "monte_carlo_digital_television": {
+    "name": "Monte Carlo Digital Television",
+    "url": "https://fl718492-exthls-p1.flovp.com/fl718492/live/live.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/99h8F1y.jpeg"
+  },
+  "ourtv": {
+    "name": "OURTV",
+    "url": "https://hls-cdn.tvstartup.net/barakyah-channel/play/mp4:ourtvedge/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/LMeoW0l.png"
+  },
+  "plous_tv": {
+    "name": "Plous TV",
+    "url": "https://vcp.myplaytv.com/glowtv/glowtv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Lifestyle",
+    "logo": "https://i.imgur.com/OSet4en.png"
+  },
+  "pridetv_latam_hd": {
+    "name": "PRIDEtv LATAM HD",
+    "url": "https://backend.energeek.cl/webtv/pridetvweb/index.m3u8?token=ZZDemoIPTVGH",
+    "group-title": "Entertainment;Lifestyle",
+    "access": "paid",
+    "logo": "https://neotv.cl/img/pridetv-512.png"
+  },
+  "revry": {
+    "name": "Revry",
+    "url": "https://linear-5.frequency.stream/dist/plex/5/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/XuTUaq4.png"
+  },
+  "revry_news": {
+    "name": "Revry News",
+    "url": "https://linear-44.frequency.stream/mt/brightcove/44/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/lKMYCkb.png"
+  },
+  "revry_queer": {
+    "name": "Revry Queer",
+    "url": "https://linear-43.frequency.stream/dist/galxy/43/hls/master/playlist.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://f9q4g5j6.ssl.hwcdn.net/5fc81016d98cab623846a4f3"
+  },
+  "smart_lifestyle_tv": {
+    "name": "Smart LifeStyle TV",
+    "url": "https://brightstar-sls-pull-secure.akamaized.net/brightstarsls/stream.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/kHFlTEy.png"
+  },
+  "superyacht_tv": {
+    "name": "Superyacht TV",
+    "url": "https://sy.wns.live/hls/stream.m3u8",
+    "group-title": "Lifestyle",
+    "access": "paid",
+    "logo": "https://i.imgur.com/cgjgjE1.png"
+  },
+  "mystery_science_theater_3000": {
+    "name": "Mystery Science Theater 3000",
+    "url": "https://mst3k-vizio.amagi.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Comedy",
+    "logo": "https://i.imgur.com/8KWjY4o.png"
+  },
+  "sports_tv": {
+    "name": "Sports TV",
+    "url": "https://live.sportstv.com.tr/hls/low/sportstv.m3u8",
+    "access": "paid",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/tGTVcVe.jpg"
+  },
+  "tsn1": {
+    "name": "TSN1",
+    "url": "https://fl5.moveonjoy.com/TSN_1/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/eRFE0jZ.png"
+  },
+  "tsn2": {
+    "name": "TSN2",
+    "url": "https://fl5.moveonjoy.com/TSN_2/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/TSN2.svg/512px-TSN2.svg.png"
+  },
+  "tsn3": {
+    "name": "TSN3",
+    "url": "https://fl5.moveonjoy.com/TSN_3/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/AYza8KO.png"
+  },
+  "tsn5": {
+    "name": "TSN5",
+    "url": "https://fl5.moveonjoy.com/TSN_5/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/HEzHpzz.png"
+  },
+  "t_sports_7": {
+    "name": "T Sports 7",
+    "url": "https://lb1-live-mv.v2h-cdn.com/hls/ffef/tsport/tsport.m3u8",
+    "group-title": "Sports",
+    "access": "paid",
+    "logo": "https://i.imgur.com/KyI0s5n.png"
+  },
+  "mma_tv_com_sd": {
+    "name": "MMA-TV.com SD",
+    "url": "https://streams2.sofast.tv/vglive-sk-462904/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Wrestling",
+    "logo": "https://i.imgur.com/QhdxNsB.png"
+  },
+  "tr_sport": {
+    "name": "TR Sport",
+    "url": "https://livetr.teleromagna.it/mia/live/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Sports",
+    "logo": "https://i.imgur.com/ELXmaqg.png"
+  },
+  "smithsonian_channel_east": {
+    "name": "Smithsonian Channel East",
+    "url": "https://fl3.moveonjoy.com/SMITHSONIAN_CHANNEL/index.m3u8",
+    "group-title": "Science",
+    "access": "paid",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/SmithsonianChannellogo.png/512px-SmithsonianChannellogo.png"
+  },
+  "marin_tv_educational_channel": {
+    "name": "Marin TV Educational Channel",
+    "url": "https://dacastmmd.mmdlive.lldns.net/dacastmmd/bc1fcf000e4e48a6a490d2af1f6added/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Education",
+    "logo": "https://i.imgur.com/HsBBu8g.png"
+  },
+  "30a_loomered_tv": {
+    "name": "30A Loomered TV",
+    "access": "paid",
+    "url": "https://30a-tv.com/loomer.m3u8",
+    "group-title": "Documentary;News",
+    "logo": "https://cbs12.com/resources/media/0c1ecad8-fb09-4bb2-beaa-fc561dfe624a-small21x9_LoomerStill.jpg?1603419052801"
+  },
+  "bbc_four_uk_hd": {
+    "name": "BBC Four UK HD",
+    "access": "paid",
+    "url": "https://streamer.nexyl.uk/48559ccd-6400-457d-8acc-06b9e24c2ed8.m3u8",
+    "group-title": "Culture;Documentary",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/BBC_Four_logo_2021.svg/512px-BBC_Four_logo_2021.svg.png"
+  },
+  "cgtn": {
+    "name": "CGTN",
+    "url": "https://amg00405-rakutentv-cgtn-rakuten-i9tar.amagi.tv/master.m3u8",
+    "group-title": "News",
+    "access": "paid",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/CGTN.svg/512px-CGTN.svg.png"
+  },
+  "cgtn_documentary": {
+    "name": "CGTN Documentary 1",
+    "url": "https://amg00405-rakutentv-cgtndocumentary-rakuten-0ql8j.amagi.tv/master.m3u8",
+    "access": "paid",
+    "group-title": "Documentary",
+    "logo": "https://i.imgur.com/JHv0WxM.png"
+  },
+  "cgtn_documentary_tr": {
+    "name": "CGTN Documentary 2",
+    "access": "paid",
+    "url": "https://mn-nl.mncdn.com/dogusdyg_drone/cgtn/playlist.m3u8",
+    "group-title": "Documentary",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/CGTN_Documentary_logo.png/400px-CGTN_Documentary_logo.png"
+  },
+  "gzt": {
+    "name": "GZT",
+    "url": "https://mn-nl.mncdn.com/gzttv/gzttv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Documentary;Series",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/GZT_logo.svg/320px-GZT_logo.svg.png"
+  },
+  "law_crime": {
+    "name": "Law & Crime",
+    "access": "paid",
+    "url": "https://a-cdn.klowdtv.com/live3/law_1080p/playlist.m3u8",
+    "group-title": "Documentary",
+    "logo": "https://yt3.googleusercontent.com/CRP3YudPa55QypbDnIvuh3erLZTsn2HK8ESR-2fJFFiLJVf7US2CKQELCKK_UowmHA3wCjAdxg=s512-c-k-c0x00ffffff-no-rj"
+  },
+  "life_tv": {
+    "name": "Life TV",
+    "access": "paid",
+    "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/lifetv/playlist.m3u8",
+    "group-title": "",
+    "logo": "https://i.imgur.com/C5YxD5m.png"
+  },
+  "national_geographic_east": {
+    "name": "Nat Geo",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/National_Geographic/index.m3u8",
+    "group-title": "Documentary",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Natgeologo.svg/512px-Natgeologo.svg.png"
+  },
+  "national_geographic_wild_east": {
+    "name": "Nat Geo Wild",
+    "url": "https://fl3.moveonjoy.com/Nat_Geo_Wild/index.m3u8",
+    "access": "paid",
+    "group-title": "Documentary",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/National_Geographic_Wild_logo.svg/512px-National_Geographic_Wild_logo.svg.png"
+  },
+  "reelz": {
+    "name": "Reelz",
+    "url": "https://apollo.production-public.tubi.io/live/ac-reelz.m3u8",
+    "access": "paid",
+    "group-title": "Documentary",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Reelz.svg/512px-Reelz.svg.png"
+  },
+  "trt_belgesel": {
+    "name": "TRT Belgesel",
+    "url": "http://185.234.111.229:8000/play/a00f",
+    "group-title": "Documentary",
+    "access": "paid",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/TRT_Belgesel_logo_%282019-%29.svg/512px-TRT_Belgesel_logo_%282019-%29.svg.png"
+  },
+  "hallmark_drama": {
+    "name": "Hallmark Drama",
+    "url": "https://fl3.moveonjoy.com/HALLMARK_DRAMA/index.m3u8",
+    "group-title": "Series",
+    "access": "paid",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/2/21/Hallmark_Drama_Logo.png"
+  },
+  "rakuten_tv_drama_movies_germany": {
+    "name": "Rakuten TV Drama Movies Germany",
+    "url": "https://968754c2483045c1a9a7f677caec35b6.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6096/master.m3u8",
+    "group-title": "Movies",
+    "access": "paid",
+    "logo": "https://i.imgur.com/Meew6eX.png"
+  },
+  "30a_ridiculous_tv": {
+    "name": "30A Ridiculous TV",
+    "url": "https://30a-tv.com/feeds/720p/63.m3u8",
+    "access": "paid",
+    "group-title": "Comedy",
+    "logo": "https://30a.media/wp-content/uploads/2023/08/pzaz-30atv-2-230x366-ridiculous.jpg"
+  },
+  "afv": {
+    "name": "AFV",
+    "url": "https://linear-12.frequency.stream/dist/plex/12/hls/master/playlist.m3u8",
+    "group-title": "Comedy",
+    "access": "paid",
+    "logo": "https://i.imgur.com/TOB9vmW.png"
+  },
+  "afv_family": {
+    "name": "AFV Family",
+    "url": "https://futuretoday-afv-family-2-be.samsung.wurl.tv/playlist.m3u8",
+    "group-title": "Comedy",
+    "access": "paid",
+    "logo": "https://i.imgur.com/dLSKBEn.png"
+  },
+  "comedy_central_east": {
+    "name": "Comedy Central East",
+    "url": "https://fl3.moveonjoy.com/Comedy_Central/index.m3u8",
+    "group-title": "Comedy",
+    "access": "paid",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Comedy_Central_2018.svg/512px-Comedy_Central_2018.svg.png"
+  },
+  "comedy_tv": {
+    "name": "Comedy TV",
+    "url": "https://fl3.moveonjoy.com/Comedy_TV/index.m3u8",
+    "group-title": "Comedy",
+    "logo": "https://i.imgur.com/KLfXnba.png"
+  },
+  "gagsnetwork": {
+    "name": "Gagsnetwork",
+    "url": "https://s7.merlive.am/gagsnetwork/index.m3u8",
+    "access": "paid",
+    "group-title": "Comedy",
+    "logo": "https://i.imgur.com/ENj5GIp.png"
+  },
+  "humor_mill": {
+    "name": "Humor Mill",
+    "url": "https://damkf751d85s1.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/HumorMill-DistroTV/152.m3u8",
+    "group-title": "Comedy",
+    "access": "paid",
+    "logo": "https://i.imgur.com/e5W91v2.png"
+  },
+  "lol_stand_up": {
+    "name": "LOL! Stand Up",
+    "url": "https://apollo.production-public.tubi.io/live/lol-stand-up2.m3u8",
+    "group-title": "Comedy",
+    "access": "paid",
+    "logo": "https://i.imgur.com/qgsyzW4.png"
+  },
+  "better_life_nature_channel": {
+    "name": "Better Life Nature Channel",
+    "url": "https://tgn.bozztv.com/betterlife/betternature/betternature/index.m3u8",
+    "group-title": "Relax",
+    "access": "paid",
+    "logo": "https://i.imgur.com/LMHrQJu.png"
+  },
+  "love_nature_hd": {
+    "name": "Love Nature HD",
+    "url": "http://78.130.250.2:8023/play/a02m/index.m3u8",
+    "access": "paid",
+    "group-title": "Outdoor",
+    "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Love_Nature_TV.png/512px-Love_Nature_TV.png"
+  },
+  "6PR": {
+    "name": "6PR",
+    "url": "https://6prlive.akamaized.net/hls/live/2033806/6PR/index.m3u8",
+    "group-title": "News",
+    "access": "paid",
+    "logo": "https://i.imgur.com/Q9iCxg1.png"
+  },
+  "30A_Georgia_Hollywood_Review": {
+    "name": "30A Georgia Hollywood Review",
+    "url": "https://30a-tv.com/gh.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment;News",
+    "logo": "https://images.axios.com/JiG3RuYBwpU_WZFeU6HHjt03FAU=/111x0:1191x1080/320x320/2023/11/09/1699558891265.jpg"
+  },
+  "Absolute_Reality_by_WE_TV": {
+    "name": "Absolute Reality by WE TV",
+    "url": "https://amc-absolutereality-1-us.plex.wurl.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/Gtwk8ic.png"
+  },
+  "Apple68_TV": {
+    "name": "Apple68 TV",
+    "url": "http://doxatv.flashmediacast.com:1935/doxatv/livestream/playlist.m3u8",
+    "group-title": "Entertainment",
+    "access": "paid",
+    "logo": "https://i.imgur.com/xQct5s2.jpg"
+  },
+  "BBC_America": {
+    "name": "BBC America",
+    "url": "https://dvrfl04.tulix.tv/teleup-bbca/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/pTiiPz0.png"
+  },
+  "BET_Her_East": {
+    "name": "BET Her East",
+    "url": "https://fl3.moveonjoy.com/BET_HER/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/oafsrlo.png"
+  },
+  "Comet": {
+    "name": "Comet",
+    "url": "https://fl3.moveonjoy.com/COMET/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Comet_logo.svg/512px-Comet_logo.svg.png"
+  },
+  "District_of_Columbia_Network": {
+    "name": "District of Columbia Network",
+    "url": "https://video.oct.dc.gov/out/u/DCN.m3u8",
+    "access": "paid",
+    "group-title": "Legislative",
+    "logo": "https://i.imgur.com/GGZ8BQ8.png"
+  },
+  "ESR_24x7_eSports_Network": {
+    "name": "ESR 24x7 eSports Network",
+    "url": "https://eyeonesports.com/ES2RA-628g.m3u8",
+    "access": "paid",
+    "group-title": "Sports",
+    "logo": "https://satelliteprome.com/wp-content/uploads/2021/01/ESR-network.jpg"
+  },
+  "Fido_TV": {
+    "name": "Fido TV",
+    "access": "paid",
+    "url": "https://1123112950.rsc.cdn77.org/HLS/FIDO.m3u8",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/p13E4cf.png"
+  },
+  "FX_East": {
+    "name": "FX East",
+    "url": "https://fl5.moveonjoy.com/FX/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/ZScwrpi.png"
+  },
+  "FXX_East": {
+    "name": "FXX East",
+    "url": "https://fl3.moveonjoy.com/FXX/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/FXX_Logo.svg/512px-FXX_Logo.svg.png"
+  },
+  "Game_Show_Network_East": {
+    "name": "Game Show Network East",
+    "url": "https://a-cdn.klowdtv.com/live2/gsn_720p/playlist.m3u8",
+    "group-title": "Entertainment",
+    "access": "paid",
+    "logo": "https://www.gameshownetwork.com/storage/app/media/2020/Navigation/gsn_logo.jpg"
+  },
+  "GlobalWorldTV": {
+    "name": "GlobalWorldTV",
+    "url": "https://media.streambrothers.com:1936/8052/8052/playlist.m3u8",
+    "group-title": "Entertainment",
+    "access": "paid",
+    "logo": "https://i.imgur.com/2u33Ayy.jpeg"
+  },
+  "Grit": {
+    "name": "Grit",
+    "url": "https://fl3.moveonjoy.com/GRIT_TV/index.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/6w1Wj3j.png"
+  },
+  "Grit_Xtra": {
+    "name": "Grit Xtra",
+    "url": "https://scripps-gritxtra-1-us.vizio.wurl.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://pbs.twimg.com/profile_images/1587656647803113472/tANAElTS_400x400.jpg"
+  },
+  "Haunt_TV": {
+    "name": "Haunt TV",
+    "url": "https://blueantmediacanada-haunttv-samsungca.amagi.tv/playlist.m3u8",
+    "group-title": "Entertainment",
+    "access": "paid",
+    "logo": "https://yt3.googleusercontent.com/ytc/AIdro_kFORSMlXKT0V9fBpkp5TS7VbpwlNC6XbfZxrSSWUt1UA=s512-c-k-c0x00ffffff-no-rj"
+  },
+  "Kingsview_TV": {
+    "name": "Kingsview TV",
+    "url": "https://j78dp6reyq5r-hls-live.5centscdn.com/4896_push_1963_001/00cb1f2e4ff89048f2e77e26940c00e6.sdp/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/py1XOXX.png"
+  },
+  "My_Cinema": {
+    "name": "My Cinema",
+    "url": "http://210.210.155.37/uq2663/h/h192/index.m3u8",
+    "group-title": "Movies",
+    "access": "paid",
+    "logo": "https://i.imgur.com/BTmcTQO.png"
+  },
+  "Nickelodeon_de": {
+    "name": "Nickelodeon",
+    "url": "https://fl5.moveonjoy.com/NICKELODEON/index.m3u8",
+    "group-title": "Kids",
+    "access": "paid",
+    "logo": "https://i.imgur.com/E84jnP8.png"
+  },
+  "bein_sports": {
+    "name": "Bein Sports Haber",
+    "url": "https://fl4.moveonjoy.com/BEIN_SPORTS/index.m3u8",
+    "group-title": "Sports",
+    "access": "paid",
+    "logo": "https://i.imgur.com/QWo0x7S.jpg"
+  },
+  "Nick_Jr_East": {
+    "name": "Nick Jr.",
+    "url": "https://fl3.moveonjoy.com/NICK_JR/index.m3u8",
+    "group-title": "Kids",
+    "access": "paid",
+    "logo": "https://i.imgur.com/KT4tdQs.png"
+  },
+  "NickMusic": {
+    "name": "NickMusic",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/NICK_MUSIC/index.m3u8",
+    "group-title": "Music",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/NickMusic.svg/512px-NickMusic.svg.png"
+  },
+  "Nos_Pais": {
+    "name": "Nos Pais",
+    "access": "paid",
+    "url": "https://5f86a49aedff6.streamlock.net/nos_pais_24_7/nos_pais_24_7/playlist.m3u8",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/ZUob2uZ.png"
+  },
+  "OTV_SD": {
+    "name": "OTV SD",
+    "access": "paid",
+    "url": "https://5dcabf026b188.streamlock.net/OceansTV/livestream/playlist.m3u8",
+    "group-title": "Entertainment",
+    "logo": "https://pbs.twimg.com/profile_images/1034118312437919744/emeWo-ag_400x400.jpg"
+  },
+  "PRIDEtv_LATAM_HD": {
+    "name": "PRIDEtv LATAM HD",
+    "access": "paid",
+    "url": "https://backend.energeek.cl/webtv/pridetvweb/index.m3u8?token=ZZDemoIPTVGH",
+    "group-title": "Entertainment;Lifestyle;Music",
+    "logo": "https://neotv.cl/img/pridetv-512.png"
+  },
+  "Soweto_TV": {
+    "name": "Soweto TV",
+    "access": "paid",
+    "url": "https://cdn.freevisiontv.co.za/sttv/smil:soweto.stream.smil/playlist.m3u8",
+    "group-title": "Entertainment;Family",
+    "logo": "https://admango.cdn.mangomolo.com/analytics/uploads/188/654228e5b5.jpg"
+  },
+  "TeenNick": {
+    "name": "TeenNick",
+    "url": "https://fl3.moveonjoy.com/Teen_Nick/index.m3u8",
+    "access": "paid",
+    "group-title": "Kids",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/TeenNick_2019_logo.svg/512px-TeenNick_2019_logo.svg.png"
+  },
+  "XPTV2": {
+    "name": "XPTV2",
+    "url": "https://janus.xpbroadcasting.com:8443/hls/xptv2.m3u8",
+    "access": "paid",
+    "group-title": "Entertainment",
+    "logo": "https://i.imgur.com/74Z8ATB.png"
+  },
+  "music-india": {
+    "name": "Music India",
+    "url": "https://cdn-2.pishow.tv/live/226/master.m3u8",
+    "access": "paid",
+    "group-title": "Music",
+    "logo": ""
+  },  
+  "cctv-plus-1": {
+    "name": "CCTV+ 1",
+    "url": "https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL1.smil/playlist.m3u8",
+    "group-title": "News",
+    "access": "paid",
+    "country": "China"
+  },
+  "cctv-plus-2": {
+    "name": "CCTV+ 2",
+    "url": "https://cd-live-stream.news.cctvplus.com/live/smil:CHANNEL2.smil/playlist.m3u8",
+    "group-title": "News",
+    "access": "paid",
+    "country": "China"
+  },
+  "cctv-1": {
+    "name": "CCTV-1综合",
+    "url": "http://42.176.185.28:9901/tsfile/live/1022_1.m3u8",
+    "access": "paid",
+    "group-title": "General",
+    "country": "China"
+  },
+  "the-lone-ranger": {
+    "name": "The Lone Ranger",
+    "url": "https://xumo-xumoent-ch829-wojlf.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "Western",
+    "access": "paid",
+    "country": "USA"
+  },
+  "outdoor-america": {
+    "name": "Outdoor America",
+    "url": "https://linear-600.frequency.stream/dist/xumo/600/hls/master/playlist.m3u8",
+    "group-title": "Outdoors",
+    "access": "paid",
+    "country": "USA"
+  },
+  "ninja-kidz-tv": {
+    "name": "Ninja Kidz TV",
+    "url": "https://playworksdigital-ninjakidztv-1-us.xumo.wurl.tv/playlist.m3u8",
+    "group-title": "Kids",
+    "access": "paid",
+    "country": "USA"
+  },
+  "nbc-comedy-vault": {
+    "name": "NBC Comedy Vault",
+    "url": "https://xumo-xumoent-vc-105-z0vpm.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "Comedy",
+    "access": "paid",
+    "country": "USA"
+  },
+  "nbc-sports": {
+    "name": "NBC Sports",
+    "url": "https://xumo-xumoent-vc-122-sjv70.fast.nbcuni.com/live/master.m3u8",
+    "access": "paid",
+    "group-title": "Sports",
+    "country": "USA"
+  },
+  "investigation-documentary": {
+    "name": "Investigation",
+    "url": "https://amg00346-vizioono-investigation-xumo-us.amagi.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Documentary",
+    "country": "USA"
+  },
+  "fork-flight": {
+    "name": "Fork & Flight",
+    "url": "https://amg00346-vizioono-forkandfligt-xumo-us.amagi.tv/playlist.m3u8",
+    "group-title": "Food/Travel",
+    "access": "paid",
+    "country": "USA"
+  },
+  "doctor-who-classic": {
+    "name": "Doctor Who Classic",
+    "url": "https://bbc-classicdrwho-1-us.xumo.wurl.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Sci-Fi",
+    "country": "UK"
+  },
+  "bad-girls-club": {
+    "name": "Bad Girls Club",
+    "url": "https://xumo-xumoent-vc-118-jed5p.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "Reality",
+    "access": "paid",
+    "country": "USA"
+  },
+  "american-crimes": {
+    "name": "American Crimes",
+    "url": "https://xumo-xumoent-vc-113-at8kn.fast.nbcuni.com/live/master.m3u8",
+    "group-title": "True Crime",
+    "access": "paid",
+    "country": "USA"
+  },
+  "sudan-tv-1": {
+    "name": "Sudan Tv 1",
+    "url": "https://cdn-globecast.akamaized.net/live/eds/sudan_tv/hls_roku/index.m3u8",
+    "group-title": "General",
+    "access": "paid",
+    "country": "Sudan"
+  },
+  "dabanga-sudan": {
+    "name": "Dabanga Sudan",
+    "url": "https://hls.dabangasudan.org/hls/stream.m3u8",
+    "access": "paid",
+    "group-title": "News",
+    "country": "Sudan"
+  },
+  "al-almiya-2": {
+    "name": "Al Almiya 2",
+    "url": "http://82.212.74.98:8000/live/7815.m3u8",
+    "access": "paid",
+    "group-title": "General",
+    "country": "Sudan"
+  },
+  "ameritrade": {
+    "name": "Ameritrade",
+    "url": "https://tdameritrade-vizio.amagi.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Business"
+  },
+  "bon-appetit": {
+    "name": "bon appétit",
+    "url": "https://condenast-bonappetit-vizio.amagi.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Food"
+  },
+  "xplore": {
+    "name": "Xplore",
+    "url": "https://xplore-vizio.amagi.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Documentary"
+  },
+  "action-hollywood-movie": {
+    "name": "Action Hollywood Movie",
+    "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Movies"
+  },
+  "real-wild": {
+    "name": "Real Wild",
+    "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg00426-littledotstudio-realwildnz-samsungnz/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Nature"
+  },
+  "ZooMoo": {
+    "name": "ZooMoo",
+    "url": "https://amg01553-blueantmediaasi-zoomoonz-samsungnz-rdufn.amagi.tv/playlist/amg01553-blueantmediaasi-zoomoonz-samsungnz/playlist.m3u8",
+    "group-title": "Kids",
+    "access": "paid",
+    "logo": "https://i.imgur.com/ciTJrnl.png"
+  }
+}

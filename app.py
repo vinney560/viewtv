@@ -1821,7 +1821,7 @@ def plus_player():
 import secrets
 
 # Configuration
-BASIC_CHANNELS_FILE = 'custom_channels_basic.json'
+BASIC_CHANNELS_FILE = 'raw_channels.json'
 TOKENS_FILE = 'channel_tokens.json'
 CHANNELS = {}
 TOKEN_MAP = {}

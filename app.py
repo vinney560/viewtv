@@ -1622,57 +1622,61 @@ def save_channels(channels):
 
 CUSTOM_CHANNELS = load_channels()
 
-@app.route('/home_1')
-@login_required
-@plus_channel
-def home_1():
-    # Load, validate, and limit to 50 channels
-    valid_channels = {
-        k: v for k, v in CUSTOM_CHANNELS.items()
+BASIC_CHANNELS_FILE = 'custom_channels_basic.json'
+
+def load_basic_channels():
+    """Load basic channels with validation"""
+    if not os.path.exists(BASIC_CHANNELS_FILE):
+        return {}
+    
+    with open(BASIC_CHANNELS_FILE, 'r') as f:
+        channels = json.load(f)
+    
+    # Normalize keys and validate structure
+    return {
+        k.lower().strip().replace(' ', '-').replace('_', '-'): v
+        for k, v in channels.items()
         if all(field in v for field in ['name', 'url'])
     }
-    
-    # Sort channels alphabetically by name and take first 50
-    channels = dict(sorted(
-        valid_channels.items(),
-        key=lambda item: item[1]['name'].lower()
-    )[:10])  # <-- Only this line changed
-    
-    return render_template('home_1.html', user=current_user, channels=channels)
 
+# Load channels at startup
+BASIC_CHANNELS = load_basic_channels()
+
+@app.route('/home_1')
+@login_required
+def home_1():
+    # Get first 50 channels sorted alphabetically
+    channels = dict(sorted(
+        BASIC_CHANNELS.items(),
+        key=lambda item: item[1]['name'].lower()
+    )[:50])
+    
+    return render_template('home_1.html', 
+                         user=current_user, 
+                         channels=channels)
 #======================================
 #               >>>>PLAYERS AVAILABLE<<<<
 #======================================
-#  For home_1 - basic users and home_2 - Plus          access users
-
-import re
-from urllib.parse import unquote
-import logging
-
 @app.route("/channel/<key>")
 @login_required
 def play_channel(key):
-    # Normalize the key for lookup
     normalized_key = key.lower().strip().replace(' ', '-').replace('_', '-')
     
-    # Validate channel exists
-    if normalized_key not in CUSTOM_CHANNELS:
+    if normalized_key not in BASIC_CHANNELS:
         flash("Channel not found", "error")
-        return redirect(url_for("home_1"))  # Redirect home instead of 404
+        return redirect(url_for("home_1"))
     
-    channel = CUSTOM_CHANNELS[normalized_key]
+    channel = BASIC_CHANNELS[normalized_key]
     
-    # Handle direct streams (URLs with ports)
     if re.search(r":\d+", channel["url"]):
         return redirect(channel["url"])
     
-    # Render player with normalized key
     return render_template(
         "custom_player.html",
         channel_name=channel["name"],
         stream_url=channel["url"],
-        channels=CUSTOM_CHANNELS,
-        current_key=normalized_key  # Ensures consistency
+        channels=BASIC_CHANNELS,
+        current_key=normalized_key
     )
     
 @app.route("/api/channel_stream_url")
@@ -1682,18 +1686,15 @@ def channel_stream_url():
     if not key:
         return jsonify({"error": "Missing channel key"}), 400
     
-    # Normalize the key (same as play_channel)
     normalized_key = key.lower().strip().replace(' ', '-').replace('_', '-')
     
-    # Validate channel
-    if normalized_key not in CUSTOM_CHANNELS:
+    if normalized_key not in BASIC_CHANNELS:
         return jsonify({
             "error": "Channel not found",
-            "received_key": key,
-            "available_keys": list(CUSTOM_CHANNELS.keys())
+            "available_keys": list(BASIC_CHANNELS.keys())
         }), 404
     
-    channel = CUSTOM_CHANNELS[normalized_key]
+    channel = BASIC_CHANNELS[normalized_key]
     return jsonify({
         "stream_url": channel["url"],
         "name": channel["name"],

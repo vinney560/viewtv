@@ -200,6 +200,7 @@
     
     <div class="form-container">
         <form method="POST" action="{{ url_for('edit_match', id=match.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-grid">
                 <div class="form-group">
                     <label for="home_team">Home Team</label>
@@ -248,7 +249,7 @@
                     <button type="submit" class="btn submit-btn">
                         <i class="fas fa-save"></i> Update Match
                     </button>
-                    <a href="{{ url_for('admin_dashboard') }}" class="btn cancel-btn">
+                    <a href="{{ url_for('admin_match_dashboard') }}" class="btn cancel-btn">
                         <i class="fas fa-times"></i> Cancel
                     </a>
                 </div>

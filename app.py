@@ -1618,7 +1618,7 @@ CUSTOM_CHANNELS = load_channels()
 BASIC_CHANNELS_FILE = 'custom_channels_basic.json'
 BASIC_CHANNELS = {}
 
-def load_channels():
+def load_home1_channels():
     """Load and validate channels from JSON file"""
     if not os.path.exists(BASIC_CHANNELS_FILE):
         return {}
@@ -1630,7 +1630,7 @@ def load_channels():
             if all(field in v for field in ['name', 'url'])}
 
 # Load channels at startup
-BASIC_CHANNELS = load_channels()
+BASIC_CHANNELS = load_home1_channels()
 
 @app.route('/home_1')
 @login_required

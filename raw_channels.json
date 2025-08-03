@@ -5,6 +5,98 @@
     "access": "paid",
     "group-title": "Sports"
   },
+  "infosport-fr": {
+    "name": "INFOSPORT",
+    "url": "http://212.102.60.80:80/Infosport/index.m3u8",
+    "country": "France",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "sports-tv-tr": {
+    "name": "SPORTS TV",
+    "url": "http://live.sportstv.com.tr:80/hls/low/sportstv_fhd/index.m3u8",
+    "country": "Turkey",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "x-sport-ru": {
+    "name": "X SPORT",
+    "url": "http://iptv.prosto.tv:7000/ch109/video.m3u8",
+    "country": "Russia",
+    "access": "free",
+    "group-title": "Sports",
+    "note": "Wrestling content"
+  },
+  "sport5-il": {
+    "name": "Sport5",
+    "url": "https://rgelive.akamaized.net:443/hls/live/2043151/radiolive/playlist.m3u8",
+    "country": "Israel",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "nova-sport-2-cz": {
+    "name": "NOVA Sport 2",
+    "url": "http://78.130.250.2:8023/play/a004/index.m3u8",
+    "country": "Czech Republic",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "fs1-sport-us": {
+    "name": "FS 1 SPORT",
+    "url": "http://212.102.60.10:80/FOX_Sports_1/index.m3u8",
+    "country": "United States",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "real-madrid-tv-es": {
+    "name": "REAL MADRID TV",
+    "url": "https://rmtv.akamaized.net:443/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8",
+    "country": "Spain",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "sky-sports-laliga-mx": {
+    "name": "SKY SPORTS LALIGA",
+    "url": "http://190.92.10.66:4000/play/a001/index.m3u8",
+    "country": "Mexico",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "tudn": {
+    "name": "TUDN",
+    "url": "http://190.92.10.66:4000/play/a002/index.m3u8",
+    "country": "Mexico",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "ten-sports-2-hd": {
+    "name": "Ten Sports 2 HD",
+    "url": "https://edge4-moblive.yuppcdn.net:443/trans1sd/smil:tensports2.smil/playlist.m3u8",
+    "country": "International",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "live-sports-football-laliga": {
+    "name": "Live Sports Football Laliga",
+    "url": "https://drjpy7suzu4c5.cloudfront.net:443/out/v1/0c06db0274c04e64ab6ae0450f5fbda8/index.m3u8",
+    "country": "International",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "fast-studios-womens-sports": {
+    "name": "Fast-Studios-Womens-Sports",
+    "url": "https://csm-e-eb.csm.tubi.video:443/csm/extlive/tubiprd01,Fast-Studios-Womens-Sports.m3u8",
+    "country": "International",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "star-sport": {
+    "name": "Star Sport",
+    "url": "http://41.205.93.154:80/STARSPORTS1/index.m3u8",
+    "country": "International",
+    "access": "paid",
+    "group-title": "Sports"
+  },
   "t-sports-2": {
     "name": "T Sports 2",
     "url": "http://103.15.140.138/tsports/tracks-v1a1/mono.ts.m3u8",

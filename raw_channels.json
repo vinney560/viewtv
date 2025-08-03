@@ -122,14 +122,14 @@
     "group-title": "Sports"
   },
   "bein-2": {
-    "name": "Bein 2",
-    "url": "http://57.129.73.112:8480/701/tracks-v1a1/mono.m3u8",
+    "name": "Bein 1",
+    "url": "http://125x.org:8080/bn1hd/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "bein-2-hd": {
     "name": "Bein 2 HD",
-    "url": "http://57.129.73.112:8480/702/tracks-v1a1/mono.m3u8",
+    "url": "http://125x.org:8080/bn2hd/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },

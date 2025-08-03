@@ -226,8 +226,8 @@ class FootballMatch(db.Model):
     
     def status(self):
         now = datetime.utcnow() + timedelta(hours=3)
-        # If match is more than 3 hours in the past
-        if now > self.match_date + timedelta(hours=3):
+        # If match is more than 130  in the past
+        if now > self.match_date + timedelta(minutes=135):
             return 'finished'
         # If match is happening now (within 3 hours of start time)
         elif now > self.match_date:

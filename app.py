@@ -207,6 +207,35 @@ class FlashNotice(db.Model):
     def is_expired(self):
         return datetime.utcnow() > self.created_at + timedelta(hours=24)
 #----------------------------------------------------------------------
+#Football live events manually inputed
+
+class FootballMatch(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    home_team = db.Column(db.String(100), nullable=False)
+    away_team = db.Column(db.String(100), nullable=False)
+    home_logo = db.Column(db.String(255), nullable=False)
+    away_logo = db.Column(db.String(255), nullable=False)
+    match_date = db.Column(db.DateTime, nullable=False)
+    event_url = db.Column(db.String(255), nullable=False)
+    competition = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, default=nairobi_time)
+    is_active = db.Column(db.Boolean, default=True)
+
+    def is_expired(self):
+        return datetime.utcnow() > self.created_at + timedelta(hours=24)
+    
+    def status(self):
+        now = datetime.utcnow()
+        # If match is more than 3 hours in the past
+        if now > self.match_date + timedelta(hours=3):
+            return 'finished'
+        # If match is happening now (within 3 hours of start time)
+        elif now > self.match_date:
+            return 'live'
+        else:
+            return 'upcoming'
+
+#----------------------------------------------------------------------
 with app.app_context():
     db.create_all()
 #======================================
@@ -1812,6 +1841,70 @@ def plus_player():
     )
 
 #======================================
+# Routes
+@app.route('/live-match')
+def live_match():
+    matches = FootballMatch.query.filter_by(is_active=True).order_by(FootballMatch.match_date.asc()).all()
+    return render_template('live_match.html', matches=matches)
+
+@app.route('/admin/match-dashboard')
+@login_required
+def admin_match_dashboard():
+    matches = FootballMatch.query.order_by(FootballMatch.match_date.desc()).all()
+    return render_template('admin_match_dashboard.html', matches=matches)
+
+@app.route('/admin/match/add', methods=['GET', 'POST'])
+@login_required
+def add_match():
+    if request.method == 'POST':
+        # Create new match
+        match_date = datetime.strptime(request.form['match_date'], '%Y-%m-%dT%H:%M')
+        new_match = FootballMatch(
+            home_team=request.form['home_team'],
+            away_team=request.form['away_team'],
+            home_logo=request.form['home_logo'],
+            away_logo=request.form['away_logo'],
+            match_date=match_date,
+            event_url=request.form['event_url'],
+            competition=request.form['competition']
+        )
+        db.session.add(new_match)
+        db.session.commit()
+        flash('Match added successfully!', 'success')
+        return redirect(url_for('admin_match_dashboard'))
+    return render_template('add_match.html')
+
+@app.route('/admin/match/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_match(id):
+    match = FootballMatch.query.get_or_404(id)
+    
+    if request.method == 'POST':
+        match.home_team = request.form['home_team']
+        match.away_team = request.form['away_team']
+        match.home_logo = request.form['home_logo']
+        match.away_logo = request.form['away_logo']
+        match.match_date = datetime.strptime(request.form['match_date'], '%Y-%m-%dT%H:%M')
+        match.event_url = request.form['event_url']
+        match.competition = request.form['competition']
+        match.is_active = 'is_active' in request.form
+        
+        db.session.commit()
+        flash('Match updated successfully!', 'success')
+        return redirect(url_for('admin_match_dashboard'))
+    
+    return render_template('edit_match.html', match=match)
+
+@app.route('/admin/match/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_match(id):
+    match = FootballMatch.query.get_or_404(id)
+    db.session.delete(match)
+    db.session.commit()
+    flash('Match deleted successfully!', 'success')
+    return redirect(url_for('admin_match_dashboard'))
+
+#=====================≠================
 
 import secrets
 

@@ -1843,18 +1843,22 @@ def plus_player():
 #======================================
 # Routes
 @app.route('/live-match')
+@login_required
+@plus_required
 def live_match():
     matches = FootballMatch.query.filter_by(is_active=True).order_by(FootballMatch.match_date.asc()).all()
     return render_template('live_match.html', matches=matches)
 
 @app.route('/admin/match-dashboard')
 @login_required
+@admin1_required
 def admin_match_dashboard():
     matches = FootballMatch.query.order_by(FootballMatch.match_date.desc()).all()
     return render_template('admin_match_dashboard.html', matches=matches)
 
 @app.route('/admin/match/add', methods=['GET', 'POST'])
 @login_required
+@admin1_required
 def add_match():
     if request.method == 'POST':
         # Create new match
@@ -1876,6 +1880,7 @@ def add_match():
 
 @app.route('/admin/match/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin1_required
 def edit_match(id):
     match = FootballMatch.query.get_or_404(id)
     
@@ -1897,6 +1902,7 @@ def edit_match(id):
 
 @app.route('/admin/match/delete/<int:id>', methods=['POST'])
 @login_required
+@admin1_required
 def delete_match(id):
     match = FootballMatch.query.get_or_404(id)
     db.session.delete(match)

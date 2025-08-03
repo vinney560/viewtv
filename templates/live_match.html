@@ -1,4 +1,3 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +37,7 @@
             margin-bottom: 40px;
             max-width: 800px;
             width: 100%;
+            position: relative;
         }
         
         h1 {
@@ -215,24 +215,31 @@
             border-color: #ffd700;
         }
         
-        .admin-link {
-            position: fixed;
-            top: 20px;
-            right: 20px;
+        .back-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
             background: rgba(255, 215, 0, 0.3);
             color: white;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 30px;
             text-decoration: none;
             font-weight: 600;
             border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
-            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
-        .admin-link:hover {
+        .back-btn:hover {
             background: rgba(255, 215, 0, 0.5);
-            transform: translateY(-3px);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
         }
         
         @keyframes pulse {
@@ -250,18 +257,23 @@
                 font-size: 2.2rem;
             }
             
-            .admin-link {
-                top: 10px;
-                right: 10px;
-                padding: 8px 15px;
-                font-size: 0.9rem;
+            .back-btn {
+                position: relative;
+                margin-bottom: 15px;
+                left: auto;
+                top: auto;
             }
         }
     </style>
 </head>
 <body>
-    
     <header>
+        <a href="#" class="back-btn" id="backButton">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back
+        </a>
         <h1><i class="fas fa-futbol"></i> Football Live Events</h1>
         <p class="subtitle">Follow the latest matches and never miss a game</p>
         
@@ -330,7 +342,7 @@
             });
         });
         
-        // Filter button interaction
+        // Filter button interaction - FIXED VERSION
         const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -342,13 +354,29 @@
                 
                 matchCards.forEach(card => {
                     const status = card.querySelector('.status').classList[1];
-                    if (filter === 'all matches' || filter === status) {
+                    
+                    // Map button text to status classes
+                    const filterMap = {
+                        'live now': 'live',
+                        'upcoming': 'upcoming',
+                        'finished': 'finished'
+                    };
+                    
+                    const targetStatus = filterMap[filter] || filter;
+                    
+                    if (filter === 'all matches' || status === targetStatus) {
                         card.style.display = 'block';
                     } else {
                         card.style.display = 'none';
                     }
                 });
             });
+        });
+
+        // Back button functionality
+        document.getElementById('backButton').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.history.back();
         });
     </script>
 </body>

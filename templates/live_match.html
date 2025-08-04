@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Football Live | StreamTv</title>
+    <title>Football Live Events</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -221,7 +221,7 @@
             top: 0;
             background: rgba(255, 215, 0, 0.3);
             color: white;
-            padding: 8px 10px;
+            padding: 8px 15px;
             border-radius: 30px;
             text-decoration: none;
             font-weight: 600;
@@ -240,6 +240,19 @@
         .back-btn svg {
             width: 16px;
             height: 16px;
+        }
+        
+        .url-indicator {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+        
+        .url-count {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 3px 10px;
+            font-size: 0.8rem;
         }
         
         @keyframes pulse {
@@ -262,6 +275,7 @@
                 margin-bottom: 15px;
                 left: auto;
                 top: auto;
+                display: inline-flex;
             }
         }
     </style>
@@ -274,7 +288,7 @@
             </svg>
             Back
         </a>
-        <h1><i class="fas fa-futbol"></i> Football Live | StreamTv</h1>
+        <h1><i class="fas fa-futbol"></i> Football Live Events</h1>
         <p class="subtitle">Follow the latest matches and never miss a game</p>
         
         <div class="filters">
@@ -287,7 +301,7 @@
     
     <div class="container">
         {% for match in matches %}
-        <a href="{{ match.event_url }}" class="match-card" target="_blank">
+        <a href="{{ match.primary_url }}" class="match-card" target="_blank">
             <div class="match-date">
                 <i class="far fa-calendar"></i> {{ match.match_date.strftime('%A, %d %B %Y • %H:%M') }}
             </div>
@@ -320,6 +334,11 @@
                     {% endif %}
                 </div>
             </div>
+            <div class="url-indicator">
+                {% if match.urls|length > 1 %}
+                    <span class="url-count">+{{ match.urls|length - 1 }} links</span>
+                {% endif %}
+            </div>
         </a>
         {% else %}
         <div class="no-matches">
@@ -342,7 +361,7 @@
             });
         });
         
-        // Filter button interaction - FIXED VERSION
+        // Filter button interaction
         const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {

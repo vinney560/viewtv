@@ -1,4 +1,3 @@
-<!-- templates/add_match.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,6 +35,7 @@
             max-width: 800px;
             width: 100%;
             margin: 0 auto 30px;
+            position: relative;
         }
         
         h1 {
@@ -156,6 +156,63 @@
             border: 1px solid rgba(255, 200, 0, 0.2);
         }
         
+        .back-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(255, 215, 0, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .url-input-group {
+            display: flex;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+        
+        .url-input-group input {
+            flex: 1;
+        }
+        
+        .url-input-group button {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: rgba(0, 128, 255, 0.3);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .url-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .url-actions button {
+            width: 40px;
+        }
+        
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -173,11 +230,25 @@
             .btn {
                 width: 100%;
             }
+            
+            .back-btn {
+                position: relative;
+                margin-bottom: 15px;
+                left: auto;
+                top: auto;
+                display: inline-flex;
+            }
         }
     </style>
 </head>
 <body>
     <div class="admin-header">
+        <a href="{{ url_for('admin_match_dashboard') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back
+        </a>
         <h1><i class="fas fa-plus-circle"></i> Add New Match</h1>
         <p>Create a new football event</p>
     </div>
@@ -193,7 +264,6 @@
     </div>
     
     <div class="form-container">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <form method="POST" action="{{ url_for('add_match') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-grid">
@@ -228,12 +298,19 @@
                 </div>
                 
                 <div class="form-group full-width">
-                    <label for="event_url">Event URL</label>
-                    <input type="url" id="event_url" name="event_url" placeholder="Enter event URL" required>
+                    <label>Event URLs</label>
+                    <div id="url-container">
+                        <div class="url-input-group">
+                            <input type="url" name="event_urls[]" placeholder="Enter primary event URL" required>
+                            <div class="url-actions">
+                                <button type="button" class="add-url-btn"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="primary_url" name="primary_url" value="0">
                 </div>
                 
                 <div class="form-actions">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn submit-btn">
                         <i class="fas fa-save"></i> Create Match
                     </button>
@@ -253,8 +330,75 @@
         const day = String(now.getDate()).padStart(2, '0');
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-        
         document.getElementById('match_date').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        
+        // URL management
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('url-container');
+            
+            // Add new URL field
+            container.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-url-btn') || 
+                    e.target.parentElement.classList.contains('add-url-btn')) {
+                    const newGroup = document.createElement('div');
+                    newGroup.className = 'url-input-group';
+                    newGroup.innerHTML = `
+                        <input type="url" name="event_urls[]" placeholder="Enter event URL">
+                        <div class="url-actions">
+                            <button type="button" class="set-primary-btn" title="Set as primary"><i class="fas fa-star"></i></button>
+                            <button type="button" class="remove-url-btn"><i class="fas fa-minus"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(newGroup);
+                }
+                
+                if (e.target.classList.contains('remove-url-btn') || 
+                    e.target.parentElement.classList.contains('remove-url-btn')) {
+                    if (container.children.length > 1) {
+                        e.target.closest('.url-input-group').remove();
+                        updatePrimaryUrlIndex();
+                    }
+                }
+                
+                if (e.target.classList.contains('set-primary-btn') || 
+                    e.target.parentElement.classList.contains('set-primary-btn')) {
+                    const groups = container.querySelectorAll('.url-input-group');
+                    groups.forEach(group => {
+                        group.querySelector('.set-primary-btn').innerHTML = '<i class="fas fa-star"></i>';
+                        group.querySelector('.set-primary-btn').classList.remove('active');
+                    });
+                    
+                    const btn = e.target.closest('.set-primary-btn');
+                    btn.innerHTML = '<i class="fas fa-star"></i> Primary';
+                    btn.classList.add('active');
+                    
+                    // Update primary index
+                    groups.forEach((group, index) => {
+                        if (group.contains(btn)) {
+                            document.getElementById('primary_url').value = index;
+                        }
+                    });
+                }
+            });
+            
+            // Initialize primary button
+            function updatePrimaryUrlIndex() {
+                const groups = container.querySelectorAll('.url-input-group');
+                groups.forEach((group, index) => {
+                    const btn = group.querySelector('.set-primary-btn');
+                    if (index === 0) {
+                        btn.innerHTML = '<i class="fas fa-star"></i> Primary';
+                        btn.classList.add('active');
+                        document.getElementById('primary_url').value = 0;
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-star"></i>';
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+            
+            updatePrimaryUrlIndex();
+        });
     </script>
 </body>
 </html>

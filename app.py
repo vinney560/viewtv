@@ -208,6 +208,11 @@ class FlashNotice(db.Model):
         return datetime.utcnow() > self.created_at + timedelta(hours=24)
 #----------------------------------------------------------------------
 #Football live events manually inputed
+class MatchURL(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(255), nullable=False)
+    is_primary = db.Column(db.Boolean, default=False)
+    match_id = db.Column(db.Integer, db.ForeignKey('football_match.id'), nullable=False)
 
 class FootballMatch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -216,28 +221,35 @@ class FootballMatch(db.Model):
     home_logo = db.Column(db.String(255), nullable=False)
     away_logo = db.Column(db.String(255), nullable=False)
     match_date = db.Column(db.DateTime, nullable=False)
-    event_url = db.Column(db.String(255), nullable=False)
     competition = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=nairobi_time)
     is_active = db.Column(db.Boolean, default=True)
+    urls = db.relationship('MatchURL', backref='match', lazy=True, cascade="all, delete-orphan")
 
     def is_expired(self):
-        return datetime.utcnow() > self.created_at + timedelta(hours=10)
+        return datetime.utcnow() > self.created_at + timedelta(hours=24)
     
     def status(self):
         now = datetime.utcnow() + timedelta(hours=3)
-        # If match is more than 130  in the past
         if now > self.match_date + timedelta(minutes=135):
             return 'finished'
-        # If match is happening now (within 3 hours of start time)
         elif now > self.match_date:
             return 'live'
         else:
             return 'upcoming'
-
+    
+    @property
+    def primary_url(self):
+        primary = next((url.url for url in self.urls if url.is_primary), None)
+        if primary:
+            return primary
+        return self.urls[0].url if self.urls else "#"
 #----------------------------------------------------------------------
 with app.app_context():
-    db.create_all()
+    FootballMatch.__table__.drop(db.engine)  # Drop old table
+    MatchURL.__table__.drop(db.engine)       # (Optional) Drop URL table if redoing
+
+    db.create_all()  # Recreate tables with updated structure
 #======================================
 @app.route('/robots.txt')
 def robots_txt():
@@ -1861,18 +1873,35 @@ def admin_match_dashboard():
 @admin1_required
 def add_match():
     if request.method == 'POST':
-        # Create new match
+        # Extract form data
+        home_team = request.form['home_team']
+        away_team = request.form['away_team']
+        home_logo = request.form['home_logo']
+        away_logo = request.form['away_logo']
         match_date = datetime.strptime(request.form['match_date'], '%Y-%m-%dT%H:%M')
+        competition = request.form['competition']
+        urls = request.form.getlist('event_urls[]')
+        primary_url_index = int(request.form.get('primary_url', 0))
+        
+        # Create new match
         new_match = FootballMatch(
-            home_team=request.form['home_team'],
-            away_team=request.form['away_team'],
-            home_logo=request.form['home_logo'],
-            away_logo=request.form['away_logo'],
+            home_team=home_team,
+            away_team=away_team,
+            home_logo=home_logo,
+            away_logo=away_logo,
             match_date=match_date,
-            event_url=request.form['event_url'],
-            competition=request.form['competition']
+            competition=competition
         )
         db.session.add(new_match)
+        db.session.flush()  # Get the ID for URLs
+        
+        # Add URLs
+        for i, url in enumerate(urls):
+            if url.strip():
+                is_primary = (i == primary_url_index)
+                match_url = MatchURL(url=url, is_primary=is_primary, match_id=new_match.id)
+                db.session.add(match_url)
+        
         db.session.commit()
         flash('Match added successfully!', 'success')
         return redirect(url_for('admin_match_dashboard'))
@@ -1885,14 +1914,28 @@ def edit_match(id):
     match = FootballMatch.query.get_or_404(id)
     
     if request.method == 'POST':
+        # Update match details
         match.home_team = request.form['home_team']
         match.away_team = request.form['away_team']
         match.home_logo = request.form['home_logo']
         match.away_logo = request.form['away_logo']
         match.match_date = datetime.strptime(request.form['match_date'], '%Y-%m-%dT%H:%M')
-        match.event_url = request.form['event_url']
         match.competition = request.form['competition']
         match.is_active = 'is_active' in request.form
+        
+        # Get URLs
+        urls = request.form.getlist('event_urls[]')
+        primary_url_index = int(request.form.get('primary_url', 0))
+        
+        # Delete existing URLs
+        MatchURL.query.filter_by(match_id=match.id).delete()
+        
+        # Add new URLs
+        for i, url in enumerate(urls):
+            if url.strip():
+                is_primary = (i == primary_url_index)
+                match_url = MatchURL(url=url, is_primary=is_primary, match_id=match.id)
+                db.session.add(match_url)
         
         db.session.commit()
         flash('Match updated successfully!', 'success')
@@ -1909,7 +1952,6 @@ def delete_match(id):
     db.session.commit()
     flash('Match deleted successfully!', 'success')
     return redirect(url_for('admin_match_dashboard'))
-
 #=====================≠================
 
 import secrets

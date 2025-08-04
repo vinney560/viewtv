@@ -222,7 +222,7 @@ class FootballMatch(db.Model):
     is_active = db.Column(db.Boolean, default=True)
 
     def is_expired(self):
-        return datetime.utcnow() > self.created_at + timedelta(hours=24)
+        return datetime.utcnow() > self.created_at + timedelta(hours=10)
     
     def status(self):
         now = datetime.utcnow() + timedelta(hours=3)

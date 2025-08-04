@@ -242,17 +242,32 @@
             height: 16px;
         }
         
-        .url-indicator {
+        .url-toggle {
             position: absolute;
             bottom: 10px;
             right: 10px;
+            display: flex;
+            gap: 5px;
         }
         
-        .url-count {
+        .url-toggle-btn {
             background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
             border-radius: 15px;
-            padding: 3px 10px;
             font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .url-toggle-btn:hover {
+            background: rgba(255, 215, 0, 0.5);
+        }
+        
+        .url-toggle-btn.active {
+            background: rgba(255, 215, 0, 0.7);
+            font-weight: bold;
         }
         
         @keyframes pulse {
@@ -276,6 +291,14 @@
                 left: auto;
                 top: auto;
                 display: inline-flex;
+            }
+            
+            .url-toggle {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                justify-content: center;
+                margin-top: 10px;
             }
         }
     </style>
@@ -301,7 +324,7 @@
     
     <div class="container">
         {% for match in matches %}
-        <a href="{{ match.primary_url }}" class="match-card" target="_blank">
+        <div class="match-card">
             <div class="match-date">
                 <i class="far fa-calendar"></i> {{ match.match_date.strftime('%A, %d %B %Y • %H:%M') }}
             </div>
@@ -334,12 +357,20 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="url-indicator">
-                {% if match.urls|length > 1 %}
-                    <span class="url-count">+{{ match.urls|length - 1 }} links</span>
-                {% endif %}
+            
+            {% if match.urls %}
+            <div class="url-toggle">
+                {% for url in match.urls %}
+                <button class="url-toggle-btn {% if loop.first %}active{% endif %}" 
+                        data-match-id="{{ match.id }}" 
+                        data-url="{{ url.url }}" 
+                        data-index="{{ loop.index0 }}">
+                    Server {{ loop.index }}
+                </button>
+                {% endfor %}
             </div>
-        </a>
+            {% endif %}
+        </div>
         {% else %}
         <div class="no-matches">
             <h2>No matches scheduled at the moment</h2>
@@ -389,6 +420,50 @@
                         card.style.display = 'none';
                     }
                 });
+            });
+        });
+        
+        // URL toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlToggleButtons = document.querySelectorAll('.url-toggle-btn');
+            
+            urlToggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const matchId = this.getAttribute('data-match-id');
+                    const urlIndex = this.getAttribute('data-index');
+                    const url = this.getAttribute('data-url');
+                    
+                    // Update active state
+                    document.querySelectorAll(`[data-match-id="${matchId}"]`).forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Update the card's click handler to use the selected URL
+                    const card = this.closest('.match-card');
+                    card.onclick = function(e) {
+                        // Don't navigate if clicking on the toggle buttons
+                        if (e.target.classList.contains('url-toggle-btn') || 
+                            e.target.closest('.url-toggle-btn')) {
+                            return;
+                        }
+                        window.open(url, '_blank');
+                    };
+                });
+            });
+            
+            // Set default click handlers
+            document.querySelectorAll('.match-card').forEach(card => {
+                const defaultUrl = card.querySelector('.url-toggle-btn.active')?.getAttribute('data-url');
+                if (defaultUrl) {
+                    card.onclick = function(e) {
+                        if (e.target.classList.contains('url-toggle-btn') || 
+                            e.target.closest('.url-toggle-btn')) {
+                            return;
+                        }
+                        window.open(defaultUrl, '_blank');
+                    };
+                }
             });
         });
     </script>

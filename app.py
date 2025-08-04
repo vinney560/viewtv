@@ -197,7 +197,7 @@ class Payment(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(50), default="Pending")
     mpesa_receipt = db.Column(db.String(100))
-
+#------------------------------------------------------------------------
 class FlashNotice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.Text, nullable=False)
@@ -246,10 +246,7 @@ class FootballMatch(db.Model):
         return self.urls[0].url if self.urls else "#"
 #----------------------------------------------------------------------
 with app.app_context():
-    FootballMatch.__table__.drop(db.engine)  # Drop old table
-    MatchURL.__table__.drop(db.engine)       # (Optional) Drop URL table if redoing
-
-    db.create_all()  # Recreate tables with updated structure
+    db.create_all()
 #======================================
 @app.route('/robots.txt')
 def robots_txt():

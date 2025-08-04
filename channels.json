@@ -368,9 +368,15 @@
     "url": "http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8",
     "group-title": "Sports"
   },
-  "bein-2": {
+  "bein-1": {
     "name": "Bein 1",
     "url": "http://125x.org:8080/bn1hd/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "bein-1-hd": {
+    "name": "Bein 1 HD",
+    "url": "http://57.129.73.112:8480/701/index.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },

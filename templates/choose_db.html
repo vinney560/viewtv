@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modern Database Selector</title>
+  <title>Database Configuration</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -17,6 +17,7 @@
       --glass-border: rgba(255, 255, 255, 0.1);
       --success: #00ff88;
       --error: #ff0040;
+      --warning: #ffaa00;
     }
     
     * {
@@ -37,7 +38,6 @@
       position: relative;
     }
     
-    /* Animated background */
     .particles {
       position: absolute;
       top: 0;
@@ -65,7 +65,6 @@
       }
     }
     
-    /* Glassmorphism container */
     .container {
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
@@ -90,28 +89,6 @@
         0 12px 40px rgba(0, 0, 0, 0.4),
         0 0 30px rgba(0, 255, 170, 0.2),
         inset 0 0 20px rgba(255, 255, 255, 0.08);
-    }
-    
-    .container::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(0, 255, 200, 0.1) 0%, transparent 70%);
-      z-index: -1;
-      opacity: 0.5;
-      animation: rotate 30s linear infinite;
-    }
-    
-    @keyframes rotate {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
     }
     
     h2 {
@@ -139,7 +116,20 @@
       border-radius: 2px;
     }
     
-    /* Database options */
+    .current-selection {
+      background: rgba(0, 255, 200, 0.1);
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    .current-selection i {
+      margin-right: 8px;
+    }
+    
     .db-options {
       display: flex;
       flex-direction: column;
@@ -160,36 +150,15 @@
       overflow: hidden;
     }
     
-    .db-option::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, rgba(0, 255, 200, 0.1), rgba(110, 68, 255, 0.1));
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    
     .db-option:hover {
       transform: translateX(5px);
       border-color: rgba(0, 255, 200, 0.3);
-    }
-    
-    .db-option:hover::before {
-      opacity: 1;
     }
     
     .db-option.selected {
       background: rgba(30, 30, 30, 0.9);
       border: 2px solid var(--primary);
       box-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
-      transform: translateX(10px);
-    }
-    
-    .db-option.selected::before {
-      opacity: 1;
     }
     
     .db-icon {
@@ -222,7 +191,6 @@
       font-weight: 300;
     }
     
-    /* Radio button morph effect */
     .radio-morph {
       position: relative;
       width: 24px;
@@ -233,28 +201,22 @@
       margin-left: 10px;
     }
     
-    .db-option .radio-morph::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--primary);
-      transition: all 0.3s ease;
-    }
-    
     .db-option.selected .radio-morph {
       border-color: var(--primary);
     }
     
     .db-option.selected .radio-morph::after {
-      transform: translate(-50%, -50%) scale(1);
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
     }
     
-    /* Flash messages */
     .flash {
       padding: 15px;
       border-radius: 12px;
@@ -266,35 +228,21 @@
       animation: slideIn 0.5s ease;
     }
     
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .flash::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.1);
-      z-index: -1;
+    .flash.success {
+      background: linear-gradient(90deg, rgba(0, 255, 136, 0.3), rgba(0, 200, 100, 0.3));
+      border: 1px solid rgba(0, 255, 136, 0.5);
     }
     
     .flash.error {
       background: linear-gradient(90deg, rgba(255, 0, 64, 0.3), rgba(180, 0, 45, 0.3));
       border: 1px solid rgba(255, 0, 64, 0.5);
-      box-shadow: 0 0 15px rgba(255, 0, 64, 0.2);
     }
     
-    /* Submit button */
+    .flash.warning {
+      background: linear-gradient(90deg, rgba(255, 170, 0, 0.3), rgba(200, 140, 0, 0.3));
+      border: 1px solid rgba(255, 170, 0, 0.5);
+    }
+    
     .submit-btn {
       width: 100%;
       padding: 16px;
@@ -309,7 +257,6 @@
       position: relative;
       overflow: hidden;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-      letter-spacing: 0.5px;
     }
     
     .submit-btn:hover {
@@ -317,42 +264,17 @@
       box-shadow: 0 8px 25px rgba(0, 255, 200, 0.4);
     }
     
-    .submit-btn:active {
-      transform: translateY(0);
-    }
-    
-    .submit-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: 0.5s;
-    }
-    
-    .submit-btn:hover::before {
-      left: 100%;
-    }
-    
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 200, 0.7);
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
       }
-      70% {
-        box-shadow: 0 0 0 12px rgba(0, 255, 200, 0);
-      }
-      100% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 200, 0);
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
     
-    /* Responsive design */
     @media (max-width: 480px) {
       .container {
         padding: 25px;
@@ -373,14 +295,6 @@
         font-size: 20px;
       }
       
-      .db-name {
-        font-size: 16px;
-      }
-      
-      .db-desc {
-        font-size: 13px;
-      }
-      
       .submit-btn {
         padding: 14px;
         font-size: 16px;
@@ -389,62 +303,79 @@
   </style>
 </head>
 <body>
-  <!-- Animated background particles -->
   <div class="particles" id="particles"></div>
   
   <div class="container">
-    <h2>Select Database</h2>
+    <h2>Database Configuration</h2>
     
-    <!-- Flash message example -->
-    <div class="flash error">
-      <i class="fas fa-exclamation-circle"></i> Connection failed to primary server
-    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">
+            {% if category == 'success' %}
+              <i class="fas fa-check-circle"></i>
+            {% elif category == 'error' %}
+              <i class="fas fa-exclamation-circle"></i>
+            {% else %}
+              <i class="fas fa-info-circle"></i>
+            {% endif %}
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    {% if db_choice %}
+      <div class="current-selection">
+        <i class="fas fa-database"></i>
+        Current selection: <strong>{{ db_choice.upper() }}</strong>
+        <div class="small">(Changes apply after restart)</div>
+      </div>
+    {% endif %}
     
     <form method="POST">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      
       <div class="db-options">
-        <!-- Option 1 -->
-        <div class="db-option selected">
+        <div class="db-option {% if db_choice == 'old' %}selected{% endif %}">
           <div class="db-icon">
             <i class="fas fa-database"></i>
           </div>
           <div class="db-content">
             <div class="db-name">Render Old DB</div>
-            <div class="db-desc">Legacy system with historical data</div>
+            <div class="db-desc">Primary production database</div>
           </div>
           <div class="radio-morph"></div>
-          <input type="radio" name="db_choice" value="old" hidden checked>
+          <input type="radio" name="db_choice" value="old" hidden {% if db_choice == 'old' %}checked{% endif %}>
         </div>
         
-        <!-- Option 2 -->
-        <div class="db-option">
+        <div class="db-option {% if db_choice == 'new' %}selected{% endif %}">
           <div class="db-icon">
             <i class="fas fa-server"></i>
           </div>
           <div class="db-content">
             <div class="db-name">Render New DB</div>
-            <div class="db-desc">Modern system with enhanced features</div>
+            <div class="db-desc">Secondary database with new features</div>
           </div>
           <div class="radio-morph"></div>
-          <input type="radio" name="db_choice" value="new" hidden>
+          <input type="radio" name="db_choice" value="new" hidden {% if db_choice == 'new' %}checked{% endif %}>
         </div>
         
-        <!-- Option 3 -->
-        <div class="db-option">
+        <div class="db-option {% if not db_choice or db_choice == 'sqlite' %}selected{% endif %}">
           <div class="db-icon">
             <i class="fas fa-cloud-download-alt"></i>
           </div>
           <div class="db-content">
             <div class="db-name">SQLite (Fallback)</div>
-            <div class="db-desc">Local backup for offline operations</div>
+            <div class="db-desc">Local database for development</div>
           </div>
           <div class="radio-morph"></div>
-          <input type="radio" name="db_choice" value="sqlite" hidden>
+          <input type="radio" name="db_choice" value="sqlite" hidden {% if not db_choice or db_choice == 'sqlite' %}checked{% endif %}>
         </div>
       </div>
       
-      <button type="submit" class="submit-btn pulse">
-        <i class="fas fa-plug"></i> Connect Database
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-save"></i> Save Configuration
       </button>
     </form>
   </div>
@@ -459,7 +390,6 @@
         const particle = document.createElement('div');
         particle.classList.add('particle');
         
-        // Random properties
         const size = Math.random() * 80 + 20;
         const posX = Math.random() * 100;
         const posY = Math.random() * 100;
@@ -483,20 +413,13 @@
       
       options.forEach(option => {
         option.addEventListener('click', () => {
-          // Remove selected class from all options
           options.forEach(opt => opt.classList.remove('selected'));
-          
-          // Add selected class to clicked option
           option.classList.add('selected');
-          
-          // Check the hidden radio input
-          const radioInput = option.querySelector('input[type="radio"]');
-          radioInput.checked = true;
+          option.querySelector('input[type="radio"]').checked = true;
         });
       });
     }
     
-    // Initialize everything
     document.addEventListener('DOMContentLoaded', () => {
       createParticles();
       setupDbSelection();

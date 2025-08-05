@@ -65,8 +65,6 @@ def choose_db_uri():
         return 'sqlite:///default.db'
         
 import traceback
-from flask import render_template, request, redirect, flash
-import json
 
 @app.route('/admin/select-db', methods=['GET', 'POST'])
 def select_db():

@@ -928,7 +928,7 @@
   },
   "kass-tv": {
     "name": "Kass TV",
-    "url": "https://www.youtube.com/embed/AlzgzIidEpo?rel=0&modestbranding=1&autohide=1&controls=1",
+    "url": "https://m.youtube.com:443/@kasstvlive/live",
     "logo": "https://viewtv-p2s3.onrender.com/uploads/kass.png",
     "country": "Kenya",
     "group-title": "News"

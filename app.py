@@ -42,44 +42,38 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 load_dotenv()
 
+#======================================
+# choose db Helper
+#======================================
+def get_selected_db_uri():
+    if db_choice == "old":
+        return os.getenv("DATABASE_URL")
+    elif db_choice == "new":
+        return os.getenv("DATABASE_URL_2")
+    else:
+        return "sqlite:///default.db"
+
 import traceback
 
-def choose_db_uri():
-    supabase_uri = os.getenv('DATABASE_URL')  # Old Render DB (primary)
-    render_uri = os.getenv('DATABASE_URL_2')      # Render DB (secondary)
+# Global variable for storing choice
+db_choice = None
 
-    # Try Render Old DB first
-    if supabase_uri:
-        print("🔍 Trying Render Old DB (DATABASE_URL)...")
-        try:
-            engine = create_engine(supabase_uri)
-            engine.connect().close()
-            print("✅ Connected to Render Old DB.")
-            return supabase_uri
-        except OperationalError as e:
-            print("❌ Failed to connect to Render Old DB.")
-            print(f"📋 Error: {e}")
-            traceback.print_exc()
+@app.route('/admin/select-db', methods=['GET', 'POST'])
+@admin1_required
+def select_db():
+    global db_choice
 
-    # Try Render DB next
-    if render_uri:
-        print("🔍 Trying Render New DB (DATABASE_URL)...")
-        try:
-            engine = create_engine(render_uri)
-            engine.connect().close()
-            print("✅ Connected to Render New DB.")
-            return render_uri
-        except OperationalError as e:
-            print("❌ Failed to connect to Render DB.")
-            print(f"📋 Error: {e}")
-            traceback.print_exc()
+    if request.method == 'POST':
+        selected = request.form.get('db_choice')
+        if selected in ['old', 'new', 'sqlite']:
+            db_choice = selected
+            flash(f"✅ Database set to: {selected.upper()}")
+        else:
+            flash("❌ Invalid selection.")
+        return redirect('/admin/select-db')
 
-    # Fallback to SQLite
-    print("⚠️ All remote DBs failed. Falling back to SQLite.")
-    fallback_uri = "sqlite:///default.db"
-    print(f"📦 Using fallback: {fallback_uri}")
-    return fallback_uri
-
+    return render_template('choose_db.html')
+    
 # App Configuration
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")

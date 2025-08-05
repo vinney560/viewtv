@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Select Database</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 255, 170, 0.2);
+      width: 350px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #00ffc8;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    input[type="radio"] {
+      accent-color: #00ffcc;
+      margin-right: 10px;
+      transform: scale(1.2);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: #00ff88;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: #00ffaa;
+      box-shadow: 0 0 12px #00ffaa;
+    }
+
+    .flash {
+      background-color: #ff0040;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Select Database</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="flash">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <label><input type="radio" name="db_choice" value="old"> Render Old DB</label>
+      <label><input type="radio" name="db_choice" value="new"> Render New DB</label>
+      <label><input type="radio" name="db_choice" value="sqlite"> SQLite (Fallback)</label>
+
+      <br><br>
+      <button type="submit" class="submit-btn">Connect</button>
+    </form>
+  </div>
+</body>
+</html>

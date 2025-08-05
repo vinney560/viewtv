@@ -2255,9 +2255,6 @@ import random
 
 @app.route("/")
 def home():
-    all_channels = list(CUSTOM_CHANNELS.items())
-    random_channels = dict(random.sample(all_channels, min(15, len(all_channels))))
-
     if current_user.is_authenticated:
         if current_user.role in ["superadmin", "admin1", "admin2", "admin3"]:
             return redirect(url_for("home_admin"))
@@ -2266,7 +2263,10 @@ def home():
         else:
             return redirect(url_for("home_1"))
     else:
-        return render_template("index.html", channels=random_channels, current_year=datetime.now().year)
+        # Sort BASIC_CHANNELS alphabetically by name
+        channels = dict(sorted(BASIC_CHANNELS.items(),
+                               key=lambda item: item[1]['name'].lower()))
+        return render_template("index.html", channels=channels, current_year=datetime.now().year)
 #--------------------------------------------------------------------------
 @app.route("/about")
 def about():

@@ -407,6 +407,7 @@
   "all-sports": {
     "name": "All Sports",
     "url": "http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/streamtv.png",
     "access": "paid",
     "group-title": "Sports"
   },
@@ -481,22 +482,183 @@
     "group-title": "Sports"
   },
   "live-sports-football-laliga": {
-    "name": "Live Sports Football Laliga",
+    "name": "Football Laliga",
     "url": "https://drjpy7suzu4c5.cloudfront.net:443/out/v1/0c06db0274c04e64ab6ae0450f5fbda8/index.m3u8",
     "country": "International",
     "access": "free",
     "group-title": "Sports"
   },
   "fast-studios-womens-sports": {
-    "name": "Fast-Studios-Womens-Sports",
+    "name": "Womens Sports",
     "url": "https://csm-e-eb.csm.tubi.video:443/csm/extlive/tubiprd01,Fast-Studios-Womens-Sports.m3u8",
     "country": "International",
     "access": "free",
     "group-title": "Sports"
   },
-  "star-sport": {
-    "name": "Star Sport",
+  "AccuWeatherNOW.us": {
+    "name": "AccuWeather Now",
+    "url": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00684-accuweather-accuweather-plex/playlist.m3u8",
+    "logo": "https://i.imgur.com/M8wbVYK.png",
+    "country": "US",
+    "access": "free",
+    "group-title": "Weather",
+    "resolution": "1080p"
+  },
+  "KCKSLD3.us": {
+    "name": "Ace TV (KCKS-LD3)",
+    "url": "https://cdn.igocast.com/channel3_hls/channel3_master.m3u8",
+    "logo": "https://i.imgur.com/KtXQeeZ.png",
+    "country": "US",
+    "access": "free",
+    "group-title": "Entertainment",
+    "resolution": "480p"
+  },
+  "AlNujabaTV.iq": {
+    "name": "Al Nujaba",
+    "url": "http://63b03f7689049.streamlock.net:1935/live/3/playlist.m3u8",
+    "logo": "https://i.imgur.com/XWXehZL.png",
+    "country": "IQ",
+    "access": "free",
+    "group-title": "News"
+  },
+  "AlbUKTV.uk": {
+    "name": "AlbUK TV",
+    "url": "http://albuk.dyndns.tv:1935/albuk/albuk.stream/playlist.m3u8",
+    "logo": "https://i.imgur.com/TMg4Kxi.png",
+    "country": "UK",
+    "access": "free",
+    "group-title": "General",
+    "resolution": "1080p",
+    "note": "Not 24/7"
+  },
+  "AlmagdTVMiddleEast.us": {
+    "name": "Almagd TV Middle East",
+    "url": "https://597f64b67707a.streamlock.net/almagd.tv/almagd.smil/playlist.m3u8",
+    "logo": "https://i.imgur.com/3pUik3b.png",
+    "country": "Middle East",
+    "access": "free",
+    "group-title": "Religious",
+    "resolution": "1080p",
+    "note": "Not 24/7"
+  },
+  "AbsoluteRealitybyWETV.us": {
+    "name": "AMC Absolute Reality",
+    "url": "https://amc-absolutereality-1-us.plex.wurl.tv/playlist.m3u8",
+    "logo": "https://i.imgur.com/Gtwk8ic.png",
+    "country": "US",
+    "access": "free",
+    "group-title": "Entertainment"
+  },
+  "AllWeddingsWEtv.us": {
+    "name": "AMC All Weddings",
+    "url": "https://d85lu9l3axp7b.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-49b4g6287mnav/playlist.m3u8",
+    "logo": "https://i.imgur.com/OjLCew5.png",
+    "country": "US",
+    "access": "free",
+    "group-title": "Series"
+  },
+  "ArirangTV.kr": {
+    "name": "Arirang",
+    "url": "https://cdn-01.bonus-tv.ru/arirang_edge/playlist.m3u8",
+    "logo": "https://i.imgur.com/Asu5pE9.png",
+    "country": "KR",
+    "access": "free",
+    "group-title": "General;News"
+  },
+  "ArirangUN.kr": {
+    "name": "Arirang TV UN",
+    "url": "https://amdlive-ch02-ctnd-com.akamaized.net/arirang_2ch/smil:arirang_2ch.smil/playlist.m3u8",
+    "logo": "https://i.imgur.com/Jdy3WNm.png",
+    "country": "KR",
+    "access": "free",
+    "group-title": "News",
+    "resolution": "1080p"
+  },
+  "AtlantaChannel.us": {
+    "name": "Atlanta Channel",
+    "url": "http://media4.tripsmarter.com:1935/LiveTV/ACVBHD/playlist.m3u8",
+    "logo": "https://i.imgur.com/MOGQAns.png",
+    "country": "US",
+    "access": "free",
+    "group-title": "General",
+    "resolution": "720p"
+  },
+  "AtomicTV.ro": {
+    "name": "Atomic TV",
+    "url": "https://atomic.streamnet.ro/atomictv.m3u8",
+    "logo": "https://i.imgur.com/O4uI0Uy.png",
+    "country": "RO",
+    "access": "free",
+    "group-title": "Music",
+    "resolution": "360p"
+  },
+  "AVAFamily.ir": {
+    "name": "AVA Family",
+    "url": "https://familyhls.avatv.live/hls/stream.m3u8",
+    "logo": "https://i.imgur.com/QwBGLzK.png",
+    "country": "IR",
+    "access": "free",
+    "group-title": "Movies",
+    "resolution": "720p",
+    "note": "Not 24/7"
+  },
+  "ToonamiAftermathEast.us": {
+    "name": "Toonami Aftermath East",
+    "url": "http://api.toonamiaftermath.com:3000/est/playlist.m3u8",
+    "logo": "https://i.imgur.com/aSjhZK7.png",
+    "country": "US",
+    "access": "free",
+    "group-title": "Animation",
+    "resolution": "480p"
+  },
+  "Toronto360TV.ca": {
+    "name": "Toronto 360 TV",
+    "url": "http://cdn3.toronto360.tv:8081/toronto360/hd/playlist.m3u8",
+    "logo": "https://i.imgur.com/YJYdHKO.png",
+    "country": "CA",
+    "access": "free",
+    "group-title": "Music",
+    "resolution": "720p",
+    "note": "Not 24/7"
+  },
+  "DiscoverFilm.uk": {
+    "name": "DiscoverFilm",
+    "url": "https://discoverfilm-discoverfilm-1-nl.samsung.wurl.tv/playlist.m3u8",
+    "logo": "https://i.imgur.com/oMnpsQ5.png",
+    "country": "UK",
+    "access": "free",
+    "group-title": "Movies"
+  },
+  "DLTV1.th": {
+    "name": "DLTV 1",
+    "url": "https://cdn-live.dltv.ac.th/dltv01.m3u8",
+    "logo": "https://i.imgur.com/nLzdGeX.png",
+    "country": "TH",
+    "access": "free",
+    "group-title": "Education",
+    "resolution": "1080p"
+  },
+  "DLTV2.th": {
+    "name": "DLTV 2",
+    "url": "https://cdn-live.dltv.ac.th/dltv02.m3u8",
+    "logo": "https://i.imgur.com/lDBSTfE.png",
+    "country": "TH",
+    "access": "free",
+    "group-title": "Education",
+    "resolution": "1080p"
+  },
+  "star-sport-hd": {
+    "name": "Star Sport 1",
     "url": "http://41.205.93.154:80/STARSPORTS1/index.m3u8",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/starsports.png",
+    "country": "International",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "star-sport-hd": {
+    "name": "Star Sport 1",
+    "url": "http://41.205.93.154:80/STARSPORTS1/index.m3u8",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/starsports.png",
     "country": "International",
     "access": "paid",
     "group-title": "Sports"
@@ -504,6 +666,7 @@
   "star-sport": {
     "name": "Star Sport",
     "url": "http://41.205.93.154/STARSPORTS1/index.m3u8",
+    "logo": "https://viewtv-p2s3.onrender.com/uploads/starsports.png",
     "access": "paid",
     "group-title": "Sports"
   },

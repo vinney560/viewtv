@@ -46,7 +46,7 @@ import traceback
 
 def choose_db_uri():
     supabase_uri = os.getenv('DATABASE_URL')  # Old Render DB (primary)
-    render_uri = os.getenv('DATABASE_URL_3')      # Render DB (secondary)
+    render_uri = os.getenv('DATABASE_URL_2')      # Render DB (secondary)
 
     # Try Render Old DB first
     if supabase_uri:
@@ -123,6 +123,7 @@ limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
 login_manager.login_view = "login"
 CORS(app, resources={r"/*": {"origins": "https://viewtv-p2s3.onrender.com"}})
+
 # ============================
 # MODELS
 # ============================
@@ -161,14 +162,14 @@ class User(db.Model, UserMixin):
 
     @property
     def has_plus(self):
-        return self.plus_expires_at and self.plus_expires_at > datetime.utcnow()
+        return self.plus_expires_at and self.plus_expires_at > datetime.utcnow() + timedelta(hours=3)
 
     @property
     def is_plus(self):
         return (
             self.plus_type in ['free', 'paid']
             and self.plus_expires_at
-            and self.plus_expires_at > datetime.utcnow()
+            and self.plus_expires_at > datetime.utcnow() + timedelta(hours=3)
         )
 
 class Streams(db.Model):
@@ -331,7 +332,7 @@ def flash_update_notice():
     if session.get('seen_flash_message') != str(notice.id):
         flash(notice.message, "info")
         session['seen_flash_message'] = str(notice.id)
-#----------------------------------------------------------------------------
+#--------------------------------------------------------------------------
 @app.before_request
 def auto_logout_user():
     if current_user.is_authenticated:
@@ -2731,7 +2732,7 @@ from sqlalchemy.exc import OperationalError
 @superadmin_required
 def clone_data():
     db1_url = os.getenv("DATABASE_URL")
-    db2_url = os.getenv("DATABASE_URL_3")
+    db2_url = os.getenv("DATABASE_URL_2")
 
     if not db1_url or not db2_url:
         flash("Database URLs not set in environment file.", "error")

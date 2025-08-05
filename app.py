@@ -45,33 +45,53 @@ load_dotenv()
 #======================================
 # choose db Helper
 #======================================
-def get_selected_db_uri():
-    if db_choice == "old":
-        return os.getenv("DATABASE_URL")
-    elif db_choice == "new":
-        return os.getenv("DATABASE_URL_2")
+import json
+
+def choose_db_uri():
+    selected = None
+
+    try:
+        with open('db_choice.json') as f:
+            data = json.load(f)
+            selected = data.get('db_choice')
+    except (FileNotFoundError, json.JSONDecodeError, AttributeError):
+        pass  # Use default below if file is missing, empty, or invalid
+
+    if selected == 'old' and os.getenv('DATABASE_URL'):
+        return os.getenv('DATABASE_URL')
+    elif selected == 'new' and os.getenv('DATABASE_URL_2'):
+        return os.getenv('DATABASE_URL_2')
     else:
-        return "sqlite:///default.db"
-
+        return 'sqlite:///default.db'
+        
 import traceback
-
-# Global variable for storing choice
-db_choice = None
+from flask import render_template, request, redirect, flash
+import json
 
 @app.route('/admin/select-db', methods=['GET', 'POST'])
 def select_db():
-    global db_choice
-
     if request.method == 'POST':
         selected = request.form.get('db_choice')
         if selected in ['old', 'new', 'sqlite']:
-            db_choice = selected
-            flash(f"✅ Database set to: {selected.upper()}")
+            try:
+                with open('db_choice.json', 'w') as f:
+                    json.dump({'db_choice': selected}, f)
+                flash(f"✅ Database set to: {selected.upper()} (applies on next restart)")
+            except Exception as e:
+                flash(f"❌ Failed to save DB choice: {str(e)}")
         else:
             flash("❌ Invalid selection.")
         return redirect('/admin/select-db')
 
-    return render_template('choose_db.html')
+    # Load current choice for display
+    current_choice = None
+    try:
+        with open('db_choice.json') as f:
+            current_choice = json.load(f).get('db_choice')
+    except:
+        pass
+
+    return render_template('choose_db.html', db_choice=current_choice)
     
 # App Configuration
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")

@@ -59,7 +59,6 @@ import traceback
 db_choice = None
 
 @app.route('/admin/select-db', methods=['GET', 'POST'])
-@admin1_required
 def select_db():
     global db_choice
 

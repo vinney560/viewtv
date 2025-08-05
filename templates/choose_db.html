@@ -2,97 +2,505 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Select Database</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Database Selector</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #00ffc8;
+      --primary-dark: #00cc9d;
+      --secondary: #6e44ff;
+      --dark-bg: #0d0d0d;
+      --card-bg: rgba(30, 30, 30, 0.7);
+      --glass-bg: rgba(40, 40, 40, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --success: #00ff88;
+      --error: #ff0040;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0d0d0d;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0d0d0d, #121212, #1a1a1a);
       color: #f0f0f0;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
+      overflow: hidden;
+      position: relative;
     }
-
+    
+    /* Animated background */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary), transparent);
+      opacity: 0.3;
+      animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        transform: translate(calc(100vw - 100px), calc(100vh - 100px)) rotate(360deg);
+      }
+    }
+    
+    /* Glassmorphism container */
     .container {
-      background: #1a1a1a;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0, 255, 170, 0.2);
-      width: 350px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(0, 255, 170, 0.1),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-
+    
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(0, 255, 170, 0.2),
+        inset 0 0 20px rgba(255, 255, 255, 0.08);
+    }
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 255, 200, 0.1) 0%, transparent 70%);
+      z-index: -1;
+      opacity: 0.5;
+      animation: rotate 30s linear infinite;
+    }
+    
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    
     h2 {
       text-align: center;
-      color: #00ffc8;
-      margin-bottom: 20px;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, var(--primary), #6e44ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      position: relative;
+      padding-bottom: 15px;
     }
-
-    label {
-      display: block;
-      margin-bottom: 12px;
-      font-size: 16px;
-      cursor: pointer;
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #6e44ff);
+      border-radius: 2px;
     }
-
-    input[type="radio"] {
-      accent-color: #00ffcc;
-      margin-right: 10px;
-      transform: scale(1.2);
+    
+    /* Database options */
+    .db-options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
     }
-
-    .submit-btn {
-      width: 100%;
-      padding: 12px;
-      background: #00ff88;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 16px;
-      color: #000;
+    
+    .db-option {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 18px 20px;
+      background: var(--card-bg);
+      border-radius: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
+      border: 2px solid transparent;
+      overflow: hidden;
     }
-
-    .submit-btn:hover {
-      background: #00ffaa;
-      box-shadow: 0 0 12px #00ffaa;
+    
+    .db-option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(0, 255, 200, 0.1), rgba(110, 68, 255, 0.1));
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
-
+    
+    .db-option:hover {
+      transform: translateX(5px);
+      border-color: rgba(0, 255, 200, 0.3);
+    }
+    
+    .db-option:hover::before {
+      opacity: 1;
+    }
+    
+    .db-option.selected {
+      background: rgba(30, 30, 30, 0.9);
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
+      transform: translateX(10px);
+    }
+    
+    .db-option.selected::before {
+      opacity: 1;
+    }
+    
+    .db-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      margin-right: 15px;
+      font-size: 24px;
+      color: var(--primary);
+    }
+    
+    .db-content {
+      flex: 1;
+    }
+    
+    .db-name {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 5px;
+      color: #f0f0f0;
+    }
+    
+    .db-desc {
+      font-size: 14px;
+      color: #aaa;
+      font-weight: 300;
+    }
+    
+    /* Radio button morph effect */
+    .radio-morph {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #555;
+      transition: all 0.3s ease;
+      margin-left: 10px;
+    }
+    
+    .db-option .radio-morph::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      transition: all 0.3s ease;
+    }
+    
+    .db-option.selected .radio-morph {
+      border-color: var(--primary);
+    }
+    
+    .db-option.selected .radio-morph::after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    
+    /* Flash messages */
     .flash {
-      background-color: #ff0040;
-      color: white;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      font-weight: 500;
       text-align: center;
-      font-weight: bold;
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .flash::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: -1;
+    }
+    
+    .flash.error {
+      background: linear-gradient(90deg, rgba(255, 0, 64, 0.3), rgba(180, 0, 45, 0.3));
+      border: 1px solid rgba(255, 0, 64, 0.5);
+      box-shadow: 0 0 15px rgba(255, 0, 64, 0.2);
+    }
+    
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 18px;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.5px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 255, 200, 0.4);
+    }
+    
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+    
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 200, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 12px rgba(0, 255, 200, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 200, 0);
+      }
+    }
+    
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px;
+        width: 95%;
+      }
+      
+      h2 {
+        font-size: 24px;
+      }
+      
+      .db-option {
+        padding: 15px;
+      }
+      
+      .db-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+      
+      .db-name {
+        font-size: 16px;
+      }
+      
+      .db-desc {
+        font-size: 13px;
+      }
+      
+      .submit-btn {
+        padding: 14px;
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Animated background particles -->
+  <div class="particles" id="particles"></div>
+  
   <div class="container">
     <h2>Select Database</h2>
-
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for msg in messages %}
-          <div class="flash">{{ msg }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-
+    
+    <!-- Flash message example -->
+    <div class="flash error">
+      <i class="fas fa-exclamation-circle"></i> Connection failed to primary server
+    </div>
+    
     <form method="POST">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-      <label><input type="radio" name="db_choice" value="old"> Render Old DB</label>
-      <label><input type="radio" name="db_choice" value="new"> Render New DB</label>
-      <label><input type="radio" name="db_choice" value="sqlite"> SQLite (Fallback)</label>
-
-      <br><br>
-      <button type="submit" class="submit-btn">Connect</button>
+      <div class="db-options">
+        <!-- Option 1 -->
+        <div class="db-option selected">
+          <div class="db-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="db-content">
+            <div class="db-name">Render Old DB</div>
+            <div class="db-desc">Legacy system with historical data</div>
+          </div>
+          <div class="radio-morph"></div>
+          <input type="radio" name="db_choice" value="old" hidden checked>
+        </div>
+        
+        <!-- Option 2 -->
+        <div class="db-option">
+          <div class="db-icon">
+            <i class="fas fa-server"></i>
+          </div>
+          <div class="db-content">
+            <div class="db-name">Render New DB</div>
+            <div class="db-desc">Modern system with enhanced features</div>
+          </div>
+          <div class="radio-morph"></div>
+          <input type="radio" name="db_choice" value="new" hidden>
+        </div>
+        
+        <!-- Option 3 -->
+        <div class="db-option">
+          <div class="db-icon">
+            <i class="fas fa-cloud-download-alt"></i>
+          </div>
+          <div class="db-content">
+            <div class="db-name">SQLite (Fallback)</div>
+            <div class="db-desc">Local backup for offline operations</div>
+          </div>
+          <div class="radio-morph"></div>
+          <input type="radio" name="db_choice" value="sqlite" hidden>
+        </div>
+      </div>
+      
+      <button type="submit" class="submit-btn pulse">
+        <i class="fas fa-plug"></i> Connect Database
+      </button>
     </form>
   </div>
+  
+  <script>
+    // Create animated particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 15;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random properties
+        const size = Math.random() * 80 + 20;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 5;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+    
+    // Database selection logic
+    function setupDbSelection() {
+      const options = document.querySelectorAll('.db-option');
+      
+      options.forEach(option => {
+        option.addEventListener('click', () => {
+          // Remove selected class from all options
+          options.forEach(opt => opt.classList.remove('selected'));
+          
+          // Add selected class to clicked option
+          option.classList.add('selected');
+          
+          // Check the hidden radio input
+          const radioInput = option.querySelector('input[type="radio"]');
+          radioInput.checked = true;
+        });
+      });
+    }
+    
+    // Initialize everything
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+      setupDbSelection();
+    });
+  </script>
 </body>
 </html>

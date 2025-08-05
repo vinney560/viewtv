@@ -135,7 +135,7 @@
       </a>
       {% endif %}
 
-      <!-- Superadmin & Admin1: Manage Users -->
+      <!-- Superadmin & Admin1 & Admin2: Manage Users -->
       {% if user.role in ['superadmin', 'admin1', 'admin2'] %}
       <a href="{{ url_for('manage_users') }}"
          class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
@@ -149,13 +149,13 @@
       </a>
       {% endif %}
 
-      <!-- NEW: Match Dashboard Button (Admin2+) -->
+      <!-- Match Dashboard Button (Admin2+) -->
       {% if user.role in ['superadmin', 'admin1', 'admin2'] %}
       <a href="{{ url_for('admin_match_dashboard') }}"
          class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
         <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343M17.657 18.657L16.243 17.243M17.657 18.657l1.414-1.414M6.343 7.343L7.757 5.93M6.343 7.343l-1.414 1.414M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
           </svg>
         </div>
         <span>Match Dashboard</span>
@@ -163,7 +163,7 @@
       </a>
       {% endif %}
 
-      <!-- Superadmin, Admin1 & Admin2 & Admin3: Manage Channels -->
+      <!-- Superadmin, Admin1, Admin2 & Admin3: Manage Channels -->
       {% if user.role in ['superadmin', 'admin1', 'admin2', 'admin3'] %}
       <a href="{{ url_for('manage_channels') }}"
          class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
@@ -173,9 +173,7 @@
           </svg>
         </div>
         <span>Manage Channels</span>
-        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">
-          {% if user.role == 'admin3' %}Admin3+{% else %}Admin3+{% endif %}
-        </span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin3+</span>
       </a>
       {% endif %}
 
@@ -190,6 +188,34 @@
         </div>
         <span>Manage Notices</span>
         <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
+      </a>
+      {% endif %}
+
+      <!-- NEW: Select Database Button (Superadmin & Admin1) -->
+      {% if user.role in ['superadmin', 'admin1'] %}
+      <a href="{{ url_for('select_db') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+          </svg>
+        </div>
+        <span>Select Database</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
+      </a>
+      {% endif %}
+
+      <!-- NEW: Madeup URL Button (Superadmin only) -->
+      {% if user.role == 'superadmin' %}
+      <a href="{{ url_for('madeup_url') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+          </svg>
+        </div>
+        <span>Madeup URL</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Superadmin</span>
       </a>
       {% endif %}
 

@@ -45,52 +45,44 @@ load_dotenv()
 #======================================
 # choose db Helper
 #======================================
-import json
-
-def choose_db_uri():
-    selected = None
-
-    try:
-        with open('db_choice.json') as f:
-            data = json.load(f)
-            selected = data.get('db_choice')
-    except (FileNotFoundError, json.JSONDecodeError, AttributeError):
-        pass  # Use default below if file is missing, empty, or invalid
-
-    if selected == 'old' and os.getenv('DATABASE_URL'):
-        return os.getenv('DATABASE_URL')
-    elif selected == 'new' and os.getenv('DATABASE_URL_2'):
-        return os.getenv('DATABASE_URL_2')
-    else:
-        return 'sqlite:///default.db'
-        
 import traceback
 
-@app.route('/admin/select-db', methods=['GET', 'POST'])
-def select_db():
-    if request.method == 'POST':
-        selected = request.form.get('db_choice')
-        if selected in ['old', 'new', 'sqlite']:
-            try:
-                with open('db_choice.json', 'w') as f:
-                    json.dump({'db_choice': selected}, f)
-                flash(f"✅ Database set to: {selected.upper()} (applies on next restart)")
-            except Exception as e:
-                flash(f"❌ Failed to save DB choice: {str(e)}")
-        else:
-            flash("❌ Invalid selection.")
-        return redirect('/admin/select-db')
+def choose_db_uri():
+    supabase_uri = os.getenv('DATABASE_URL')  # Old Render DB (primary)
+    render_uri = os.getenv('DATABASE_URL_2')      # Render DB (secondary)
 
-    # Load current choice for display
-    current_choice = None
-    try:
-        with open('db_choice.json') as f:
-            current_choice = json.load(f).get('db_choice')
-    except:
-        pass
+    # Try Render Old DB first
+    if supabase_uri:
+        print("🔍 Trying Render Old DB (DATABASE_URL)...")
+        try:
+            engine = create_engine(supabase_uri)
+            engine.connect().close()
+            print("✅ Connected to Render Old DB.")
+            return supabase_uri
+        except OperationalError as e:
+            print("❌ Failed to connect to Render Old DB.")
+            print(f"📋 Error: {e}")
+            traceback.print_exc()
 
-    return render_template('choose_db.html', db_choice=current_choice)
-    
+    # Try Render DB next
+    if render_uri:
+        print("🔍 Trying Render New DB (DATABASE_URL)...")
+        try:
+            engine = create_engine(render_uri)
+            engine.connect().close()
+            print("✅ Connected to Render New DB.")
+            return render_uri
+        except OperationalError as e:
+            print("❌ Failed to connect to Render DB.")
+            print(f"📋 Error: {e}")
+            traceback.print_exc()
+
+    # Fallback to SQLite
+    print("⚠️ All remote DBs failed. Falling back to SQLite.")
+    fallback_uri = "sqlite:///default.db"
+    print(f"📦 Using fallback: {fallback_uri}")
+    return fallback_uri
+
 # App Configuration
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")

@@ -270,6 +270,85 @@
             font-weight: bold;
         }
         
+        /* New styles for stream handling */
+        .toaster {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .toaster.visible {
+            opacity: 1;
+        }
+        
+        .toaster i {
+            color: #ffd700;
+        }
+        
+        .stream-options {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .stream-options.active {
+            display: flex;
+        }
+        
+        .stream-option-btn {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 300px;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        .stream-option-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stream-option-btn i {
+            margin-right: 10px;
+        }
+        
+        .close-stream-options {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        
         @keyframes pulse {
             0% { opacity: 0.6; }
             50% { opacity: 1; }
@@ -324,7 +403,7 @@
     
     <div class="container">
         {% for match in matches %}
-        <div class="match-card">
+        <div class="match-card" data-match-id="{{ match.id }}">
             <div class="match-date">
                 <i class="far fa-calendar"></i> {{ match.match_date.strftime('%A, %d %B %Y • %H:%M') }}
             </div>
@@ -379,7 +458,34 @@
         {% endfor %}
     </div>
     
+    <!-- Stream options modal -->
+    <div class="stream-options" id="streamOptions">
+        <button class="close-stream-options" onclick="closeStreamOptions()">
+            <i class="fas fa-times"></i>
+        </button>
+        <h2>Choose how to watch</h2>
+        <button class="stream-option-btn" onclick="openStream('browser')">
+            <i class="fas fa-globe"></i> Browser Player
+        </button>
+        <button class="stream-option-btn" onclick="openStream('external')">
+            <i class="fas fa-external-link-alt"></i> External Player
+        </button>
+        <button class="stream-option-btn" onclick="copyStreamUrl()">
+            <i class="fas fa-copy"></i> Copy Stream URL
+        </button>
+    </div>
+    
+    <!-- Toaster notification -->
+    <div class="toaster" id="toaster">
+        <i class="fas fa-check-circle"></i>
+        <span id="toaster-message">URL copied to clipboard!</span>
+    </div>
+    
     <script>
+        // Store the current stream URL for modal actions
+        let currentStreamUrl = '';
+        let currentMatchId = '';
+        
         // Add hover effect to match cards
         const cards = document.querySelectorAll('.match-card');
         cards.forEach(card => {
@@ -438,34 +544,100 @@
                         btn.classList.remove('active');
                     });
                     this.classList.add('active');
-                    
-                    // Update the card's click handler to use the selected URL
-                    const card = this.closest('.match-card');
-                    card.onclick = function(e) {
-                        // Don't navigate if clicking on the toggle buttons
-                        if (e.target.classList.contains('url-toggle-btn') || 
-                            e.target.closest('.url-toggle-btn')) {
-                            return;
-                        }
-                        window.open(url, '_blank');
-                    };
                 });
             });
             
-            // Set default click handlers
+            // Set click handlers for match cards
             document.querySelectorAll('.match-card').forEach(card => {
-                const defaultUrl = card.querySelector('.url-toggle-btn.active')?.getAttribute('data-url');
-                if (defaultUrl) {
-                    card.onclick = function(e) {
-                        if (e.target.classList.contains('url-toggle-btn') || 
-                            e.target.closest('.url-toggle-btn')) {
-                            return;
-                        }
-                        window.open(defaultUrl, '_blank');
-                    };
-                }
+                card.addEventListener('click', function(e) {
+                    // Don't navigate if clicking on the toggle buttons
+                    if (e.target.classList.contains('url-toggle-btn') || 
+                        e.target.closest('.url-toggle-btn')) {
+                        return;
+                    }
+                    
+                    // Get the active URL for this match
+                    const matchId = this.getAttribute('data-match-id');
+                    const activeBtn = this.querySelector('.url-toggle-btn.active');
+                    
+                    if (activeBtn) {
+                        const url = activeBtn.getAttribute('data-url');
+                        currentStreamUrl = url;
+                        currentMatchId = matchId;
+                        
+                        // Show stream options based on device intelligence
+                        showStreamOptions();
+                    }
+                });
             });
         });
+        
+        // Intelligent stream handling functions
+        function showStreamOptions() {
+            // Detect device and browser capabilities
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            const isChrome = /Chrome/i.test(navigator.userAgent);
+            
+            // For Android Chrome, open directly with intent (best experience)
+            if (isAndroid && isChrome && currentStreamUrl.startsWith('http')) {
+                openStream('external');
+                return;
+            }
+            
+            // For iOS or desktop, show options
+            document.getElementById('streamOptions').classList.add('active');
+        }
+        
+        function closeStreamOptions() {
+            document.getElementById('streamOptions').classList.remove('active');
+        }
+        
+        function openStream(method) {
+            closeStreamOptions();
+            
+            if (method === 'browser') {
+                // Open in a new tab
+                window.open(currentStreamUrl, '_blank');
+            } else if (method === 'external') {
+                // Convert to intent URL for Android
+                if (/Android/i.test(navigator.userAgent)) {
+                    const intentUrl = `intent://${currentStreamUrl.replace(/^https?:\/\//, '')}#Intent;type=application/vnd.apple.mpegurl;scheme=http;action=android.intent.action.VIEW;end`;
+                    window.location.href = intentUrl;
+                    
+                    // Fallback in case intent fails
+                    setTimeout(() => {
+                        window.open(currentStreamUrl, '_blank');
+                    }, 500);
+                } else {
+                    // For non-Android, just open normally
+                    window.open(currentStreamUrl, '_blank');
+                }
+            }
+        }
+        
+        function copyStreamUrl() {
+            closeStreamOptions();
+            navigator.clipboard.writeText(currentStreamUrl).then(() => {
+                showToaster('Stream URL copied to clipboard!');
+            }).catch(err => {
+                showToaster('Failed to copy URL. Please try again.');
+                console.error('Failed to copy URL: ', err);
+            });
+        }
+        
+        function showToaster(message) {
+            const toaster = document.getElementById('toaster');
+            const toasterMessage = document.getElementById('toaster-message');
+            
+            toasterMessage.textContent = message;
+            toaster.classList.add('visible');
+            
+            setTimeout(() => {
+                toaster.classList.remove('visible');
+            }, 3000);
+        }
     </script>
 </body>
 </html>

@@ -125,7 +125,7 @@ csrf = CSRFProtect(app)
 limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
 login_manager.login_view = "login"
-CORS(app, resources={r"/*": {"origins": "https://viewtv-p2s3.onrender.com"}})
+CORS(app, resources={r"/*": {"origins": "https://viewstream-1.onrender.com"}})
 
 # ============================
 # MODELS
@@ -257,7 +257,7 @@ def robots_txt():
     return (
         "User-agent: *\n"
         "Allow: /\n"
-        "Sitemap: https://viewtv-p2s3.onrender.com/sitemap.xml\n",
+        "Sitemap: https://viewstream-1.onrender.com/sitemap.xml\n",
         200,
         {'Content-Type': 'text/plain'}
     )
@@ -266,12 +266,12 @@ def robots_txt():
 def sitemap():
     sitemap = '''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://viewtv-p2s3.onrender.com/</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/about</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/services</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/developer</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/terms</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/privacy</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/about</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/services</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/developer</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/terms</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/privacy</loc></url>
 </urlset>
 '''
     return Response(sitemap, mimetype='application/xml')
@@ -317,7 +317,7 @@ def set_headers(response):
 
     # CSP: allow embedding only from allowed domains
     response.headers['Content-Security-Policy'] = (
-        "frame-ancestors https://viewtv-p2s3.onrender.com https://viewstream-1.onrender.com;"
+        "frame-ancestors https://viewstream-1.onrender.com https://viewstream-1.onrender.com;"
     )
 
     # Legacy fallback: block all iframe embedding (gets overridden by CSP in modern browsers)
@@ -1526,7 +1526,7 @@ def hls_playlist(channel_id):
     if not channel:
         return abort(404, "Channel not found")
 
-    proxied_url = f"https://viewtv-p2s3.onrender.com/proxy?url={quote_plus(channel['url'])}"
+    proxied_url = f"https://viewstream-1.onrender.com/proxy?url={quote_plus(channel['url'])}"
     channel_folder = os.path.join(HLS_ROOT, str(channel_id))
     playlist_path = os.path.join(channel_folder, "index.m3u8")
 
@@ -1605,7 +1605,7 @@ def sports_listing():
     channels = load_sports()
     return render_template('sports.html', channels=channels)
 #-------------------------------------------------------------------------
-FFMPEG_PROXY_URL = "https://viewtv-p2s3.onrender.com/hls"
+FFMPEG_PROXY_URL = "https://viewstream-1.onrender.com/hls"
 
 @app.route('/stream')
 def stream_router():
@@ -2015,7 +2015,7 @@ TOKEN_MAP = {data['token']: key for key, data in CHANNELS.items()}
 # Custom endpoint for channel URLs
 @app.route("/madeup_url")
 def madeup_url():
-    base_url = "https://viewtv-p2s3.onrender.com"
+    base_url = "https://viewstream-1.onrender.com"
     channel_urls = []
     
     for key, channel in CHANNELS.items():

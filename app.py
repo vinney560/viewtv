@@ -6,8 +6,8 @@
 # =======================
 import os
 import re
-import time
 import json
+import time
 import base64
 import random
 import secrets
@@ -15,11 +15,11 @@ import logging
 import traceback
 import subprocess
 from datetime import datetime, timedelta, time
-from collections import defaultdict
 from functools import wraps
 from threading import Timer
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import defaultdict
 from typing import Dict, List, Optional, Union
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import quote_plus, quote
 
 # =======================
@@ -48,6 +48,7 @@ from itsdangerous import URLSafeTimedSerializer
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # ============================
 # CONFIGURATION & INIT
@@ -712,7 +713,6 @@ def curated():
     return render_template("test-player.html") 
 #=======================================
 # Exclusive sport Logic
-
 import sports  # from sports.py file
 
 # Keyword mappings for competitions

@@ -2409,7 +2409,7 @@ def save_channels(channels):
     with open(CHANNELS_FILE, 'w') as f:
         json.dump(channels, f, indent=2)
 
-#-------------------------------------------------------------------------
+#------------------------------------------------------------------------
 @app.route('/home_admin')
 @login_required 
 @admin3_required
@@ -2498,8 +2498,8 @@ def delete_plus(user_id):
 
     return jsonify({"status": "success", "message": f"Revoked Plus for {user.email}"})
 #-------------------------------------------------------------------------
-# user management
-
+#               user management
+#------------------------------------------------------------------------
 @app.route("/manage-users")
 @login_required
 @admin2_required

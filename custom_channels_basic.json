@@ -11,6 +11,14 @@
     "url": "https://ef56ef401101403a8b06f1dec29ef1eb.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/Samsung-de_ZeeOne/playlist.m3u8",
     "group-title": "Entertainment"
   },
+  "B4UMovies.in@India": {
+    "name": "B4U Movies India",
+    "url": "https://cdnb4u.wiseplayout.com/B4U_Movies/master.m3u8",
+    "logo": "https://i.imgur.com/M9kMFJl.png",
+    "country": "IN",
+    "access": "free",
+    "group-title": "Movies"
+  },
   "national_geographic_east": {
     "name": "Nat Geo",
     "access": "paid",

@@ -14,6 +14,40 @@
     "url": "https://edge-a3.evrideo.tv/8f37c9f0-fe22-44f4-b64a-76ad11730daf_1000026630_HLS/manifest.m3u8",
     "group-title": "News"
   },
+  "STARTWorld.ru": {
+    "name": "START World",
+    "url": "https://livetv.mylifeisgood.net.ru:443/channels/strvf.m3u8",
+    "logo": "https://i.imgur.com/TXtY5eM.png",
+    "country": "RU",
+    "access": "free",
+    "group-title": "Movies"
+  },
+  "B4UKadak.in@SD": {
+    "name": "B4U Kadak SD",
+    "url": "https://cdnb4u.wiseplayout.com/B4U_Kadak/master.m3u8",
+    "logo": "https://i.imgur.com/CKLn0ft.png",
+    "country": "IN",
+    "access": "free",
+    "group-title": "Movies",
+    "resolution": "SD"
+  },
+  "B4UBhojpuri.in@SD": {
+    "name": "B4U Bhojpuri SD",
+    "url": "https://cdnb4u.wiseplayout.com/B4U_Bhojpuri/master.m3u8",
+    "logo": "https://i.imgur.com/NwOQUDp.png",
+    "country": "IN",
+    "access": "free",
+    "group-title": "Movies",
+    "resolution": "SD"
+  },
+  "B4UMovies.in@India": {
+    "name": "B4U Movies India",
+    "url": "https://cdnb4u.wiseplayout.com/B4U_Movies/master.m3u8",
+    "logo": "https://i.imgur.com/M9kMFJl.png",
+    "country": "IN",
+    "access": "free",
+    "group-title": "Movies"
+  },
   "kids-soccer": {
     "name": "Kids Soccer",
     "url": "https://www.youtube.com/embed/YKlMmvkw66M?rel=0&autoplay=1&modestbranding=1&controls=1&showinfo=0",

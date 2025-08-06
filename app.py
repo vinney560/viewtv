@@ -266,12 +266,12 @@ def robots_txt():
 def sitemap():
     sitemap = '''<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://viewtv-p2s3.onrender.com/</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/about</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/services</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/developer</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/terms</loc></url>
-  <url><loc>https://viewtv-p2s3.onrender.com/privacy</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/about</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/services</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/developer</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/terms</loc></url>
+  <url><loc>https://viewstream-1.onrender.com/privacy</loc></url>
 </urlset>
 '''
     return Response(sitemap, mimetype='application/xml')
@@ -317,7 +317,7 @@ def set_headers(response):
 
     # CSP: allow embedding only from allowed domains
     response.headers['Content-Security-Policy'] = (
-        "frame-ancestors https://viewstream-1.onrender.com https://viewtv-p2s3.onrender.com;"
+        "frame-ancestors https://viewstream-1.onrender.com https://viewstream-1.onrender.com;"
     )
 
     # Legacy fallback: block all iframe embedding (gets overridden by CSP in modern browsers)

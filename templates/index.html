@@ -93,6 +93,16 @@
       box-shadow: 0 10px 25px rgba(0, 200, 255, 0.3);
     }
     
+    .channel-logo {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px;
+    }
+    
     .premium-glow {
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
     }
@@ -110,6 +120,34 @@
     
     .paid-channel {
       border: 1px solid rgba(255, 100, 100, 0.3);
+    }
+    
+    #install-notice {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      max-width: 300px;
+      background: rgba(255, 234, 186, 0.95);
+      padding: 15px;
+      border-radius: 8px;
+      color: #333;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      display: none;
+    }
+    
+    #install-notice button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+    
+    #install-notice button:hover {
+      background: #45a049;
     }
   </style>
 </head>
@@ -166,7 +204,7 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-4">
                 {% if ch.logo %}
-                  <img src="{{ ch.logo }}" alt="{{ ch.name }} logo" class="w-12 h-12 rounded-lg object-cover border border-gray-700/50">
+                  <img src="{{ ch.logo }}" alt="{{ ch.name }} logo" class="channel-logo">
                 {% else %}
                   <div class="w-12 h-12 rounded-lg bg-cyan-400/10 flex items-center justify-center border border-cyan-400/20">
                     <span class="text-2xl">📺</span>
@@ -272,5 +310,54 @@
     </div>
   </footer>
 
+  <!-- Install Notice -->
+  <div id="install-notice">
+    <p>Install ViewTV for a better experience?</p>
+    <button id="install-button">Install</button>
+    <button id="dismiss-button" style="background: #f44336; margin-left: 5px;">Dismiss</button>
+  </div>
+
+  <script>
+    let deferredPrompt;
+    const installNotice = document.getElementById('install-notice');
+    const installButton = document.getElementById('install-button');
+    const dismissButton = document.getElementById('dismiss-button');
+
+    // Hide install notice by default
+    installNotice.style.display = 'none';
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent the default prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      deferredPrompt = e;
+      // Show the custom install notice
+      installNotice.style.display = 'block';
+    });
+
+    installButton.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        // Show the install prompt
+        deferredPrompt.prompt();
+        // Wait for the user to respond to the prompt
+        const { outcome } = await deferredPrompt.userChoice;
+        // Hide our custom install notice
+        installNotice.style.display = 'none';
+        // Clear the deferredPrompt variable
+        deferredPrompt = null;
+      }
+    });
+
+    dismissButton.addEventListener('click', () => {
+      installNotice.style.display = 'none';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      // Hide the install notice if the app is installed
+      installNotice.style.display = 'none';
+      // Clear the deferredPrompt variable
+      deferredPrompt = null;
+    });
+  </script>
 </body>
 </html>

@@ -352,14 +352,6 @@
     "logo": "https://viewtv-p2s3.onrender.com/uploads/lolwe.png",
     "group-title": "News"
   },
-  "wrestling": {
-    "name": "Wwe HD",
-    "url": "https://viewtv-p2s3.onrender.com:443/wrestling",
-    "access": "paid",
-    "logo": "https://viewtv-p2s3.onrender.com/uploads/wrestling.png",
-    "country": "Website",
-    "group-title": "Wrestling"
-  },
   "al-jazeera-english": {
     "name": "Al Jazeera English",
     "url": "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8",

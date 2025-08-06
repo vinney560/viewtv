@@ -2397,6 +2397,19 @@ def account():
 #=======================================
 #              >>>>ADMIN ENDPOINT<<<<
 #=======================================
+
+CHANNELS_FILE = 'channels.json'
+
+def load_channels():
+    if not os.path.exists(CHANNELS_FILE):
+        return {}
+    with open(CHANNELS_FILE, 'r') as f:
+        return json.load(f)
+def save_channels(channels):
+    with open(CHANNELS_FILE, 'w') as f:
+        json.dump(channels, f, indent=2)
+
+#-------------------------------------------------------------------------
 @app.route('/home_admin')
 @login_required 
 @admin3_required

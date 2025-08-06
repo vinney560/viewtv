@@ -1,39 +1,53 @@
 #====================================
 #                     >>>>MAIN APP <<<<
 #====================================
-# Standard Library Imports
+# =======================
+# ✅ Standard Library Imports
+# =======================
 import os
-import base64
-import json
-import random
 import re
+import time
+import json
+import base64
+import random
+import secrets
+import logging
+import traceback
 import subprocess
 from datetime import datetime, timedelta, time
+from collections import defaultdict
 from functools import wraps
+from threading import Timer
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List, Optional, Union
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, quote
 
-# Third-Party Imports
+# =======================
+# ✅ Third-Party Imports
+# =======================
 import requests
+from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
-from flask import (Flask, abort, flash, jsonify, redirect, render_template,
-                   request, Response, send_file, send_from_directory, session,
-                   stream_with_context, url_for)
+from flask import (
+    Flask, request, abort, flash, jsonify, redirect, render_template,
+    render_template_string, Response, send_file, send_from_directory,
+    session, stream_with_context, url_for
+)
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_login import (LoginManager, UserMixin, current_user, login_required,
-                        login_user, logout_user)
+from flask_login import (
+    LoginManager, UserMixin, current_user,
+    login_required, login_user, logout_user
+)
 from flask_mail import Mail, Message
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFError, CSRFProtect
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from itsdangerous import URLSafeTimedSerializer
-from requests.auth import HTTPBasicAuth
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
-from werkzeug.security import check_password_hash, generate_password_hash
 
 # ============================
 # CONFIGURATION & INIT
@@ -45,8 +59,6 @@ load_dotenv()
 #======================================
 # choose db Helper
 #======================================
-import traceback
-
 def choose_db_uri():
     supabase_uri = os.getenv('DATABASE_URL')  # Old Render DB (primary)
     render_uri = os.getenv('DATABASE_URL_2')      # Render DB (secondary)
@@ -82,8 +94,9 @@ def choose_db_uri():
     fallback_uri = "sqlite:///default.db"
     print(f"📦 Using fallback: {fallback_uri}")
     return fallback_uri
-
+#======================================
 # App Configuration
+#======================================
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "12345QWER")
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "4321REWQ")
 app.config['SQLALCHEMY_DATABASE_URI'] = choose_db_uri()
@@ -115,7 +128,6 @@ next_midnight_eat = datetime.combine(now_eat.date() + timedelta(days=1), time.mi
 seconds_until_midnight = (next_midnight_eat - now_eat).total_seconds()
 # Apply session expiration
 app.permanent_session_lifetime = timedelta(seconds=seconds_until_midnight)
-
 # Initialize Extensions
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
@@ -781,8 +793,6 @@ def sports_playlist():
         current_year=datetime.now().year
     )
 #----------------------------------------------------------------------
-from flask import render_template_string
-
 @app.route('/proxy/<path:stream_url>')
 def proxy_redirect(stream_url):
     full_url = f"http://{stream_url}" if not stream_url.startswith("http") else stream_url
@@ -821,9 +831,6 @@ from flask import redirect
 def football_matches():
     return redirect("http://server1.bdixsports.live/all/appevent_football.php")
 #------------------------------------------------------------------------
-import json
-import time
-from collections import defaultdict
 
 MOVIES_FILE = 'movies.json'
 CACHE_FILE = 'movies_cache.json'
@@ -972,11 +979,6 @@ def get_movies():
 def get_movie_count():
     return jsonify({'count': len(MOVIES_DATA)})
 #-------------------------------------------------------------------------
-import logging
-from datetime import datetime, timedelta
-from threading import Timer
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
 # Configuration
 CONFIG = {
     "CACHE_FILE": "movie_cache.json",
@@ -1331,16 +1333,8 @@ def test_channels():
 #=======================================
 #             >>>> PROXY MODEL<<<<
 #=======================================
-import json
-import subprocess
-from flask import jsonify               
-from flask import Flask, request, Response, abort, render_template, send_from_directory, stream_with_context
-import requests
-import re
-from urllib.parse import quote_plus
-#=======================================
-import time
 
+#=======================================
 # Configuration
 YOUTUBE_API_KEY = "AIzaSyBJAD2gfCDfMO1mNdrWWTegL9ZUSBSLt44"
 CACHE_FILE = "cache.json"
@@ -1641,9 +1635,6 @@ def stream_router():
 #=======================================
 #           >>>>BASIC USER ENDPOINTS<<<<
 #=======================================
-import json
-import random
-
 CHANNELS_FILE = 'channels.json'
 
 def load_channels():
@@ -1761,8 +1752,6 @@ def channel_stream_url():
 def plus_playlist():
     return redirect(url_for('custom_list'))
 
-from collections import defaultdict
-
 @app.route("/plus-channels")
 @login_required
 @plus_required
@@ -1815,7 +1804,6 @@ def plus_play(key):
         return "Channel database corrupted", 500
 #------------------------------------------------------------------------
 #extra player for external URL test and not updated routes-requests
-from urllib.parse import quote
 
 @app.route('/player/<name>')
 def player(name):
@@ -1954,8 +1942,6 @@ def delete_match(id):
     flash('Match deleted successfully!', 'success')
     return redirect(url_for('admin_match_dashboard'))
 #=====================≠================
-
-import secrets
 
 # Configuration
 BASIC_CHANNELS_FILE = 'raw_channels.json'
@@ -2251,7 +2237,6 @@ def vip_confirm():
 # /copyright, /terms, /developer, /privacy, /about, /logout_current_user, /dashboard, /account, /services, /player, /,
 
 #========================================
-import random
 
 @app.route("/")
 def home():
@@ -2739,10 +2724,6 @@ def saved_channels():
         flash(f"Error loading channels: {str(e)}", "error")
         return redirect(url_for("home_admin"))
 #------------------------------------------------------------------------
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import OperationalError
-
 @app.route("/admin/clone_data")
 @login_required
 @superadmin_required

@@ -12,11 +12,11 @@
         extend: {
           boxShadow: { 
             glow: '0 0 15px rgba(0,255,255,0.6)',
-            'soft-glow': '0 0 30px rgba(173, 216, 230, 0.4)'
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
           },
           animation: { 
             pop: 'pop 0.3s ease-out',
-            float: 'float 3s ease-in-out infinite'
+            'fade-in': 'fadeIn 0.5s ease-in-out'
           },
           keyframes: {
             pop: {
@@ -24,66 +24,80 @@
               '50%': { transform: 'scale(1.4)', opacity: '0.6' },
               '100%': { transform: 'scale(1)', opacity: '1' },
             },
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-8px)' }
+            fadeIn: {
+              from: { opacity: 0, transform: 'translateY(-5px)' },
+              to: { opacity: 1, transform: 'translateY(0)' }
             }
+          },
+          backdropBlur: {
+            'glass': '12px'
           }
         }
       }
     }
   </script>
   <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    .glass-morph {
+      background: rgba(16, 18, 27, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
-    
     .glow-hover:hover { 
       box-shadow: 0 0 15px rgba(0,255,255,0.6); 
-      transform: translateY(-3px);
+      transform: translateY(-2px); 
     }
-    
-    .fade-in { animation: fadeIn 0.5s ease-in-out; }
-    .pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-5px); }
-      to { opacity: 1; transform: translateY(0); }
+    .circular-progress {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(#3b82f6 var(--progress), #1e3a8a 0deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
     }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
+    .circular-progress::before {
+      content: "";
+      position: absolute;
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      background: rgba(16, 18, 27, 0.6);
     }
-    
-    .digit {
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 0.75rem;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    .progress-value {
+      position: relative;
+      font-size: 24px;
+      font-weight: 700;
+      color: #60a5fa;
+      z-index: 1;
+    }
+    .ai-card {
+      transition: all 0.3s ease;
+      transform: perspective(1000px) rotateX(0deg);
+    }
+    .ai-card:hover {
+      transform: perspective(1000px) rotateX(5deg);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex justify-center items-start p-6 text-white relative">
-
-  <!-- Background particles effect -->
-  <div class="absolute inset-0 overflow-hidden z-0">
-    <div class="absolute top-10 left-1/4 w-3 h-3 bg-cyan-400 rounded-full animate-float" style="animation-delay: 0s"></div>
-    <div class="absolute top-1/3 right-20 w-2 h-2 bg-purple-400 rounded-full animate-float" style="animation-delay: 0.5s"></div>
-    <div class="absolute bottom-20 left-20 w-4 h-4 bg-blue-400 rounded-full animate-float" style="animation-delay: 1s"></div>
-    <div class="absolute top-40 right-1/3 w-2.5 h-2.5 bg-teal-400 rounded-full animate-float" style="animation-delay: 1.5s"></div>
-  </div>
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex flex-col items-center p-6 text-white relative">
 
   <!-- ✅ Flash Message Toasts -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div id="flash-toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
         {% for category, message in messages %}
-          <div class="px-4 py-3 rounded-xl shadow-xl text-sm text-white fade-in glass-card border border-{% if category == 'error' %}red-500/30{% elif category == 'success' %}green-500/30{% else %}cyan-500/30{% endif %}">
+          <div class="px-4 py-2 rounded shadow-lg text-sm text-white animate-fade-in
+                      {% if category == 'error' %}
+                        bg-red-600
+                      {% elif category == 'success' %}
+                        bg-green-600
+                      {% else %}
+                        bg-cyan-600
+                      {% endif %}">
             {{ message }}
           </div>
         {% endfor %}
@@ -92,166 +106,188 @@
   {% endwith %}
 
   <!-- 🔔 30-Min Timer Toast -->
-  <div id="toast" class="hidden fixed top-4 right-4 text-white px-4 py-3 rounded-xl shadow-xl z-50 text-sm fade-in glass-card border border-red-500/30">
+  <div id="toast" class="hidden fixed top-4 right-4 bg-red-700 text-white px-4 py-2 rounded shadow-lg z-50 text-sm animate-fade-in">
     ⏳ Less than 30 minutes remaining!
   </div>
 
-  <div class="w-full max-w-6xl flex flex-col md:flex-row gap-6 z-10">
+  <div class="w-full max-w-6xl flex flex-col md:flex-row gap-6">
 
     <!-- Profile Section -->
-    <div class="glass-card p-6 w-full md:w-1/3">
+    <div class="glass-morph p-6 rounded-2xl w-full md:w-1/3">
       <div class="flex flex-col items-center">
-        <div class="bg-cyan-900/20 rounded-full p-2 mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0012 0c0-.35-.03-.693-.084-1.027A5 5 0 0010 11z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        
-        <p class="text-sm text-gray-300 mb-6 text-center">Email: {{ user.email }}</p>
+        <p class="text-sm text-gray-300 mb-4">Email: {{ user.email }}</p>
 
         <!-- Countdown Timer -->
-        <div class="w-full mb-6">
-          <h3 class="text-lg font-semibold text-cyan-300 mb-3 text-center">Plus Access Remaining</h3>
-          <div id="timer" class="flex justify-center gap-1 text-center items-center">
-            <!-- Days -->
+        <div class="flex flex-col items-center w-full">
+          <!-- Days Progress Circle -->
+          <div class="mb-6">
+            <div class="circular-progress" id="days-progress">
+              <span class="progress-value" id="days-text">0</span>
+            </div>
+            <p class="text-center mt-2 text-cyan-300">Days</p>
+          </div>
+          
+          <div id="timer" class="flex gap-1 text-center items-center w-full justify-center">
             <div class="flex flex-col items-center">
-              <div class="flex gap-1">
-                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="days1">0</div>
-                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="days2">0</div>
-              </div>
-              <span class="text-xs text-gray-400 mt-1">DAYS</span>
+              <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-16 mb-1" id="hours">00</div>
+              <span class="text-xs text-cyan-300">Hours</span>
             </div>
             <div class="text-xl font-bold text-cyan-300 px-1">:</div>
-            
-            <!-- Hours -->
             <div class="flex flex-col items-center">
-              <div class="flex gap-1">
-                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="hours1">0</div>
-                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="hours2">0</div>
-              </div>
-              <span class="text-xs text-gray-400 mt-1">HOURS</span>
+              <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-16 mb-1" id="minutes">00</div>
+              <span class="text-xs text-cyan-300">Minutes</span>
             </div>
             <div class="text-xl font-bold text-cyan-300 px-1">:</div>
-            
-            <!-- Minutes -->
             <div class="flex flex-col items-center">
-              <div class="flex gap-1">
-                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="minutes1">0</div>
-                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="minutes2">0</div>
-              </div>
-              <span class="text-xs text-gray-400 mt-1">MINUTES</span>
-            </div>
-            <div class="text-xl font-bold text-cyan-300 px-1">:</div>
-            
-            <!-- Seconds -->
-            <div class="flex flex-col items-center">
-              <div class="flex gap-1">
-                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="seconds1">0</div>
-                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="seconds2">0</div>
-              </div>
-              <span class="text-xs text-gray-400 mt-1">SECONDS</span>
+              <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-16 mb-1" id="seconds">00</div>
+              <span class="text-xs text-cyan-300">Seconds</span>
             </div>
           </div>
         </div>
 
         <!-- Free Plus Button Logic -->
-        <div class="mt-4 w-full">
-          {% if user.plus_type == 'free' and time_remaining_seconds > 0 or user.plus_type=='paid' %}
-            <div class="bg-emerald-500/20 border border-emerald-500/30 rounded-xl p-3 text-center">
-              <p class="text-emerald-400 text-sm">Plus is currently active</p>
-            </div>
-          {% elif user.last_free_plus and (user.last_free_plus + timedelta(hours=24)) > now %}
-            <div class="bg-gray-700/30 border border-gray-600/30 rounded-xl p-3 text-center">
-              <p class="text-gray-400 text-sm">You've already used Free Plus today</p>
-            </div>
-          {% else %}
-            <a href="{{ url_for('claim_free_plus') }}"
-               class="glow-hover w-full bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-semibold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 pulse">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
-              </svg>
-              🎁 Try Free Plus (2hrs)
-            </a>
-          {% endif %}
-        </div>
+        {% if user.plus_type == 'free' and time_remaining_seconds > 0 or user.plus_type=='paid' %}
+          <p class="text-green-400 mt-4 text-sm">Plus is currently active</p>
+        {% elif user.last_free_plus and (user.last_free_plus + timedelta(hours=24)) > now %}
+          <p class="text-gray-400 mt-4 text-sm">You've already used Free Plus today</p>
+        {% else %}
+          <a href="{{ url_for('claim_free_plus') }}"
+             class="mt-6 glow-hover bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold py-2 px-4 rounded-xl shadow-lg text-sm">
+            🎁 Try Free Plus (2hrs)
+          </a>
+        {% endif %}
       </div>
     </div>
 
     <!-- Menu Section -->
-    <div class="glass-card p-6 w-full md:w-2/3">
-      <h2 class="text-2xl font-semibold mb-6 text-cyan-400 flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-        </svg>
-        Dashboard Menu
-      </h2>
+    <div class="glass-morph p-6 rounded-2xl w-full md:w-2/3">
+      <h2 class="text-2xl font-semibold mb-6 text-cyan-400">Dashboard Menu</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
 
-        <a href="{{ url_for('home_2') if user.plus_type in ['paid', 'free'] else url_for('home_1') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-          </svg>
+        <a href="{{ url_for('home_2') if user.plus_type in ['paid', 'free'] else url_for('home_1') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3l8 7-8 7V3z"/></svg>
           Watch Now
         </a>
 
-        <a href="{{ url_for('services') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clip-rule="evenodd" />
-          </svg>
+        <a href="{{ url_for('services') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3h12v2H4zm0 4h12v2H4zm0 4h12v2H4z"/></svg>
           Offered Services
         </a>
 
-        <a href="{{ url_for('about') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-          </svg>
+        <a href="{{ url_for('about') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12h2v5H9zm0-6h2v4H9z"/></svg>
           About Us
         </a>
 
-        <a href="{{ url_for('copyright') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 8a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm1 4a1 1 0 100 2h2a1 1 0 100-2H9z" clip-rule="evenodd" />
-          </svg>
+        <a href="{{ url_for('copyright') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4a8 8 0 100 16 8 8 0 000-16zm1 12h-2V8h2v8z"/></svg>
           Copyright
         </a>
 
-        <a href="more-channels" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
-          </svg>
+        <a href="more-channels" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M15 12H3m6-6v12m12-6l-4-4m4 4l-4 4"/></svg>
           More Shows...
         </a>
 
-        <a href="/account" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
-          </svg>
+        <a href="/account" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14a5 5 0 100-10 5 5 0 000 10zm0 2c-3.314 0-6 2.686-6 6h12c0-3.314-2.686-6-6-6z"/></svg>
           Account Settings
         </a>
 
         <!-- Developer Button -->
-        <a href="/developer" class="glow-hover bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-500 hover:to-indigo-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        <a href="/developer" class="glow-hover bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
           </svg>
           Developer
         </a>
 
         <!-- Assistance Button -->
-        <a href="/assistance" class="glow-hover bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-500 hover:to-orange-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+        <a href="/assistance" class="glow-hover bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
           </svg>
           Assistance
         </a>
 
-        <a href="{{ url_for('logout_current_user') }}" class="glow-hover bg-gradient-to-r from-red-600 to-rose-500 hover:from-red-500 hover:to-rose-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 col-span-full mt-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
-          </svg>
+        <a href="{{ url_for('logout_current_user') }}" class="glow-hover bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 col-span-full">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 9V5h9v14h-9v-4H8v5a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H10a2 2 0 00-2 2v5h2z"/><path d="M6 13h5"/></svg>
           Logout
         </a>
       </div>
+    </div>
+  </div>
+
+  <!-- AI Recommendations Section -->
+  <div class="glass-morph p-6 rounded-2xl w-full max-w-6xl mt-6">
+    <h2 class="text-2xl font-semibold mb-4 text-cyan-400 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+      AI Recommendations
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+      <div class="ai-card bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-4 rounded-xl border border-cyan-500/30">
+        <div class="flex items-start">
+          <div class="bg-cyan-500/10 p-2 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-cyan-300">Top Pick For You</h3>
+            <p class="text-sm mt-1 text-gray-300">Based on your viewing history, we recommend "Cyber Frontier" - 92% match</p>
+          </div>
+        </div>
+        <button class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold py-1 px-3 rounded-lg mt-3">
+          Watch Now
+        </button>
+      </div>
+      
+      <div class="ai-card bg-gradient-to-br from-purple-900/40 to-indigo-900/40 p-4 rounded-xl border border-purple-500/30">
+        <div class="flex items-start">
+          <div class="bg-purple-500/10 p-2 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-purple-300">Trending Now</h3>
+            <p class="text-sm mt-1 text-gray-300">"Quantum Leaps" is trending in your region with 1.2M viewers</p>
+          </div>
+        </div>
+        <button class="glow-hover bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold py-1 px-3 rounded-lg mt-3">
+          Join Stream
+        </button>
+      </div>
+      
+      <div class="ai-card bg-gradient-to-br from-amber-900/40 to-orange-900/40 p-4 rounded-xl border border-amber-500/30">
+        <div class="flex items-start">
+          <div class="bg-amber-500/10 p-2 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-300">New Episode Alert</h3>
+            <p class="text-sm mt-1 text-gray-300">New episode of "AI Chronicles" is available now - watch before spoilers!</p>
+          </div>
+        </div>
+        <button class="glow-hover bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold py-1 px-3 rounded-lg mt-3">
+          Start Episode
+        </button>
+      </div>
+    </div>
+    
+    <div class="mt-6 text-center">
+      <button class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-full text-sm flex items-center justify-center mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Refresh Recommendations
+      </button>
     </div>
   </div>
 
@@ -271,20 +307,17 @@
     }
 
     function updateTimerDisplay(days, hrs, mins, secs) {
-      const pad = n => n.toString().padStart(2, '0');
-      const [d1, d2] = pad(days);
-      const [h1, h2] = pad(hrs);
-      const [m1, m2] = pad(mins);
-      const [s1, s2] = pad(secs);
-
-      updateDigit('days1', d1);
-      updateDigit('days2', d2);
-      updateDigit('hours1', h1);
-      updateDigit('hours2', h2);
-      updateDigit('minutes1', m1);
-      updateDigit('minutes2', m2);
-      updateDigit('seconds1', s1);
-      updateDigit('seconds2', s2);
+      updateDigit('days-text', days);
+      
+      // Update days progress circle
+      const daysProgress = document.getElementById('days-progress');
+      const progressPercent = days > 0 ? Math.min(100, (days / 7) * 100) : 0;
+      daysProgress.style.setProperty('--progress', `${progressPercent * 3.6}deg`);
+      
+      // Update time components
+      updateDigit('hours', hrs.toString().padStart(2, '0'));
+      updateDigit('minutes', mins.toString().padStart(2, '0'));
+      updateDigit('seconds', secs.toString().padStart(2, '0'));
     }
 
     function startCountdown() {
@@ -296,30 +329,36 @@
         }
 
         if (remaining <= 1800 && !toastShown) {
-          document.querySelectorAll('#timer .digit').forEach(div => {
-            div.classList.remove('text-cyan-400');
+          // Change timer to red
+          document.querySelectorAll('#timer > div > div').forEach(div => {
+            div.classList.remove('text-cyan-400', 'bg-black/40');
             div.classList.add('text-red-400', 'bg-red-900/40');
           });
+          // Also change the days circle
+          document.getElementById('days-progress').style.background = 
+            'conic-gradient(#ef4444 var(--progress), #7f1d1d 0deg)';
+          document.getElementById('days-text').classList.add('text-red-400');
+          
           document.getElementById('toast').classList.remove('hidden');
           toastShown = true;
         }
 
         const days = Math.floor(remaining / (3600 * 24));
-        const hours = Math.floor((remaining % (3600 * 24)) / 3600);
-        const minutes = Math.floor((remaining % 3600) / 60);
-        const seconds = remaining % 60;
+        const hrs = Math.floor((remaining % (3600 * 24)) / 3600);
+        const mins = Math.floor((remaining % 3600) / 60);
+        const secs = remaining % 60;
 
-        updateTimerDisplay(days, hours, minutes, seconds);
+        updateTimerDisplay(days, hrs, mins, secs);
         remaining--;
       }, 1000);
     }
 
-    // Initialize timer display with current values
-    const initialDays = Math.floor(totalSeconds / (3600 * 24));
-    const initialHours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-    const initialMinutes = Math.floor((totalSeconds % 3600) / 60);
-    const initialSeconds = totalSeconds % 60;
-    updateTimerDisplay(initialDays, initialHours, initialMinutes, initialSeconds);
+    // Initialize with current time
+    const days = Math.floor(remaining / (3600 * 24));
+    const hrs = Math.floor((remaining % (3600 * 24)) / 3600);
+    const mins = Math.floor((remaining % 3600) / 60);
+    const secs = remaining % 60;
+    updateTimerDisplay(days, hrs, mins, secs);
     
     startCountdown();
   </script>

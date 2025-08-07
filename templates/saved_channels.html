@@ -62,7 +62,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 {% for channel in channels %}
                 <div class="channel-card bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30">
-                    <a href="{{ url_for('player') }}?{{ {'url': channel.url, 'token': channel.token}|urlencode }}" target="_blank"  class="block">
+                    <a href="{{ url_for('plus_player') }}?{{ {'url': channel.url, 'token': channel.token}|urlencode }}" class="block">
                         <div class="relative pt-[56.25%] bg-gray-900/30">
                             {% if channel.logo %}
                             <img src="{{ channel.logo }}" alt="{{ channel.name }}" 

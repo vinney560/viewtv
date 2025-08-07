@@ -320,6 +320,11 @@ def load_user(user_id):
 def is_admin():
     return session.get('role') == 'admin'
 #----------------------------------------------------------------------
+@app.before_request
+def bypass_csrf_for_api():
+    if request.path.startswith('/api/'):
+        setattr(request, '_dont_enforce_csrf', True)
+#----------------------------------------------------------------------
 @app.route('/favicon.ico')
 def favicon():
     return redirect(url_for('uploaded_file', filename='favicon.ico'))

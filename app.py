@@ -487,7 +487,7 @@ def plus_required(f):
             return redirect(url_for("login"))
         if not current_user.is_plus:
             flash("Plus access required.", "error")
-            return redirect(url_for("get_plus"))
+            return redirect(url_for("dashboard"))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -845,7 +845,7 @@ from flask import redirect
 def football_matches():
     return redirect("http://server1.bdixsports.live/all/appevent_football.php")
 #------------------------------------------------------------------------
-
+import  time 
 MOVIES_FILE = 'movies.json'
 CACHE_FILE = 'movies_cache.json'
 

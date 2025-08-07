@@ -11,8 +11,8 @@
 <div class="bg-gray-800 text-white shadow-2xl rounded-2xl p-6 w-full max-w-md">
     <h2 class="text-2xl font-bold text-green-400 text-center mb-4">Buy Plus</h2>
     <ul class="list-disc list-inside text-sm text-gray-300 space-y-2">
-        <li><span class="font-bold text-sm" >1 Ksh = 1 hr • &copy; 2025</span></li>
-        <li><span class="font-bold text-sm" >max-amount 96 Ksh [4 days] • &copy; 2025</span></li>
+        <li><span class="font-bold text-sm">1 Ksh = 1 hr • &copy; 2025</span></li>
+        <li><span class="font-bold text-sm">max-amount 96 Ksh [4 days] • &copy; 2025</span></li>
         <li>Getting any error? <span class="text-sm text-cyan-300 font-bold"><a href="/assistance">visit assistance page</a></span> for assistance.</li>
     </ul>
 
@@ -30,8 +30,8 @@
     {% endwith %}
 
     <form id="paymentForm" method="POST" class="space-y-4">
-        <!-- CSRF Token Hidden for fallback -->
-        <input type="hidden" id="csrf_token" name="csrf_token" value="{{ csrf_token() }}">
+        <!-- CSRF Token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
         <!-- Phone input -->
         <label class="block font-semibold text-gray-300">Phone Number</label>
@@ -44,7 +44,6 @@
 
         <!-- Amount -->
         <label class="block font-semibold text-gray-300">Amount (KES)</label>
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="number" id="amount" name="amount" min="1" max="96" minlength="1" maxlength="2" value="10" required
                class="w-full px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 shadow-sm focus:outline-none placeholder-gray-400">
 
@@ -74,7 +73,7 @@ document.getElementById("paymentForm").addEventListener("submit", async function
 
     const phoneInput = document.getElementById("phone");
     const amountInput = document.getElementById("amount");
-    const csrfToken = document.getElementById("csrf_token").value;
+    const csrfToken = document.querySelector("input[name='csrf_token']").value;
     const payBtn = document.getElementById("payBtn");
     const processing = document.getElementById("processing");
 

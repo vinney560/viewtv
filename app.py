@@ -2093,18 +2093,26 @@ def payment():
 def pay():
     data = request.json
     phone = data.get('phone')
-    amount = int(data.get('amount'))
+    amount = data.get('amount')
 
+    # Validate input
     if not phone or not amount:
         return jsonify({"success": False, "message": "Phone or amount missing"}), 400
 
-    # Convert phone to Safaricom format: 2547XXXXXXX
+    try:
+        amount = int(amount)
+        if amount <= 0:
+            return jsonify({"success": False, "message": "Amount must be positive"}), 400
+    except ValueError:
+        return jsonify({"success": False, "message": "Amount must be an integer"}), 400
+
+    # Normalize phone to Safaricom format: 2547XXXXXXX
     if phone.startswith("0"):
         phone = "254" + phone[1:]
     elif phone.startswith("+"):
         phone = phone.replace("+", "")
 
-    # Save pending payment
+    # Save pending payment in DB
     pending = Payment(
         user_id=current_user.id,
         phone=phone,
@@ -2135,6 +2143,8 @@ def pay():
         print("Token response:", auth_response.text)
         auth_response.raise_for_status()
         access_token = auth_response.json().get("access_token")
+        if not access_token:
+            return jsonify({"success": False, "message": "Failed to get access token"}), 500
     except Exception as e:
         return jsonify({"success": False, "message": f"Token error: {str(e)}"}), 500
 
@@ -2170,11 +2180,29 @@ def pay():
         )
         print("STK Push response:", response.text)
         response.raise_for_status()
+
+        # === TEST MODE: Immediately add plus time to user ===
+        # WARNING: This is for testing only. For production, rely on callback.
+        test_mode = os.getenv("MPESA_TEST_MODE", "false").lower() == "true"
+        if test_mode:
+            hours_to_add = amount
+            now = datetime.utcnow()
+            user = User.query.get(current_user.id)
+            if user:
+                if user.plus_expires_at and user.plus_expires_at > now:
+                    user.plus_expires_at += timedelta(hours=hours_to_add)
+                else:
+                    user.plus_expires_at = now + timedelta(hours=hours_to_add)
+                user.plus_type = "paid"
+                db.session.commit()
+
         return jsonify({"success": True})
+
     except Exception as e:
         return jsonify({"success": False, "message": f"Push error: {str(e)}"}), 500
 
 # ------------------------------------------------------------------------
+
 @app.route('/callback', methods=['POST'])
 def callback():
     data = request.get_json()

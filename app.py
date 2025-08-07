@@ -129,12 +129,22 @@ next_midnight_eat = datetime.combine(now_eat.date() + timedelta(days=1), time.mi
 seconds_until_midnight = (next_midnight_eat - now_eat).total_seconds()
 # Apply session expiration
 app.permanent_session_lifetime = timedelta(seconds=seconds_until_midnight)
+
+class CustomCSRFProtect(CSRFProtect):
+    def _get_token(self):
+        # Try header first (used by fetch)
+        token = request.headers.get("X-CSRFToken")
+        if token:
+            return token
+        # Fallback to default
+        return super()._get_token()
+
 # Initialize Extensions
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 login_manager = LoginManager(app)
 mail = Mail(app)
-csrf = CSRFProtect(app)
+csrf = CustomCSRFProtect(app)
 limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
 login_manager.login_view = "login"

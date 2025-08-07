@@ -12,54 +12,70 @@
         extend: {
           boxShadow: { 
             glow: '0 0 15px rgba(0,255,255,0.6)',
-            'glass': '0 4px 30px rgba(0, 0, 0, 0.1)'
+            'soft-glow': '0 0 30px rgba(173, 216, 230, 0.4)'
           },
-          animation: { pop: 'pop 0.3s ease-out' },
+          animation: { 
+            pop: 'pop 0.3s ease-out',
+            float: 'float 3s ease-in-out infinite'
+          },
           keyframes: {
             pop: {
               '0%': { transform: 'scale(1)', opacity: '1' },
               '50%': { transform: 'scale(1.4)', opacity: '0.6' },
               '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-8px)' }
             }
-          },
-          backgroundImage: {
-            'glass-panel': 'linear-gradient(145deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)',
           }
         }
       }
     }
   </script>
   <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    
     .glow-hover:hover { 
       box-shadow: 0 0 15px rgba(0,255,255,0.6); 
-      transform: translateY(-2px); 
-      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+      transform: translateY(-3px);
     }
+    
     .fade-in { animation: fadeIn 0.5s ease-in-out; }
+    .pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-5px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .glass-panel {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
     }
-    .timer-digit {
+    
+    .digit {
       background: rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.75rem;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen flex justify-center items-start p-6 text-white relative overflow-x-hidden">
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex justify-center items-start p-6 text-white relative">
 
-  <!-- Background Decorative Elements -->
-  <div class="absolute inset-0 overflow-hidden -z-10">
-    <div class="absolute top-10 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full mix-blend-soft-light filter blur-3xl"></div>
-    <div class="absolute bottom-20 right-1/3 w-80 h-80 bg-purple-500/10 rounded-full mix-blend-soft-light filter blur-3xl"></div>
+  <!-- Background particles effect -->
+  <div class="absolute inset-0 overflow-hidden z-0">
+    <div class="absolute top-10 left-1/4 w-3 h-3 bg-cyan-400 rounded-full animate-float" style="animation-delay: 0s"></div>
+    <div class="absolute top-1/3 right-20 w-2 h-2 bg-purple-400 rounded-full animate-float" style="animation-delay: 0.5s"></div>
+    <div class="absolute bottom-20 left-20 w-4 h-4 bg-blue-400 rounded-full animate-float" style="animation-delay: 1s"></div>
+    <div class="absolute top-40 right-1/3 w-2.5 h-2.5 bg-teal-400 rounded-full animate-float" style="animation-delay: 1.5s"></div>
   </div>
 
   <!-- ✅ Flash Message Toasts -->
@@ -67,14 +83,7 @@
     {% if messages %}
       <div id="flash-toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
         {% for category, message in messages %}
-          <div class="px-4 py-2 rounded-xl shadow-lg text-sm text-white fade-in glass-panel
-                      {% if category == 'error' %}
-                        border border-red-500/50
-                      {% elif category == 'success' %}
-                        border border-green-500/50
-                      {% else %}
-                        border border-cyan-500/50
-                      {% endif %}">
+          <div class="px-4 py-3 rounded-xl shadow-xl text-sm text-white fade-in glass-card border border-{% if category == 'error' %}red-500/30{% elif category == 'success' %}green-500/30{% else %}cyan-500/30{% endif %}">
             {{ message }}
           </div>
         {% endfor %}
@@ -83,191 +92,164 @@
   {% endwith %}
 
   <!-- 🔔 30-Min Timer Toast -->
-  <div id="toast" class="hidden fixed top-4 right-4 text-white px-4 py-3 rounded-xl shadow-lg z-50 text-sm fade-in glass-panel border border-red-500/50">
-    <div class="flex items-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-      </svg>
-      ⏳ Less than 30 minutes remaining!
-    </div>
+  <div id="toast" class="hidden fixed top-4 right-4 text-white px-4 py-3 rounded-xl shadow-xl z-50 text-sm fade-in glass-card border border-red-500/30">
+    ⏳ Less than 30 minutes remaining!
   </div>
 
-  <div class="w-full max-w-6xl flex flex-col md:flex-row gap-6 mt-8">
+  <div class="w-full max-w-6xl flex flex-col md:flex-row gap-6 z-10">
 
     <!-- Profile Section -->
-    <div class="glass-panel p-6 rounded-2xl w-full md:w-1/3 flex flex-col">
+    <div class="glass-card p-6 w-full md:w-1/3">
       <div class="flex flex-col items-center">
-        <div class="flex items-center gap-2 mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+        <div class="bg-cyan-900/20 rounded-full p-2 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-cyan-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0012 0c0-.35-.03-.693-.084-1.027A5 5 0 0010 11z" clip-rule="evenodd" />
           </svg>
-          <p class="text-sm text-gray-300">{{ user.email }}</p>
         </div>
+        
+        <p class="text-sm text-gray-300 mb-6 text-center">Email: {{ user.email }}</p>
 
         <!-- Countdown Timer -->
-        <div class="mb-4">
-          <h3 class="text-center text-cyan-300 mb-2 font-medium">Plus Active Time</h3>
-          <div id="timer" class="flex gap-1 text-center items-center justify-center">
+        <div class="w-full mb-6">
+          <h3 class="text-lg font-semibold text-cyan-300 mb-3 text-center">Plus Access Remaining</h3>
+          <div id="timer" class="flex justify-center gap-1 text-center items-center">
             <!-- Days -->
             <div class="flex flex-col items-center">
               <div class="flex gap-1">
-                <div class="timer-digit p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="days1">0</div>
-                <div class="timer-digit p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="days2">0</div>
+                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="days1">0</div>
+                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="days2">0</div>
               </div>
-              <div class="text-xs mt-1 text-cyan-300/80">DAYS</div>
+              <span class="text-xs text-gray-400 mt-1">DAYS</span>
             </div>
-            
-            <div class="text-xl font-bold text-cyan-300/50 px-1">:</div>
+            <div class="text-xl font-bold text-cyan-300 px-1">:</div>
             
             <!-- Hours -->
             <div class="flex flex-col items-center">
               <div class="flex gap-1">
-                <div class="timer-digit p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="hours1">0</div>
-                <div class="timer-digit p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="hours2">0</div>
+                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="hours1">0</div>
+                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="hours2">0</div>
               </div>
-              <div class="text-xs mt-1 text-cyan-300/80">HOURS</div>
+              <span class="text-xs text-gray-400 mt-1">HOURS</span>
             </div>
-            
-            <div class="text-xl font-bold text-cyan-300/50 px-1">:</div>
+            <div class="text-xl font-bold text-cyan-300 px-1">:</div>
             
             <!-- Minutes -->
             <div class="flex flex-col items-center">
               <div class="flex gap-1">
-                <div class="timer-digit p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="minutes1">0</div>
-                <div class="timer-digit p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="minutes2">0</div>
+                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="minutes1">0</div>
+                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="minutes2">0</div>
               </div>
-              <div class="text-xs mt-1 text-cyan-300/80">MINUTES</div>
+              <span class="text-xs text-gray-400 mt-1">MINUTES</span>
             </div>
-            
-            <div class="text-xl font-bold text-cyan-300/50 px-1">:</div>
+            <div class="text-xl font-bold text-cyan-300 px-1">:</div>
             
             <!-- Seconds -->
             <div class="flex flex-col items-center">
               <div class="flex gap-1">
-                <div class="timer-digit p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="seconds1">0</div>
-                <div class="timer-digit p-2 rounded-lg text-cyan-400 text-lg font-bold w-8" id="seconds2">0</div>
+                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="seconds1">0</div>
+                <div class="digit text-cyan-400 text-xl font-bold w-10 h-10 flex items-center justify-center" id="seconds2">0</div>
               </div>
-              <div class="text-xs mt-1 text-cyan-300/80">SECONDS</div>
+              <span class="text-xs text-gray-400 mt-1">SECONDS</span>
             </div>
           </div>
         </div>
 
         <!-- Free Plus Button Logic -->
-        {% if user.plus_type == 'free' and time_remaining_seconds > 0 or user.plus_type=='paid' %}
-          <div class="flex items-center gap-1 text-green-400 mt-4 text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-            Plus is currently active
-          </div>
-        {% elif user.last_free_plus and (user.last_free_plus + timedelta(hours=24)) > now %}
-          <div class="flex items-center gap-1 text-gray-400 mt-4 text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-            </svg>
-            You've already used Free Plus today
-          </div>
-        {% else %}
-          <a href="{{ url_for('claim_free_plus') }}"
-             class="mt-4 glow-hover bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg text-sm flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"/>
-            </svg>
-            🎁 Try Free Plus (2hrs)
-          </a>
-        {% endif %}
+        <div class="mt-4 w-full">
+          {% if user.plus_type == 'free' and time_remaining_seconds > 0 or user.plus_type=='paid' %}
+            <div class="bg-emerald-500/20 border border-emerald-500/30 rounded-xl p-3 text-center">
+              <p class="text-emerald-400 text-sm">Plus is currently active</p>
+            </div>
+          {% elif user.last_free_plus and (user.last_free_plus + timedelta(hours=24)) > now %}
+            <div class="bg-gray-700/30 border border-gray-600/30 rounded-xl p-3 text-center">
+              <p class="text-gray-400 text-sm">You've already used Free Plus today</p>
+            </div>
+          {% else %}
+            <a href="{{ url_for('claim_free_plus') }}"
+               class="glow-hover w-full bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-semibold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 pulse">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+              </svg>
+              🎁 Try Free Plus (2hrs)
+            </a>
+          {% endif %}
+        </div>
       </div>
     </div>
 
     <!-- Menu Section -->
-    <div class="glass-panel p-6 rounded-2xl w-full md:w-2/3">
+    <div class="glass-card p-6 w-full md:w-2/3">
       <h2 class="text-2xl font-semibold mb-6 text-cyan-400 flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
         </svg>
         Dashboard Menu
       </h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
 
-        <!-- Watch Now -->
-        <a href="{{ url_for('home_2') if user.plus_type in ['paid', 'free'] else url_for('home_1') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+        <a href="{{ url_for('home_2') if user.plus_type in ['paid', 'free'] else url_for('home_1') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
           </svg>
           Watch Now
-          <span class="text-xs font-normal mt-1 opacity-80">Stream live content</span>
         </a>
 
-        <!-- Services -->
-        <a href="{{ url_for('services') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm11 1H6v8l4-2 4 2V6z" clip-rule="evenodd"/>
+        <a href="{{ url_for('services') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clip-rule="evenodd" />
           </svg>
           Offered Services
-          <span class="text-xs font-normal mt-1 opacity-80">View our packages</span>
         </a>
 
-        <!-- About -->
-        <a href="{{ url_for('about') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+        <a href="{{ url_for('about') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
           </svg>
           About Us
-          <span class="text-xs font-normal mt-1 opacity-80">Our story & mission</span>
         </a>
 
-        <!-- Copyright -->
-        <a href="{{ url_for('copyright') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+        <a href="{{ url_for('copyright') }}" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 8a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1zm1 4a1 1 0 100 2h2a1 1 0 100-2H9z" clip-rule="evenodd" />
           </svg>
           Copyright
-          <span class="text-xs font-normal mt-1 opacity-80">Usage policies</span>
         </a>
 
-        <!-- More Shows -->
-        <a href="more-channels" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v8a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
+        <a href="more-channels" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
           </svg>
           More Shows...
-          <span class="text-xs font-normal mt-1 opacity-80">Browse all content</span>
         </a>
 
-        <!-- Account -->
-        <a href="/account" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+        <a href="/account" class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-500 hover:to-blue-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
           </svg>
           Account Settings
-          <span class="text-xs font-normal mt-1 opacity-80">Manage preferences</span>
         </a>
 
-        <!-- Developer -->
-        <a href="/developer" class="glow-hover bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        <!-- Developer Button -->
+        <a href="/developer" class="glow-hover bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-500 hover:to-indigo-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
           Developer
-          <span class="text-xs font-normal mt-1 opacity-80">API & integrations</span>
         </a>
 
-        <!-- Assistance -->
-        <a href="/assistance" class="glow-hover bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-.08.08-1.53-1.533A5.98 5.98 0 004 10c0 .954.223 1.856.619 2.657l1.54-1.54zm1.088-6.45A5.974 5.974 0 0110 4c.954 0 1.856.223 2.657.619l-1.54 1.54a4.002 4.002 0 00-2.346.033L7.246 4.668zM12 10a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd"/>
+        <!-- Assistance Button -->
+        <a href="/assistance" class="glow-hover bg-gradient-to-r from-amber-600 to-orange-500 hover:from-amber-500 hover:to-orange-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
           </svg>
           Assistance
-          <span class="text-xs font-normal mt-1 opacity-80">Help & support</span>
         </a>
 
-        <!-- Logout -->
-        <a href="{{ url_for('logout_current_user') }}" class="glow-hover bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex flex-col items-center justify-center col-span-full mt-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+        <a href="{{ url_for('logout_current_user') }}" class="glow-hover bg-gradient-to-r from-red-600 to-rose-500 hover:from-red-500 hover:to-rose-400 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 col-span-full mt-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
           </svg>
           Logout
-          <span class="text-xs font-normal mt-1 opacity-80">End your session</span>
         </a>
       </div>
     </div>
@@ -314,24 +296,31 @@
         }
 
         if (remaining <= 1800 && !toastShown) {
-          document.querySelectorAll('.timer-digit').forEach(div => {
+          document.querySelectorAll('#timer .digit').forEach(div => {
             div.classList.remove('text-cyan-400');
-            div.classList.add('text-red-400', 'bg-red-900/50');
+            div.classList.add('text-red-400', 'bg-red-900/40');
           });
           document.getElementById('toast').classList.remove('hidden');
           toastShown = true;
         }
 
         const days = Math.floor(remaining / (3600 * 24));
-        const hrs = Math.floor((remaining % (3600 * 24)) / 3600);
-        const mins = Math.floor((remaining % 3600) / 60);
-        const secs = remaining % 60;
+        const hours = Math.floor((remaining % (3600 * 24)) / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+        const seconds = remaining % 60;
 
-        updateTimerDisplay(days, hrs, mins, secs);
+        updateTimerDisplay(days, hours, minutes, seconds);
         remaining--;
       }, 1000);
     }
 
+    // Initialize timer display with current values
+    const initialDays = Math.floor(totalSeconds / (3600 * 24));
+    const initialHours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    const initialMinutes = Math.floor((totalSeconds % 3600) / 60);
+    const initialSeconds = totalSeconds % 60;
+    updateTimerDisplay(initialDays, initialHours, initialMinutes, initialSeconds);
+    
     startCountdown();
   </script>
 

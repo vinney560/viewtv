@@ -1138,6 +1138,7 @@ def process_movie(movie, index):
         "scraped_at": datetime.now().isoformat()
     }
 
+import time
 def fetch_movies():
     """Fetch and process new movies from APIs"""
     movies = []

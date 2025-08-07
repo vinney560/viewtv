@@ -2185,7 +2185,7 @@ def pay():
         "PhoneNumber": phone,
         "CallBackURL": callback_url,
         "AccountReference": "Ref001",
-        "TransactionDesc": "VIP Subscription"
+        "TransactionDesc": "Plus Subscription"
     }
 
     # Step 3: Send STK Push

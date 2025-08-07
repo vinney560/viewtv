@@ -143,7 +143,6 @@ CORS(app, resources={r"/*": {"origins": "https://viewstream-1.onrender.com"}})
 # ============================
 # MODELS
 # ============================
-from datetime import datetime, timedelta, time
 def nairobi_time():
     return datetime.utcnow() + timedelta(hours=3)
 
@@ -2120,8 +2119,8 @@ def pay():
     consumer_key = os.getenv("MPESA_CONSUMER_KEY")
     consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
     passkey = os.getenv("MPESA_PASSKEY")
-    business_short_code = "174379"  # Your actual shortcode
-    callback_url = "https://viewtv.onrender.com/callback"
+    business_short_code = "174379"  # actual shortcode
+    callback_url = "https://viewstream-1.onrender.com/callback"
 
     # Choose environment: sandbox or live
     is_live = os.getenv("MPESA_ENV", "sandbox").lower() == "live"

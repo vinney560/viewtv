@@ -2098,12 +2098,14 @@ def claim_free_plus():
 #            >>>>PAYMENT MODEL<<<<
 #======================================
 
+@csrf.exempt
 @app.route('/payment')
 def payment():
     return render_template('pay.html', user=current_user)
 
 # ----------------------------------------------------------------------
 
+@csrf.exempt
 @app.route('/api/pay', methods=['POST'])
 def pay():
     data = request.json
@@ -2218,6 +2220,7 @@ def pay():
 
 # ------------------------------------------------------------------------
 
+@csrf.exempt
 @app.route('/callback', methods=['POST'])
 def callback():
     data = request.get_json()

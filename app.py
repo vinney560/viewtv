@@ -2083,6 +2083,8 @@ def claim_free_plus():
 #======================================
 #            >>>>PAYMENT MODEL<<<<
 #======================================
+from flask_wtf.csrf import CSRFProtect, csrf_exempt
+
 MAX_ALLOWED_HOURS = 96
 
 @app.route('/payment')
@@ -2090,7 +2092,7 @@ def payment():
     return render_template('pay.html', user=current_user)
 
 # ----------------------------------------------------------------------
-
+@csrf_exempt
 @app.route('/api/pay', methods=['POST'])
 def pay():
     data = request.json

@@ -2194,7 +2194,8 @@ def pay():
 
                 if new_total > timedelta(hours=MAX_ALLOWED_HOURS):
                     print("Max time reached in test mode.")
-                    return redirect(url_for('dashboard', message="Max time reached"))
+                    flash("Max time reached", "warning")
+                    return redirect(url_for('dashboard'))
                 else:
                     user.plus_expires_at = existing_expiry + timedelta(hours=amount)
                     user.plus_type = "paid"

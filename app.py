@@ -2094,19 +2094,16 @@ def claim_free_plus():
     flash("🎁 Free Plus activated for 2 hours!", "success")
     return redirect(url_for("dashboard"))
 
-
 #======================================
 #            >>>>PAYMENT MODEL<<<<
 #======================================
-
-MAX_ALLOWED_HOURS = 96
 
 @app.route('/payment')
 def payment():
     return render_template('pay.html', user=current_user)
 
 # ----------------------------------------------------------------------
-@csrf.exempt
+
 @app.route('/api/pay', methods=['POST'])
 def pay():
     data = request.json
@@ -2130,7 +2127,7 @@ def pay():
     elif phone.startswith("+"):
         phone = phone.replace("+", "")
 
-    # Save pending payment
+    # Save pending payment in DB
     pending = Payment(
         user_id=current_user.id,
         phone=phone,
@@ -2145,9 +2142,10 @@ def pay():
     consumer_key = os.getenv("MPESA_CONSUMER_KEY")
     consumer_secret = os.getenv("MPESA_CONSUMER_SECRET")
     passkey = os.getenv("MPESA_PASSKEY")
-    business_short_code = "174379"
+    business_short_code = "174379"  # actual shortcode
     callback_url = "https://viewstream-1.onrender.com/callback"
 
+    # Choose environment: sandbox or live
     is_live = os.getenv("MPESA_ENV", "sandbox").lower() == "live"
     base_url = "https://api.safaricom.co.ke" if is_live else "https://sandbox.safaricom.co.ke"
 
@@ -2165,7 +2163,7 @@ def pay():
     except Exception as e:
         return jsonify({"success": False, "message": f"Token error: {str(e)}"}), 500
 
-    # Step 2: Build STK push
+    # Step 2: Build STK push request
     timestamp = (datetime.now() + timedelta(hours=3)).strftime('%Y%m%d%H%M%S')
     password = base64.b64encode((business_short_code + passkey + timestamp).encode()).decode()
 
@@ -2198,27 +2196,20 @@ def pay():
         print("STK Push response:", response.text)
         response.raise_for_status()
 
-        # === TEST MODE: Add time immediately ===
+        # === TEST MODE: Immediately add plus time to user ===
+        # WARNING: This is for testing only. For production, rely on callback.
         test_mode = os.getenv("MPESA_TEST_MODE", "false").lower() == "true"
         if test_mode:
+            hours_to_add = amount
+            now = datetime.utcnow()
             user = User.query.get(current_user.id)
             if user:
-                now = datetime.utcnow()
-                existing_expiry = user.plus_expires_at if user.plus_expires_at and user.plus_expires_at > now else now
-                remaining = existing_expiry - now
-                new_total = remaining + timedelta(hours=amount)
-
-                if new_total > timedelta(hours=MAX_ALLOWED_HOURS):
-                    print("Max time reached in test mode.")
-                    flash("Max time reached", "warning")
-                    return redirect(url_for('dashboard'))
+                if user.plus_expires_at and user.plus_expires_at > now:
+                    user.plus_expires_at += timedelta(hours=hours_to_add)
                 else:
-                    user.plus_expires_at = existing_expiry + timedelta(hours=amount)
-                    user.plus_type = "paid"
-                    db.session.commit()
-                    print("Test mode: Time added")
-                    flshflash("Payment successful", "success")
-                    return redirect(url_for('dashboard'))
+                    user.plus_expires_at = now + timedelta(hours=hours_to_add)
+                user.plus_type = "paid"
+                db.session.commit()
 
         return jsonify({"success": True})
 
@@ -2257,18 +2248,14 @@ def callback():
 
                 user = User.query.get(payment.user_id)
                 if user:
-                    now = datetime.utcnow()
+                    user.plus_type = "paid"
                     hours_to_add = int(payment.amount)
-                    existing_expiry = user.plus_expires_at if user.plus_expires_at and user.plus_expires_at > now else now
-                    remaining = existing_expiry - now
-                    new_total = remaining + timedelta(hours=hours_to_add)
-
-                    if new_total <= timedelta(hours=MAX_ALLOWED_HOURS):
-                        user.plus_expires_at = existing_expiry + timedelta(hours=hours_to_add)
-                        user.plus_type = "paid"
-                        db.session.commit()
+                    now = datetime.utcnow()
+                    if user.plus_expires_at and user.plus_expires_at > now:
+                        user.plus_expires_at += timedelta(hours=hours_to_add)
                     else:
-                        print("Callback: Max time reached, no time added.")
+                        user.plus_expires_at = now + timedelta(hours=hours_to_add)
+                    db.session.commit()
 
             print("Payment verified and Plus access granted.")
             return jsonify({"ResultCode": 0, "ResultDesc": "Accepted"})
@@ -2280,6 +2267,7 @@ def callback():
     except Exception as e:
         print("Callback processing error:", str(e))
         return jsonify({"ResultCode": 1, "ResultDesc": "Error processing callback"})
+
 # ------------------------------------------------------------------------
 @app.route('/vip-confirm')
 def vip_confirm():

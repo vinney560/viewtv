@@ -728,7 +728,7 @@ def curated():
 #=======================================
 # Exclusive sport Logic
 import sports  # from sports.py file
-
+import time
 # Keyword mappings for competitions
 competition_keywords = {
     "La Liga": ["la liga", "laliga"],

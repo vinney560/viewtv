@@ -185,7 +185,7 @@ class User(db.Model, UserMixin):
         return (
             self.plus_type in ['free', 'paid']
             and self.plus_expires_at
-            and self.plus_expires_at > datetime.utcnow() + timedelta(hours=3)
+            and self.plus_expires_at > datetime.utcnow()
         )
 
 class Streams(db.Model):

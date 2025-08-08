@@ -3214,7 +3214,7 @@ def generate_friendly_response(intent):
     return None
 
 # ------------------------ Route handlers ------------------------
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/chat', methods=['GET', 'POST'])
 def index():
     if 'history' not in session:
         session['history'] = []

@@ -52,11 +52,14 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 #=============================
 
+
 import os
 import json
 import time
 import random
+from datetime import datetime
 import requests
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_session import Session
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -2937,9 +2940,8 @@ def set_notice():
 
 # ------------------------ Config ------------------------
 HISTORY_FILE = "history.json"
-HISTORY_LIMIT = 50   # per channel keep-last checks
-CHECK_TIMEOUT = 5    # seconds for HTTP requests
-
+HISTORY_LIMIT = 50  # per channel keep-last checks
+CHECK_TIMEOUT = 5  # seconds for HTTP requests
 
 # ------------------------ Load Channels ------------------------
 with open("channels.json", "r") as f:
@@ -2948,8 +2950,7 @@ with open("channels.json", "r") as f:
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
-# ------------------------ Light ML Intent Model (as before) ------------------------
-# Keep the tiny TF-IDF + NB pipeline for intent detection (fast & tiny)
+# ------------------------ Light ML Intent Model ------------------------
 examples = [
     ("is all sports on", "status_check"),
     ("tell me about all sports", "info"),
@@ -3030,7 +3031,6 @@ def check_url_status(url):
     except Exception:
         return "dead"
 
-import datetime
 def uptime_stats_for_url(url):
     """Compute uptime percentage over stored history for this URL."""
     records = history_store.get(url, [])
@@ -3041,11 +3041,16 @@ def uptime_stats_for_url(url):
     offline = sum(1 for r in records if r["status"] != "online")
     pct = round((online / total) * 100, 1)
     last_ts = records[-1]["timestamp"]
-    last_time = datetime.datetime.fromtimestamp(last_ts).strftime("%Y-%m-%d %H:%M:%S")
-    return {"total": total, "online": online, "offline": offline, "uptime_pct": pct, "last_checked": last_time}
+    last_time = datetime.fromtimestamp(last_ts).strftime("%Y-%m-%d %H:%M:%S")
+    return {
+        "total": total,
+        "online": online,
+        "offline": offline,
+        "uptime_pct": pct,
+        "last_checked": last_time
+    }
 
 # ------------------------ Natural-sounding response generator ------------------------
-# small pools of phrasings to vary replies without heavy compute
 OPENERS = [
     "Here's what I found:",
     "Quick update:",
@@ -3083,37 +3088,43 @@ SUGGEST_ASKS = [
 def compose_dynamic_status_reply(name, url, status):
     opener = random.choice(OPENERS)
     if status == "online":
-        body = f"✅ **{name}** {random.choice(ONLINE_PHRASES)}."
+        body = f"✅ {name} {random.choice(ONLINE_PHRASES)}."
     elif status == "offline":
-        body = f"⚠️ **{name}** {random.choice(OFFLINE_PHRASES)}."
+        body = f"⚠️ {name} {random.choice(OFFLINE_PHRASES)}."
     else:
-        body = f"💀 **{name}** {random.choice(DEAD_PHRASES)}."
+        body = f"💀 {name} {random.choice(DEAD_PHRASES)}."
+    
     stats = uptime_stats_for_url(url)
     if stats:
         body += f" Uptime: {stats['uptime_pct']}% over last {stats['total']} checks. Last checked: {stats['last_checked']}."
+    
     # add a helpful followup prompt
     follow = random.choice(SUGGEST_ASKS)
     return f"{opener} {body} {follow}"
 
 def compose_list_reply(intro, items):
     if not items:
-        return f"Sorry — I couldn't find any matching channels for that request."
+        return "Sorry — I couldn't find any matching channels for that request."
     sample_intro = random.choice(["Sure — here you go:", "Got it:", intro])
     lines = [sample_intro] + [f"- {i}" for i in items]
     return "\n".join(lines)
 
-# ------------------------ Route handlers (unchanged endpoints) ------------------------
+# ------------------------ Route handlers ------------------------
 @app.route('/chat', methods=['GET', 'POST'])
 def index():
     if 'history' not in session:
         session['history'] = []
+    
     response = None
     if request.method == 'POST':
         user_text = request.form['query'].strip()
+        
         # Intent detection using the existing tiny model
         intent = model.predict([user_text])[0]
+        
         # Try to extract a channel name (fuzzy)
         found_name = fuzzy_find_name(user_text)
+        
         # If user explicitly supplied a name-like token, it may still be in the raw words
         if not found_name:
             # try each token to see if substring matches a channel
@@ -3123,7 +3134,7 @@ def index():
                 if cand:
                     found_name = cand
                     break
-
+        
         # Now create replies depending on intent
         reply = ""
         if intent == "status_check":
@@ -3137,6 +3148,7 @@ def index():
                 reply = compose_dynamic_status_reply(found_name, url, status)
             else:
                 reply = "Which channel would you like me to check? Try typing the channel name or part of it."
+        
         elif intent == "info":
             if found_name:
                 key, data = get_key_by_name(found_name), None
@@ -3144,29 +3156,32 @@ def index():
                 k = get_key_by_name(found_name)
                 if k:
                     _, data = k, channels[k]
-                    reply = (
-                        f"ℹ️ **{data['name']}** — {data.get('group-title','Unknown category')}.\n"
-                        f"Country/note: {data.get('country','-')}\n"
-                        f"Access: {data.get('access','-')}\n"
-                        f"URL: {data.get('url','-')}\n"
-                        "Want me to check its current status?"
-                    )
-                else:
-                    reply = "I found the name but couldn't retrieve details."
+                reply = (
+                    f"ℹ️ **{data['name']}** — {data.get('group-title','Unknown category')}.\n"
+                    f"Country/note: {data.get('country','-')}\n"
+                    f"Access: {data.get('access','-')}\n"
+                    f"URL: {data.get('url','-')}\n"
+                    "Want me to check its current status?"
+                )
             else:
-                reply = "Tell me which channel you want info on (e.g., 'Tell me about All Sports 2')."
+                reply = "I found the name but couldn't retrieve details."
+        
         elif intent == "list_free":
             free = [v['name'] for v in channels.values() if v.get('access','').lower()=='free']
             reply = compose_list_reply("Free channels:", free)
+        
         elif intent == "list_paid":
             paid = [v['name'] for v in channels.values() if v.get('access','').lower()=='paid']
             reply = compose_list_reply("Paid channels:", paid)
+        
         elif intent == "list_all":
             allc = [v['name'] for v in channels.values()]
             reply = compose_list_reply("All channels:", allc)
+        
         elif intent == "list_sports":
             sports = [v['name'] for v in channels.values() if 'sports' in v.get('group-title','').lower()]
             reply = compose_list_reply("Sports channels:", sports)
+        
         elif intent == "list_offline":
             # perform lightweight checks for all channels but limit to first 20 to avoid long waits
             sample = list(channels.values())[:20]
@@ -3177,6 +3192,7 @@ def index():
                 if status != "online":
                     offline.append(f"{ch['name']} ({status})")
             reply = compose_list_reply("Offline or dead channels (sample):", offline)
+        
         elif intent == "recommend":
             # simple heuristics: prefer channels with highest uptime in history, else random online
             scored = []
@@ -3184,6 +3200,7 @@ def index():
                 stats = uptime_stats_for_url(v['url'])
                 if stats:
                     scored.append((v['name'], stats['uptime_pct']))
+            
             if scored:
                 scored.sort(key=lambda x: x[1], reverse=True)
                 top = [s[0] for s in scored[:3]]
@@ -3196,10 +3213,12 @@ def index():
                     record_check(v['url'], st)
                     if st == 'online':
                         online_list.append(v['name'])
+                
                 if online_list:
                     reply = compose_list_reply("Currently online channels (sample):", online_list[:5])
                 else:
                     reply = "I couldn't find reliable online channels right now. Want me to run a deeper scan?"
+        
         else:
             # fallback: try to produce a helpful answer using live checks if a name exists
             if found_name:
@@ -3210,23 +3229,23 @@ def index():
                 reply = compose_dynamic_status_reply(found_name, url, status)
             else:
                 reply = ("Sorry, I'm not sure what you mean. Try: 'Is All Sports 2 online?', "
-                         "'Tell me about All News X', or 'Which channels are free?'")
-
-        # Save chat history in session (unchanged template usage)
-        timestamp = datetime.datetime.now().strftime("%H:%M")
-        session.setdefault('history', []).append((user_text, reply))
+                        "'Tell me about All News X', or 'Which channels are free?'")
+        
+        # Save chat history in session
+        timestamp = datetime.now().strftime("%H:%M")
+        session.setdefault('history', []).append((timestamp, user_text, reply))
+        
         # keep session history reasonable
         if len(session['history']) > 50:
             session['history'] = session['history'][-50:]
         session.modified = True
-
+    
     return render_template('chat.html', history=session.get('history', []))
 
 @app.route('/reset')
 def reset():
     session.clear()
     return redirect(url_for('index'))
-
 
 
 #========================================

@@ -54,31 +54,17 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import os
 import json
-import datetime
-import re
+import time
+import random
+
 import requests
-import asyncio
-import aiohttp
-import numpy as np
-import torch
-import torch.nn as nn
-from flask import Flask, render_template, request, session, jsonify
+from flask import Flask, render_template, request, session, redirect, url_for
 from flask_session import Session
-from transformers import (
-    BertTokenizer, 
-    BertForSequenceClassification, 
-    pipeline,
-    GPT2LMHeadModel,
-    GPT2Tokenizer,
-    AutoModelForSequenceClassification,
-    AutoTokenizer
-)
-from sentence_transformers import SentenceTransformer, util
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import make_pipeline
 from difflib import get_close_matches
-import Levenshtein
-import torch.nn.functional as F
+
 
 
 # ============================
@@ -2950,70 +2936,25 @@ def set_notice():
 #========================================
 #      AI FEATURES 
 #========================================
-# Load channels
+
+# ------------------------ Config ------------------------
+HISTORY_FILE = "history.json"
+HISTORY_LIMIT = 50   # per channel keep-last checks
+CHECK_TIMEOUT = 5    # seconds for HTTP requests
+
+
+# ------------------------ Load Channels ------------------------
 with open("channels.json", "r") as f:
     channels = json.load(f)
 
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
-# Load deep learning models
-print("Loading models...")
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-intent_model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=15)
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-gpt2_tokenizer = GPT2Tokenizer.from_pretrained('gpt2-medium')
-gpt2_model = GPT2LMHeadModel.from_pretrained('gpt2-medium')
-gpt2_tokenizer.pad_token = gpt2_tokenizer.eos_token
-
-# Sentiment analysis model
-sentiment_model = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
-
-# Generate channel embeddings for semantic search
-print("Generating channel embeddings...")
-channel_embeddings = embedding_model.encode(channel_names)
-
-# Intent classification mapping
-intent_labels = {
-    0: "status_check",
-    1: "info",
-    2: "list_free",
-    3: "list_paid",
-    4: "list_all",
-    5: "list_sports",
-    6: "list_offline",
-    7: "access",
-    8: "logo",
-    9: "multi_status_check",
-    10: "multi_logo",
-    11: "multi_info",
-    12: "comparison",
-    13: "recommendation",
-    14: "follow_up"
-}
-
-# Advanced QA pipeline
-qa_pipeline = pipeline(
-    "question-answering",
-    model="deepset/roberta-base-squad2",
-    tokenizer="deepset/roberta-base-squad2"
-)
-
-# Contextual memory for follow-up questions
-context_memory = {
-    "last_intent": None,
-    "last_channels": [],
-    "last_response": None,
-    "conversation_history": [],
-    "user_preferences": {}
-}
-
-# Enhanced ML training data
+# ------------------------ Light ML Intent Model (as before) ------------------------
+# Keep the tiny TF-IDF + NB pipeline for intent detection (fast & tiny)
 examples = [
     ("is all sports on", "status_check"),
-    ("what's the status of all sports", "status_check"),
     ("tell me about all sports", "info"),
-    ("describe all sports channel", "info"),
     ("check all news x", "status_check"),
     ("which channels are free", "list_free"),
     ("list paid channels", "list_paid"),
@@ -3022,461 +2963,270 @@ examples = [
     ("any offline channels?", "list_offline"),
     ("give me the access type of all sports", "access"),
     ("channel logo of all news", "logo"),
-    ("are the all sports and all news online?", "multi_status_check"),
-    ("show logos of all sports and all news", "multi_logo"),
-    ("help me find all free channels", "list_free"),
-    ("what can you tell me about all sports and all movies?", "multi_info"),
-    ("do you know if all sports is online?", "status_check"),
-    ("compare all sports and all news", "comparison"),
-    ("which sports channel do you recommend", "recommendation"),
-    ("what about the last one you mentioned?", "follow_up"),
-    ("and what about its access type?", "follow_up"),
-    ("find me something similar to ESPN", "recommendation"),
-    ("I like sports and news, what should I watch?", "recommendation"),
-    ("notify me when CNN comes online", "status_check"),
-    ("remember I prefer free channels", "preference"),
-    ("what did I ask about earlier?", "history")
+    ("recommend me a channel", "recommend"),
+    ("suggest a sports channel", "recommend_sports"),
+    ("status of free channels", "list_free_status"),
 ]
-
 X_train = [x[0] for x in examples]
-y_train = [x[1] for x in examples]
-tfidf_vectorizer = TfidfVectorizer()
-tfidf_matrix = tfidf_vectorizer.fit_transform(X_train)
+Y_train = [x[1] for x in examples]
+model = make_pipeline(TfidfVectorizer(), MultinomialNB())
+model.fit(X_train, Y_train)
 
-# Neural spelling correction model
-class SpellingCorrector(nn.Module):
-    def __init__(self, vocab_size, embedding_dim, hidden_dim):
-        super(SpellingCorrector, self).__init__()
-        self.embedding = nn.Embedding(vocab_size, embedding_dim)
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim, batch_first=True, bidirectional=True)
-        self.fc = nn.Linear(hidden_dim * 2, vocab_size)
-        
-    def forward(self, x):
-        embedded = self.embedding(x)
-        output, _ = self.lstm(embedded)
-        return self.fc(output)
+# ------------------------ History Persistence ------------------------
+def load_history_file():
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, "r") as fh:
+                return json.load(fh)
+        except Exception:
+            return {}
+    return {}
 
-# Initialize spelling corrector (in practice, we'd load a pre-trained model)
-spelling_corrector = SpellingCorrector(vocab_size=10000, embedding_dim=128, hidden_dim=256)
+def save_history_file(h):
+    with open(HISTORY_FILE, "w") as fh:
+        json.dump(h, fh, indent=2)
 
-@csrf.exempt
-# Helpers
-def neural_spelling_correction(text):
-    """Advanced neural spelling correction"""
-    # For production, we'd use a trained model - this is a simplified version
-    words = text.split()
-    corrected = []
-    for word in words:
-        # Use a combination of edit distance and semantic similarity
-        if word not in channel_names:
-            matches = get_close_matches(word, channel_names, n=1, cutoff=0.6)
-            if matches:
-                corrected.append(matches[0])
-                continue
-        corrected.append(word)
-    return " ".join(corrected)
+history_store = load_history_file()  # { url: [ {status, ts} , ... ] }
 
-@csrf.exempt
-def extract_channel_names(text):
-    """Advanced entity extraction with neural embeddings"""
-    # Semantic matching using embeddings
-    query_embedding = embedding_model.encode([text])
-    similarities = cosine_similarity(query_embedding, channel_embeddings)[0]
-    
-    # Find channels above similarity threshold
-    found = []
-    for idx, score in enumerate(similarities):
-        if score > 0.45:  # Lower threshold for better recall
-            found.append(channel_names[idx])
-    
-    # Use contextual clues from conversation history
-    if not found and context_memory["last_channels"]:
-        # If no direct match, look for related channels in context
-        context_str = " ".join([f"{msg[0]}: {msg[1]}" for msg in context_memory["conversation_history"][-3:]])
-        context_embedding = embedding_model.encode([context_str])
-        context_similarities = cosine_similarity(context_embedding, channel_embeddings)[0]
-        context_found = [channel_names[idx] for idx, score in enumerate(context_similarities) if score > 0.5]
-        found.extend(context_found)
-    
-    # Fallback to keyword matching if no semantic matches
-    if not found:
-        lowered = text.lower()
-        for name in channel_names:
-            if name.lower() in lowered:
-                found.append(name)
-    
-    return list(set(found))
+def record_check(url, status):
+    now = int(time.time())
+    if url not in history_store:
+        history_store[url] = []
+    history_store[url].append({"status": status, "timestamp": now})
+    # keep last N checks
+    history_store[url] = history_store[url][-HISTORY_LIMIT:]
+    save_history_file(history_store)
 
-@csrf.exempt
+# ------------------------ Utilities ------------------------
 def get_key_by_name(name):
     for k, v in channels.items():
         if v["name"].lower() == name.lower():
             return k
     return None
 
-async def check_channel_status(session, url):
+def fuzzy_find_name(text):
+    """Try exact contains, then difflib fuzzy match."""
+    lowered = text.lower()
+    # first try substring match (quick & effective)
+    for n in channel_names:
+        if n.lower() in lowered:
+            return n
+    # fallback to fuzzy
+    matches = get_close_matches(text, channel_names, n=1, cutoff=0.55)
+    if matches:
+        return matches[0]
+    return None
+
+def check_url_status(url):
+    """Synchronous HTTP check. Returns 'online'|'offline'|'dead'."""
     try:
-        async with session.get(url, timeout=5) as response:
-            if response.status == 200:
-                return "online"
-            else:
-                return "offline"
-    except:
+        r = requests.get(url, timeout=CHECK_TIMEOUT)
+        if r.status_code == 200 and "#EXTM3U" in r.text:
+            return "online"
+        elif r.status_code == 404:
+            return "dead"
+        else:
+            return "offline"
+    except requests.exceptions.Timeout:
+        return "offline"
+    except Exception:
         return "dead"
 
-async def check_multiple_channels(channel_list):
-    async with aiohttp.ClientSession() as session:
-        tasks = []
-        for name in channel_list:
-            key = get_key_by_name(name)
-            if key:
-                url = channels[key]["url"]
-                tasks.append(check_channel_status(session, url))
-        return await asyncio.gather(*tasks)
+def uptime_stats_for_url(url):
+    """Compute uptime percentage over stored history for this URL."""
+    records = history_store.get(url, [])
+    if not records:
+        return None
+    total = len(records)
+    online = sum(1 for r in records if r["status"] == "online")
+    offline = sum(1 for r in records if r["status"] != "online")
+    pct = round((online / total) * 100, 1)
+    last_ts = records[-1]["timestamp"]
+    last_time = datetime.datetime.fromtimestamp(last_ts).strftime("%Y-%m-%d %H:%M:%S")
+    return {"total": total, "online": online, "offline": offline, "uptime_pct": pct, "last_checked": last_time}
 
-@csrf.exempt
-def classify_intent(text):
-    """Advanced intent classification with context awareness"""
-    # Add conversation context to the input
-    context_str = ""
-    if context_memory["conversation_history"]:
-        # Use last 2 exchanges for context
-        last_exchanges = context_memory["conversation_history"][-2:]
-        for exchange in last_exchanges:
-            context_str += f"User: {exchange[1]}\nAssistant: {exchange[2]}\n"
-    
-    full_input = context_str + "User: " + text
-    
-    # Use BERT for deep contextual understanding
-    inputs = tokenizer(full_input, return_tensors="pt", truncation=True, max_length=256)
-    outputs = intent_model(**inputs)
-    logits = outputs.logits
-    probabilities = torch.softmax(logits, dim=1).detach().numpy()[0]
-    predicted_idx = np.argmax(probabilities)
-    
-    # Only use prediction if confidence is high enough
-    if probabilities[predicted_idx] > 0.65:
-        return intent_labels[predicted_idx]
-    
-    # Fallback to TF-IDF similarity
-    text_vec = tfidf_vectorizer.transform([text])
-    similarities = cosine_similarity(text_vec, tfidf_matrix)[0]
-    most_similar_idx = np.argmax(similarities)
-    
-    if similarities[most_similar_idx] > 0.45:
-        return y_train[most_similar_idx]
-    
-    # Use GPT-2 for ambiguous queries
-    gpt_input = f"Determine intent for: {text}\nIntent:"
-    gpt_ids = gpt2_tokenizer.encode(gpt_input, return_tensors='pt', max_length=50, truncation=True)
-    
-    with torch.no_grad():
-        output = gpt2_model.generate(
-            gpt_ids,
-            max_length=50,
-            num_return_sequences=1,
-            no_repeat_ngram_size=2,
-            do_sample=True,
-            top_k=50,
-            top_p=0.95,
-            temperature=0.7
-        )
-    
-    gpt_response = gpt2_tokenizer.decode(output[0], skip_special_tokens=True)
-    gpt_intent = gpt_response.replace(gpt_input, "").strip().lower()
-    
-    # Map GPT response to known intents
-    for intent, label in intent_labels.items():
-        if label in gpt_intent:
-            return label
-    
-    return "unknown"
+# ------------------------ Natural-sounding response generator ------------------------
+# small pools of phrasings to vary replies without heavy compute
+OPENERS = [
+    "Here's what I found:",
+    "Quick update:",
+    "Alright — status report:",
+    "Checked it for you —"
+]
 
-@csrf.exempt
-def generate_qa_response(question, context):
-    result = qa_pipeline(question=question, context=context)
-    return result['answer'] if result['score'] > 0.25 else None
+ONLINE_PHRASES = [
+    "is streaming fine right now",
+    "looks live and healthy",
+    "is online and reachable",
+    "is up and playing"
+]
 
-def neural_response_generation(prompt, max_length=100):
-    """Generate response using GPT-2 for more natural conversations"""
-    input_ids = gpt2_tokenizer.encode(prompt, return_tensors='pt', max_length=50, truncation=True)
-    
-    with torch.no_grad():
-        output = gpt2_model.generate(
-            input_ids,
-            max_length=max_length,
-            num_return_sequences=1,
-            no_repeat_ngram_size=2,
-            do_sample=True,
-            top_k=50,
-            top_p=0.95,
-            temperature=0.85,
-            pad_token_id=gpt2_tokenizer.eos_token_id
-        )
-    
-    response = gpt2_tokenizer.decode(output[0], skip_special_tokens=True)
-    return response.split("Assistant:")[-1].strip()
+OFFLINE_PHRASES = [
+    "appears to be offline at the moment",
+    "is not responding right now",
+    "seems down — could be temporary",
+    "is currently unreachable"
+]
 
-@csrf.exempt
-def analyze_sentiment(text):
-    """Analyze user sentiment for personalized responses"""
-    result = sentiment_model(text)[0]
-    return result['label'], result['score']
+DEAD_PHRASES = [
+    "returns a 404 or is removed (looks dead)",
+    "is gone or the URL no longer exists",
+    "appears to be dead — the server reports not found"
+]
 
-def generate_response(intent, channel_list=None, user_input=""):
-    if channel_list is None:
-        channel_list = []
-    
-    # Update context memory
-    context_memory["last_intent"] = intent
-    context_memory["last_channels"] = channel_list.copy()
-    
-    # Handle follow-up questions using context memory
-    if intent == "follow_up" and context_memory["last_intent"]:
-        if context_memory["last_channels"]:
-            channel_list = context_memory["last_channels"]
-        intent = context_memory["last_intent"]
-    
-    # Analyze user sentiment
-    sentiment, confidence = analyze_sentiment(user_input)
-    
-    # Friendly response helper
-    def friendly_status(name, status):
-        if status == "online":
-            return f"✅ '{name}' is online and streaming smoothly!"
-        elif status == "offline":
-            return f"⚠️ '{name}' seems offline at the moment."
-        else:
-            return f"❌ '{name}' is currently unreachable."
+SUGGEST_ASKS = [
+    "Want me to keep monitoring this channel?",
+    "Shall I recheck in a few minutes?",
+    "Would you like alternatives or more details?",
+    "Do you want me to watch this and notify you if it changes?"
+]
 
-    # Intent based responses
-    if intent == "status_check":
-        if channel_list:
-            statuses = asyncio.run(check_multiple_channels(channel_list))
-            responses = [friendly_status(name, status) for name, status in zip(channel_list, statuses)]
-            
-            # Neural enhancement for more natural response
-            if len(responses) > 1:
-                base = "Here's the status for those channels: "
-                return neural_response_generation(
-                    f"User: {user_input}\nAssistant: {base}",
-                    max_length=150
-                )
-            return " ".join(responses)
-        else:
-            return "Which channel would you like me to check? You can say something like 'Is ESPN live?'"
-
-    elif intent == "multi_status_check":
-        if channel_list:
-            statuses = asyncio.run(check_multiple_channels(channel_list))
-            response = "Here are the status updates:\n" + "\n".join(
-                [friendly_status(name, status) for name, status in zip(channel_list, statuses)]
-            )
-            return neural_response_generation(
-                f"User: {user_input}\nAssistant: {response}",
-                max_length=200
-            )
-        else:
-            return "Please mention the channels you want me to check, like 'Are ESPN and CNN online?'"
-
-    elif intent == "info":
-        if channel_list:
-            infos = []
-            for c in channel_list:
-                key = get_key_by_name(c)
-                if key:
-                    data = channels[key]
-                    info_str = (
-                        f"ℹ️ **{data['name']}**\n"
-                        f"- Category: {data['group-title']}\n"
-                        f"- Country: {data['country']}\n"
-                        f"- Access: {data['access']}\n"
-                        f"- Language: {data.get('language', 'English')}"
-                    )
-                    infos.append(info_str)
-                else:
-                    infos.append(f"Sorry, I couldn't find information about '{c}'.")
-            return "\n\n".join(infos)
-        else:
-            return "Which channel would you like information about? Try something like 'Tell me about BBC News'"
-
-    elif intent == "comparison":
-        if len(channel_list) >= 2:
-            comparisons = []
-            for c in channel_list[:2]:  # Compare first two mentioned
-                key = get_key_by_name(c)
-                if key:
-                    data = channels[key]
-                    comparisons.append(
-                        f"🔍 **{data['name']}**\n"
-                        f"  - Type: {data['group-title']}\n"
-                        f"  - Access: {data['access']}\n"
-                        f"  - Country: {data['country']}"
-                    )
-            return "\n\n".join(comparisons)
-        else:
-            return "Please mention at least two channels to compare, like 'Compare ESPN and BBC'"
-
-    elif intent == "recommendation":
-        # Neural recommendation system
-        if channel_list:
-            # Find similar channels based on embeddings
-            main_channel = channel_list[0]
-            try:
-                main_idx = channel_names.index(main_channel)
-                main_embedding = channel_embeddings[main_idx]
-                
-                # Calculate similarities
-                similarities = []
-                for idx, embedding in enumerate(channel_embeddings):
-                    if idx == main_idx:
-                        continue
-                    sim = util.pytorch_cos_sim(
-                        torch.tensor(main_embedding).unsqueeze(0),
-                        torch.tensor(embedding).unsqueeze(0)
-                    ).item()
-                    similarities.append((channel_names[idx], sim))
-                
-                # Get top 3 similar channels
-                similarities.sort(key=lambda x: x[1], reverse=True)
-                recommendations = [name for name, sim in similarities[:3]]
-                
-                return (f"📡 Based on your interest in {main_channel}, "
-                        f"I recommend: {', '.join(recommendations)}")
-            except:
-                # Fallback to category-based recommendation
-                key = get_key_by_name(main_channel)
-                if key:
-                    category = channels[key]["group-title"]
-                    similar = [v['name'] for k, v in channels.items() 
-                              if v['group-title'] == category and v['name'] != main_channel][:3]
-                    if similar:
-                        return f"🏅 Similar to {main_channel}, you might like: {', '.join(similar)}"
-        
-        # If no specific channel mentioned, recommend based on sentiment
-        if sentiment == "POSITIVE" and confidence > 0.8:
-            return "🌟 Since you're in a good mood, I recommend checking out our premium movie channels!"
-        else:
-            # Default recommendation
-            popular = ["CNN", "ESPN", "BBC News", "HBO", "Discovery Channel"]
-            return f"📺 Popular channels right now: {', '.join(popular[:3])}"
-
-    elif intent == "preference":
-        # Remember user preferences
-        if "free" in user_input.lower():
-            context_memory["user_preferences"]["access"] = "free"
-            return "👍 Got it! I'll prioritize showing you free channels."
-        elif "sports" in user_input.lower():
-            context_memory["user_preferences"]["category"] = "sports"
-            return "🏈 Noted! I'll focus on sports channels for you."
-        else:
-            return "🔔 I'll remember your preferences for future recommendations."
-
-    elif intent == "history":
-        # Show conversation history
-        if context_memory["conversation_history"]:
-            history_str = "\n".join(
-                [f"{ts}: {msg}" for ts, msg, _ in context_memory["conversation_history"][-3:]]
-            )
-            return f"🕒 Recent conversation history:\n{history_str}"
-        else:
-            return "We haven't chatted much yet. Ask me about channels!"
-
-    # ... (other intents similar to before but with neural enhancements)
-
+def compose_dynamic_status_reply(name, url, status):
+    opener = random.choice(OPENERS)
+    if status == "online":
+        body = f"✅ **{name}** {random.choice(ONLINE_PHRASES)}."
+    elif status == "offline":
+        body = f"⚠️ **{name}** {random.choice(OFFLINE_PHRASES)}."
     else:
-        # Neural fallback for unknown queries
-        try:
-            # Generate creative response with GPT-2
-            return neural_response_generation(
-                f"User: {user_input}\nAssistant:",
-                max_length=100
-            )
-        except:
-            return ("🤖 I'm still learning. Could you rephrase? "
-                    "You can ask about channel status, information, "
-                    "or request recommendations.")
+        body = f"💀 **{name}** {random.choice(DEAD_PHRASES)}."
+    stats = uptime_stats_for_url(url)
+    if stats:
+        body += f" Uptime: {stats['uptime_pct']}% over last {stats['total']} checks. Last checked: {stats['last_checked']}."
+    # add a helpful followup prompt
+    follow = random.choice(SUGGEST_ASKS)
+    return f"{opener} {body} {follow}"
 
-@csrf.exempt
-@app.route("/chat", methods=["GET", "POST"])
-def chat():
-    if "history" not in session:
-        session["history"] = []
-    
-    if "conversation_history" not in context_memory:
-        context_memory["conversation_history"] = []
+def compose_list_reply(intro, items):
+    if not items:
+        return f"Sorry — I couldn't find any matching channels for that request."
+    sample_intro = random.choice(["Sure — here you go:", "Got it:", intro])
+    lines = [sample_intro] + [f"- {i}" for i in items]
+    return "\n".join(lines)
 
+# ------------------------ Route handlers (unchanged endpoints) ------------------------
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if 'history' not in session:
+        session['history'] = []
     response = None
-    user_input = ""
+    if request.method == 'POST':
+        user_text = request.form['query'].strip()
+        # Intent detection using the existing tiny model
+        intent = model.predict([user_text])[0]
+        # Try to extract a channel name (fuzzy)
+        found_name = fuzzy_find_name(user_text)
+        # If user explicitly supplied a name-like token, it may still be in the raw words
+        if not found_name:
+            # try each token to see if substring matches a channel
+            tokens = [t for t in user_text.split() if len(t) > 2]
+            for t in tokens[::-1]:
+                cand = fuzzy_find_name(t)
+                if cand:
+                    found_name = cand
+                    break
 
-    if request.method == "POST":
-        user_input = request.form["query"].strip()
-        timestamp = datetime.datetime.now().strftime("%H:%M")
-        
-        # Advanced preprocessing
-        corrected_input = neural_spelling_correction(user_input.lower())
-        
-        # Advanced intent classification
-        intent = classify_intent(corrected_input)
-        
-        # Entity extraction with neural embeddings
-        channel_list = extract_channel_names(corrected_input)
-        
-        # Generate intelligent response
-        reply = generate_response(intent, channel_list, user_input)
-        
-        # Update conversation history
-        context_memory["conversation_history"].append((timestamp, user_input, reply))
-        session["history"].append((timestamp, user_input, reply))
-        session.modified = True
-        
-        # Keep history manageable
-        if len(context_memory["conversation_history"]) > 10:
-            context_memory["conversation_history"] = context_memory["conversation_history"][-5:]
-        
-        if len(session["history"]) > 20:
-            session["history"] = session["history"][-10:]
-
-    return render_template("chat.html", history=session.get("history", []))
-
-@csrf.exempt
-@app.route("/suggest", methods=["GET"])
-def suggest():
-    """Neural-powered autocomplete suggestions"""
-    query = request.args.get("q", "")
-    if not query:
-        return jsonify([])
-    
-    # Generate suggestions with GPT-2
-    input_text = f"User: {query}\nAssistant:"
-    input_ids = gpt2_tokenizer.encode(input_text, return_tensors='pt')
-    
-    with torch.no_grad():
-        output = gpt2_model.generate(
-            input_ids,
-            max_length=len(input_ids[0]) + 10,
-            num_return_sequences=3,
-            do_sample=True,
-            top_k=50,
-            top_p=0.90,
-            temperature=0.7,
-            pad_token_id=gpt2_tokenizer.eos_token_id
-        )
-    
-    suggestions = []
-    for i, out in enumerate(output):
-        text = gpt2_tokenizer.decode(out, skip_special_tokens=True)
-        suggestion = text.replace(input_text, "").strip()
-        # Extract just the next few words
-        if len(suggestion) > 0:
-            # Take the first complete sentence or 5 words
-            parts = re.split(r'[.!?]', suggestion)
-            if parts[0]:
-                suggestions.append(parts[0])
+        # Now create replies depending on intent
+        reply = ""
+        if intent == "status_check":
+            if found_name:
+                key = get_key_by_name(found_name)
+                url = channels[key]["url"]
+                status = check_url_status(url)
+                # record the check
+                record_check(url, status)
+                # dynamic textual reply
+                reply = compose_dynamic_status_reply(found_name, url, status)
             else:
-                suggestions.append(" ".join(suggestion.split()[:5]))
-    
-    return jsonify(list(set(suggestions))[:3])
+                reply = "Which channel would you like me to check? Try typing the channel name or part of it."
+        elif intent == "info":
+            if found_name:
+                key, data = get_key_by_name(found_name), None
+                # get data safely
+                k = get_key_by_name(found_name)
+                if k:
+                    _, data = k, channels[k]
+                    reply = (
+                        f"ℹ️ **{data['name']}** — {data.get('group-title','Unknown category')}.\n"
+                        f"Country/note: {data.get('country','-')}\n"
+                        f"Access: {data.get('access','-')}\n"
+                        f"URL: {data.get('url','-')}\n"
+                        "Want me to check its current status?"
+                    )
+                else:
+                    reply = "I found the name but couldn't retrieve details."
+            else:
+                reply = "Tell me which channel you want info on (e.g., 'Tell me about All Sports 2')."
+        elif intent == "list_free":
+            free = [v['name'] for v in channels.values() if v.get('access','').lower()=='free']
+            reply = compose_list_reply("Free channels:", free)
+        elif intent == "list_paid":
+            paid = [v['name'] for v in channels.values() if v.get('access','').lower()=='paid']
+            reply = compose_list_reply("Paid channels:", paid)
+        elif intent == "list_all":
+            allc = [v['name'] for v in channels.values()]
+            reply = compose_list_reply("All channels:", allc)
+        elif intent == "list_sports":
+            sports = [v['name'] for v in channels.values() if 'sports' in v.get('group-title','').lower()]
+            reply = compose_list_reply("Sports channels:", sports)
+        elif intent == "list_offline":
+            # perform lightweight checks for all channels but limit to first 20 to avoid long waits
+            sample = list(channels.values())[:20]
+            offline = []
+            for ch in sample:
+                status = check_url_status(ch['url'])
+                record_check(ch['url'], status)
+                if status != "online":
+                    offline.append(f"{ch['name']} ({status})")
+            reply = compose_list_reply("Offline or dead channels (sample):", offline)
+        elif intent == "recommend":
+            # simple heuristics: prefer channels with highest uptime in history, else random online
+            scored = []
+            for k, v in channels.items():
+                stats = uptime_stats_for_url(v['url'])
+                if stats:
+                    scored.append((v['name'], stats['uptime_pct']))
+            if scored:
+                scored.sort(key=lambda x: x[1], reverse=True)
+                top = [s[0] for s in scored[:3]]
+                reply = compose_list_reply("Top reliable channels based on history:", top)
+            else:
+                # fallback recommend some online ones by sampling
+                online_list = []
+                for k, v in list(channels.items())[:10]:
+                    st = check_url_status(v['url'])
+                    record_check(v['url'], st)
+                    if st == 'online':
+                        online_list.append(v['name'])
+                if online_list:
+                    reply = compose_list_reply("Currently online channels (sample):", online_list[:5])
+                else:
+                    reply = "I couldn't find reliable online channels right now. Want me to run a deeper scan?"
+        else:
+            # fallback: try to produce a helpful answer using live checks if a name exists
+            if found_name:
+                key = get_key_by_name(found_name)
+                url = channels[key]["url"]
+                status = check_url_status(url)
+                record_check(url, status)
+                reply = compose_dynamic_status_reply(found_name, url, status)
+            else:
+                reply = ("Sorry, I'm not sure what you mean. Try: 'Is All Sports 2 online?', "
+                         "'Tell me about All News X', or 'Which channels are free?'")
+
+        # Save chat history in session (unchanged template usage)
+        timestamp = datetime.datetime.now().strftime("%H:%M")
+        session.setdefault('history', []).append((user_text, reply))
+        # keep session history reasonable
+        if len(session['history']) > 50:
+            session['history'] = session['history'][-50:]
+        session.modified = True
+
+    return render_template('chat.html', history=session.get('history', []))
+
+@app.route('/reset')
+def reset():
+    session.clear()
+    return redirect(url_for('index'))
 
 
 

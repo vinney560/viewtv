@@ -26,12 +26,16 @@
   <meta name="twitter:card" content="summary_large_image" />
   
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     :root {
       --primary: #06b6d4;
       --secondary: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
     }
     
     body {
@@ -174,6 +178,12 @@
     }
     .ai-message.info {
       background: rgba(59, 130, 246, 0.15);
+    }
+    .ai-message.success {
+      background: rgba(16, 185, 129, 0.15);
+    }
+    .ai-message.data {
+      background: rgba(139, 92, 246, 0.15);
     }
     .ai-input {
       display: flex;
@@ -337,30 +347,117 @@
     .ai-web-search a:hover {
       text-decoration: underline;
     }
-    
-    /* Enhanced AI Typing Indicator */
-    .typing-indicator {
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
+    .ai-data-analysis {
+      background: rgba(139, 92, 246, 0.15);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .chart-container {
+      position: relative;
+      height: 150px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .ai-data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .data-card {
       background: rgba(31, 41, 55, 0.5);
-      border-radius: 18px;
-      width: fit-content;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
     }
-    .typing-dot {
-      width: 6px;
-      height: 6px;
-      margin: 0 2px;
-      background-color: #9ca3af;
-      border-radius: 50%;
-      animation: typing-dot 1.4s infinite ease-in-out;
+    .data-card h4 {
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #9ca3af;
     }
-    .typing-dot:nth-child(1) { animation-delay: 0s; }
-    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typing-dot {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-5px); }
+    .data-card p {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    /* Enhanced Toast */
+    .toast {
+      position: relative;
+      padding: 16px 24px 16px 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      background: rgba(31, 41, 55, 0.85);
+      border-left: 4px solid;
+      display: flex;
+      align-items: flex-start;
+      transform: translateX(100%);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .toast.hide {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    .toast-icon {
+      margin-right: 12px;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .toast-content {
+      flex: 1;
+    }
+    .toast-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .toast-message {
+      font-size: 14px;
+      color: #d1d5db;
+    }
+    .toast-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+    .toast-close:hover {
+      color: white;
+    }
+    .toast-success {
+      border-left-color: var(--success);
+    }
+    .toast-success .toast-icon {
+      color: var(--success);
+    }
+    .toast-error {
+      border-left-color: var(--danger);
+    }
+    .toast-error .toast-icon {
+      color: var(--danger);
+    }
+    .toast-warning {
+      border-left-color: var(--warning);
+    }
+    .toast-warning .toast-icon {
+      color: var(--warning);
+    }
+    .toast-info {
+      border-left-color: var(--primary);
+    }
+    .toast-info .toast-icon {
+      color: var(--primary);
     }
     
     /* Responsive additions */
@@ -398,10 +495,8 @@
 </head>
 <body class="h-full min-h-screen text-white flex flex-col items-center p-4 responsive-padding">
 
-  <!-- Modern Toast Notifications -->
-  <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80 md:w-96">
-    <!-- Toast messages will be displayed here -->
-  </div>
+  <!-- Modern Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 max-w-md w-full"></div>
 
   <!-- PWA Install Button -->
   <div id="installBtn" class="install-btn hidden">
@@ -432,8 +527,9 @@
           <li>Answering questions about ViewTV</li>
           <li>Checking server status</li>
           <li>Finding content recommendations</li>
+          <li>Analyzing your viewing habits</li>
         </ul>
-        <p class="text-xs text-cyan-300 mt-3">Try saying: "What does error 404 mean?" or "Help me with a streaming issue"</p>
+        <p class="text-xs text-cyan-300 mt-3">Try saying: "What does error 404 mean?" or "Analyze my viewing habits"</p>
       </div>
     </div>
     <div class="ai-input">
@@ -618,60 +714,103 @@
 
   <!-- JavaScript -->
   <script>
-    // Toast Auto Dismiss
-    window.addEventListener('DOMContentLoaded', () => {
-      const toasts = document.querySelectorAll('.toast-entry');
-      toasts.forEach((toast) => {
-        setTimeout(() => {
-          toast.classList.add('toast-exit');
-          setTimeout(() => toast.remove(), 500);
-        }, 5000);
+    // ================== Toast System ==================
+    class ToastSystem {
+      constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        this.toasts = [];
+      }
+      
+      showToast(type, title, message, duration = 5000) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
         
-        // Add click handler to close button if not already present
-        const closeBtn = toast.querySelector('button');
-        if (closeBtn && !closeBtn.getAttribute('data-has-listener')) {
-          closeBtn.setAttribute('data-has-listener', 'true');
-          closeBtn.addEventListener('click', () => {
-            toast.classList.add('toast-exit');
-            setTimeout(() => toast.remove(), 500);
-          });
+        // Map types to icons
+        const icons = {
+          success: 'fa-circle-check',
+          error: 'fa-circle-exclamation',
+          warning: 'fa-triangle-exclamation',
+          info: 'fa-circle-info'
+        };
+        
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="fas ${icons[type] || 'fa-circle-info'}"></i>
+          </div>
+          <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+          </div>
+          <button class="toast-close">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        
+        this.container.appendChild(toast);
+        
+        // Trigger reflow to enable animation
+        void toast.offsetWidth;
+        
+        // Show toast
+        toast.classList.add('show');
+        
+        // Add close functionality
+        const closeBtn = toast.querySelector('.toast-close');
+        closeBtn.addEventListener('click', () => {
+          this.removeToast(toast);
+        });
+        
+        // Auto-dismiss
+        if (duration > 0) {
+          setTimeout(() => {
+            this.removeToast(toast);
+          }, duration);
         }
+        
+        this.toasts.push(toast);
+        return toast;
+      }
+      
+      removeToast(toast) {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+          this.toasts = this.toasts.filter(t => t !== toast);
+        }, 300);
+      }
+      
+      clearAll() {
+        this.toasts.forEach(toast => {
+          this.removeToast(toast);
+        });
+      }
+    }
+    
+    // Initialize toast system
+    const toastSystem = new ToastSystem('toast-container');
+    
+    // Show server messages as toasts
+    function showServerToasts() {
+      const messages = [
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+          { type: "{{ category }}", message: "{{ message }}" }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ];
+      
+      messages.forEach(msg => {
+        toastSystem.showToast(
+          msg.type || 'info',
+          msg.type.charAt(0).toUpperCase() + msg.type.slice(1) + ' Message',
+          msg.message
+        );
       });
-    });
-
-    // PWA Install Prompt
-    let deferredPrompt;
-    const installBtn = document.getElementById('installBtn');
+    }
     
-    window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent the mini-infobar from appearing on mobile
-      e.preventDefault();
-      // Stash the event so it can be triggered later
-      deferredPrompt = e;
-      // Show the install button
-      installBtn.classList.remove('hidden');
-    });
-    
-    installBtn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      
-      // Show the install prompt
-      deferredPrompt.prompt();
-      
-      // Wait for the user to respond to the prompt
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      // Optionally, send analytics event with outcome of user choice
-      console.log(`User response to the install prompt: ${outcome}`);
-      
-      // We've used the prompt, and can't use it again, throw it away
-      deferredPrompt = null;
-      
-      // Hide the install button
-      installBtn.classList.add('hidden');
-    });
-
-    // Enhanced AI Assistant Functionality
+    // ================== AI Assistant ==================
     const aiAssistant = document.getElementById('aiAssistant');
     const aiPanel = document.getElementById('aiPanel');
     const closeAiPanel = document.getElementById('closeAiPanel');
@@ -683,71 +822,36 @@
     const clearChatBtn = document.getElementById('clearChatBtn');
     let recognition;
     let conversationContext = {};
+    let aiIsThinking = false;
     
     // Initialize speech recognition if available
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.lang = 'en-US';
-      
-      recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript;
-        aiInput.value = transcript;
-        processAiMessage(transcript);
-      };
-      
-      recognition.onend = function() {
-        aiAssistant.classList.remove('listening');
-      };
+    function initSpeechRecognition() {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          aiInput.value = transcript;
+          processAiMessage(transcript);
+        };
+        
+        recognition.onerror = function(event) {
+          console.error('Speech recognition error', event.error);
+          addMessageToChat("Speech recognition error: " + event.error, 'ai', 'error');
+        };
+        
+        recognition.onend = function() {
+          aiAssistant.classList.remove('listening');
+        };
+      }
     }
     
-    aiAssistant.addEventListener('click', () => {
-      aiPanel.classList.toggle('active');
-      
-      if (recognition && !aiPanel.classList.contains('active')) {
-        recognition.stop();
-      }
-    });
-    
-    closeAiPanel.addEventListener('click', () => {
-      aiPanel.classList.remove('active');
-    });
-    
-    sendAiMessage.addEventListener('click', () => {
-      if (aiInput.value.trim() !== '') {
-        processAiMessage(aiInput.value);
-        aiInput.value = '';
-      }
-    });
-    
-    aiInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && aiInput.value.trim() !== '') {
-        processAiMessage(aiInput.value);
-        aiInput.value = '';
-      }
-    });
-    
-    voiceCommandBtn.addEventListener('click', () => {
-      if (recognition) {
-        aiAssistant.classList.add('listening');
-        recognition.start();
-        addMessageToChat("Listening... Speak now", 'ai');
-      } else {
-        addMessageToChat("Voice commands not supported in your browser", 'ai');
-      }
-    });
-    
-    helpBtn.addEventListener('click', () => {
-      addMessageToChat("What can I help you with? Here are some ideas:\n- How do I watch Premier League?\n- Why am I getting error 404?\n- How do I upgrade to Plus?", 'ai');
-    });
-    
-    clearChatBtn.addEventListener('click', () => {
-      aiChat.innerHTML = '';
-      conversationContext = {};
-      addMessageToChat("Hi there! I'm your friendly ViewTV assistant. 😊 How can I help you today?", 'ai');
-    });
-    
+    // Enhanced typing indicator with animation
     function showTypingIndicator() {
       const typingIndicator = document.createElement('div');
       typingIndicator.id = 'typing-indicator';
@@ -766,74 +870,151 @@
       if (typingIndicator) typingIndicator.remove();
     }
     
-    function processAiMessage(message) {
-      // Add user message to chat
-      addMessageToChat(message, 'user');
-      
-      // Store message in context
-      conversationContext.lastMessage = message;
-      
-      // Show typing indicator
-      showTypingIndicator();
-      
-      // Process the message and generate AI response
-      setTimeout(() => {
-        hideTypingIndicator();
-        const response = generateAiResponse(message);
-        addMessageToChat(response.content, 'ai', response.type);
-        
-        // If response has web search, add it
-        if (response.webSearch) {
-          addWebSearchResult(message);
-        }
-        
-        // If response has action, perform it
-        if (response.action) {
-          performAction(response.action);
-        }
-      }, 1500);
-    }
-    
-    function addMessageToChat(message, sender, type = '') {
+    function addMessageToChat(message, sender, type = '', additionalData = null) {
       const messageDiv = document.createElement('div');
       messageDiv.classList.add('ai-message');
+      
       if (sender === 'user') messageDiv.classList.add('user');
-      if (type === 'error') messageDiv.classList.add('error');
-      if (type === 'warning') messageDiv.classList.add('warning');
-      if (type === 'info') messageDiv.classList.add('info');
+      if (type) messageDiv.classList.add(type);
       
       messageDiv.innerHTML = `<p>${message}</p>`;
       aiChat.appendChild(messageDiv);
       
-      // Scroll to bottom
-      aiChat.scrollTop = aiChat.scrollHeight;
-    }
-    
-    function addWebSearchResult(query) {
-      const webSearchDiv = document.createElement('div');
-      webSearchDiv.classList.add('ai-web-search');
-      webSearchDiv.innerHTML = `
-        <p class="text-sm">I searched the web for: <strong>${query}</strong></p>
-        <p class="text-xs mt-1">Here are some helpful links:</p>
-        <ul class="text-xs mt-1 space-y-1">
-          <li><a href="https://www.google.com/search?q=${encodeURIComponent(query + ' site:viewtv.com')}" target="_blank">ViewTV Support</a></li>
-          <li><a href="https://www.google.com/search?q=${encodeURIComponent('streaming ' + query)}" target="_blank">General Streaming Help</a></li>
-          <li><a href="https://www.google.com/search?q=${encodeURIComponent(query)}" target="_blank">Web Search Results</a></li>
-        </ul>
-      `;
-      aiChat.appendChild(webSearchDiv);
+      // Add additional data if provided
+      if (additionalData) {
+        if (additionalData.type === 'chart') {
+          const chartContainer = document.createElement('div');
+          chartContainer.className = 'chart-container';
+          chartContainer.innerHTML = `<canvas id="${additionalData.id}"></canvas>`;
+          messageDiv.appendChild(chartContainer);
+        } else if (additionalData.type === 'data-grid') {
+          const dataGrid = document.createElement('div');
+          dataGrid.className = 'ai-data-grid';
+          
+          additionalData.items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'data-card';
+            card.innerHTML = `
+              <h4>${item.title}</h4>
+              <p>${item.value}</p>
+            `;
+            dataGrid.appendChild(card);
+          });
+          
+          messageDiv.appendChild(dataGrid);
+        }
+      }
       
       // Scroll to bottom
       aiChat.scrollTop = aiChat.scrollHeight;
     }
     
+    // Generate mock viewing habits data
+    function generateViewingHabits() {
+      const categories = ['Sports', 'Movies', 'News', 'Kids', 'Documentaries', 'Music'];
+      const data = {};
+      
+      categories.forEach(category => {
+        data[category] = Math.floor(Math.random() * 100) + 20;
+      });
+      
+      // Normalize to 100% total
+      const total = Object.values(data).reduce((sum, val) => sum + val, 0);
+      Object.keys(data).forEach(key => {
+        data[key] = Math.round((data[key] / total) * 100);
+      });
+      
+      return data;
+    }
+    
+    // Render chart for viewing habits
+    function renderViewingHabitsChart(canvasId, data) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+      
+      // Generate gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, 150);
+      gradient.addColorStop(0, 'rgba(6, 182, 212, 0.6)');
+      gradient.addColorStop(1, 'rgba(6, 182, 212, 0.1)');
+      
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            label: 'Viewing Time %',
+            data: Object.values(data),
+            backgroundColor: gradient,
+            borderColor: 'rgba(6, 182, 212, 1)',
+            borderWidth: 1,
+            borderRadius: 6,
+            barPercentage: 0.6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: '#9ca3af'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: '#9ca3af'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(31, 41, 55, 0.9)',
+              titleColor: '#f3f4f6',
+              bodyColor: '#d1d5db',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: 1,
+              padding: 10,
+              cornerRadius: 8
+            }
+          }
+        }
+      });
+    }
+    
+    // Generate mock user analytics
+    function generateUserAnalytics() {
+      return {
+        totalHours: Math.floor(Math.random() * 100) + 50,
+        favoriteCategory: ['Sports', 'Movies', 'News'][Math.floor(Math.random() * 3)],
+        peakHours: `${Math.floor(Math.random() * 6) + 6} PM - ${Math.floor(Math.random() * 6) + 8} PM`,
+        completionRate: Math.floor(Math.random() * 40) + 60,
+        devices: {
+          mobile: Math.floor(Math.random() * 60) + 20,
+          desktop: Math.floor(Math.random() * 30) + 10,
+          tv: Math.floor(Math.random() * 20) + 5
+        }
+      };
+    }
+    
+    // Enhanced AI response generation
     function generateAiResponse(message) {
       const lowerMessage = message.toLowerCase();
       
       // Handle error codes
-      if (/\b(404|500|502|403|401|400)\b/.test(message)) {
+      const errorMatch = message.match(/\b(404|500|502|403|401|400)\b/);
+      if (errorMatch) {
         return {
-          content: explainErrorCode(message.match(/\b(404|500|502|403|401|400)\b/)[0]),
+          content: explainErrorCode(errorMatch[0]),
           type: 'error',
           webSearch: true
         };
@@ -845,6 +1026,69 @@
           content: "I've checked our server status: 🟢 All systems are operational!\n\n" +
                    "If you're experiencing issues, it might be a local connection problem. Try refreshing or checking your internet connection.",
           type: 'info'
+        };
+      }
+      
+      // Handle viewing habits analysis
+      if (lowerMessage.includes('viewing habits') || lowerMessage.includes('watch history') || 
+          lowerMessage.includes('analytics')) {
+        const viewingHabits = generateViewingHabits();
+        const analytics = generateUserAnalytics();
+        
+        const chartId = 'viewingHabitsChart-' + Date.now();
+        
+        setTimeout(() => {
+          renderViewingHabitsChart(chartId, viewingHabits);
+        }, 100);
+        
+        return {
+          content: "Here's an analysis of your viewing habits:\n\n" +
+                   `📊 Total viewing time: ${analytics.totalHours} hours\n` +
+                   `⭐ Favorite category: ${analytics.favoriteCategory}\n` +
+                   `⏰ Peak viewing hours: ${analytics.peakHours}\n` +
+                   `✅ Content completion rate: ${analytics.completionRate}%\n\n` +
+                   "Device usage distribution:",
+          type: 'data',
+          additionalData: {
+            type: 'chart',
+            id: chartId
+          }
+        };
+      }
+      
+      // Handle content recommendations
+      if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest') || 
+          lowerMessage.includes('what to watch')) {
+        return {
+          content: "Based on your viewing habits, I recommend these:\n\n" +
+                   "🎬 Action Movies: 'The Last Stand' - 85% match\n" +
+                   "⚽ Live Sports: Premier League highlights\n" +
+                   "📺 Series: 'The Crown' Season 4\n" +
+                   "🎵 Music: Top Hits Playlist\n\n" +
+                   "Would you like me to add any to your watchlist?",
+          type: 'success',
+          action: 'update_recommendations'
+        };
+      }
+      
+      // Handle account analytics
+      if (lowerMessage.includes('account stats') || lowerMessage.includes('usage analytics')) {
+        const analytics = generateUserAnalytics();
+        
+        return {
+          content: "Your account analytics:\n",
+          type: 'data',
+          additionalData: {
+            type: 'data-grid',
+            items: [
+              { title: "Total Hours", value: `${analytics.totalHours}h` },
+              { title: "Favorite Category", value: analytics.favoriteCategory },
+              { title: "Peak Hours", value: analytics.peakHours },
+              { title: "Completion Rate", value: `${analytics.completionRate}%` },
+              { title: "Mobile Usage", value: `${analytics.devices.mobile}%` },
+              { title: "Desktop Usage", value: `${analytics.devices.desktop}%` }
+            ]
+          }
         };
       }
       
@@ -920,14 +1164,6 @@
           content: "Our curated playlists are perfect for you! Taking you to View TV Playlists.",
           type: 'info',
           action: 'navigate_playlists'
-        };
-      }
-      else if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest') || 
-               lowerMessage.includes('what to watch')) {
-        return {
-          content: "Based on your preferences, I've updated your recommendations with content you might enjoy!",
-          type: 'info',
-          action: 'update_recommendations'
         };
       }
       else if (lowerMessage.includes('help') || lowerMessage.includes('support') || 
@@ -1011,6 +1247,57 @@
       return explanations[code] || `Error ${code}: This is a server error. Please try again later or contact support if the problem persists.`;
     }
     
+    function processAiMessage(message) {
+      if (aiIsThinking) return;
+      
+      // Add user message to chat
+      addMessageToChat(message, 'user');
+      
+      // Store message in context
+      conversationContext.lastMessage = message;
+      
+      // Show typing indicator
+      showTypingIndicator();
+      aiIsThinking = true;
+      
+      // Process the message and generate AI response
+      setTimeout(() => {
+        hideTypingIndicator();
+        const response = generateAiResponse(message);
+        addMessageToChat(response.content, 'ai', response.type, response.additionalData);
+        
+        // If response has web search, add it
+        if (response.webSearch) {
+          addWebSearchResult(message);
+        }
+        
+        // If response has action, perform it
+        if (response.action) {
+          performAction(response.action);
+        }
+        
+        aiIsThinking = false;
+      }, 1500);
+    }
+    
+    function addWebSearchResult(query) {
+      const webSearchDiv = document.createElement('div');
+      webSearchDiv.classList.add('ai-web-search');
+      webSearchDiv.innerHTML = `
+        <p class="text-sm">I searched the web for: <strong>${query}</strong></p>
+        <p class="text-xs mt-1">Here are some helpful links:</p>
+        <ul class="text-xs mt-1 space-y-1">
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent(query + ' site:viewtv.com')}" target="_blank">ViewTV Support</a></li>
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent('streaming ' + query)}" target="_blank">General Streaming Help</a></li>
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent(query)}" target="_blank">Web Search Results</a></li>
+        </ul>
+      `;
+      aiChat.appendChild(webSearchDiv);
+      
+      // Scroll to bottom
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
     function performAction(action) {
       switch(action) {
         case 'navigate_sports':
@@ -1087,53 +1374,96 @@
       });
     }
     
-    // Initialize recommendations
-    generateSmartRecommendations();
-    
-    // Server-side toast simulation
-    function showServerToasts() {
-      const toastContainer = document.getElementById('toast-container');
+    // Initialize the AI assistant
+    function initAIAssistant() {
+      aiAssistant.addEventListener('click', () => {
+        aiPanel.classList.toggle('active');
+        
+        if (recognition && !aiPanel.classList.contains('active')) {
+          recognition.stop();
+        }
+      });
       
-      serverMessages.forEach(msg => {
-        const toast = document.createElement('div');
-        toast.className = `toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 bg-gray-800 ${
-          msg.type === 'success' ? 'border-emerald-500' : 
-          msg.type === 'error' ? 'border-red-500' : 
-          msg.type === 'warning' ? 'border-yellow-500' : 'border-blue-500'
-        }`;
-        
-        toast.innerHTML = `
-          <div class="flex items-start">
-            <div class="flex-shrink-0 pt-0.5">
-              <svg class="h-5 w-5 ${
-                msg.type === 'success' ? 'text-emerald-400' : 
-                msg.type === 'error' ? 'text-red-400' : 
-                msg.type === 'warning' ? 'text-yellow-400' : 'text-blue-400'
-              }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${
-                  msg.type === 'success' ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 
-                  msg.type === 'error' ? 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' : 
-                  'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'
-                }" />
-              </svg>
-            </div>
-            <div class="ml-3 flex-1">
-              <p class="text-sm">${msg.message}</p>
-            </div>
-            <button class="absolute top-3 right-3 text-gray-400 hover:text-white">
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        `;
-        
-        toastContainer.appendChild(toast);
+      closeAiPanel.addEventListener('click', () => {
+        aiPanel.classList.remove('active');
+      });
+      
+      sendAiMessage.addEventListener('click', () => {
+        if (aiInput.value.trim() !== '') {
+          processAiMessage(aiInput.value);
+          aiInput.value = '';
+        }
+      });
+      
+      aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && aiInput.value.trim() !== '') {
+          processAiMessage(aiInput.value);
+          aiInput.value = '';
+        }
+      });
+      
+      voiceCommandBtn.addEventListener('click', () => {
+        if (recognition) {
+          aiAssistant.classList.add('listening');
+          recognition.start();
+          addMessageToChat("Listening... Speak now", 'ai');
+        } else {
+          addMessageToChat("Voice commands not supported in your browser", 'ai');
+        }
+      });
+      
+      helpBtn.addEventListener('click', () => {
+        addMessageToChat("What can I help you with? Here are some ideas:\n- How do I watch Premier League?\n- Why am I getting error 404?\n- How do I upgrade to Plus?\n- Analyze my viewing habits", 'ai');
+      });
+      
+      clearChatBtn.addEventListener('click', () => {
+        aiChat.innerHTML = '';
+        conversationContext = {};
+        addMessageToChat("Hi there! I'm your friendly ViewTV assistant. 😊 How can I help you today?", 'ai');
       });
     }
     
-    // Show server toasts on load
-    window.addEventListener('DOMContentLoaded', showServerToasts);
+    // PWA Install Prompt
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.classList.remove('hidden');
+    });
+    
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      console.log(`User response to the install prompt: ${outcome}`);
+      deferredPrompt = null;
+      installBtn.classList.add('hidden');
+    });
+    
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize toast system with server messages
+      showServerToasts();
+      
+      // Initialize AI assistant
+      initSpeechRecognition();
+      initAIAssistant();
+      
+      // Generate initial recommendations
+      generateSmartRecommendations();
+      
+      // Add sample analytics toast
+      toastSystem.showToast(
+        'info', 
+        'New Feature', 
+        'Try asking our AI assistant to "analyze my viewing habits" for personalized insights!',
+        8000
+      );
+    });
   </script>
 </body>
 </html>

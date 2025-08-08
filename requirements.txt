@@ -33,6 +33,7 @@ beautifulsoup4
 lxml
 
 #ML & Data Science
+numpy
 scikit-learn
 python-Levenshtein
 

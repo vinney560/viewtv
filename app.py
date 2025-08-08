@@ -120,18 +120,7 @@ app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
 
-now_utc = datetime.utcnow()
-# Nairobi is UTC+3
-now_eat = now_utc + timedelta(hours=3)
-# Calculate next midnight in EAT (using datetime.time(0, 0, 0) instead of time.min)
-next_midnight_eat = datetime.combine(
-    now_eat.date() + timedelta(days=1), 
-    datetime.time(0, 0, 0)  # Explicitly create midnight time
-)
-# Get seconds until that midnight (back in UTC)
-seconds_until_midnight = (next_midnight_eat - now_eat).total_seconds()
-# Apply session expiration
-app.permanent_session_lifetime = timedelta(seconds=seconds_until_midnight)
+app.permanent_session_lifetime = timedelta(hours=12)
 
 class CustomCSRFProtect(CSRFProtect):
     def _get_token(self):

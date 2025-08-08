@@ -2935,8 +2935,6 @@ def set_notice():
 #      AI FEATURES 
 #========================================
 
-import datetime
-
 # ------------------------ Config ------------------------
 HISTORY_FILE = "history.json"
 HISTORY_LIMIT = 50   # per channel keep-last checks
@@ -3032,6 +3030,7 @@ def check_url_status(url):
     except Exception:
         return "dead"
 
+import datetime
 def uptime_stats_for_url(url):
     """Compute uptime percentage over stored history for this URL."""
     records = history_store.get(url, [])

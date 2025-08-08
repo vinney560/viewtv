@@ -120,7 +120,7 @@ app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
 
-app.permanent_session_lifetime = timedelta(hours=12)
+app.permanent_session_lifetime = timedelta(hours=732)
 
 class CustomCSRFProtect(CSRFProtect):
     def _get_token(self):
@@ -310,7 +310,7 @@ def load_user(user_id):
         return None
 #-----------------------------------------------------------------------
 def is_admin():
-    return session.get('role') == 'admin'
+    return session.get('role') == 'admin1'
 #----------------------------------------------------------------------
 @app.before_request
 def bypass_csrf_for_api():

@@ -198,12 +198,12 @@
                                 {% set has_port = ':' in domain_port %}
                                 
                                 {% if is_ip or has_port %}
-                                    <a href="{{ channel_url }}" target="_blank" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
+                                    <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
                                 {% else %}
                                     <a href="{{ url_for('plus_play', key=channel.key) }}">
                                 {% endif %}
                             {% else %}
-                                <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" target="_blank" class="block h-full">
+                                <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}"  class="block h-full">
                             {% endif %}
                         {% else %}
                             <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">

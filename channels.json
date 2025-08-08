@@ -319,6 +319,24 @@
     "url": "https://ca-rt.onetv.app/gemdrama/index-0.m3u8",
     "group-title": "Entertainment"
   },
+  "littlehappytv": {
+    "name": "Little Happy Tv",
+    "url": "https://player.twitch.tv:443/?channel=littlehappytv&enableExtensions=true&muted=true&parent=twitch.tv&player=popout&quality=auto&volume=0.5",
+    "access": "free",
+    "group-title": "Animation"
+  },
+  "mediacartoontv": {
+    "name": "Media Cartoon Tv",
+    "url": "https://player.twitch.tv:443/?channel=mediacartoontv&enableExtensions=true&muted=true&parent=twitch.tv&player=popout&quality=auto&volume=0.5",
+    "access": "free",
+    "group-title": "Animation"
+  },
+  "tfn_tv": {
+    "name": "TFN Tv",
+    "url": "https://player.twitch.tv:443/?channel=tfn_tv&enableExtensions=true&muted=true&parent=twitch.tv&player=popout&quality=auto&volume=0.5",
+    "access": "free",
+    "group-title": "Animation"
+  },
   "gem-jr": {
     "name": "GEM JR",
     "access": "paid",

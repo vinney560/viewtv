@@ -80,6 +80,99 @@
             opacity: 0.7;
             filter: grayscale(80%);
         }
+        /* New styles */
+        .recommended-section {
+            margin-bottom: 2rem;
+        }
+        .recommended-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 1rem;
+            gap: 1rem;
+        }
+        .recommended-container::-webkit-scrollbar {
+            display: none;
+        }
+        .recommended-card {
+            flex: 0 0 auto;
+            width: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .recommended-card:hover {
+            transform: scale(1.03);
+        }
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(31, 41, 55, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .scroll-btn.left {
+            left: 10px;
+        }
+        .scroll-btn.right {
+            right: 10px;
+        }
+        .recommended-section:hover .scroll-btn {
+            opacity: 1;
+        }
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(6, 182, 212, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            transform: scale(1.1);
+            background: rgba(6, 182, 212, 1);
+        }
+        .highlight-pulse {
+            animation: highlightPulse 2s infinite;
+        }
+        @keyframes highlightPulse {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #06b6d4;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="text-white flex flex-col min-h-screen">
@@ -166,6 +259,33 @@
     <!-- Main Content -->
     <main class="channels-container flex-grow">
         <div class="container mx-auto px-4 py-6">
+            <!-- Recommended Section -->
+            <section class="recommended-section mb-10">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
+                        <i class="fas fa-star mr-3 text-yellow-400"></i>
+                        Recommended For You
+                    </h2>
+                    <button id="refresh-recommended" class="text-xs bg-cyan-900/30 text-cyan-300 px-3 py-1 rounded-full hover:bg-cyan-800/50 transition flex items-center">
+                        <span id="refresh-text">Refresh</span>
+                        <span id="refresh-icon" class="ml-1"></span>
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <div class="recommended-container" id="recommendedChannels">
+                        <!-- Recommended channels will be injected here by JavaScript -->
+                    </div>
+                    <button class="scroll-btn left" onclick="scrollRecommended(-300)">
+                        <i class="fas fa-chevron-left text-white"></i>
+                    </button>
+                    <button class="scroll-btn right" onclick="scrollRecommended(300)">
+                        <i class="fas fa-chevron-right text-white"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Regular Channel Categories -->
             {% for group_title, group_channels in categorized_channels.items() %}
             <section class="mb-10 channel-group" id="{{ group_title | lower | replace(' ', '-') }}" data-category="{{ group_title | lower }}">
                 <div class="flex items-center justify-between mb-4">
@@ -200,10 +320,10 @@
                                 {% if is_ip or has_port %}
                                     <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
                                 {% else %}
-                                    <a href="{{ url_for('plus_play', key=channel.key) }}">
+                                    <a href="{{ url_for('plus_play', key=channel.key) }}" target="_blank">
                                 {% endif %}
                             {% else %}
-                                <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}"  class="block h-full">
+                                <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" class="block h-full">
                             {% endif %}
                         {% else %}
                             <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">
@@ -263,6 +383,13 @@
         </div>
     </footer>
 
+    <!-- Back to Top Button -->
+    <div class="back-btn" id="backToTop" title="Back to Top">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </div>
+
     <!-- JavaScript -->
     <script>
         // Search functionality
@@ -307,6 +434,49 @@
                         setTimeout(() => toast.remove(), 500);
                     });
                 }
+            });
+
+            // Initialize recommended channels
+            generateRecommendedChannels();
+
+            // Set up back to top button
+            const backButton = document.getElementById('backToTop');
+            backButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Show/hide back button based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backButton.style.display = 'flex';
+                } else {
+                    backButton.style.display = 'none';
+                }
+            });
+
+            // Set up refresh recommended button
+            document.getElementById('refresh-recommended').addEventListener('click', function() {
+                const icon = document.getElementById('refresh-icon');
+                const text = document.getElementById('refresh-text');
+                
+                // Show loading spinner
+                icon.innerHTML = '<div class="loading-spinner"></div>';
+                text.textContent = 'Refreshing';
+                
+                // Generate new recommendations after a short delay
+                setTimeout(() => {
+                    generateRecommendedChannels();
+                    icon.innerHTML = '';
+                    text.textContent = 'Refreshed!';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        text.textContent = 'Refresh';
+                    }, 2000);
+                }, 800);
             });
         });
 
@@ -379,6 +549,51 @@
                 event.preventDefault();
                 return false;
             }
+        }
+
+        // Generate recommended channels
+        function generateRecommendedChannels() {
+            const container = document.getElementById('recommendedChannels');
+            container.innerHTML = '';
+            
+            // Get all channels
+            const allChannels = [];
+            document.querySelectorAll('.channel-card').forEach(card => {
+                if (!card.classList.contains('invalid-channel')) {
+                    allChannels.push({
+                        name: card.dataset.name,
+                        element: card.cloneNode(true)
+                    });
+                }
+            });
+            
+            // Shuffle array and pick 10 random channels
+            const shuffled = allChannels.sort(() => 0.5 - Math.random());
+            const recommended = shuffled.slice(0, 10);
+            
+            // Add to container with highlight effect
+            recommended.forEach((channel, index) => {
+                const card = channel.element;
+                card.classList.add('recommended-card');
+                card.classList.add('highlight-pulse');
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                // Remove highlight after animation completes
+                setTimeout(() => {
+                    card.classList.remove('highlight-pulse');
+                }, 2000 + (index * 100));
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Scroll recommended channels horizontally
+        function scrollRecommended(amount) {
+            const container = document.getElementById('recommendedChannels');
+            container.scrollBy({
+                left: amount,
+                behavior: 'smooth'
+            });
         }
     </script>
 </body>

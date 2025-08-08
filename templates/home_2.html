@@ -338,6 +338,31 @@
       text-decoration: underline;
     }
     
+    /* Enhanced AI Typing Indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(31, 41, 55, 0.5);
+      border-radius: 18px;
+      width: fit-content;
+    }
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      margin: 0 2px;
+      background-color: #9ca3af;
+      border-radius: 50%;
+      animation: typing-dot 1.4s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing-dot {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+    
     /* Responsive additions */
     @media (max-width: 640px) {
       .responsive-flex {
@@ -405,6 +430,8 @@
           <li>Providing troubleshooting tips</li>
           <li>Searching the web for answers</li>
           <li>Answering questions about ViewTV</li>
+          <li>Checking server status</li>
+          <li>Finding content recommendations</li>
         </ul>
         <p class="text-xs text-cyan-300 mt-3">Try saying: "What does error 404 mean?" or "Help me with a streaming issue"</p>
       </div>
@@ -655,6 +682,7 @@
     const helpBtn = document.getElementById('helpBtn');
     const clearChatBtn = document.getElementById('clearChatBtn');
     let recognition;
+    let conversationContext = {};
     
     // Initialize speech recognition if available
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -711,20 +739,46 @@
     });
     
     helpBtn.addEventListener('click', () => {
-      addMessageToChat("What can I help you with?", 'ai');
+      addMessageToChat("What can I help you with? Here are some ideas:\n- How do I watch Premier League?\n- Why am I getting error 404?\n- How do I upgrade to Plus?", 'ai');
     });
     
     clearChatBtn.addEventListener('click', () => {
       aiChat.innerHTML = '';
+      conversationContext = {};
       addMessageToChat("Hi there! I'm your friendly ViewTV assistant. 😊 How can I help you today?", 'ai');
     });
+    
+    function showTypingIndicator() {
+      const typingIndicator = document.createElement('div');
+      typingIndicator.id = 'typing-indicator';
+      typingIndicator.className = 'typing-indicator';
+      typingIndicator.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      `;
+      aiChat.appendChild(typingIndicator);
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    function hideTypingIndicator() {
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) typingIndicator.remove();
+    }
     
     function processAiMessage(message) {
       // Add user message to chat
       addMessageToChat(message, 'user');
       
+      // Store message in context
+      conversationContext.lastMessage = message;
+      
+      // Show typing indicator
+      showTypingIndicator();
+      
       // Process the message and generate AI response
       setTimeout(() => {
+        hideTypingIndicator();
         const response = generateAiResponse(message);
         addMessageToChat(response.content, 'ai', response.type);
         
@@ -732,7 +786,12 @@
         if (response.webSearch) {
           addWebSearchResult(message);
         }
-      }, 800);
+        
+        // If response has action, perform it
+        if (response.action) {
+          performAction(response.action);
+        }
+      }, 1500);
     }
     
     function addMessageToChat(message, sender, type = '') {
@@ -780,6 +839,15 @@
         };
       }
       
+      // Handle server status
+      if (lowerMessage.includes('server status') || lowerMessage.includes('is server down')) {
+        return {
+          content: "I've checked our server status: 🟢 All systems are operational!\n\n" +
+                   "If you're experiencing issues, it might be a local connection problem. Try refreshing or checking your internet connection.",
+          type: 'info'
+        };
+      }
+      
       // Handle common issues
       if (lowerMessage.includes('not working') || 
           lowerMessage.includes('problem') || 
@@ -787,76 +855,143 @@
           lowerMessage.includes('trouble') ||
           lowerMessage.includes('error')) {
         return {
-          content: "I'm sorry you're having trouble. Let me help you troubleshoot. First, try refreshing the page or restarting the app. If that doesn't work, check your internet connection. Still having issues? I can search for specific solutions.",
+          content: "I'm sorry you're having trouble. Let me help you troubleshoot:\n\n" +
+                   "1. Try refreshing the page or restarting the app\n" +
+                   "2. Check your internet connection\n" +
+                   "3. Clear your browser cache\n" +
+                   "4. Try a different browser\n\n" +
+                   "If these don't help, I can search for more specific solutions.",
           type: 'warning',
           webSearch: true
         };
       }
       
+      // Handle subscription questions
+      if (lowerMessage.includes('plus') || lowerMessage.includes('premium') || 
+          lowerMessage.includes('subscription') || lowerMessage.includes('upgrade')) {
+        return {
+          content: "ViewTV Plus offers:\n\n" +
+                   "✅ Ad-free experience\n" +
+                   "✅ Exclusive sports events\n" +
+                   "✅ Premium movie library\n" +
+                   "✅ HD streaming quality\n\n" +
+                   "You can upgrade from your account page or by visiting our Plus section.",
+          type: 'info',
+          action: 'navigate_plus'
+        };
+      }
+      
       // Handle content navigation
-      if (lowerMessage.includes('sport') || lowerMessage.includes('football') || lowerMessage.includes('game')) {
+      if (lowerMessage.includes('sport') || lowerMessage.includes('football') || 
+          lowerMessage.includes('game') || lowerMessage.includes('match')) {
         return {
           content: "Taking you to Sports content. You'll find live matches, highlights, and sports news there!",
-          type: 'info'
+          type: 'info',
+          action: 'navigate_sports'
         };
       }
-      else if (lowerMessage.includes('movie') || lowerMessage.includes('film')) {
+      else if (lowerMessage.includes('movie') || lowerMessage.includes('film') || 
+               lowerMessage.includes('cinema')) {
         return {
           content: "I've found some great movies for you. Taking you to our Movies section!",
-          type: 'info'
+          type: 'info',
+          action: 'navigate_movies'
         };
       }
-      else if (lowerMessage.includes('category') || lowerMessage.includes('type')) {
+      else if (lowerMessage.includes('category') || lowerMessage.includes('type') || 
+               lowerMessage.includes('genre')) {
         return {
           content: "Let me show you our content categories. You can browse by genre, topic, or content type.",
-          type: 'info'
+          type: 'info',
+          action: 'navigate_categories'
         };
       }
-      else if (lowerMessage.includes('country') || lowerMessage.includes('region')) {
+      else if (lowerMessage.includes('country') || lowerMessage.includes('region') || 
+               lowerMessage.includes('local')) {
         return {
           content: "You can browse content by country. I'll take you to our Countries section now.",
-          type: 'info'
+          type: 'info',
+          action: 'navigate_countries'
         };
       }
-      else if (lowerMessage.includes('playlist') || lowerMessage.includes('channel')) {
+      else if (lowerMessage.includes('playlist') || lowerMessage.includes('channel') || 
+               lowerMessage.includes('favorites')) {
         return {
           content: "Our curated playlists are perfect for you! Taking you to View TV Playlists.",
-          type: 'info'
+          type: 'info',
+          action: 'navigate_playlists'
         };
       }
-      else if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest')) {
+      else if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest') || 
+               lowerMessage.includes('what to watch')) {
         return {
           content: "Based on your preferences, I've updated your recommendations with content you might enjoy!",
-          type: 'info'
+          type: 'info',
+          action: 'update_recommendations'
         };
       }
-      else if (lowerMessage.includes('help') || lowerMessage.includes('support')) {
+      else if (lowerMessage.includes('help') || lowerMessage.includes('support') || 
+               lowerMessage.includes('faq')) {
         return {
           content: "You can find answers to common questions in our Help section. I'll take you there now.",
-          type: 'info'
+          type: 'info',
+          action: 'navigate_help'
         };
       }
-      else if (lowerMessage.includes('account') || lowerMessage.includes('profile')) {
+      else if (lowerMessage.includes('account') || lowerMessage.includes('profile') || 
+               lowerMessage.includes('settings')) {
         return {
           content: "Taking you to your account settings where you can manage your preferences and subscription.",
-          type: 'info'
+          type: 'info',
+          action: 'navigate_account'
         };
       }
-      else if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('hey')) {
+      else if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || 
+               lowerMessage.includes('hey') || lowerMessage.includes('greetings')) {
         return {
-          content: "Hello there! 😊 How can I assist you with ViewTV today?",
+          content: "Hello there! 😊 I'm your ViewTV assistant. I can help you navigate the platform, troubleshoot issues, or find content. What can I do for you today?",
           type: 'info'
         };
       }
       else if (lowerMessage.includes('thank')) {
         return {
-          content: "You're welcome! I'm here to help whenever you need assistance. 😊",
+          content: "You're very welcome! 😊 I'm here whenever you need assistance with ViewTV. Enjoy your streaming!",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('feature') || lowerMessage.includes('new') || 
+               lowerMessage.includes('update')) {
+        return {
+          content: "We recently added these exciting features:\n\n" +
+                   "✨ Enhanced AI assistant (that's me!)\n" +
+                   "✨ Smart content recommendations\n" +
+                   "✨ Voice command support\n" +
+                   "✨ Improved streaming quality\n\n" +
+                   "Stay tuned for more updates!",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('joke') || lowerMessage.includes('funny')) {
+        const jokes = [
+          "Why did the streamer bring a ladder to the cinema? Because they heard the movies were on another level!",
+          "What's a streamer's favorite exercise? Buffer-ing!",
+          "Why don't streaming services ever get lost? Because they always follow the bandwidth!",
+          "Why was the computer cold? It left its Windows open!"
+        ];
+        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+        return {
+          content: `Sure, here's a streaming joke for you:\n\n${randomJoke} 😄`,
           type: 'info'
         };
       }
       else {
         return {
-          content: "I'm not entirely sure about that, but I can help you search the web for answers!",
+          content: "I'm not entirely sure about that, but I can help you search the web for answers!\n\n" +
+                   "You can also ask me about:\n" +
+                   "- Streaming issues\n" +
+                   "- Content navigation\n" +
+                   "- Account settings\n" +
+                   "- ViewTV features",
           type: 'info',
           webSearch: true
         };
@@ -874,6 +1009,38 @@
       };
       
       return explanations[code] || `Error ${code}: This is a server error. Please try again later or contact support if the problem persists.`;
+    }
+    
+    function performAction(action) {
+      switch(action) {
+        case 'navigate_sports':
+          window.location.href = "{{ url_for('return_football') }}";
+          break;
+        case 'navigate_movies':
+          window.location.href = "{{ url_for('movieflix') }}";
+          break;
+        case 'navigate_categories':
+          window.location.href = "{{ url_for('categories') }}";
+          break;
+        case 'navigate_countries':
+          window.location.href = "{{ url_for('countries') }}";
+          break;
+        case 'navigate_playlists':
+          window.location.href = "{{ url_for('custom_list') }}";
+          break;
+        case 'navigate_help':
+          window.location.href = "{{ url_for('assistance') }}";
+          break;
+        case 'navigate_account':
+          window.location.href = "{{ url_for('account') }}";
+          break;
+        case 'navigate_plus':
+          window.location.href = "{{ url_for('get_plus') }}";
+          break;
+        case 'update_recommendations':
+          generateSmartRecommendations();
+          break;
+      }
     }
     
     // Generate smart recommendations
@@ -923,43 +1090,43 @@
     // Initialize recommendations
     generateSmartRecommendations();
     
-    // Add some sample toast notifications
-    setTimeout(() => {
+    // Server-side toast simulation
+    function showServerToasts() {
       const toastContainer = document.getElementById('toast-container');
       
-      const successToast = document.createElement('div');
-      successToast.className = 'toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 bg-gray-800 border-emerald-500';
-      successToast.innerHTML = `
-        <div class="flex items-start">
-          <div class="flex-shrink-0 pt-0.5">
-            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div class="ml-3 flex-1">
-            <p class="text-sm">Welcome to ViewTV! Your session has started.</p>
-          </div>
-          <button class="absolute top-3 right-3 text-gray-400 hover:text-white">
-            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      `;
-      toastContainer.appendChild(successToast);
+      // Simulated server messages
+      const serverMessages = [
+        { 
+          type: 'success', 
+          message: 'Welcome to ViewTV! Your session has started.' 
+        },
+      ];
       
-      setTimeout(() => {
-        const errorToast = document.createElement('div');
-        errorToast.className = 'toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 bg-gray-800 border-red-500';
-        errorToast.innerHTML = `
+      serverMessages.forEach(msg => {
+        const toast = document.createElement('div');
+        toast.className = `toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 bg-gray-800 ${
+          msg.type === 'success' ? 'border-emerald-500' : 
+          msg.type === 'error' ? 'border-red-500' : 
+          msg.type === 'warning' ? 'border-yellow-500' : 'border-blue-500'
+        }`;
+        
+        toast.innerHTML = `
           <div class="flex items-start">
             <div class="flex-shrink-0 pt-0.5">
-              <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg class="h-5 w-5 ${
+                msg.type === 'success' ? 'text-emerald-400' : 
+                msg.type === 'error' ? 'text-red-400' : 
+                msg.type === 'warning' ? 'text-yellow-400' : 'text-blue-400'
+              }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${
+                  msg.type === 'success' ? 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' : 
+                  msg.type === 'error' ? 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' : 
+                  'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'
+                }" />
               </svg>
             </div>
             <div class="ml-3 flex-1">
-              <p class="text-sm">Connection lost. Reconnecting...</p>
+              <p class="text-sm">${msg.message}</p>
             </div>
             <button class="absolute top-3 right-3 text-gray-400 hover:text-white">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -968,9 +1135,13 @@
             </button>
           </div>
         `;
-        toastContainer.appendChild(errorToast);
-      }, 2000);
-    }, 1000);
+        
+        toastContainer.appendChild(toast);
+      });
+    }
+    
+    // Show server toasts on load
+    window.addEventListener('DOMContentLoaded', showServerToasts);
   </script>
 </body>
 </html>

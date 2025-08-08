@@ -7,20 +7,20 @@
 import os
 import re
 import json
-import time
 import base64
 import random
 import secrets
 import logging
 import traceback
 import subprocess
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 from functools import wraps
 from threading import Timer
 from collections import defaultdict
 from typing import Dict, List, Optional, Union
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import quote_plus, quote
+import time
 
 # =======================
 # ✅ Third-Party Imports
@@ -123,8 +123,11 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
 now_utc = datetime.utcnow()
 # Nairobi is UTC+3
 now_eat = now_utc + timedelta(hours=3)
-# Calculate next midnight in EAT
-next_midnight_eat = datetime.combine(now_eat.date() + timedelta(days=1), time.min)
+# Calculate next midnight in EAT (using datetime.time(0, 0, 0) instead of time.min)
+next_midnight_eat = datetime.combine(
+    now_eat.date() + timedelta(days=1), 
+    datetime.time(0, 0, 0)  # Explicitly create midnight time
+)
 # Get seconds until that midnight (back in UTC)
 seconds_until_midnight = (next_midnight_eat - now_eat).total_seconds()
 # Apply session expiration
@@ -2351,7 +2354,6 @@ def assistance():
 def manifest():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'manifest.json', mimetype='application/manifest+json')
 #-------------------------------------------------------------------------
-from datetime import datetime, timedelta, time
 @app.route("/dashboard")
 @login_required
 def dashboard():

@@ -3104,7 +3104,7 @@ def compose_list_reply(intro, items):
     return "\n".join(lines)
 
 # ------------------------ Route handlers (unchanged endpoints) ------------------------
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/chat', methods=['GET', 'POST'])
 def index():
     if 'history' not in session:
         session['history'] = []

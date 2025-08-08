@@ -135,7 +135,7 @@
             
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <button onclick="handlePlatformRedirect('moviebox')" class="stream-btn moviebox-btn text-white p-4 rounded-lg flex flex-col items-center">
-                    <img src="https://moviebox.ng/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="MovieBox">
+                    <img src="https://moviebox.ph/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="MovieBox">
                     <span>MovieBox</span>
                     <span class="text-xs mt-1 text-gray-300">Premium</span>
                 </button>
@@ -201,7 +201,7 @@
                 name: "MovieBox",
                 type: "streaming service",
                 icon: "https://moviebox.ng/favicon.ico",
-                url: `https://moviebox.ng/web/searchResult?keyword=${encodeURIComponent('{{ movie.title }}') + '+' + encodeURIComponent('{{ movie.year }}')}&utm_source=`,
+                url: `https://moviebox.ph/web/searchResult?keyword=${encodeURIComponent('{{ movie.title }}') + '+' + encodeURIComponent('{{ movie.year }}')}&utm_source=`,
                 fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:moviebox.ng')}`
             },
             youtube: {

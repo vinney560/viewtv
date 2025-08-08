@@ -381,6 +381,7 @@ def send_verification_email(user):
     verify_link = url_for('verify_registration', token=token, _external=True)
 
     msg = Message(
+        sender=("View Tv", "bot.tgive3nexus@gmail.com"),
         subject="Verify your View Tv account",
         recipients=[user.email]
     )

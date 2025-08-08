@@ -2943,6 +2943,7 @@ HISTORY_FILE = "history.json"
 HISTORY_LIMIT = 50  # per channel keep-last checks
 CHECK_TIMEOUT = 5  # seconds for HTTP requests
 
+
 # ------------------------ Load Channels ------------------------
 with open("channels.json", "r") as f:
     channels = json.load(f)
@@ -2950,8 +2951,9 @@ with open("channels.json", "r") as f:
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
-# ------------------------ Light ML Intent Model ------------------------
+# ------------------------ Enhanced Intent Model ------------------------
 examples = [
+    # Channel-related intents
     ("is all sports on", "status_check"),
     ("tell me about all sports", "info"),
     ("check all news x", "status_check"),
@@ -2965,6 +2967,29 @@ examples = [
     ("recommend me a channel", "recommend"),
     ("suggest a sports channel", "recommend_sports"),
     ("status of free channels", "list_free_status"),
+    
+    # Friendly conversation intents
+    ("hello", "greeting"),
+    ("hi there", "greeting"),
+    ("hey", "greeting"),
+    ("good morning", "greeting"),
+    ("good evening", "greeting"),
+    ("what's up", "greeting"),
+    ("how are you", "how_are_you"),
+    ("how's it going", "how_are_you"),
+    ("are you there", "presence"),
+    ("thanks", "thanks"),
+    ("thank you", "thanks"),
+    ("appreciate it", "thanks"),
+    ("goodbye", "goodbye"),
+    ("bye", "goodbye"),
+    ("see you later", "goodbye"),
+    ("what can you do", "help"),
+    ("help me", "help"),
+    ("options", "help"),
+    ("who made you", "about"),
+    ("what are you", "about"),
+    ("tell me about yourself", "about"),
 ]
 X_train = [x[0] for x in examples]
 Y_train = [x[1] for x in examples]
@@ -3051,6 +3076,7 @@ def uptime_stats_for_url(url):
     }
 
 # ------------------------ Natural-sounding response generator ------------------------
+# Status phrases
 OPENERS = [
     "Here's what I found:",
     "Quick update:",
@@ -3085,6 +3111,66 @@ SUGGEST_ASKS = [
     "Do you want me to watch this and notify you if it changes?"
 ]
 
+# Friendly conversation phrases
+GREETINGS = [
+    "Hello! 👋 How can I assist with your IPTV channels today?",
+    "Hi there! Ready to check some channel statuses?",
+    "Hey! What can I help you with?",
+    "Good day! I'm your IPTV assistant. How can I help?",
+    "Hi! Ask me about channels, status, or recommendations."
+]
+
+HOW_ARE_YOU_RESPONSES = [
+    "I'm just a bot, but I'm functioning perfectly! Ready to help with your channels.",
+    "Doing great! Excited to help you with your IPTV needs.",
+    "I'm always at 100% uptime when you need me! What can I do for you?",
+    "No feelings, but my circuits are buzzing! How can I assist?"
+]
+
+THANKS_RESPONSES = [
+    "You're welcome! 😊 Happy to help anytime.",
+    "My pleasure! Let me know if you need anything else.",
+    "Anytime! Feel free to ask more about channels.",
+    "Glad I could assist! Don't hesitate to ask again."
+]
+
+GOODBYE_RESPONSES = [
+    "Goodbye! 👋 Come back anytime for channel checks.",
+    "See you later! Feel free to return for IPTV help.",
+    "Bye! Remember I'm here for your channel needs.",
+    "Take care! Let me know if you need channel updates later."
+]
+
+HELP_RESPONSES = [
+    "I can help with: Checking channel status, listing channels by category, "
+    "providing channel info, recommendations, and more! Try asking: "
+    "\n- 'Is ESPN online?'\n- 'Show me sports channels'\n- 'Recommend a reliable channel'",
+    
+    "I'm your IPTV assistant! You can ask me about: "
+    "Channel status, free/paid channels, sports channels, "
+    "channel information, or recommendations. Try: "
+    "\n- 'What channels are free?'\n- 'Tell me about BBC News'",
+    
+    "Here's what I can do: "
+    "✅ Check if a channel is online\n"
+    "📺 List channels by category\n"
+    "ℹ️ Show channel details\n"
+    "⭐ Recommend channels\n"
+    "Try something like 'Is CNN live right now?'"
+]
+
+ABOUT_RESPONSES = [
+    "I'm your friendly IPTV assistant! My job is to help you check channel statuses, "
+    "find information about channels, and recommend content. I was created to make "
+    "your IPTV experience easier.",
+    
+    "I'm a specialized bot designed to monitor and provide information about IPTV channels. "
+    "I can check if streams are live, show channel details, and help you discover new content.",
+    
+    "I'm your personal IPTV helper! I track channel statuses, provide channel information, "
+    "and help you navigate your IPTV services. Created to simplify your streaming experience."
+]
+
 def compose_dynamic_status_reply(name, url, status):
     opener = random.choice(OPENERS)
     if status == "online":
@@ -3109,127 +3195,165 @@ def compose_list_reply(intro, items):
     lines = [sample_intro] + [f"- {i}" for i in items]
     return "\n".join(lines)
 
+# ------------------------ Friendly Response Generator ------------------------
+def generate_friendly_response(intent):
+    if intent == "greeting":
+        return random.choice(GREETINGS)
+    elif intent == "how_are_you":
+        return random.choice(HOW_ARE_YOU_RESPONSES)
+    elif intent == "thanks":
+        return random.choice(THANKS_RESPONSES)
+    elif intent == "goodbye":
+        return random.choice(GOODBYE_RESPONSES)
+    elif intent == "help":
+        return random.choice(HELP_RESPONSES)
+    elif intent == "about":
+        return random.choice(ABOUT_RESPONSES)
+    elif intent == "presence":
+        return "I'm here and ready to help! What can I do for you today?"
+    return None
+
 # ------------------------ Route handlers ------------------------
-@app.route('/chat', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     if 'history' not in session:
         session['history'] = []
     
-    response = None
     if request.method == 'POST':
-        user_text = request.form['query'].strip()
+        user_text = request.form['query'].strip().lower()
         
-        # Intent detection using the existing tiny model
+        # Intent detection using the enhanced model
         intent = model.predict([user_text])[0]
         
-        # Try to extract a channel name (fuzzy)
-        found_name = fuzzy_find_name(user_text)
-        
-        # If user explicitly supplied a name-like token, it may still be in the raw words
-        if not found_name:
-            # try each token to see if substring matches a channel
-            tokens = [t for t in user_text.split() if len(t) > 2]
-            for t in tokens[::-1]:
-                cand = fuzzy_find_name(t)
-                if cand:
-                    found_name = cand
-                    break
-        
-        # Now create replies depending on intent
-        reply = ""
-        if intent == "status_check":
-            if found_name:
-                key = get_key_by_name(found_name)
-                url = channels[key]["url"]
-                status = check_url_status(url)
-                # record the check
-                record_check(url, status)
-                # dynamic textual reply
-                reply = compose_dynamic_status_reply(found_name, url, status)
-            else:
-                reply = "Which channel would you like me to check? Try typing the channel name or part of it."
-        
-        elif intent == "info":
-            if found_name:
-                key, data = get_key_by_name(found_name), None
-                # get data safely
-                k = get_key_by_name(found_name)
-                if k:
-                    _, data = k, channels[k]
-                reply = (
-                    f"ℹ️ **{data['name']}** — {data.get('group-title','Unknown category')}.\n"
-                    f"Country/note: {data.get('country','-')}\n"
-                    f"Access: {data.get('access','-')}\n"
-                    f"URL: {data.get('url','-')}\n"
-                    "Want me to check its current status?"
-                )
-            else:
-                reply = "I found the name but couldn't retrieve details."
-        
-        elif intent == "list_free":
-            free = [v['name'] for v in channels.values() if v.get('access','').lower()=='free']
-            reply = compose_list_reply("Free channels:", free)
-        
-        elif intent == "list_paid":
-            paid = [v['name'] for v in channels.values() if v.get('access','').lower()=='paid']
-            reply = compose_list_reply("Paid channels:", paid)
-        
-        elif intent == "list_all":
-            allc = [v['name'] for v in channels.values()]
-            reply = compose_list_reply("All channels:", allc)
-        
-        elif intent == "list_sports":
-            sports = [v['name'] for v in channels.values() if 'sports' in v.get('group-title','').lower()]
-            reply = compose_list_reply("Sports channels:", sports)
-        
-        elif intent == "list_offline":
-            # perform lightweight checks for all channels but limit to first 20 to avoid long waits
-            sample = list(channels.values())[:20]
-            offline = []
-            for ch in sample:
-                status = check_url_status(ch['url'])
-                record_check(ch['url'], status)
-                if status != "online":
-                    offline.append(f"{ch['name']} ({status})")
-            reply = compose_list_reply("Offline or dead channels (sample):", offline)
-        
-        elif intent == "recommend":
-            # simple heuristics: prefer channels with highest uptime in history, else random online
-            scored = []
-            for k, v in channels.items():
-                stats = uptime_stats_for_url(v['url'])
-                if stats:
-                    scored.append((v['name'], stats['uptime_pct']))
-            
-            if scored:
-                scored.sort(key=lambda x: x[1], reverse=True)
-                top = [s[0] for s in scored[:3]]
-                reply = compose_list_reply("Top reliable channels based on history:", top)
-            else:
-                # fallback recommend some online ones by sampling
-                online_list = []
-                for k, v in list(channels.items())[:10]:
-                    st = check_url_status(v['url'])
-                    record_check(v['url'], st)
-                    if st == 'online':
-                        online_list.append(v['name'])
-                
-                if online_list:
-                    reply = compose_list_reply("Currently online channels (sample):", online_list[:5])
-                else:
-                    reply = "I couldn't find reliable online channels right now. Want me to run a deeper scan?"
-        
+        # First handle friendly intents
+        friendly_reply = generate_friendly_response(intent)
+        if friendly_reply:
+            reply = friendly_reply
         else:
-            # fallback: try to produce a helpful answer using live checks if a name exists
-            if found_name:
-                key = get_key_by_name(found_name)
-                url = channels[key]["url"]
-                status = check_url_status(url)
-                record_check(url, status)
-                reply = compose_dynamic_status_reply(found_name, url, status)
+            # Handle channel-related intents
+            found_name = fuzzy_find_name(user_text)
+            
+            # If user explicitly supplied a name-like token, it may still be in the raw words
+            if not found_name:
+                # try each token to see if substring matches a channel
+                tokens = [t for t in user_text.split() if len(t) > 2]
+                for t in tokens[::-1]:
+                    cand = fuzzy_find_name(t)
+                    if cand:
+                        found_name = cand
+                        break
+            
+            # Now create replies depending on intent
+            if intent == "status_check":
+                if found_name:
+                    key = get_key_by_name(found_name)
+                    url = channels[key]["url"]
+                    status = check_url_status(url)
+                    # record the check
+                    record_check(url, status)
+                    # dynamic textual reply
+                    reply = compose_dynamic_status_reply(found_name, url, status)
+                else:
+                    reply = "Which channel would you like me to check? Try something like 'Is ESPN online?'"
+            
+            elif intent == "info":
+                if found_name:
+                    # get data safely
+                    k = get_key_by_name(found_name)
+                    if k:
+                        data = channels[k]
+                        reply = (
+                            f"ℹ️ **{data['name']}** — {data.get('group-title','Unknown category')}.\n"
+                            f"Country/note: {data.get('country','-')}\n"
+                            f"Access: {data.get('access','-')}\n"
+                            f"URL: {data.get('url','-')}\n"
+                            "Want me to check its current status?"
+                        )
+                    else:
+                        reply = "I found the name but couldn't retrieve details."
+                else:
+                    reply = "Tell me which channel you want info on (e.g., 'Tell me about ESPN')."
+            
+            elif intent == "list_free":
+                free = [v['name'] for v in channels.values() if v.get('access','').lower()=='free']
+                reply = compose_list_reply("Free channels:", free)
+            
+            elif intent == "list_paid":
+                paid = [v['name'] for v in channels.values() if v.get('access','').lower()=='paid']
+                reply = compose_list_reply("Paid channels:", paid)
+            
+            elif intent == "list_all":
+                allc = [v['name'] for v in channels.values()]
+                reply = compose_list_reply("All channels:", allc)
+            
+            elif intent == "list_sports":
+                sports = [v['name'] for v in channels.values() if 'sports' in v.get('group-title','').lower()]
+                reply = compose_list_reply("Sports channels:", sports)
+            
+            elif intent == "list_offline":
+                # perform lightweight checks for all channels but limit to first 20 to avoid long waits
+                sample = list(channels.values())[:20]
+                offline = []
+                for ch in sample:
+                    status = check_url_status(ch['url'])
+                    record_check(ch['url'], status)
+                    if status != "online":
+                        offline.append(f"{ch['name']} ({status})")
+                reply = compose_list_reply("Offline or dead channels (sample):", offline)
+            
+            elif intent == "recommend" or intent == "recommend_sports":
+                # simple heuristics: prefer channels with highest uptime in history, else random online
+                scored = []
+                for k, v in channels.items():
+                    # For sports-specific recommendations
+                    if intent == "recommend_sports" and 'sports' not in v.get('group-title','').lower():
+                        continue
+                        
+                    stats = uptime_stats_for_url(v['url'])
+                    if stats:
+                        scored.append((v['name'], stats['uptime_pct']))
+                
+                if scored:
+                    scored.sort(key=lambda x: x[1], reverse=True)
+                    top = [s[0] for s in scored[:3]]
+                    prefix = "Top sports channels" if intent == "recommend_sports" else "Top reliable channels"
+                    reply = compose_list_reply(f"{prefix} based on history:", top)
+                else:
+                    # fallback recommend some online ones by sampling
+                    online_list = []
+                    for k, v in list(channels.items())[:10]:
+                        # Skip non-sports for sports-specific requests
+                        if intent == "recommend_sports" and 'sports' not in v.get('group-title','').lower():
+                            continue
+                            
+                        st = check_url_status(v['url'])
+                        record_check(v['url'], st)
+                        if st == 'online':
+                            online_list.append(v['name'])
+                    
+                    if online_list:
+                        prefix = "Currently online sports channels" if intent == "recommend_sports" else "Currently online channels"
+                        reply = compose_list_reply(f"{prefix} (sample):", online_list[:5])
+                    else:
+                        reply = "I couldn't find reliable online channels right now. Want me to run a deeper scan?"
+            
             else:
-                reply = ("Sorry, I'm not sure what you mean. Try: 'Is All Sports 2 online?', "
-                        "'Tell me about All News X', or 'Which channels are free?'")
+                # fallback: try to produce a helpful answer using live checks if a name exists
+                if found_name:
+                    key = get_key_by_name(found_name)
+                    url = channels[key]["url"]
+                    status = check_url_status(url)
+                    record_check(url, status)
+                    reply = compose_dynamic_status_reply(found_name, url, status)
+                else:
+                    # Friendly fallback for unrecognized queries
+                    reply = (
+                        "I'm not sure what you're asking, but I'm happy to help with IPTV channels! "
+                        "Try asking about:\n"
+                        "- Channel status (e.g., 'Is ESPN online?')\n"
+                        "- Channel information (e.g., 'Tell me about BBC')\n"
+                        "- Channel listings (e.g., 'Show me sports channels')"
+                    )
         
         # Save chat history in session
         timestamp = datetime.now().strftime("%H:%M")

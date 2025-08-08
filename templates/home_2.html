@@ -1094,14 +1094,6 @@
     function showServerToasts() {
       const toastContainer = document.getElementById('toast-container');
       
-      // Simulated server messages
-      const serverMessages = [
-        { 
-          type: 'success', 
-          message: 'Welcome to ViewTV! Your session has started.' 
-        },
-      ];
-      
       serverMessages.forEach(msg => {
         const toast = document.createElement('div');
         toast.className = `toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 bg-gray-800 ${

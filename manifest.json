@@ -1,13 +1,16 @@
 {
-  "name": "View Tv Streamer",
-  "short_name": "View Tv",
-  "description": "Stream your favorite movies, shows, news, locals, kids shows, music and, sports anytime, anywhere.",
+  "name": "View TV Streamer",
+  "short_name": "View TV",
+  "description": "Stream your favorite movies, shows, news, local channels, kids shows, music, and sports anytime, anywhere.",
+  "lang": "en-US",
+  "dir": "ltr",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#1e1e1e",
+
   "icons": [
     {
       "src": "/uploads/icon_1.png",
@@ -24,8 +27,14 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/uploads/icon_3.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
     }
   ],
+
   "screenshots": [
     {
       "src": "/uploads/screenshot_1.png",
@@ -42,5 +51,74 @@
       "type": "image/png",
       "sizes": "1280x720"
     }
-  ]
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Live TV",
+      "short_name": "Live",
+      "url": "/plus-playlist",
+      "description": "Watch live TV streaming",
+      "icons": [{ "src": "/uploads/plus_playlist.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Movies",
+      "short_name": "Movies",
+      "url": "/movieflix",
+      "description": "Explore our movie collection",
+      "icons": [{ "src": "/uploads/icon_1.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Sports",
+      "short_name": "Sports",
+      "url": "/live-match",
+      "description": "Watch live sports events",
+      "icons": [{ "src": "/uploads/streamtv.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+
+  "categories": [
+    "entertainment",
+    "video",
+    "tv",
+    "media",
+    "news",
+    "sports",
+    "kids"
+  ],
+
+  "screens": {
+    "minimum": "360x640",
+    "recommended": "720x1280"
+  },
+
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.launcher.viewtv",
+      "id": "com.launcher.viewtv"
+    }
+  ],
+  "prefer_related_applications": false,
+
+  "iarc_rating_id": "e10+",
+
+  "file_handlers": [
+    {
+      "action": "/open",
+      "accept": {
+        "video/*": [".mp4", ".mkv"],
+        "application/x-mpegURL": [".m3u8"]
+      }
+    }
+  ],
+
+  "protocol_handlers": [
+    {
+      "protocol": "web+viewtv",
+      "url": "/plus-player?url=%s"
+    }
+  ],
+
+  "capture_links": "new-client"
 }

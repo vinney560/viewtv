@@ -95,7 +95,7 @@
       margin-top: -60px;
     }
     
-    /* New Features Styles */
+    /* Enhanced AI Assistant */
     .ai-assistant {
       position: fixed;
       bottom: 90px;
@@ -123,8 +123,8 @@
       position: fixed;
       bottom: 160px;
       right: 20px;
-      width: 300px;
-      background: rgba(31, 41, 55, 0.9);
+      width: 320px;
+      background: rgba(31, 41, 55, 0.95);
       border-radius: 15px;
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -134,6 +134,7 @@
       opacity: 0;
       pointer-events: none;
       transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
     .ai-panel.active {
       transform: translateY(0);
@@ -145,10 +146,13 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .ai-content {
       max-height: 300px;
       overflow-y: auto;
+      padding-right: 5px;
     }
     .ai-message {
       background: rgba(6, 182, 212, 0.15);
@@ -156,10 +160,20 @@
       border-radius: 10px;
       margin-bottom: 10px;
       font-size: 14px;
+      line-height: 1.5;
     }
     .ai-message.user {
       background: rgba(31, 41, 55, 0.8);
       text-align: right;
+    }
+    .ai-message.error {
+      background: rgba(239, 68, 68, 0.15);
+    }
+    .ai-message.warning {
+      background: rgba(245, 158, 11, 0.15);
+    }
+    .ai-message.info {
+      background: rgba(59, 130, 246, 0.15);
     }
     .ai-input {
       display: flex;
@@ -173,6 +187,7 @@
       padding: 8px 15px;
       color: white;
       outline: none;
+      font-size: 14px;
     }
     .ai-input button {
       background: var(--primary);
@@ -182,6 +197,10 @@
       padding: 8px 15px;
       margin-left: 5px;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+    .ai-input button:hover {
+      background: #0891b2;
     }
     .install-btn {
       position: fixed;
@@ -284,6 +303,40 @@
       0%, 100% { height: 8px; }
       50% { height: 25px; }
     }
+    .ai-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .ai-action-btn {
+      flex: 1;
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ai-action-btn:hover {
+      background: rgba(6, 182, 212, 0.2);
+      transform: translateY(-2px);
+    }
+    .ai-web-search {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(31, 41, 55, 0.7);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .ai-web-search a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .ai-web-search a:hover {
+      text-decoration: underline;
+    }
     
     /* Responsive additions */
     @media (max-width: 640px) {
@@ -322,42 +375,7 @@
 
   <!-- Modern Toast Notifications -->
   <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80 md:w-96">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4
-            {% if category == 'success' %} bg-gray-800 border-emerald-500
-            {% elif category == 'error' %} bg-gray-800 border-red-500
-            {% else %} bg-gray-800 border-cyan-500 {% endif %}">
-            <div class="flex items-start">
-              <div class="flex-shrink-0 pt-0.5">
-                {% if category == 'success' %}
-                  <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                {% elif category == 'error' %}
-                  <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                {% else %}
-                  <svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                {% endif %}
-              </div>
-              <div class="ml-3 flex-1">
-                <p class="text-sm">{{ message }}</p>
-              </div>
-              <button onclick="this.parentElement.parentElement.classList.add('toast-exit'); setTimeout(() => this.parentElement.parentElement.remove(), 500)" class="absolute top-3 right-3 text-gray-400 hover:text-white">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+    <!-- Toast messages will be displayed here -->
   </div>
 
   <!-- PWA Install Button -->
@@ -366,23 +384,45 @@
     <span>Install App</span>
   </div>
 
-  <!-- AI Assistant Panel -->
+  <!-- Enhanced AI Assistant Panel -->
   <div id="aiPanel" class="ai-panel">
     <div class="ai-header">
-      <h3 class="gradient-text font-bold">ViewTV Assistant</h3>
+      <div class="flex items-center">
+        <i class="fas fa-robot text-cyan-400 mr-2"></i>
+        <h3 class="gradient-text font-bold">ViewTV Assistant</h3>
+      </div>
       <button id="closeAiPanel">
         <i class="fas fa-times text-gray-400 hover:text-white"></i>
       </button>
     </div>
     <div class="ai-content" id="aiChat">
       <div class="ai-message">
-        <p>Hi! I'm your ViewTV assistant. How can I help you today?</p>
-        <p class="text-xs text-gray-400 mt-2">Try: "Go to sports", "Open movies", or "Show recommendations"</p>
+        <p>Hi there! I'm your friendly ViewTV assistant. 😊 How can I help you today?</p>
+        <p class="text-xs text-cyan-300 mt-3">I can help with:</p>
+        <ul class="text-xs text-gray-300 list-disc pl-5 mt-1 space-y-1">
+          <li>Explaining errors like 404, 500, 502, etc.</li>
+          <li>Guiding you to the right content sections</li>
+          <li>Providing troubleshooting tips</li>
+          <li>Searching the web for answers</li>
+          <li>Answering questions about ViewTV</li>
+        </ul>
+        <p class="text-xs text-cyan-300 mt-3">Try saying: "What does error 404 mean?" or "Help me with a streaming issue"</p>
       </div>
     </div>
     <div class="ai-input">
       <input type="text" id="aiInput" placeholder="Ask me anything...">
       <button id="sendAiMessage"><i class="fas fa-paper-plane"></i></button>
+    </div>
+    <div class="ai-actions">
+      <div class="ai-action-btn" id="voiceCommandBtn">
+        <i class="fas fa-microphone mr-1"></i> Voice
+      </div>
+      <div class="ai-action-btn" id="helpBtn">
+        <i class="fas fa-question-circle mr-1"></i> Help
+      </div>
+      <div class="ai-action-btn" id="clearChatBtn">
+        <i class="fas fa-trash mr-1"></i> Clear
+      </div>
     </div>
   </div>
 
@@ -604,13 +644,16 @@
       installBtn.classList.add('hidden');
     });
 
-    // AI Assistant Functionality
+    // Enhanced AI Assistant Functionality
     const aiAssistant = document.getElementById('aiAssistant');
     const aiPanel = document.getElementById('aiPanel');
     const closeAiPanel = document.getElementById('closeAiPanel');
     const aiChat = document.getElementById('aiChat');
     const aiInput = document.getElementById('aiInput');
     const sendAiMessage = document.getElementById('sendAiMessage');
+    const voiceCommandBtn = document.getElementById('voiceCommandBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const clearChatBtn = document.getElementById('clearChatBtn');
     let recognition;
     
     // Initialize speech recognition if available
@@ -657,63 +700,7 @@
       }
     });
     
-    function processAiMessage(message) {
-      // Add user message to chat
-      addMessageToChat(message, 'user');
-      
-      // Process the message and generate AI response
-      setTimeout(() => {
-        const response = generateAiResponse(message);
-        addMessageToChat(response, 'ai');
-      }, 1000);
-    }
-    
-    function addMessageToChat(message, sender) {
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add('ai-message');
-      if (sender === 'user') messageDiv.classList.add('user');
-      
-      messageDiv.innerHTML = `<p>${message}</p>`;
-      aiChat.appendChild(messageDiv);
-      
-      // Scroll to bottom
-      aiChat.scrollTop = aiChat.scrollHeight;
-    }
-    
-    function generateAiResponse(message) {
-      const lowerMessage = message.toLowerCase();
-      
-      if (lowerMessage.includes('sport') || lowerMessage.includes('football') || lowerMessage.includes('game')) {
-        return "Taking you to Sports content. You'll find live matches, highlights, and sports news there!";
-      }
-      else if (lowerMessage.includes('movie') || lowerMessage.includes('film')) {
-        return "I've found some great movies for you. Taking you to our Movies section!";
-      }
-      else if (lowerMessage.includes('category') || lowerMessage.includes('type')) {
-        return "Let me show you our content categories. You can browse by genre, topic, or content type.";
-      }
-      else if (lowerMessage.includes('country') || lowerMessage.includes('region')) {
-        return "You can browse content by country. I'll take you to our Countries section now.";
-      }
-      else if (lowerMessage.includes('playlist') || lowerMessage.includes('channel')) {
-        return "Our curated playlists are perfect for you! Taking you to View TV Playlists.";
-      }
-      else if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest')) {
-        return "Based on your preferences, I've updated your recommendations with content you might enjoy!";
-      }
-      else if (lowerMessage.includes('help') || lowerMessage.includes('support')) {
-        return "You can find answers to common questions in our Help section. I'll take you there now.";
-      }
-      else if (lowerMessage.includes('account') || lowerMessage.includes('profile')) {
-        return "Taking you to your account settings where you can manage your preferences and subscription.";
-      }
-      else {
-        return "I'm your ViewTV assistant! I can help you navigate the app, find content, and make recommendations. Try asking about sports, movies, or recommendations!";
-      }
-    }
-    
-    // Voice command functionality
-    aiAssistant.addEventListener('dblclick', () => {
+    voiceCommandBtn.addEventListener('click', () => {
       if (recognition) {
         aiAssistant.classList.add('listening');
         recognition.start();
@@ -722,6 +709,172 @@
         addMessageToChat("Voice commands not supported in your browser", 'ai');
       }
     });
+    
+    helpBtn.addEventListener('click', () => {
+      addMessageToChat("What can I help you with?", 'ai');
+    });
+    
+    clearChatBtn.addEventListener('click', () => {
+      aiChat.innerHTML = '';
+      addMessageToChat("Hi there! I'm your friendly ViewTV assistant. 😊 How can I help you today?", 'ai');
+    });
+    
+    function processAiMessage(message) {
+      // Add user message to chat
+      addMessageToChat(message, 'user');
+      
+      // Process the message and generate AI response
+      setTimeout(() => {
+        const response = generateAiResponse(message);
+        addMessageToChat(response.content, 'ai', response.type);
+        
+        // If response has web search, add it
+        if (response.webSearch) {
+          addWebSearchResult(message);
+        }
+      }, 800);
+    }
+    
+    function addMessageToChat(message, sender, type = '') {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('ai-message');
+      if (sender === 'user') messageDiv.classList.add('user');
+      if (type === 'error') messageDiv.classList.add('error');
+      if (type === 'warning') messageDiv.classList.add('warning');
+      if (type === 'info') messageDiv.classList.add('info');
+      
+      messageDiv.innerHTML = `<p>${message}</p>`;
+      aiChat.appendChild(messageDiv);
+      
+      // Scroll to bottom
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    function addWebSearchResult(query) {
+      const webSearchDiv = document.createElement('div');
+      webSearchDiv.classList.add('ai-web-search');
+      webSearchDiv.innerHTML = `
+        <p class="text-sm">I searched the web for: <strong>${query}</strong></p>
+        <p class="text-xs mt-1">Here are some helpful links:</p>
+        <ul class="text-xs mt-1 space-y-1">
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent(query + ' site:viewtv.com')}" target="_blank">ViewTV Support</a></li>
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent('streaming ' + query)}" target="_blank">General Streaming Help</a></li>
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent(query)}" target="_blank">Web Search Results</a></li>
+        </ul>
+      `;
+      aiChat.appendChild(webSearchDiv);
+      
+      // Scroll to bottom
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    function generateAiResponse(message) {
+      const lowerMessage = message.toLowerCase();
+      
+      // Handle error codes
+      if (/\b(404|500|502|403|401|400)\b/.test(message)) {
+        return {
+          content: explainErrorCode(message.match(/\b(404|500|502|403|401|400)\b/)[0]),
+          type: 'error',
+          webSearch: true
+        };
+      }
+      
+      // Handle common issues
+      if (lowerMessage.includes('not working') || 
+          lowerMessage.includes('problem') || 
+          lowerMessage.includes('issue') ||
+          lowerMessage.includes('trouble') ||
+          lowerMessage.includes('error')) {
+        return {
+          content: "I'm sorry you're having trouble. Let me help you troubleshoot. First, try refreshing the page or restarting the app. If that doesn't work, check your internet connection. Still having issues? I can search for specific solutions.",
+          type: 'warning',
+          webSearch: true
+        };
+      }
+      
+      // Handle content navigation
+      if (lowerMessage.includes('sport') || lowerMessage.includes('football') || lowerMessage.includes('game')) {
+        return {
+          content: "Taking you to Sports content. You'll find live matches, highlights, and sports news there!",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('movie') || lowerMessage.includes('film')) {
+        return {
+          content: "I've found some great movies for you. Taking you to our Movies section!",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('category') || lowerMessage.includes('type')) {
+        return {
+          content: "Let me show you our content categories. You can browse by genre, topic, or content type.",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('country') || lowerMessage.includes('region')) {
+        return {
+          content: "You can browse content by country. I'll take you to our Countries section now.",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('playlist') || lowerMessage.includes('channel')) {
+        return {
+          content: "Our curated playlists are perfect for you! Taking you to View TV Playlists.",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest')) {
+        return {
+          content: "Based on your preferences, I've updated your recommendations with content you might enjoy!",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('help') || lowerMessage.includes('support')) {
+        return {
+          content: "You can find answers to common questions in our Help section. I'll take you there now.",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('account') || lowerMessage.includes('profile')) {
+        return {
+          content: "Taking you to your account settings where you can manage your preferences and subscription.",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('hey')) {
+        return {
+          content: "Hello there! 😊 How can I assist you with ViewTV today?",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('thank')) {
+        return {
+          content: "You're welcome! I'm here to help whenever you need assistance. 😊",
+          type: 'info'
+        };
+      }
+      else {
+        return {
+          content: "I'm not entirely sure about that, but I can help you search the web for answers!",
+          type: 'info',
+          webSearch: true
+        };
+      }
+    }
+    
+    function explainErrorCode(code) {
+      const explanations = {
+        '400': "Bad Request: Oops! It seems your request was malformed or invalid. Please check your input and try again.",
+        '401': "Unauthorized: You need to be logged in to access this resource. Please sign in and try again.",
+        '403': "Forbidden: Sorry, you don't have permission to access this content. If you believe this is an error, contact support.",
+        '404': "Page Not Found: The content you're looking for doesn't exist or has been moved. Try checking the URL or navigating from our homepage.",
+        '500': "Internal Server Error: Something went wrong on our end. Our team has been notified and is working to fix it. Please try again later.",
+        '502': "Bad Gateway: Our servers are having trouble communicating. This is usually temporary - please try refreshing the page in a moment."
+      };
+      
+      return explanations[code] || `Error ${code}: This is a server error. Please try again later or contact support if the problem persists.`;
+    }
     
     // Generate smart recommendations
     function generateSmartRecommendations() {
@@ -769,6 +922,55 @@
     
     // Initialize recommendations
     generateSmartRecommendations();
+    
+    // Add some sample toast notifications
+    setTimeout(() => {
+      const toastContainer = document.getElementById('toast-container');
+      
+      const successToast = document.createElement('div');
+      successToast.className = 'toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 bg-gray-800 border-emerald-500';
+      successToast.innerHTML = `
+        <div class="flex items-start">
+          <div class="flex-shrink-0 pt-0.5">
+            <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="ml-3 flex-1">
+            <p class="text-sm">Welcome to ViewTV! Your session has started.</p>
+          </div>
+          <button class="absolute top-3 right-3 text-gray-400 hover:text-white">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      `;
+      toastContainer.appendChild(successToast);
+      
+      setTimeout(() => {
+        const errorToast = document.createElement('div');
+        errorToast.className = 'toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 bg-gray-800 border-red-500';
+        errorToast.innerHTML = `
+          <div class="flex items-start">
+            <div class="flex-shrink-0 pt-0.5">
+              <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="ml-3 flex-1">
+              <p class="text-sm">Connection lost. Reconnecting...</p>
+            </div>
+            <button class="absolute top-3 right-3 text-gray-400 hover:text-white">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        `;
+        toastContainer.appendChild(errorToast);
+      }, 2000);
+    }, 1000);
   </script>
 </body>
 </html>

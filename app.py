@@ -56,9 +56,7 @@ import os
 import json
 import time
 import random
-
 import requests
-from flask import Flask, render_template, request, session, redirect, url_for
 from flask_session import Session
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -2936,6 +2934,8 @@ def set_notice():
 #========================================
 #      AI FEATURES 
 #========================================
+
+import datetime
 
 # ------------------------ Config ------------------------
 HISTORY_FILE = "history.json"

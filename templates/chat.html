@@ -74,7 +74,6 @@
             gap: 1rem;
             scroll-behavior: smooth;
             overscroll-behavior: contain;
-            /* Add bottom padding to prevent overlap */
             padding-bottom: 6rem;
         }
 
@@ -300,7 +299,7 @@
             background: #a5b4fc;
         }
 
-        /* New: Assistant message styles */
+        /* Assistant message styles */
         .assistant-tip {
             background-color: rgba(99, 102, 241, 0.08);
             border-left: 4px solid var(--primary);
@@ -342,7 +341,7 @@
             .chat-container {
                 padding: 1rem;
                 gap: 0.875rem;
-                padding-bottom: 5rem; /* Adjusted for mobile */
+                padding-bottom: 5rem;
             }
 
             #query {
@@ -362,7 +361,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Neural IPTV Assistant</h1>
+        <h1>View Tv Assistant</h1>
         <p>Your intelligent streaming companion</p>
     </div>
     
@@ -391,76 +390,104 @@
     </form>
 
     <script>
-        // Enhanced auto-scroll behavior
+        // Enhanced scroll management
         const chatContainer = document.getElementById('chatContainer');
-        let userScrolledUp = false;
+        let isAtBottom = true;
+        const scrollThreshold = 100; // pixels from bottom to consider "at bottom"
+        let lastScrollHeight = chatContainer.scrollHeight;
         
-        // Check if user has scrolled up
-        chatContainer.addEventListener('scroll', () => {
-            const threshold = 100; // pixels from bottom
-            userScrolledUp = chatContainer.scrollTop + chatContainer.clientHeight < chatContainer.scrollHeight - threshold;
-        });
+        // Check if user is at/near bottom
+        function checkAtBottom() {
+            const scrollBottom = chatContainer.scrollTop + chatContainer.clientHeight;
+            isAtBottom = (chatContainer.scrollHeight - scrollBottom) <= scrollThreshold;
+            return isAtBottom;
+        }
         
         // Smart scroll function
-        function smartScroll() {
-            if (!userScrolledUp) {
-                // Scroll to bottom with extra space
-                chatContainer.scrollTo({
-                    top: chatContainer.scrollHeight + 100, // Extra space at bottom
-                    behavior: 'smooth'
+        function smartScroll(force = false) {
+            if (force || isAtBottom) {
+                // Use requestAnimationFrame for smoother scrolling
+                requestAnimationFrame(() => {
+                    chatContainer.scrollTo({
+                        top: chatContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
                 });
             }
         }
         
-        // Typing indicator with removal after response
+        // Track scroll position
+        chatContainer.addEventListener('scroll', () => {
+            isAtBottom = checkAtBottom();
+        });
+        
+        // Form submission handler
         const form = document.querySelector('form');
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function(e) {
+            // Add typing indicator
             const typingIndicator = document.createElement('div');
             typingIndicator.className = 'typing-indicator';
             typingIndicator.innerHTML = `
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
+                <div class="typing-dot" style="animation-delay: 0s"></div>
+                <div class="typing-dot" style="animation-delay: 0.2s"></div>
+                <div class="typing-dot" style="animation-delay: 0.4s"></div>
             `;
             chatContainer.appendChild(typingIndicator);
-            smartScroll();
+            
+            // Always scroll to bottom when sending new message
+            smartScroll(true);
         });
         
-        // Auto-focus input and scroll to bottom on load
+        // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('query').focus();
-            // Scroll to bottom with a slight delay to ensure DOM is fully rendered
-            setTimeout(smartScroll, 100);
+            checkAtBottom(); // Set initial scroll state
+            
+            // Scroll to bottom only if no preserved position and not scrolled up
+            if (!sessionStorage.getItem('chatScrollPos') && isAtBottom) {
+                setTimeout(() => smartScroll(true), 100);
+            }
         });
         
         // MutationObserver for new messages
         const observer = new MutationObserver((mutations) => {
             for (const mutation of mutations) {
                 if (mutation.addedNodes.length) {
-                    // Remove typing indicator if present
+                    // Remove any typing indicators
                     const typingIndicators = document.querySelectorAll('.typing-indicator');
                     typingIndicators.forEach(indicator => indicator.remove());
                     
-                    smartScroll();
+                    // Process new messages if they contain special elements
+                    processNewMessages(mutation.addedNodes);
+                    
+                    // Smart scroll only if user was at bottom
+                    if (isAtBottom) {
+                        smartScroll();
+                    }
                 }
             }
         });
         
-        observer.observe(chatContainer, { childList: true });
-        
-        // Preserve scroll position on page refresh
-        window.addEventListener('beforeunload', () => {
-            sessionStorage.setItem('chatScrollPos', chatContainer.scrollTop);
+        observer.observe(chatContainer, { 
+            childList: true,
+            subtree: true
         });
         
-        if (sessionStorage.getItem('chatScrollPos')) {
-            chatContainer.scrollTop = sessionStorage.getItem('chatScrollPos');
-            sessionStorage.removeItem('chatScrollPos');
+        // Process new messages for cards, status indicators, etc.
+        function processNewMessages(nodes) {
+            nodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('bot-message')) {
+                    processChannelCards(node);
+                }
+            });
         }
         
-        // Handle channel cards with images
-        function processChannelCards() {
-            const botMessages = document.querySelectorAll('.bot-message');
+        // Process channel cards and other special content
+        function processChannelCards(container = document) {
+            const botMessages = container.querySelectorAll ? 
+                container.querySelectorAll('.bot-message') : 
+                [container];
+                
             botMessages.forEach(message => {
                 const content = message.innerHTML;
                 
@@ -503,13 +530,20 @@
             });
         }
         
-        // Run processing after DOM is loaded
-        document.addEventListener('DOMContentLoaded', processChannelCards);
+        // Preserve scroll position on page refresh
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.setItem('chatScrollPos', chatContainer.scrollTop);
+        });
         
-        // Also run after new messages are added
-        observer.observe(chatContainer, { 
-            childList: true,
-            subtree: true 
+        // Restore scroll position if available
+        if (sessionStorage.getItem('chatScrollPos')) {
+            chatContainer.scrollTop = sessionStorage.getItem('chatScrollPos');
+            sessionStorage.removeItem('chatScrollPos');
+        }
+        
+        // Initialize card processing
+        document.addEventListener('DOMContentLoaded', () => {
+            processChannelCards();
         });
     </script>
 </body>

@@ -2947,9 +2947,6 @@ REASONING_DEPTH = 4  # Increased reasoning depth
 CONVERSATION_MEMORY = 3  # Remember last 3 interactions
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 
-# ------------------------ Flask Setup ------------------------
-
-
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
     channels = json.load(f)
@@ -3539,36 +3536,125 @@ def update_user_profile(user_id, text, intent, response):
 
 # ------------------------ Enhanced ML Intent Classification ------------------------
 examples = [
+    # --- Status Check ---
     ("is espn working", "status_check"),
-    ("tell me about bbc news", "info"),
     ("check cnn status", "status_check"),
+    ("not working", "status_check"),
+    ("down again", "status_check"),
+    ("is the channel online", "status_check"),
+    ("is bbc live now", "status_check"),
+    ("can you see if sky sports is on", "status_check"),
+    ("tell me if hbo is working", "status_check"),
+    ("is fox sports up or down", "status_check"),
+    ("verify if disney channel works", "status_check"),
+    ("status of cnn", "status_check"),
+    ("is national geographic online", "status_check"),
+    ("is the channel back up yet", "status_check"),
+    ("please check if it's streaming", "status_check"),
+    ("is abc still down", "status_check"),
+    
+    # --- Info ---
+    ("tell me about bbc news", "info"),
+    ("information about national geographic", "info"),
+    ("details about hbo", "info"),
+    ("give me info on espn", "info"),
+    ("who runs cnn", "info"),
+    ("what's the channel about", "info"),
+    ("history of fox sports", "info"),
+    ("give me the description of netflix", "info"),
+    ("explain what discovery channel is", "info"),
+    ("tell me more about mtv", "info"),
+    
+    # --- List Category ---
     ("which channels are sports", "list_category"),
     ("list entertainment channels", "list_category"),
-    ("what channels are available", "list_all"),
     ("show me kids channels", "list_category"),
     ("any movie channels?", "list_category"),
+    ("give me music channels", "list_category"),
+    ("list documentary channels", "list_category"),
+    ("show cooking channels", "list_category"),
+    ("tell me all the comedy channels", "list_category"),
+    ("give me science channels", "list_category"),
+    
+    # --- List All ---
+    ("what channels are available", "list_all"),
+    ("list all channels", "list_all"),
+    ("show all channels", "list_all"),
+    ("give me the complete channel list", "list_all"),
+    ("full channel lineup please", "list_all"),
+    
+    # --- Recommend ---
     ("recommend me a channel", "recommend"),
     ("suggest a documentary channel", "recommend"),
+    ("what should I watch", "recommend"),
+    ("any good movie channels?", "recommend"),
+    ("recommend a sports channel", "recommend"),
+    ("suggest a music channel", "recommend"),
+    ("what's a good comedy channel", "recommend"),
+    
+    # --- Compare ---
     ("compare espn and fox sports", "compare"),
+    ("what's better, cnn or bbc", "compare"),
+    ("which is better, hbo or netflix", "compare"),
+    ("compare discovery channel and national geographic", "compare"),
+    ("which has better shows, mtv or vh1", "compare"),
+    
+    # --- Explain Status ---
     ("why is hbo down", "explain_status"),
     ("explain why channel is offline", "explain_status"),
+    ("why is cnn not working", "explain_status"),
+    ("any reason why espn is offline", "explain_status"),
+    ("tell me why the stream is unavailable", "explain_status"),
+    
+    # --- Greetings ---
     ("hello", "greeting"),
     ("hi there", "greeting"),
+    ("good morning", "greeting"),
+    ("good evening", "greeting"),
+    ("hey", "greeting"),
+    ("yo", "greeting"),
+    ("hiya", "greeting"),
+    ("hey buddy", "greeting"),
+    
+    # --- How Are You ---
     ("how are you", "how_are_you"),
+    ("how's it going", "how_are_you"),
+    ("what's up", "how_are_you"),
+    ("how you doing", "how_are_you"),
+    ("how have you been", "how_are_you"),
+    
+    # --- Thanks ---
     ("thanks for your help", "thanks"),
+    ("appreciate your help", "thanks"),
+    ("thank you", "thanks"),
+    ("much appreciated", "thanks"),
+    ("cheers", "thanks"),
+    ("thx", "thanks"),
+    
+    # --- Goodbye ---
     ("bye", "goodbye"),
+    ("see you later", "goodbye"),
+    ("catch you later", "goodbye"),
+    ("good night", "goodbye"),
+    ("talk to you soon", "goodbye"),
+    ("see ya", "goodbye"),
+    
+    # --- Help ---
     ("what can you do", "help"),
+    ("how does this work", "help"),
+    ("help me", "help"),
+    ("guide me", "help"),
+    ("what features do you have", "help"),
+    ("show commands", "help"),
+    
+    # --- General Questions ---
     ("what time is it", "general_question"),
     ("tell me a joke", "general_question"),
     ("who are you", "general_question"),
     ("what's the weather", "general_question"),
-    ("how does this work", "help"),
-    ("good morning", "greeting"),
-    ("see you later", "goodbye"),
-    ("appreciate your help", "thanks"),
-    ("not working", "status_check"),
-    ("down again", "status_check"),
-    ("information about national geographic", "info")
+    ("where am I", "general_question"),
+    ("tell me something interesting", "general_question"),
+    ("give me a fun fact", "general_question"),
 ]
 
 X_train = [x[0] for x in examples]
@@ -3623,7 +3709,7 @@ def index():
         update_user_profile(user_id, user_text, intent, response)
         
         # Save to session history
-        timestamp = datetime.now().strftime("%H:%M")
+        timestamp = datetime.now().strftime("%H:%M") + timedelta(hours=3)
         session['history'].append((timestamp, user_text, response))
         session.modified = True
     
@@ -3633,8 +3719,6 @@ def index():
 def reset():
     session.clear()
     return redirect(url_for('index'))
-
-
 
 #========================================
 @app.context_processor

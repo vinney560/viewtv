@@ -5,6 +5,14 @@
     "access": "paid",
     "group-title": "Sports"
   },
+  "all-sports-a": {
+    "name": "All Sports 2",
+    "url": "https://c1.frsports.info:443/frift1/tracks-v1/mono.m3u8?token=63884a500c7ba1e11da00b1c484bd75e14944253d7493af5578e8f0ae9b46c8b-4102444800-4102444790",
+    "logo": "https://viewstream-1.onrender.com/uploads/streamtv.png",
+    "access": "paid",
+    "country": "Open in VLC",
+    "group-title": "Sports"
+  },
   "infosport-fr": {
     "name": "INFOSPORT",
     "url": "http://212.102.60.80:80/Infosport/index.m3u8",

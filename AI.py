@@ -86,7 +86,8 @@ else:
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
-# ------------------------ Generative Model ------------------------
+# ----------------------- Generative Model ---------------------
+
 class GenerativeModel:
     def __init__(self, model_name=GENERATIVE_MODEL_NAME):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -181,7 +182,8 @@ class GenerativeModel:
 # Initialize generative model
 generative_model = GenerativeModel()
 
-# ------------------------ Advanced Reasoning Engine ------------------------
+# ----------------- Advanced Reasoning Engine ---------
+
 class AdvancedReasoningEngine:
     def __init__(self):
         self.context = {}

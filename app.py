@@ -3709,7 +3709,7 @@ def index():
         update_user_profile(user_id, user_text, intent, response)
         
         # Save to session history
-        timestamp = datetime.now().strftime("%H:%M") + timedelta(hours=3)
+        timestamp = datetime.now().strftime("%H:%M")
         session['history'].append((timestamp, user_text, response))
         session.modified = True
     

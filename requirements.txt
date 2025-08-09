@@ -37,6 +37,8 @@ scikit-learn
 numpy
 joblib
 thefuzz
+tensorflow-cpu==2.10.0  # Lightweight, no GPU dependencies
+protobuf>=3.20.3,<4.0
 keras>=3.0.0
 keras-preprocessing>=1.1.2
 

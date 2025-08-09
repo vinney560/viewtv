@@ -37,8 +37,6 @@ scikit-learn
 numpy
 joblib
 thefuzz
-protobuf>=3.20.3,<6  
-tensorflow
 keras>=3.0.0
 keras-preprocessing>=1.1.2
 

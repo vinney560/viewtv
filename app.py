@@ -72,6 +72,8 @@ import joblib
 from threading import Lock
 import threading
 from collections import Counter
+import torch
+from transformers import GPT2LMHeadModel, GPT2Tokenizer, pipeline
 
 # ============================
 # CONFIGURATION & INIT
@@ -2942,8 +2944,6 @@ def set_notice():
 #========================================
 #      AI FEATURES 
 #========================================
-
-
 # ------------------------ Enhanced Config ----------------------
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
@@ -2955,6 +2955,13 @@ CONVERSATION_MEMORY = 3
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 10  # Learn after every 10 interactions
 MIN_UPDATE_SAMPLES = 3        # Minimum samples before updating model
+
+# Generative model config
+GENERATIVE_MODEL_NAME = "gpt2"
+MAX_GENERATIVE_LENGTH = 80
+TEMPERATURE = 0.9
+TOP_K = 40
+TOP_P = 0.95
 
 
 # ------------------------ Data Loading ------------------------
@@ -2998,12 +3005,108 @@ else:
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
+# ------------------------ Generative Model ------------------------
+class GenerativeModel:
+    def __init__(self, model_name=GENERATIVE_MODEL_NAME):
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+        self.model = GPT2LMHeadModel.from_pretrained(model_name).to(self.device)
+        self.model.eval()
+        
+        # Create a lighter pipeline for CPU efficiency
+        self.generator = pipeline(
+            "text-generation",
+            model=self.model,
+            tokenizer=self.tokenizer,
+            device=0 if self.device == "cuda" else -1,
+            framework="pt"
+        )
+    
+    def generate_response(self, prompt, max_length=MAX_GENERATIVE_LENGTH, temperature=TEMPERATURE):
+        """Generate response using a balanced approach"""
+        try:
+            # First try structured response
+            structured = self.try_structured_response(prompt)
+            if structured:
+                return structured
+            
+            # Generate full response
+            response = self.generator(
+                prompt,
+                max_length=max_length,
+                temperature=temperature,
+                top_k=TOP_K,
+                top_p=TOP_P,
+                num_return_sequences=1,
+                pad_token_id=self.tokenizer.eos_token_id,
+                no_repeat_ngram_size=2
+            )[0]['generated_text']
+            
+            # Extract only the new text
+            if response.startswith(prompt):
+                response = response[len(prompt):].strip()
+            
+            # Post-process for natural flow
+            response = self.postprocess_response(response)
+            return response
+        
+        except Exception as e:
+            print(f"Generative error: {e}")
+            return "I need to think about that. Could you rephrase your question?"
+    
+    def try_structured_response(self, prompt):
+        """Attempt to generate a structured response for known patterns"""
+        prompt_lower = prompt.lower()
+        
+        # Time questions
+        if "time" in prompt_lower:
+            current_time = datetime.now().strftime("%H:%M")
+            return f"The current time is {current_time}."
+        
+        # Joke requests
+        if "joke" in prompt_lower or "funny" in prompt_lower:
+            return random.choice(general_knowledge["general_qa"]["joke"])
+        
+        # Weather questions
+        if "weather" in prompt_lower:
+            return general_knowledge["general_qa"]["weather"]
+        
+        # Name questions
+        if "your name" in prompt_lower or "who are you" in prompt_lower:
+            return general_knowledge["general_qa"]["name"]
+        
+        return None
+    
+    def postprocess_response(self, response):
+        """Clean up generated text for natural flow"""
+        # Remove incomplete sentences
+        if '.' in response:
+            response = response[:response.rfind('.')+1]
+        
+        # Capitalize first letter
+        response = response.strip().capitalize()
+        
+        # Remove repetition
+        sentences = response.split('.')
+        unique_sentences = []
+        for sent in sentences:
+            sent = sent.strip()
+            if sent and sent not in unique_sentences:
+                unique_sentences.append(sent)
+        response = '. '.join(unique_sentences)
+        
+        return response
+
+# Initialize generative model
+generative_model = GenerativeModel()
+
 # ------------------------ Advanced Reasoning Engine ------------------------
 class AdvancedReasoningEngine:
     def __init__(self):
         self.context = {}
         self.decision_forest = self.build_decision_forest()
         self.conversation_history = []
+        self.response_cache = {}
     
     def build_decision_forest(self):
         """Multi-layered decision forest for complex reasoning"""
@@ -3065,7 +3168,7 @@ class AdvancedReasoningEngine:
                     ("is_farewell", self.handle_farewell),
                     ("is_thanks", self.handle_thanks),
                     ("is_help", self.handle_help),
-                    ("is_how_are_you", self.handle_how_are_you),  # Added handler
+                    ("is_how_are_you", self.handle_how_are_you),
                     ("has_general_question", self.answer_general_question),
                     ("else", self.handle_unknown_query)
                 ]
@@ -3073,20 +3176,40 @@ class AdvancedReasoningEngine:
         }
     
     def reason(self, intent, context):
-        """Multi-stage reasoning process"""
+        """Multi-stage reasoning process with generative fallback"""
         self.context = context.copy()
         self.update_conversation_history(context)
         
         # Primary reasoning
-        response = self.execute_primary_reasoning(intent)
+        try:
+            response = self.execute_primary_reasoning(intent)
+            
+            # Secondary reasoning
+            response = self.execute_secondary_reasoning(intent, response)
+            
+            # Add conversational elements
+            response = self.add_conversational_elements(response)
+            
+            return response
+        except Exception as e:
+            print(f"Reasoning failed: {e}")
+            # Fallback to generative model
+            return self.generative_fallback(context)
+    
+    def generative_fallback(self, context):
+        """Generate response using AI model when reasoning fails"""
+        user_text = context.get("user_text", "")
+        history = context.get("user_history", [])
         
-        # Secondary reasoning
-        response = self.execute_secondary_reasoning(intent, response)
+        # Build prompt with conversation history
+        prompt = "Conversation history:\n"
+        for timestamp, hist_text, hist_response in history[-3:]:
+            prompt += f"User: {hist_text}\n"
+            prompt += f"Assistant: {hist_response}\n"
+        prompt += f"User: {user_text}\nAssistant:"
         
-        # Add conversational elements
-        response = self.add_conversational_elements(response)
-        
-        return response
+        # Generate response
+        return generative_model.generate_response(prompt)
     
     def execute_primary_reasoning(self, intent):
         """Handle primary decision tree"""
@@ -3505,6 +3628,25 @@ def is_follow_up(text):
     ]
     return any(phrase in text.lower() for phrase in follow_phrases)
 
+# ------------------------ Spell Correction ------------------------
+def correct_spelling(text, valid_terms):
+    """Correct common misspellings using valid terms"""
+    words = text.split()
+    corrected = []
+    for word in words:
+        # Skip short words
+        if len(word) < 3:
+            corrected.append(word)
+            continue
+            
+        # Find closest match
+        matches = get_close_matches(word, valid_terms, n=1, cutoff=0.7)
+        if matches:
+            corrected.append(matches[0])
+        else:
+            corrected.append(word)
+    return " ".join(corrected)
+
 # ------------------------ User Profile ------------------------
 def load_user_profiles():
     if os.path.exists(USER_PROFILE_FILE):
@@ -3567,10 +3709,7 @@ def update_user_profile(user_id, text, intent, response):
 
 # ------------------------ Enhanced ML Intent Classification with Online Learning ------------------------
 examples = [
-    # status_check (10 examples)
     ("is espn working", "status_check"),
-    ("is citizen tv still working", "status_check"),
-    ("is bein 6 active", "status_check"),
     ("check cnn status", "status_check"),
     ("is hbo down", "status_check"),
     ("what's the status of discovery channel", "status_check"),
@@ -3581,7 +3720,6 @@ examples = [
     ("can you see if hbo is working", "status_check"),
     ("is the history channel available", "status_check"),
     
-    # info (10 examples)
     ("tell me about bbc news", "info"),
     ("information about national geographic", "info"),
     ("what is espn", "info"),
@@ -3593,7 +3731,6 @@ examples = [
     ("describe the discovery channel", "info"),
     ("what can you tell me about cnn", "info"),
     
-    # list_category (10 examples)
     ("which channels are sports", "list_category"),
     ("list entertainment channels", "list_category"),
     ("show me kids channels", "list_category"),
@@ -3605,9 +3742,7 @@ examples = [
     ("list science channels", "list_category"),
     ("which channels show cartoons", "list_category"),
     
-    # list_all (10 examples)
     ("what channels are available", "list_all"),
-    ("how many channels are available", "list_all"),
     ("show me all channels", "list_all"),
     ("list every channel you know", "list_all"),
     ("what options do I have", "list_all"),
@@ -3618,7 +3753,6 @@ examples = [
     ("show complete channel catalog", "list_all"),
     ("what channels can I watch", "list_all"),
     
-    # recommend (10 examples)
     ("recommend me a channel", "recommend"),
     ("suggest a documentary channel", "recommend"),
     ("what should I watch", "recommend"),
@@ -3630,7 +3764,6 @@ examples = [
     ("help me choose something to watch", "recommend"),
     ("what channel should I try", "recommend"),
     
-    # compare (10 examples)
     ("compare espn and fox sports", "compare"),
     ("compare hbo and showtime", "compare"),
     ("how do cnn and bbc news compare", "compare"),
@@ -3642,7 +3775,6 @@ examples = [
     ("contrast cnn with fox news", "compare"),
     ("how similar are hbo and starz", "compare"),
     
-    # explain_status (10 examples)
     ("why is hbo down", "explain_status"),
     ("explain why channel is offline", "explain_status"),
     ("why isn't espn working", "explain_status"),
@@ -3654,7 +3786,6 @@ examples = [
     ("explain the bbc news outage", "explain_status"),
     ("what's the issue with nickelodeon", "explain_status"),
     
-    # greeting (10 examples)
     ("hello", "greeting"),
     ("hi there", "greeting"),
     ("good morning", "greeting"),
@@ -3666,7 +3797,6 @@ examples = [
     ("good evening", "greeting"),
     ("hey assistant", "greeting"),
     
-    # how_are_you (10 examples)
     ("how are you", "how_are_you"),
     ("how are you doing", "how_are_you"),
     ("how's it going", "how_are_you"),
@@ -3678,7 +3808,6 @@ examples = [
     ("how are things", "how_are_you"),
     ("how's everything", "how_are_you"),
     
-    # thanks (10 examples)
     ("thanks for your help", "thanks"),
     ("appreciate your help", "thanks"),
     ("thank you", "thanks"),
@@ -3690,7 +3819,6 @@ examples = [
     ("I appreciate it", "thanks"),
     ("thanks so much", "thanks"),
     
-    # goodbye (10 examples)
     ("bye", "goodbye"),
     ("see you later", "goodbye"),
     ("goodbye", "goodbye"),
@@ -3702,7 +3830,6 @@ examples = [
     ("I'm done for now", "goodbye"),
     ("that's all for now", "goodbye"),
     
-    # help (10 examples)
     ("what can you do", "help"),
     ("how does this work", "help"),
     ("what help can you provide", "help"),
@@ -3714,7 +3841,6 @@ examples = [
     ("what commands are available", "help"),
     ("I need help", "help"),
     
-    # general_question (10 examples)
     ("what time is it", "general_question"),
     ("tell me a joke", "general_question"),
     ("who are you", "general_question"),
@@ -3858,7 +3984,10 @@ def index():
     user_id = session['user_id']
     
     if request.method == 'POST':
-        user_text = request.form['query'].strip()
+        raw_text = request.form['query'].strip()
+        
+        # Apply spelling correction
+        user_text = correct_spelling(raw_text, channel_names + list(general_knowledge["general_qa"].keys()))
         
         # Predict intent with thread-safe access
         with model_lock:
@@ -3877,6 +4006,7 @@ def index():
             "intent": intent,
             "entities": entities,
             "user_text": user_text,
+            "raw_text": raw_text,
             "is_follow_up": is_follow_up(user_text),
             "user_history": session.get('history', [])[-5:],
             "user_preferences": update_user_profile(user_id, user_text, intent, "").get("common_topics", {}),
@@ -3956,6 +4086,10 @@ def handle_csrf_error(e):
         return redirect(url_for('home')), 400
 #========================================
 if __name__ == '__main__':
+    # Warm up generative model
+    print("Warming up generative model...")
+    generative_model.generate_response("Hello, how are you?")
+    print("Generative model ready")
     if not os.path.exists(CONFIG["CACHE_FILE"]):
         app.logger.info("Initializing cache...")
         MovieCache.save(fetch_movies())

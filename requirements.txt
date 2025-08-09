@@ -37,6 +37,8 @@ numpy
 scikit-learn
 python-Levenshtein
 joblib==1.3.2
+torch
+transformers
 
 # Utilities
 tqdm>=4.62.0

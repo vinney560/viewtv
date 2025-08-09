@@ -3567,61 +3567,164 @@ def update_user_profile(user_id, text, intent, response):
 
 # ------------------------ Enhanced ML Intent Classification with Online Learning ------------------------
 examples = [
+    # status_check (10 examples)
     ("is espn working", "status_check"),
+    ("is citizen tv still working", "status_check"),
+    ("is bein 6 active", "status_check"),
     ("check cnn status", "status_check"),
     ("is hbo down", "status_check"),
     ("what's the status of discovery channel", "status_check"),
+    ("is fox sports live right now", "status_check"),
+    ("check if bbc news is online", "status_check"),
+    ("is mtv streaming currently", "status_check"),
+    ("verify if cartoon network is up", "status_check"),
+    ("can you see if hbo is working", "status_check"),
+    ("is the history channel available", "status_check"),
     
+    # info (10 examples)
     ("tell me about bbc news", "info"),
     ("information about national geographic", "info"),
     ("what is espn", "info"),
     ("describe hbo", "info"),
+    ("details about cartoon network", "info"),
+    ("what's mtv all about", "info"),
+    ("explain what fox sports is", "info"),
+    ("tell me about the history channel", "info"),
+    ("describe the discovery channel", "info"),
+    ("what can you tell me about cnn", "info"),
     
+    # list_category (10 examples)
     ("which channels are sports", "list_category"),
     ("list entertainment channels", "list_category"),
     ("show me kids channels", "list_category"),
     ("any movie channels?", "list_category"),
+    ("what news channels do you have", "list_category"),
+    ("list all music channels", "list_category"),
+    ("show me documentary channels", "list_category"),
+    ("what comedy channels are available", "list_category"),
+    ("list science channels", "list_category"),
+    ("which channels show cartoons", "list_category"),
     
+    # list_all (10 examples)
     ("what channels are available", "list_all"),
+    ("how many channels are available", "list_all"),
     ("show me all channels", "list_all"),
+    ("list every channel you know", "list_all"),
+    ("what options do I have", "list_all"),
+    ("display all available channels", "list_all"),
+    ("can you list all channels", "list_all"),
+    ("give me the full channel list", "list_all"),
+    ("what are all my channel choices", "list_all"),
+    ("show complete channel catalog", "list_all"),
+    ("what channels can I watch", "list_all"),
     
+    # recommend (10 examples)
     ("recommend me a channel", "recommend"),
     ("suggest a documentary channel", "recommend"),
     ("what should I watch", "recommend"),
     ("can you recommend something", "recommend"),
+    ("what's good to watch now", "recommend"),
+    ("suggest a channel for me", "recommend"),
+    ("what would you recommend watching", "recommend"),
+    ("pick a channel for me", "recommend"),
+    ("help me choose something to watch", "recommend"),
+    ("what channel should I try", "recommend"),
     
+    # compare (10 examples)
     ("compare espn and fox sports", "compare"),
     ("compare hbo and showtime", "compare"),
     ("how do cnn and bbc news compare", "compare"),
+    ("difference between mtv and vh1", "compare"),
+    ("compare cartoon network and nickelodeon", "compare"),
+    ("how does hbo max differ from disney+", "compare"),
+    ("what's better: espn or nfl network", "compare"),
+    ("compare national geographic and discovery", "compare"),
+    ("contrast cnn with fox news", "compare"),
+    ("how similar are hbo and starz", "compare"),
     
+    # explain_status (10 examples)
     ("why is hbo down", "explain_status"),
     ("explain why channel is offline", "explain_status"),
     ("why isn't espn working", "explain_status"),
+    ("what's wrong with cartoon network", "explain_status"),
+    ("why can't I access fox news", "explain_status"),
+    ("explain why mtv isn't loading", "explain_status"),
+    ("what's causing cnn to be offline", "explain_status"),
+    ("why is discovery channel unavailable", "explain_status"),
+    ("explain the bbc news outage", "explain_status"),
+    ("what's the issue with nickelodeon", "explain_status"),
     
+    # greeting (10 examples)
     ("hello", "greeting"),
     ("hi there", "greeting"),
     ("good morning", "greeting"),
     ("hey", "greeting"),
+    ("greetings", "greeting"),
+    ("hi bot", "greeting"),
+    ("hello there", "greeting"),
+    ("good afternoon", "greeting"),
+    ("good evening", "greeting"),
+    ("hey assistant", "greeting"),
     
+    # how_are_you (10 examples)
     ("how are you", "how_are_you"),
     ("how are you doing", "how_are_you"),
+    ("how's it going", "how_are_you"),
+    ("how do you feel", "how_are_you"),
+    ("are you doing well", "how_are_you"),
+    ("what's up", "how_are_you"),
+    ("how's your day", "how_are_you"),
+    ("you doing okay", "how_are_you"),
+    ("how are things", "how_are_you"),
+    ("how's everything", "how_are_you"),
     
+    # thanks (10 examples)
     ("thanks for your help", "thanks"),
     ("appreciate your help", "thanks"),
     ("thank you", "thanks"),
+    ("many thanks", "thanks"),
+    ("thanks a lot", "thanks"),
+    ("thank you very much", "thanks"),
+    ("much appreciated", "thanks"),
+    ("thanks a bunch", "thanks"),
+    ("I appreciate it", "thanks"),
+    ("thanks so much", "thanks"),
     
+    # goodbye (10 examples)
     ("bye", "goodbye"),
     ("see you later", "goodbye"),
     ("goodbye", "goodbye"),
+    ("bye bye", "goodbye"),
+    ("see ya", "goodbye"),
+    ("talk to you later", "goodbye"),
+    ("catch you later", "goodbye"),
+    ("signing off", "goodbye"),
+    ("I'm done for now", "goodbye"),
+    ("that's all for now", "goodbye"),
     
+    # help (10 examples)
     ("what can you do", "help"),
     ("how does this work", "help"),
     ("what help can you provide", "help"),
+    ("help me", "help"),
+    ("can you help", "help"),
+    ("what are my options", "help"),
+    ("show me what you can do", "help"),
+    ("how can you assist me", "help"),
+    ("what commands are available", "help"),
+    ("I need help", "help"),
     
+    # general_question (10 examples)
     ("what time is it", "general_question"),
     ("tell me a joke", "general_question"),
     ("who are you", "general_question"),
-    ("what's the weather", "general_question")
+    ("what's the weather", "general_question"),
+    ("what day is it", "general_question"),
+    ("where are you from", "general_question"),
+    ("what's your purpose", "general_question"),
+    ("how old are you", "general_question"),
+    ("what can you tell me", "general_question"),
+    ("do you know any trivia", "general_question")
 ]
 
 # Create model with online learning capability

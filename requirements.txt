@@ -33,8 +33,9 @@ beautifulsoup4
 lxml
 
 # ML & Data Science
-numpy
+Flask-Session
 scikit-learn
+numpy
 joblib
 
 # Utilities

@@ -2941,7 +2941,7 @@ def set_notice():
 #      AI FEATURES 
 #========================================
 
-# ------------------------ Enhanced Config ------------------------
+# ------------------------ Enhanced Config ----------------------
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
@@ -2963,7 +2963,7 @@ if os.path.exists(GENERAL_KNOWLEDGE_FILE):
         general_knowledge = json.load(f)
 else:
     general_knowledge = {
-        "greetings": ["Hello!", "Hi there!", "Hey!", "Greetings!"],
+        "greetings": ["Hello!", "Hi there!", "Hey!", "Greetings!", "What's up!", "How are you"],
         "farewells": ["Goodbye!", "See you later!", "Bye!", "Take care!"],
         "thanks": ["You're welcome!", "My pleasure!", "Happy to help!", "Anytime!"],
         "help": [
@@ -3598,7 +3598,7 @@ def initialize_model():
     # Use SGDClassifier for online learning capabilities
     model = make_pipeline(
         TfidfVectorizer(),
-        SGDClassifier(loss='log', warm_start=True, max_iter=100, tol=1e-3)
+        SGDClassifier(loss='log_loss', warm_start=True, max_iter=100, tol=1e-3)
     )
     model.fit(X_train, y_train)
     return model

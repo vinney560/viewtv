@@ -72,7 +72,7 @@ import joblib
 from threading import Lock
 from keras.models import Sequential
 from keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense
-from keras.preprocessing.text import Tokenizer
+from keras_preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.optimizers import Adam
 

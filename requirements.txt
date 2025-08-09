@@ -32,14 +32,14 @@ redis>=4.1.0
 beautifulsoup4
 lxml
 
-#ML & Data Science
-Flask-Session
+# ML & Data Science
 scikit-learn
 numpy
 joblib
 thefuzz
-tensorflow
-keras
+tensorflow>=2.16.1
+keras>=3.0.0
+keras-preprocessing>=1.1.2
 
 # Utilities
 tqdm>=4.62.0

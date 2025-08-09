@@ -4101,10 +4101,6 @@ learning_thread.start()
 # ------------------------ Flask Routes ------------------------
 reasoning_engine = AdvancedReasoningEngine()
 
-@app.route('/')
-def home():
-    return redirect(url_for('index'))
-
 @app.route('/chat', methods=['GET', 'POST'])
 def index():
     if 'history' not in session:

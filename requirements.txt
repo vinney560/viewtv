@@ -36,6 +36,7 @@ lxml
 numpy
 scikit-learn
 python-Levenshtein
+joblib==1.3.2
 
 # Utilities
 tqdm>=4.62.0

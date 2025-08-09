@@ -58,16 +58,17 @@ import json
 import time
 import random
 import re
+import numpy as np
 from datetime import datetime
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_session import Session
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import SGDClassifier  # Changed for online learning
 from sklearn.pipeline import make_pipeline
-from sklearn.metrics.pairwise import cosine_similarity
 from difflib import get_close_matches
-import numpy as np
+import joblib  # For model persistence
+from threading import Lock
 
 
 # ============================
@@ -2939,13 +2940,18 @@ def set_notice():
 #========================================
 #      AI FEATURES 
 #========================================
+
+# ------------------------ Enhanced Config ------------------------
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
+MODEL_FILE = "intent_model.pkl"
 HISTORY_LIMIT = 50
 CHECK_TIMEOUT = 5
-REASONING_DEPTH = 4  # Increased reasoning depth
-CONVERSATION_MEMORY = 3  # Remember last 3 interactions
+REASONING_DEPTH = 4
+CONVERSATION_MEMORY = 3
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
+ONLINE_LEARNING_INTERVAL = 5  # Learn after every 5 interactions
+MIN_UPDATE_SAMPLES = 3        # Minimum samples before updating model
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
@@ -3504,7 +3510,8 @@ def update_user_profile(user_id, text, intent, response):
             "last_intents": [],
             "common_topics": {},
             "preferred_channels": [],
-            "response_times": []
+            "response_times": [],
+            "learning_samples": []  # Store samples for online learning
         }
     
     profile = profiles[user_id]
@@ -3524,17 +3531,26 @@ def update_user_profile(user_id, text, intent, response):
     
     # Track response time
     profile["response_times"].append(time.time())
+    
+    # Store sample for online learning
+    profile["learning_samples"].append({
+        "text": text,
+        "intent": intent,
+        "timestamp": time.time()
+    })
+    
+    # Keep only recent data
     if len(profile["response_times"]) > 10:
         profile["response_times"] = profile["response_times"][-10:]
-    
-    # Keep only recent intents
     if len(profile["last_intents"]) > 10:
         profile["last_intents"] = profile["last_intents"][-10:]
+    if len(profile["learning_samples"]) > HISTORY_LIMIT:
+        profile["learning_samples"] = profile["learning_samples"][-HISTORY_LIMIT:]
     
     save_user_profiles(profiles)
     return profile
 
-# ------------------------ Enhanced ML Intent Classification ------------------------
+# ------------------------ Enhanced ML Intent Classification with Online Learning ------------------------
 examples = [
     ("is espn working", "status_check"),
     ("tell me about bbc news", "info"),
@@ -3565,94 +3581,81 @@ examples = [
     ("appreciate your help", "thanks"),
     ("not working", "status_check"),
     ("down again", "status_check"),
-    ("information about national geographic", "info"),
-    
-    # Existing additional examples
-    ("is fox sports online?", "status_check"),
-    ("give me info on cnn", "info"),
-    ("list all news channels", "list_category"),
-    ("what are the documentary channels?", "list_category"),
-    ("can you recommend a kids channel?", "recommend"),
-    ("compare discovery and national geographic", "compare"),
-    ("why is the sports channel offline?", "explain_status"),
-    ("hi, how’s it going?", "greeting"),
-    ("good evening", "greeting"),
-    ("thanks a lot", "thanks"),
-    ("can you help me?", "help"),
-    ("what’s your name?", "general_question"),
-    ("are there any movie channels?", "list_category"),
-    ("what’s the status of espn?", "status_check"),
-    ("list all available channels", "list_all"),
-    ("suggest some entertainment channels", "recommend"),
-    ("tell me why the channel is down", "explain_status"),
-    ("bye for now", "goodbye"),
-    ("how do I use this app?", "help"),
-    ("can you tell me a joke?", "general_question"),
-    ("what is the weather like today?", "general_question"),
-    ("good night", "greeting"),
-    ("thanks for the info", "thanks"),
-    ("can you compare bbc and cnn?", "compare"),
-    ("are the kids channels working?", "status_check"),
-    ("list channels for documentaries", "list_category"),
-    ("who made you?", "general_question"),
-    ("how are things?", "how_are_you"),
-    ("please suggest a movie channel", "recommend"),
-    ("what channels are down now?", "status_check"),
-    ("any sports channels live?", "status_check"),
-    ("hello there", "greeting"),
-    ("can you list all sports channels?", "list_category"),
-    ("explain the outage on hbo", "explain_status"),
-    ("see you soon", "goodbye"),
-    ("thanks so much", "thanks"),
-    
-    # MORE examples added now:
-    ("what sports channels do you have?", "list_category"),
-    ("are bbc news channels available?", "info"),
-    ("which channel has documentaries?", "list_category"),
-    ("give me a list of kids shows", "list_category"),
-    ("suggest a channel for movies", "recommend"),
-    ("compare hbo and netflix", "compare"),
-    ("why is netflix down?", "explain_status"),
-    ("hey", "greeting"),
-    ("how are things going?", "how_are_you"),
-    ("thank you very much", "thanks"),
-    ("goodbye for now", "goodbye"),
-    ("can you assist me?", "help"),
-    ("what’s your purpose?", "general_question"),
-    ("tell me something funny", "general_question"),
-    ("do you have weather updates?", "general_question"),
-    ("good afternoon", "greeting"),
-    ("talk to you later", "goodbye"),
-    ("much appreciated", "thanks"),
-    ("are espn and fox online?", "status_check"),
-    ("give me info about discovery", "info"),
-    ("what entertainment channels do you offer?", "list_category"),
-    ("list all documentary channels", "list_category"),
-    ("can you suggest some kids channels?", "recommend"),
-    ("compare disney and cartoon network", "compare"),
-    ("why is cartoon network offline?", "explain_status"),
-    ("hello friend", "greeting"),
-    ("what time is it now?", "general_question"),
-    ("tell me who you are", "general_question"),
-    ("how can I use this?", "help"),
-    ("thanks a lot for your help", "thanks"),
-    ("bye bye", "goodbye"),
-    ("can you list all channels?", "list_all"),
-    ("what channels are popular?", "list_all"),
-    ("any movie channels available?", "list_category"),
-    ("suggest a sports channel", "recommend"),
-    ("compare bbc and cnn news", "compare"),
-    ("explain why cnn is down", "explain_status"),
-    ("hi!", "greeting"),
-    ("how’s everything?", "how_are_you"),
-    ("thanks!", "thanks"),
-    ("good night!", "greeting"),
+    ("information about national geographic", "info")
 ]
 
-X_train = [x[0] for x in examples]
-y_train = [x[1] for x in examples]
-model = make_pipeline(TfidfVectorizer(), MultinomialNB())
-model.fit(X_train, y_train)
+# Create model with online learning capability
+model_lock = Lock()
+
+def initialize_model():
+    """Initialize or load the intent classification model"""
+    if os.path.exists(MODEL_FILE):
+        return joblib.load(MODEL_FILE)
+    
+    X_train = [x[0] for x in examples]
+    y_train = [x[1] for x in examples]
+    
+    # Use SGDClassifier for online learning capabilities
+    model = make_pipeline(
+        TfidfVectorizer(),
+        SGDClassifier(loss='log', warm_start=True, max_iter=100, tol=1e-3)
+    )
+    model.fit(X_train, y_train)
+    return model
+
+def update_model(model, new_samples):
+    """Update model with new samples"""
+    if not new_samples:
+        return model
+    
+    X_new = [sample["text"] for sample in new_samples]
+    y_new = [sample["intent"] for sample in new_samples]
+    
+    # Update the model incrementally
+    try:
+        model.fit(X_new, y_new)
+    except Exception as e:
+        print(f"Model update error: {e}")
+    
+    return model
+
+def learn_from_interactions():
+    """Periodic learning from user interactions"""
+    while True:
+        time.sleep(ONLINE_LEARNING_INTERVAL)
+        
+        profiles = load_user_profiles()
+        if not profiles:
+            continue
+            
+        with model_lock:
+            model = initialize_model()
+            all_samples = []
+            
+            # Collect recent samples from all users
+            for user_id, profile in profiles.items():
+                if "learning_samples" in profile and profile["learning_samples"]:
+                    # Only use samples older than 5 seconds to ensure they're processed
+                    recent_samples = [
+                        s for s in profile["learning_samples"] 
+                        if time.time() - s["timestamp"] > 5
+                    ]
+                    all_samples.extend(recent_samples)
+            
+            # Update model if we have enough new samples
+            if len(all_samples) >= MIN_UPDATE_SAMPLES:
+                model = update_model(model, all_samples)
+                joblib.dump(model, MODEL_FILE)
+                
+                # Clear samples after learning
+                for user_id in profiles:
+                    profiles[user_id]["learning_samples"] = []
+                save_user_profiles(profiles)
+
+# Start the learning thread
+import threading
+learning_thread = threading.Thread(target=learn_from_interactions, daemon=True)
+learning_thread.start()
 
 # ------------------------ Flask Routes ------------------------
 reasoning_engine = AdvancedReasoningEngine()
@@ -3670,8 +3673,10 @@ def index():
     if request.method == 'POST':
         user_text = request.form['query'].strip()
         
-        # Predict intent
-        intent = model.predict([user_text])[0]
+        # Predict intent with thread-safe access
+        with model_lock:
+            model = initialize_model()
+            intent = model.predict([user_text])[0]
         
         # Extract entities
         entities = extract_entities(user_text)
@@ -3706,11 +3711,12 @@ def index():
         session.modified = True
     
     return render_template('chat.html', history=session.get('history', []))
-@csrf.exempt
+
 @app.route('/reset')
 def reset():
     session.clear()
     return redirect(url_for('index'))
+
 
 #========================================
 @app.context_processor

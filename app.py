@@ -59,17 +59,19 @@ import time
 import random
 import re
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_session import Session
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import SGDClassifier  # Changed for online learning
+from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import make_pipeline
+from sklearn.utils.class_weight import compute_class_weight
 from difflib import get_close_matches
-import joblib  # For model persistence
+import joblib
 from threading import Lock
-
+import threading
+from collections import Counter
 
 # ============================
 # CONFIGURATION & INIT
@@ -2941,6 +2943,7 @@ def set_notice():
 #      AI FEATURES 
 #========================================
 
+
 # ------------------------ Enhanced Config ----------------------
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
@@ -2950,8 +2953,9 @@ CHECK_TIMEOUT = 5
 REASONING_DEPTH = 4
 CONVERSATION_MEMORY = 3
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
-ONLINE_LEARNING_INTERVAL = 5  # Learn after every 5 interactions
+ONLINE_LEARNING_INTERVAL = 10  # Learn after every 10 interactions
 MIN_UPDATE_SAMPLES = 3        # Minimum samples before updating model
+
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
@@ -2963,7 +2967,7 @@ if os.path.exists(GENERAL_KNOWLEDGE_FILE):
         general_knowledge = json.load(f)
 else:
     general_knowledge = {
-        "greetings": ["Hello!", "Hi there!", "Hey!", "Greetings!", "What's up!", "How are you"],
+        "greetings": ["Hello!", "Hi there!", "Hey!", "Greetings!"],
         "farewells": ["Goodbye!", "See you later!", "Bye!", "Take care!"],
         "thanks": ["You're welcome!", "My pleasure!", "Happy to help!", "Anytime!"],
         "help": [
@@ -2982,6 +2986,11 @@ else:
                 "Why don't scientists trust atoms? Because they make up everything!",
                 "What do you call a fake noodle? An impasta!",
                 "Why did the scarecrow win an award? Because he was outstanding in his field!"
+            ],
+            "how_are_you": [
+                "I'm functioning well, thank you! Ready to help with TV channels.",
+                "All systems operational! How can I assist you today?",
+                "I'm just a program, but I'm running smoothly. What can I do for you?"
             ]
         }
     }
@@ -3056,6 +3065,7 @@ class AdvancedReasoningEngine:
                     ("is_farewell", self.handle_farewell),
                     ("is_thanks", self.handle_thanks),
                     ("is_help", self.handle_help),
+                    ("is_how_are_you", self.handle_how_are_you),  # Added handler
                     ("has_general_question", self.answer_general_question),
                     ("else", self.handle_unknown_query)
                 ]
@@ -3139,6 +3149,8 @@ class AdvancedReasoningEngine:
             return self.context.get("intent") in ["thanks", "thank_you"]
         if condition == "is_help":
             return self.context.get("intent") in ["help", "what_can_you_do"]
+        if condition == "is_how_are_you":  # Added condition
+            return self.context.get("intent") == "how_are_you"
         if condition == "has_general_question":
             return self.context.get("intent") == "general_question"
         
@@ -3293,6 +3305,9 @@ class AdvancedReasoningEngine:
     
     def handle_help(self):
         return random.choice(general_knowledge["help"])
+    
+    def handle_how_are_you(self):  # Added handler
+        return random.choice(general_knowledge["general_qa"]["how_are_you"])
     
     def answer_general_question(self):
         text = self.context["user_text"].lower()
@@ -3553,93 +3568,137 @@ def update_user_profile(user_id, text, intent, response):
 # ------------------------ Enhanced ML Intent Classification with Online Learning ------------------------
 examples = [
     ("is espn working", "status_check"),
-    ("tell me about bbc news", "info"),
     ("check cnn status", "status_check"),
+    ("is hbo down", "status_check"),
+    ("what's the status of discovery channel", "status_check"),
+    
+    ("tell me about bbc news", "info"),
+    ("information about national geographic", "info"),
+    ("what is espn", "info"),
+    ("describe hbo", "info"),
+    
     ("which channels are sports", "list_category"),
     ("list entertainment channels", "list_category"),
-    ("what channels are available", "list_all"),
     ("show me kids channels", "list_category"),
     ("any movie channels?", "list_category"),
+    
+    ("what channels are available", "list_all"),
+    ("show me all channels", "list_all"),
+    
     ("recommend me a channel", "recommend"),
     ("suggest a documentary channel", "recommend"),
+    ("what should I watch", "recommend"),
+    ("can you recommend something", "recommend"),
+    
     ("compare espn and fox sports", "compare"),
+    ("compare hbo and showtime", "compare"),
+    ("how do cnn and bbc news compare", "compare"),
+    
     ("why is hbo down", "explain_status"),
     ("explain why channel is offline", "explain_status"),
+    ("why isn't espn working", "explain_status"),
+    
     ("hello", "greeting"),
     ("hi there", "greeting"),
+    ("good morning", "greeting"),
+    ("hey", "greeting"),
+    
     ("how are you", "how_are_you"),
+    ("how are you doing", "how_are_you"),
+    
     ("thanks for your help", "thanks"),
+    ("appreciate your help", "thanks"),
+    ("thank you", "thanks"),
+    
     ("bye", "goodbye"),
+    ("see you later", "goodbye"),
+    ("goodbye", "goodbye"),
+    
     ("what can you do", "help"),
+    ("how does this work", "help"),
+    ("what help can you provide", "help"),
+    
     ("what time is it", "general_question"),
     ("tell me a joke", "general_question"),
     ("who are you", "general_question"),
-    ("what's the weather", "general_question"),
-    ("how does this work", "help"),
-    ("good morning", "greeting"),
-    ("see you later", "goodbye"),
-    ("appreciate your help", "thanks"),
-    ("not working", "status_check"),
-    ("down again", "status_check"),
-    ("information about national geographic", "info")
+    ("what's the weather", "general_question")
 ]
 
 # Create model with online learning capability
 model_lock = Lock()
+
 def initialize_model():
     """Initialize or load the intent classification model"""
+    # Load training data
+    X_train = [x[0] for x in examples]
+    y_train = [x[1] for x in examples]
+    
+    # Calculate class weights to handle imbalance
+    classes = np.unique(y_train)
+    class_weights = compute_class_weight('balanced', classes=classes, y=y_train)
+    class_weight_dict = dict(zip(classes, class_weights))
+    
+    # Try loading existing model
     if os.path.exists(MODEL_FILE):
         try:
             model = joblib.load(MODEL_FILE)
-            # Verify model dimensions and compatibility
-            if (hasattr(model, 'n_features_in_') and 
-                model.n_features_in_ != len(examples)):
-                print("Dimension mismatch - retraining fresh model")
-                model = None  # Force retrain
+            # Verify the model has the required components
+            if (hasattr(model, 'named_steps') and 
+                hasattr(model.named_steps['sgdclassifier'], 'coef_')):
+                return model
+            print("Loaded model invalid - retraining")
         except Exception as e:
-            print(f"Model loading failed: {e}")
-            model = None
+            print(f"Model loading failed: {str(e)}")
     
-    if not os.path.exists(MODEL_FILE) or model is None:
-        X_train = [x[0] for x in examples]
-        y_train = [x[1] for x in examples]
-        
-        # Initialize with consistent dimensions and updated parameters
-        vectorizer = TfidfVectorizer(
-            max_features=100,
-            ngram_range=(1, 2)  # Consider bigrams for better context
-        )
-        
-        model = make_pipeline(
-            vectorizer,
-            SGDClassifier(
-                loss='log_loss',  # Updated parameter name
-                penalty='l2',
-                alpha=1e-4,
-                max_iter=1000,
-                tol=1e-3,
-                early_stopping=True,
-                validation_fraction=0.2,
-                n_iter_no_change=5,
-                warm_start=True
-            )
-        )
-        
-        try:
-            model.fit(X_train, y_train)
-            joblib.dump(model, MODEL_FILE)
-        except Exception as e:
-            print(f"Model training failed: {e}")
-            raise
+    # If we get here, we need to train a new model
+    print("Training new model...")
+    vectorizer = TfidfVectorizer(
+        max_features=100,
+        ngram_range=(1, 1),
+        stop_words='english'
+    )
     
-    # Verify the loaded model
-    if not hasattr(model.named_steps['sgdclassifier'], 'coef_'):
-        print("Model not properly trained - retraining")
+    classifier = SGDClassifier(
+        loss='log_loss',
+        penalty='l2',
+        alpha=1e-4,
+        max_iter=1000,
+        tol=1e-3,
+        class_weight=class_weight_dict,  # Handle class imbalance
+        warm_start=True,
+        random_state=42
+    )
+    
+    model = make_pipeline(vectorizer, classifier)
+    
+    try:
         model.fit(X_train, y_train)
         joblib.dump(model, MODEL_FILE)
+        print("Model trained and saved successfully")
+        return model
+    except Exception as e:
+        print(f"Model training failed: {str(e)}")
+        raise RuntimeError("Failed to initialize model") from e
+
+def update_model(model, new_samples):
+    """Update model with new samples"""
+    if not new_samples:
+        return model
+    
+    X_new = [sample["text"] for sample in new_samples]
+    y_new = [sample["intent"] for sample in new_samples]
+    
+    # Update the model incrementally
+    try:
+        # Partial fit for online learning
+        model.named_steps['sgdclassifier'].partial_fit(
+            model.named_steps['tfidfvectorizer'].transform(X_new),
+            y_new,
+            classes=np.unique(y_new))
+    except Exception as e:
+        print(f"Model update error: {e}")
     
     return model
-
 
 def learn_from_interactions():
     """Periodic learning from user interactions"""
@@ -3651,31 +3710,34 @@ def learn_from_interactions():
             continue
             
         with model_lock:
-            model = initialize_model()
-            all_samples = []
-            
-            # Collect recent samples from all users
-            for user_id, profile in profiles.items():
-                if "learning_samples" in profile and profile["learning_samples"]:
-                    # Only use samples older than 5 seconds to ensure they're processed
-                    recent_samples = [
-                        s for s in profile["learning_samples"] 
-                        if time.time() - s["timestamp"] > 5
-                    ]
-                    all_samples.extend(recent_samples)
-            
-            # Update model if we have enough new samples
-            if len(all_samples) >= MIN_UPDATE_SAMPLES:
-                model = update_model(model, all_samples)
-                joblib.dump(model, MODEL_FILE)
+            try:
+                model = initialize_model()
+                all_samples = []
                 
-                # Clear samples after learning
-                for user_id in profiles:
-                    profiles[user_id]["learning_samples"] = []
-                save_user_profiles(profiles)
+                # Collect recent samples from all users
+                for user_id, profile in profiles.items():
+                    if "learning_samples" in profile and profile["learning_samples"]:
+                        # Only use samples older than 5 seconds to ensure they're processed
+                        recent_samples = [
+                            s for s in profile["learning_samples"] 
+                            if time.time() - s["timestamp"] > 5
+                        ]
+                        all_samples.extend(recent_samples)
+                
+                # Update model if we have enough new samples
+                if len(all_samples) >= MIN_UPDATE_SAMPLES:
+                    print(f"Updating model with {len(all_samples)} new samples")
+                    model = update_model(model, all_samples)
+                    joblib.dump(model, MODEL_FILE)
+                    
+                    # Clear samples after learning
+                    for user_id in profiles:
+                        profiles[user_id]["learning_samples"] = []
+                    save_user_profiles(profiles)
+            except Exception as e:
+                print(f"Learning thread error: {e}")
 
 # Start the learning thread
-import threading
 learning_thread = threading.Thread(target=learn_from_interactions, daemon=True)
 learning_thread.start()
 
@@ -3697,8 +3759,12 @@ def index():
         
         # Predict intent with thread-safe access
         with model_lock:
-            model = initialize_model()
-            intent = model.predict([user_text])[0]
+            try:
+                model = initialize_model()
+                intent = model.predict([user_text])[0]
+            except Exception as e:
+                print(f"Intent prediction failed: {e}")
+                intent = "general"  # Fallback
         
         # Extract entities
         entities = extract_entities(user_text)
@@ -3716,7 +3782,11 @@ def index():
         }
         
         # Generate response using advanced reasoning engine
-        response = reasoning_engine.reason(intent, context)
+        try:
+            response = reasoning_engine.reason(intent, context)
+        except Exception as e:
+            print(f"Reasoning failed: {e}")
+            response = "I encountered an error while processing your request. Please try again."
         
         # Update session with context
         if "last_status" in reasoning_engine.context:

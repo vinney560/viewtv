@@ -11,13 +11,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import make_pipeline
 from difflib import get_close_matches
+import numpy as np
 
-# ------------------------ Config ------------------------
+# ------------------------ Enhanced Config ------------------------
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
 HISTORY_LIMIT = 50
 CHECK_TIMEOUT = 5
-REASONING_DEPTH = 3  # Levels of reasoning depth
+REASONING_DEPTH = 4  # Increased reasoning depth
+CONVERSATION_MEMORY = 3  # Remember last 3 interactions
+GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 
 # ------------------------ Flask Setup ------------------------
 app = Flask(__name__)
@@ -29,179 +32,419 @@ Session(app)
 with open("channels.json", "r") as f:
     channels = json.load(f)
 
+# Load general knowledge base
+if os.path.exists(GENERAL_KNOWLEDGE_FILE):
+    with open(GENERAL_KNOWLEDGE_FILE, "r") as f:
+        general_knowledge = json.load(f)
+else:
+    general_knowledge = {
+        "greetings": ["Hello!", "Hi there!", "Hey!", "Greetings!"],
+        "farewells": ["Goodbye!", "See you later!", "Bye!", "Take care!"],
+        "thanks": ["You're welcome!", "My pleasure!", "Happy to help!", "Anytime!"],
+        "help": [
+            "I can help you with TV channel status, information, recommendations, and comparisons. "
+            "You can also ask me general questions!",
+            "I specialize in TV channels but can also chat about general topics. "
+            "Try asking about channel status or recommendations!",
+            "Need help? I can check channel status, provide information, recommend channels, "
+            "or just chat about general topics!"
+        ],
+        "general_qa": {
+            "weather": "I don't have real-time weather data, but I recommend checking a weather service for accurate forecasts.",
+            "time": "The current time is {time}.",
+            "name": "I'm your TV Channel Assistant, here to help with all your channel needs!",
+            "joke": [
+                "Why don't scientists trust atoms? Because they make up everything!",
+                "What do you call a fake noodle? An impasta!",
+                "Why did the scarecrow win an award? Because he was outstanding in his field!"
+            ]
+        }
+    }
+
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
-# ------------------------ Lightweight Reasoning Engine ------------------------
-class ReasoningEngine:
+# ------------------------ Advanced Reasoning Engine -----# ... [previous code remains the same] ...
+
+# ------------------------ Advanced Reasoning Engine ------------------------
+class AdvancedReasoningEngine:
     def __init__(self):
         self.context = {}
-        self.decision_trees = self.build_decision_trees()
+        self.decision_forest = self.build_decision_forest()
+        self.conversation_history = []
     
-    def build_decision_trees(self):
-        """Decision trees for different intents"""
+    def build_decision_forest(self):
+        """Multi-layered decision forest for complex reasoning"""
         return {
-            "status_check": [
-                ("has_entities", "generate_status_report"),
-                ("is_follow_up", "recall_last_channel"),
-                ("else", "ask_for_channel")
-            ],
-            "info": [
-                ("has_entities", "provide_channel_info"),
-                ("is_follow_up", "recall_last_channel"),
-                ("else", "ask_for_channel")
-            ],
-            "recommend": [
-                ("has_history", "recommend_from_history"),
-                ("has_preferences", "recommend_from_preferences"),
-                ("else", "recommend_popular")
-            ],
-            "compare": [
-                ("has_two_entities", "compare_channels"),
-                ("has_one_entity", "suggest_comparison"),
-                ("else", "ask_for_channels")
-            ],
-            "explain_status": [
-                ("has_status_context", "explain_with_context"),
-                ("has_entity", "explain_general"),
-                ("else", "ask_for_channel_status")
-            ]
+            "status_check": {
+                "primary": [
+                    ("has_entities", self.handle_entity_status),
+                    ("is_follow_up", self.handle_follow_up_status),
+                    ("else", self.ask_for_channel)
+                ],
+                "secondary": [
+                    ("status_offline", self.suggest_alternatives),
+                    ("user_curious", self.add_technical_details)
+                ]
+            },
+            "info": {
+                "primary": [
+                    ("has_entities", self.provide_enhanced_info),
+                    ("has_history", self.add_personal_context),
+                    ("else", self.ask_for_channel)
+                ],
+                "secondary": [
+                    ("user_engaged", self.offer_related_info)
+                ]
+            },
+            "recommend": {
+                "primary": [
+                    ("has_history", self.recommend_from_history),
+                    ("has_preferences", self.recommend_from_preferences),
+                    ("else", self.recommend_popular)
+                ],
+                "secondary": [
+                    ("user_uncertain", self.explain_recommendation)
+                ]
+            },
+            "compare": {
+                "primary": [
+                    ("has_two_entities", self.compare_channels),
+                    ("has_one_entity", self.suggest_comparison),
+                    ("else", self.ask_for_channels)
+                ],
+                "secondary": [
+                    ("complex_comparison", self.add_comparison_details)
+                ]
+            },
+            "explain_status": {
+                "primary": [
+                    ("has_status_context", self.explain_with_context),
+                    ("has_entity", self.explain_general),
+                    ("else", self.ask_for_channel_status)
+                ],
+                "secondary": [
+                    ("technical_question", self.provide_technical_explanation)
+                ]
+            },
+            "general": {
+                "primary": [
+                    ("is_greeting", self.handle_greeting),
+                    ("is_farewell", self.handle_farewell),
+                    ("is_thanks", self.handle_thanks),
+                    ("is_help", self.handle_help),
+                    ("has_general_question", self.answer_general_question),
+                    ("else", self.handle_unknown_query)
+                ]
+            }
         }
     
     def reason(self, intent, context):
-        """Navigate decision tree for the intent"""
-        if intent not in self.decision_trees:
-            return "fallback"
+        """Multi-stage reasoning process"""
+        self.context = context.copy()
+        self.update_conversation_history(context)
         
-        for condition, action in self.decision_trees[intent]:
-            if self.check_condition(condition, context):
-                return action
+        # Primary reasoning
+        response = self.execute_primary_reasoning(intent)
         
-        return "fallback"
-    
-    def check_condition(self, condition, context):
-        """Evaluate condition based on context"""
-        if condition == "has_entities":
-            return bool(context.get("entities"))
-        if condition == "is_follow_up":
-            return context.get("is_follow_up", False)
-        if condition == "has_history":
-            return bool(context.get("user_history"))
-        if condition == "has_preferences":
-            return bool(context.get("user_preferences"))
-        if condition == "has_two_entities":
-            return len(context.get("entities", [])) >= 2
-        if condition == "has_one_entity":
-            return len(context.get("entities", [])) == 1
-        if condition == "has_status_context":
-            return "last_status" in context
-        if condition == "has_entity":
-            return bool(context.get("entities"))
-        return False
-
-# -------------------- Response Generator --------------------
-class ResponseGenerator:
-    def __init__(self):
-        self.templates = self.load_templates()
-        self.reasoning_engine = ReasoningEngine()
-    
-    def load_templates(self):
-        """Response templates with placeholders"""
-        return {
-            "status_report": [
-                "I checked {channel} - it's currently {status}. {explanation}",
-                "The status of {channel}: {status}. {explanation}",
-                "Just looked up {channel} - it's {status}. {explanation}"
-            ],
-            "channel_info": [
-                "Here's what I know about {channel}: {info}",
-                "Sure, {channel} details: {info}",
-                "Information for {channel}: {info}"
-            ],
-            "recommendation": [
-                "Based on {context}, I recommend: {channels}",
-                "I think you'd enjoy: {channels}",
-                "You might like these: {channels}"
-            ],
-            "comparison": [
-                "Comparing {channel1} and {channel2}: {comparison}",
-                "Here's how {channel1} and {channel2} compare: {comparison}",
-                "Comparison results: {channel1} vs {channel2}: {comparison}"
-            ],
-            "explanation": [
-                "Here's why: {explanation}",
-                "The reason: {explanation}",
-                "This is because: {explanation}"
-            ],
-            "fallback": [
-                "I'm not sure I understand. Could you rephrase?",
-                "I need a bit more context to help with that.",
-                "Could you provide more details about what you're looking for?"
-            ]
-        }
-    
-    def generate(self, intent, context):
-        """Generate response using reasoning engine"""
-        # First try reasoning-based response
-        action = self.reasoning_engine.reason(intent, context)
-        response = getattr(self, action)(intent, context)
+        # Secondary reasoning
+        response = self.execute_secondary_reasoning(intent, response)
         
-        # If reasoning failed, fallback to templates
-        if not response:
-            template_type = "fallback"
-            if intent in ["status_check", "info"]:
-                template_type = "fallback"
-            
-            template = random.choice(self.templates[template_type])
-            response = template.format(
-                channel=context.get("entities", [""])[0],
-                status=context.get("last_status", "unknown"),
-                explanation=""
-            )
-        
-        # Add reasoning depth
-        if random.random() > 0.7:  # 30% chance to add depth
-            depth_phrases = [
-                " I considered several factors before responding.",
-                " This conclusion is based on current data.",
-                " I analyzed similar cases to form this response."
-            ]
-            response += random.choice(depth_phrases)
+        # Add conversational elements
+        response = self.add_conversational_elements(response)
         
         return response
     
-    def generate_status_report(self, intent, context):
-        channel = context["entities"][0]
+    def execute_primary_reasoning(self, intent):
+        """Handle primary decision tree"""
+        if intent not in self.decision_forest:
+            intent = "general"  # Fallback to general handling
+        
+        for condition, handler in self.decision_forest[intent]["primary"]:
+            if self.evaluate_condition(condition):
+                return handler()
+        
+        return "I need more information to help with that. Could you clarify?"
+    
+    def execute_secondary_reasoning(self, intent, response):
+        """Apply secondary reasoning based on context"""
+        if intent not in self.decision_forest:
+            return response
+        
+        for condition, handler in self.decision_forest[intent]["secondary"]:
+            if self.evaluate_condition(condition):
+                response += " " + handler()
+        
+        return response
+    
+    def evaluate_condition(self, condition):
+        """Evaluate condition based on context and history"""
+        # Entity-based conditions
+        if condition == "has_entities":
+            return bool(self.context.get("entities"))
+        if condition == "has_two_entities":
+            return len(self.context.get("entities", [])) >= 2
+        if condition == "has_one_entity":
+            return len(self.context.get("entities", [])) == 1
+            
+        # Context-based conditions
+        if condition == "is_follow_up":
+            return self.context.get("is_follow_up", False)
+        if condition == "has_history":
+            return bool(self.context.get("user_history"))
+        if condition == "has_preferences":
+            return bool(self.context.get("user_preferences"))
+        if condition == "has_status_context":
+            return "last_status" in self.context
+        
+        # User behavior conditions
+        if condition == "user_curious":
+            return "why" in self.context.get("user_text", "").lower() or "how" in self.context.get("user_text", "").lower()
+        if condition == "user_engaged":
+            return len(self.conversation_history) > 2
+        if condition == "user_uncertain":
+            return "?" in self.context.get("user_text", "")
+        if condition == "complex_comparison":
+            return len(self.context.get("entities", [])) >= 2
+        
+        # Intent-based conditions
+        if condition == "is_greeting":
+            return self.context.get("intent") in ["greeting", "hello", "hi"]
+        if condition == "is_farewell":
+            return self.context.get("intent") in ["goodbye", "bye"]
+        if condition == "is_thanks":
+            return self.context.get("intent") in ["thanks", "thank_you"]
+        if condition == "is_help":
+            return self.context.get("intent") in ["help", "what_can_you_do"]
+        if condition == "has_general_question":
+            return self.context.get("intent") == "general_question"
+        
+        # Status-based conditions
+        if condition == "status_offline":
+            return self.context.get("last_status", "") == "offline"
+        if condition == "technical_question":
+            return "why" in self.context.get("user_text", "").lower()
+        
+        return False
+    
+    def update_conversation_history(self, context):
+        """Maintain conversation context"""
+        self.conversation_history.append({
+            "text": context.get("user_text", ""),
+            "intent": context.get("intent", ""),
+            "entities": context.get("entities", []),
+            "timestamp": time.time()
+        })
+        
+        # Keep only recent history
+        if len(self.conversation_history) > CONVERSATION_MEMORY:
+            self.conversation_history = self.conversation_history[-CONVERSATION_MEMORY:]
+    
+    # -------------------- Response Handlers --------------------
+    def handle_entity_status(self):
+        channel = self.context["entities"][0]
         status = self.check_channel_status(channel)
         explanation = self.explain_status(channel, status)
-        template = random.choice(self.templates["status_report"])
-        return template.format(channel=channel, status=status, explanation=explanation)
+        
+        # Store for potential follow-ups
+        self.context["last_status"] = status
+        self.context["last_channel"] = channel
+        
+        return self.generate_status_response(channel, status, explanation)
     
-    def provide_channel_info(self, intent, context):
-        channel = context["entities"][0]
+    def handle_follow_up_status(self):
+        if "last_channel" in self.context:
+            channel = self.context["last_channel"]
+            status = self.check_channel_status(channel)
+            explanation = self.explain_status(channel, status)
+            return self.generate_status_response(channel, status, explanation)
+        return "Which channel would you like me to check?"
+    
+    def ask_for_channel(self):
+        return "Which channel would you like me to check?"
+    
+    def suggest_alternatives(self):
+        if "last_channel" in self.context:
+            channel = self.context["last_channel"]
+            alternatives = self.find_similar_channels(channel)
+            if alternatives:
+                return f" You might try {random.choice(alternatives)} instead."
+        return ""
+    
+    def add_technical_details(self):
+        return "For more technical details, you can check the provider's status page."
+    
+    def provide_enhanced_info(self):
+        channel = self.context["entities"][0]
         info = self.get_channel_info(channel)
-        template = random.choice(self.templates["channel_info"])
-        return template.format(channel=channel, info=info)
+        return f"Here's what I know about {channel}: {info}"
     
-    def recommend_from_history(self, intent, context):
-        channels = self.get_recommendations(context["user_history"])
-        template = random.choice(self.templates["recommendation"])
-        return template.format(context="your viewing history", channels=", ".join(channels))
+    def add_personal_context(self):
+        if self.context.get("user_history"):
+            personalizers = [
+                "I remember you've asked about similar channels before.",
+                "Based on your previous interests,",
+                "Since you often inquire about this type of content,"
+            ]
+            return " " + random.choice(personalizers)
+        return ""
     
-    def compare_channels(self, intent, context):
-        ch1, ch2 = context["entities"][:2]
+    def offer_related_info(self):
+        if self.context.get("entities"):
+            channel = self.context["entities"][0]
+            similar = self.find_similar_channels(channel)
+            if similar:
+                return f" You might also be interested in {random.choice(similar)}."
+        return ""
+    
+    def recommend_from_history(self):
+        channels = self.get_recommendations(self.context["user_history"])
+        return "Based on your history, I recommend: " + ", ".join(channels)
+    
+    def recommend_from_preferences(self):
+        if self.context.get("user_preferences"):
+            top_category = max(self.context["user_preferences"].items(), key=lambda x: x[1])[0]
+            recommendations = {
+                "sports": ["ESPN", "Fox Sports", "NBA TV"],
+                "news": ["CNN", "BBC News", "Al Jazeera"],
+                "movie": ["HBO", "Showtime", "Starz"],
+                "entertainment": ["AMC", "FX", "TNT"],
+                "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon"],
+                "music": ["MTV", "VH1", "BET"],
+                "documentary": ["Discovery", "National Geographic", "History Channel"]
+            }
+            return f"Based on your interest in {top_category}, I recommend: {', '.join(recommendations.get(top_category, []))}"
+        return self.recommend_popular()
+    
+    def recommend_popular(self):
+        return "Popular channels: ESPN, CNN, HBO, Discovery Channel"
+    
+    def explain_recommendation(self):
+        return "My recommendations are based on channel popularity and your viewing history."
+    
+    def compare_channels(self):
+        ch1, ch2 = self.context["entities"][:2]
         comparison = self.create_comparison(ch1, ch2)
-        template = random.choice(self.templates["comparison"])
-        return template.format(channel1=ch1, channel2=ch2, comparison=comparison)
+        return f"Comparing {ch1} and {ch2}: {comparison}"
     
-    def explain_with_context(self, intent, context):
-        explanation = self.create_explanation(context["last_status"], context["entities"][0])
-        template = random.choice(self.templates["explanation"])
-        return template.format(explanation=explanation)
+    def add_comparison_details(self):
+        return "For a more detailed comparison, I can provide specific technical specifications."
     
-    # Core utilities would be implemented here
+    def suggest_comparison(self):
+        channel = self.context["entities"][0]
+        similar = self.find_similar_channels(channel)
+        if similar:
+            return f"Would you like me to compare {channel} with {random.choice(similar)}?"
+        return "Which other channel would you like to compare it with?"
+    
+    def ask_for_channels(self):
+        return "Which channels would you like me to compare?"
+    
+    def explain_with_context(self):
+        if "last_status" in self.context and "last_channel" in self.context:
+            explanation = self.create_explanation(self.context["last_status"], self.context["last_channel"])
+            return explanation
+        return "I don't have recent status information to explain."
+    
+    def explain_general(self):
+        if self.context.get("entities"):
+            channel = self.context["entities"][0]
+            status = self.check_channel_status(channel)
+            return self.create_explanation(status, channel)
+        return "Which channel's status would you like explained?"
+    
+    def ask_for_channel_status(self):
+        return "For which channel would you like an explanation?"
+    
+    def provide_technical_explanation(self):
+        return "The status is determined by server response codes and network connectivity."
+    
+    def handle_greeting(self):
+        return random.choice(general_knowledge["greetings"]) + " How can I help you with TV channels today?"
+    
+    def handle_farewell(self):
+        return random.choice(general_knowledge["farewells"])
+    
+    def handle_thanks(self):
+        return random.choice(general_knowledge["thanks"])
+    
+    def handle_help(self):
+        return random.choice(general_knowledge["help"])
+    
+    def answer_general_question(self):
+        text = self.context["user_text"].lower()
+        
+        # Time questions
+        if "time" in text:
+            current_time = datetime.now().strftime("%H:%M")
+            return general_knowledge["general_qa"]["time"].format(time=current_time)
+        
+        # Name questions
+        if "your name" in text or "who are you" in text:
+            return general_knowledge["general_qa"]["name"]
+        
+        # Joke requests
+        if "joke" in text or "funny" in text:
+            return random.choice(general_knowledge["general_qa"]["joke"])
+        
+        # Weather questions
+        if "weather" in text:
+            return general_knowledge["general_qa"]["weather"]
+        
+        # Fallback for general questions
+        return "I'm primarily a TV channel assistant, but I'd be happy to help with channel-related questions!"
+    
+    def handle_unknown_query(self):
+        return ("I'm not sure I understand. I specialize in TV channels - you can ask me about "
+                "channel status, information, recommendations, or comparisons!")
+    
+    # -------------------- Natural Language Generation --------------------
+    def generate_status_response(self, channel, status, explanation):
+        """Generate varied status responses"""
+        templates = {
+            "online": [
+                f"Great news! {channel} is up and running perfectly right now. {explanation}",
+                f"I just checked - {channel} is live and working without issues. {explanation}",
+                f"You're in luck! {channel} is currently streaming. {explanation}"
+            ],
+            "offline": [
+                f"Looks like {channel} is currently unavailable. {explanation}",
+                f"I'm showing {channel} is down at the moment. {explanation}",
+                f"Unfortunately {channel} appears to be offline. {explanation}"
+            ],
+            "unknown": [
+                f"I couldn't verify the status of {channel}. {explanation}",
+                f"The status of {channel} is unclear right now. {explanation}",
+                f"I don't have current information for {channel}. {explanation}"
+            ]
+        }
+        return random.choice(templates.get(status, templates["unknown"]))
+    
+    def add_conversational_elements(self, response):
+        """Make responses more natural and human-like"""
+        # Add thinking expressions
+        thinkers = ["Hmm", "Let me see", "Well", "You know", "Actually"]
+        if random.random() > 0.7:  # 30% chance
+            response = random.choice(thinkers) + "... " + response.lower()
+        
+        # Add natural connectors
+        connectors = ["By the way", "Incidentally", "On that note", "Speaking of which"]
+        if random.random() > 0.6 and "?" not in response:  # 40% chance
+            response += ". " + random.choice(connectors) + "..."
+        
+        # Add personal touch
+        if self.context.get("user_history") and random.random() > 0.5:
+            personalizers = [
+                "I remember you like similar channels",
+                "Based on your past interests",
+                "Since you often watch related content"
+            ]
+            response += " " + random.choice(personalizers) + "."
+        
+        return response
+    
+    # -------------------- Utility Methods --------------------
     def check_channel_status(self, channel):
-        """Simplified status check"""
         key = get_key_by_name(channel)
         if key:
             url = channels[key]["url"]
@@ -213,48 +456,68 @@ class ResponseGenerator:
         return "unknown"
     
     def explain_status(self, channel, status):
-        """Generate human-like explanation"""
         explanations = {
             "online": [
-                "streaming perfectly without issues",
-                "working great right now",
-                "live and available for viewing"
+                "Everything seems to be working smoothly!",
+                "The stream is coming through perfectly.",
+                "No issues detected - enjoy your viewing!"
             ],
             "offline": [
-                "experiencing temporary technical difficulties",
-                "currently unavailable due to server issues",
-                "down for maintenance or connectivity problems"
+                "This might be due to temporary technical difficulties.",
+                "It could be a server issue or maintenance work.",
+                "The problem might be on the provider's end."
             ],
             "unknown": [
-                "I couldn't verify its status",
-                "the status is currently unclear",
-                "there's no recent status information"
+                "I couldn't connect to their servers to verify.",
+                "There might be a network issue preventing me from checking.",
+                "The service might be undergoing changes."
             ]
         }
-        return random.choice(explanations[status])
+        return random.choice(explanations.get(status, explanations["unknown"]))
     
     def get_channel_info(self, channel):
-        """Get channel information"""
         key = get_key_by_name(channel)
         if key:
             data = channels[key]
-            return f"{data.get('group-title', 'Unknown category')} from {data.get('country', 'unknown region')}"
-        return "no information available"
+            info = f"{data.get('group-title', 'Unknown category')} channel"
+            if "country" in data:
+                info += f" from {data['country']}"
+            return info
+        return "No information available for this channel."
+    
+    def find_similar_channels(self, channel):
+        key = get_key_by_name(channel)
+        if not key:
+            return []
+        
+        current_category = channels[key].get("group-title", "")
+        similar = []
+        
+        for k, v in channels.items():
+            if k == key:
+                continue
+            if v.get("group-title") == current_category:
+                similar.append(v["name"])
+        
+        return similar if similar else ["ESPN", "CNN", "HBO"]  # Default suggestions
     
     def get_recommendations(self, history):
-        """Simple recommendation logic"""
-        if "sports" in history.lower():
+        # Simple content-based recommendation
+        history_text = " ".join([msg for _, msg, _ in history]).lower()
+        
+        if any(word in history_text for word in ["sport", "football", "basketball"]):
             return ["ESPN", "Fox Sports", "NBA TV"]
-        if "news" in history.lower():
+        if any(word in history_text for word in ["news", "current", "event"]):
             return ["CNN", "BBC News", "Al Jazeera"]
-        return ["Discovery Channel", "National Geographic", "HBO"]
+        if any(word in history_text for word in ["movie", "film", "cinema"]):
+            return ["HBO", "Showtime", "Starz"]
+        return ["Discovery Channel", "National Geographic", "History Channel"]
     
     def create_comparison(self, ch1, ch2):
-        """Create comparison text"""
         aspects = [
-            f"{ch1} focuses more on {random.choice(['sports', 'news', 'entertainment'])}",
-            f"{ch2} has better {random.choice(['reliability', 'video quality', 'content variety'])}",
-            f"both are good but {random.choice([ch1, ch2])} might suit you better"
+            f"{ch1} tends to focus more on {random.choice(['live events', 'original programming', 'specialized content'])}",
+            f"{ch2} generally offers better {random.choice(['picture quality', 'reliability', 'variety'])}",
+            f"both have their strengths but {random.choice([ch1, ch2])} might be better for {random.choice(['most viewers', 'your interests', 'current trends'])}"
         ]
         return " ".join(aspects[:2])
     
@@ -271,25 +534,6 @@ class ResponseGenerator:
             ]
             return f"{channel} might be down due to {random.choice(reasons)}"
 
-# ------------------------ Core System ------------------------
-def get_key_by_name(name):
-    for k, v in channels.items():
-        if v["name"].lower() == name.lower():
-            return k
-    return None
-
-def extract_entities(text):
-    """Extract channel names from text"""
-    entities = []
-    for name in channel_names:
-        if name.lower() in text.lower():
-            entities.append(name)
-    return entities
-
-def is_follow_up(text):
-    """Detect follow-up questions"""
-    follow_phrases = ["about that", "what about", "and", "also", "how about"]
-    return any(phrase in text.lower() for phrase in follow_phrases)
 
 # ------------------------ User Profile ------------------------
 def load_user_profiles():
@@ -303,13 +547,15 @@ def save_user_profiles(data):
         json.dump(data, f, indent=2)
 
 def update_user_profile(user_id, text, intent, response):
-    """Update user profile with interaction"""
+    """Enhanced user profile with interaction patterns"""
     profiles = load_user_profiles()
     if user_id not in profiles:
         profiles[user_id] = {
             "interaction_count": 0,
             "last_intents": [],
-            "common_topics": {}
+            "common_topics": {},
+            "preferred_channels": [],
+            "response_times": []
         }
     
     profile = profiles[user_id]
@@ -317,9 +563,20 @@ def update_user_profile(user_id, text, intent, response):
     profile["last_intents"].append(intent)
     
     # Track topics
-    for word in ["sports", "news", "movie", "entertainment", "kids"]:
+    for word in ["sports", "news", "movie", "entertainment", "kids", "music", "documentary"]:
         if word in text.lower():
             profile["common_topics"][word] = profile["common_topics"].get(word, 0) + 1
+    
+    # Track preferred channels
+    for name in channel_names:
+        if name.lower() in text.lower():
+            if name not in profile["preferred_channels"]:
+                profile["preferred_channels"].append(name)
+    
+    # Track response time
+    profile["response_times"].append(time.time())
+    if len(profile["response_times"]) > 10:
+        profile["response_times"] = profile["response_times"][-10:]
     
     # Keep only recent intents
     if len(profile["last_intents"]) > 10:
@@ -328,30 +585,38 @@ def update_user_profile(user_id, text, intent, response):
     save_user_profiles(profiles)
     return profile
 
-# ------------------------ ML Intent Classification ------------------------
+# ------------------------ Enhanced ML Intent Classification ------------------------
 examples = [
-    ("is all sports on", "status_check"),
-    ("tell me about all sports", "info"),
-    ("check all news x", "status_check"),
-    ("which channels are free", "list_free"),
-    ("list paid channels", "list_paid"),
+    ("is espn working", "status_check"),
+    ("tell me about bbc news", "info"),
+    ("check cnn status", "status_check"),
+    ("which channels are sports", "list_category"),
+    ("list entertainment channels", "list_category"),
     ("what channels are available", "list_all"),
-    ("show me sports channels", "list_sports"),
-    ("any offline channels?", "list_offline"),
-    ("give me the access type of all sports", "access"),
-    ("channel logo of all news", "logo"),
+    ("show me kids channels", "list_category"),
+    ("any movie channels?", "list_category"),
     ("recommend me a channel", "recommend"),
-    ("suggest a sports channel", "recommend_sports"),
-    ("status of free channels", "list_free_status"),
+    ("suggest a documentary channel", "recommend"),
+    ("compare espn and fox sports", "compare"),
+    ("why is hbo down", "explain_status"),
+    ("explain why channel is offline", "explain_status"),
     ("hello", "greeting"),
-    ("hi", "greeting"),
+    ("hi there", "greeting"),
     ("how are you", "how_are_you"),
-    ("thanks", "thanks"),
+    ("thanks for your help", "thanks"),
     ("bye", "goodbye"),
     ("what can you do", "help"),
-    ("compare espn and bbc", "compare"),
-    ("why is it down", "explain_status"),
-    ("explain the status", "explain_status")
+    ("what time is it", "general_question"),
+    ("tell me a joke", "general_question"),
+    ("who are you", "general_question"),
+    ("what's the weather", "general_question"),
+    ("how does this work", "help"),
+    ("good morning", "greeting"),
+    ("see you later", "goodbye"),
+    ("appreciate your help", "thanks"),
+    ("not working", "status_check"),
+    ("down again", "status_check"),
+    ("information about national geographic", "info")
 ]
 
 X_train = [x[0] for x in examples]
@@ -360,7 +625,7 @@ model = make_pipeline(TfidfVectorizer(), MultinomialNB())
 model.fit(X_train, y_train)
 
 # ------------------------ Flask Routes ------------------------
-response_generator = ResponseGenerator()
+reasoning_engine = AdvancedReasoningEngine()
 
 @app.route('/chat', methods=['GET', 'POST'])
 def index():
@@ -381,17 +646,26 @@ def index():
         # Extract entities
         entities = extract_entities(user_text)
         
-        # Prepare context for reasoning
+        # Prepare enhanced context for reasoning
         context = {
             "intent": intent,
             "entities": entities,
+            "user_text": user_text,
             "is_follow_up": is_follow_up(user_text),
             "user_history": session.get('history', [])[-5:],
-            "user_preferences": update_user_profile(user_id, user_text, intent, "")["common_topics"]
+            "user_preferences": update_user_profile(user_id, user_text, intent, "").get("common_topics", {}),
+            "last_status": session.get('last_status', None),
+            "last_channel": session.get('last_channel', None)
         }
         
-        # Generate response using reasoning engine
-        response = response_generator.generate(intent, context)
+        # Generate response using advanced reasoning engine
+        response = reasoning_engine.reason(intent, context)
+        
+        # Update session with context
+        if "last_status" in reasoning_engine.context:
+            session['last_status'] = reasoning_engine.context["last_status"]
+        if "last_channel" in reasoning_engine.context:
+            session['last_channel'] = reasoning_engine.context["last_channel"]
         
         # Update profile with actual response
         update_user_profile(user_id, user_text, intent, response)

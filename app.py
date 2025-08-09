@@ -2986,6 +2986,8 @@ else:
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
+# ------------------------ Advanced Reasoning Engine -----# ... [previous code remains the same] ...
+
 # ------------------------ Advanced Reasoning Engine ------------------------
 class AdvancedReasoningEngine:
     def __init__(self):
@@ -2999,7 +3001,8 @@ class AdvancedReasoningEngine:
             "status_check": {
                 "primary": [
                     ("has_entities", self.handle_entity_status),
-                    ("is_follow_up", self.handle_follow_up_status)
+                    ("is_follow_up", self.handle_follow_up_status),
+                    ("else", self.ask_for_channel)
                 ],
                 "secondary": [
                     ("status_offline", self.suggest_alternatives),
@@ -3123,6 +3126,8 @@ class AdvancedReasoningEngine:
             return len(self.conversation_history) > 2
         if condition == "user_uncertain":
             return "?" in self.context.get("user_text", "")
+        if condition == "complex_comparison":
+            return len(self.context.get("entities", [])) >= 2
         
         # Intent-based conditions
         if condition == "is_greeting":
@@ -3139,6 +3144,8 @@ class AdvancedReasoningEngine:
         # Status-based conditions
         if condition == "status_offline":
             return self.context.get("last_status", "") == "offline"
+        if condition == "technical_question":
+            return "why" in self.context.get("user_text", "").lower()
         
         return False
     
@@ -3175,6 +3182,9 @@ class AdvancedReasoningEngine:
             return self.generate_status_response(channel, status, explanation)
         return "Which channel would you like me to check?"
     
+    def ask_for_channel(self):
+        return "Which channel would you like me to check?"
+    
     def suggest_alternatives(self):
         if "last_channel" in self.context:
             channel = self.context["last_channel"]
@@ -3182,6 +3192,9 @@ class AdvancedReasoningEngine:
             if alternatives:
                 return f" You might try {random.choice(alternatives)} instead."
         return ""
+    
+    def add_technical_details(self):
+        return "For more technical details, you can check the provider's status page."
     
     def provide_enhanced_info(self):
         channel = self.context["entities"][0]
@@ -3198,14 +3211,46 @@ class AdvancedReasoningEngine:
             return " " + random.choice(personalizers)
         return ""
     
+    def offer_related_info(self):
+        if self.context.get("entities"):
+            channel = self.context["entities"][0]
+            similar = self.find_similar_channels(channel)
+            if similar:
+                return f" You might also be interested in {random.choice(similar)}."
+        return ""
+    
     def recommend_from_history(self):
         channels = self.get_recommendations(self.context["user_history"])
         return "Based on your history, I recommend: " + ", ".join(channels)
+    
+    def recommend_from_preferences(self):
+        if self.context.get("user_preferences"):
+            top_category = max(self.context["user_preferences"].items(), key=lambda x: x[1])[0]
+            recommendations = {
+                "sports": ["ESPN", "Fox Sports", "NBA TV"],
+                "news": ["CNN", "BBC News", "Al Jazeera"],
+                "movie": ["HBO", "Showtime", "Starz"],
+                "entertainment": ["AMC", "FX", "TNT"],
+                "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon"],
+                "music": ["MTV", "VH1", "BET"],
+                "documentary": ["Discovery", "National Geographic", "History Channel"]
+            }
+            return f"Based on your interest in {top_category}, I recommend: {', '.join(recommendations.get(top_category, []))}"
+        return self.recommend_popular()
+    
+    def recommend_popular(self):
+        return "Popular channels: ESPN, CNN, HBO, Discovery Channel"
+    
+    def explain_recommendation(self):
+        return "My recommendations are based on channel popularity and your viewing history."
     
     def compare_channels(self):
         ch1, ch2 = self.context["entities"][:2]
         comparison = self.create_comparison(ch1, ch2)
         return f"Comparing {ch1} and {ch2}: {comparison}"
+    
+    def add_comparison_details(self):
+        return "For a more detailed comparison, I can provide specific technical specifications."
     
     def suggest_comparison(self):
         channel = self.context["entities"][0]
@@ -3213,6 +3258,28 @@ class AdvancedReasoningEngine:
         if similar:
             return f"Would you like me to compare {channel} with {random.choice(similar)}?"
         return "Which other channel would you like to compare it with?"
+    
+    def ask_for_channels(self):
+        return "Which channels would you like me to compare?"
+    
+    def explain_with_context(self):
+        if "last_status" in self.context and "last_channel" in self.context:
+            explanation = self.create_explanation(self.context["last_status"], self.context["last_channel"])
+            return explanation
+        return "I don't have recent status information to explain."
+    
+    def explain_general(self):
+        if self.context.get("entities"):
+            channel = self.context["entities"][0]
+            status = self.check_channel_status(channel)
+            return self.create_explanation(status, channel)
+        return "Which channel's status would you like explained?"
+    
+    def ask_for_channel_status(self):
+        return "For which channel would you like an explanation?"
+    
+    def provide_technical_explanation(self):
+        return "The status is determined by server response codes and network connectivity."
     
     def handle_greeting(self):
         return random.choice(general_knowledge["greetings"]) + " How can I help you with TV channels today?"
@@ -3334,8 +3401,11 @@ class AdvancedReasoningEngine:
         key = get_key_by_name(channel)
         if key:
             data = channels[key]
-            return f"{data.get('group-title', 'Unknown category')} channel from {data.get('country', 'unknown region')}"
-        return "no information available"
+            info = f"{data.get('group-title', 'Unknown category')} channel"
+            if "country" in data:
+                info += f" from {data['country']}"
+            return info
+        return "No information available for this channel."
     
     def find_similar_channels(self, channel):
         key = get_key_by_name(channel)
@@ -3351,15 +3421,17 @@ class AdvancedReasoningEngine:
             if v.get("group-title") == current_category:
                 similar.append(v["name"])
         
-        return similar
+        return similar if similar else ["ESPN", "CNN", "HBO"]  # Default suggestions
     
     def get_recommendations(self, history):
         # Simple content-based recommendation
-        if any(word in str(history).lower() for word in ["sport", "football", "basketball"]):
+        history_text = " ".join([msg for _, msg, _ in history]).lower()
+        
+        if any(word in history_text for word in ["sport", "football", "basketball"]):
             return ["ESPN", "Fox Sports", "NBA TV"]
-        if any(word in str(history).lower() for word in ["news", "current", "event"]):
+        if any(word in history_text for word in ["news", "current", "event"]):
             return ["CNN", "BBC News", "Al Jazeera"]
-        if any(word in str(history).lower() for word in ["movie", "film", "cinema"]):
+        if any(word in history_text for word in ["movie", "film", "cinema"]):
             return ["HBO", "Showtime", "Starz"]
         return ["Discovery Channel", "National Geographic", "History Channel"]
     
@@ -3370,40 +3442,21 @@ class AdvancedReasoningEngine:
             f"both have their strengths but {random.choice([ch1, ch2])} might be better for {random.choice(['most viewers', 'your interests', 'current trends'])}"
         ]
         return " ".join(aspects[:2])
-
-# ------------------------ Core System ------------------------
-def get_key_by_name(name):
-    for k, v in channels.items():
-        if v["name"].lower() == name.lower():
-            return k
-    return None
-
-def extract_entities(text):
-    """Enhanced entity extraction with fuzzy matching"""
-    entities = []
-    text_lower = text.lower()
     
-    # Exact match first
-    for name in channel_names:
-        if name.lower() in text_lower:
-            entities.append(name)
-    
-    # Fuzzy match if no exact matches
-    if not entities:
-        matches = get_close_matches(text, channel_names, n=3, cutoff=0.6)
-        entities.extend(matches)
-    
-    return entities
+    def create_explanation(self, status, channel):
+        """Create contextual explanation"""
+        if status == "online":
+            return f"{channel} is functioning normally with no reported issues"
+        else:
+            reasons = [
+                "server maintenance",
+                "content rights issues",
+                "temporary technical problems",
+                "high traffic causing overload"
+            ]
+            return f"{channel} might be down due to {random.choice(reasons)}"
 
-def is_follow_up(text):
-    """Enhanced follow-up detection with context awareness"""
-    follow_phrases = [
-        "about that", "what about", "and", "also", "how about",
-        "next", "following", "too", "as well", "plus", "another",
-        "other", "else", "different"
-    ]
-    return any(phrase in text.lower() for phrase in follow_phrases)
-
+# ... [rest of the code remains the same] ...
 # ------------------------ User Profile ------------------------
 def load_user_profiles():
     if os.path.exists(USER_PROFILE_FILE):

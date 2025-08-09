@@ -3665,7 +3665,6 @@ model.fit(X_train, y_train)
 # ------------------------ Flask Routes ------------------------
 reasoning_engine = AdvancedReasoningEngine()
 
-@csrf.exempt
 @app.route('/chat', methods=['GET', 'POST'])
 def index():
     if 'history' not in session:
@@ -3676,10 +3675,7 @@ def index():
     
     user_id = session['user_id']
     
-    if request.method == 'GET':
-        return render_template('chat.html', history=session.get('history', []))
-    
-    elif request.method == 'POST':
+    if request.method == 'POST':
         user_text = request.form['query'].strip()
         
         # Predict intent
@@ -3716,20 +3712,8 @@ def index():
         timestamp = (datetime.now() + timedelta(hours=3)).strftime("%H:%M")
         session['history'].append((timestamp, user_text, response))
         session.modified = True
-        
-        # Return JSON response for AJAX
-        return jsonify({
-            "user_message": {
-                "timestamp": timestamp,
-                "text": user_text
-            },
-            "bot_message": {
-                "timestamp": timestamp,
-                "text": response
-            }
-        })
-
-
+    
+    return render_template('chat.html', history=session.get('history', []))
 @csrf.exempt
 @app.route('/reset')
 def reset():

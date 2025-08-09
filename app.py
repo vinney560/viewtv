@@ -2999,8 +2999,7 @@ class AdvancedReasoningEngine:
             "status_check": {
                 "primary": [
                     ("has_entities", self.handle_entity_status),
-                    ("is_follow_up", self.handle_follow_up_status),
-                    ("else", self.ask_for_channel)
+                    ("is_follow_up", self.handle_follow_up_status)
                 ],
                 "secondary": [
                     ("status_offline", self.suggest_alternatives),

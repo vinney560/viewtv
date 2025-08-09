@@ -37,8 +37,7 @@ Flask-Session
 scikit-learn
 numpy
 joblib
-fuzzywuzzy==0.18.0
-python-Levenshtein==0.25.0
+thefuzz
 tensorflow
 keras
 

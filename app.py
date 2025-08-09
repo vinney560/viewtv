@@ -63,7 +63,7 @@ from datetime import datetime, timedelta
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_session import Session
 from difflib import get_close_matches
-from fuzzywuzzy import fuzz
+from thefuzz import fuzz
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import make_pipeline
@@ -3507,7 +3507,7 @@ class AdvancedReasoningEngine:
     def add_conversational_elements(self, response):
         """Make responses more natural and human-like"""
         # Add thinking expressions
-        thinkers = ["Hmm", "Let me see", "Well", "You know", "Actually", "Interesting...", "Give me a moment", "Let's think about that", "Hold on", "Let me check"]
+        thinkers = ["Hmm", "Let me see", "Well", "You know", "Actually", "Interesting...", "Give me a moment", "Let's think about that 🤔", "Hold on 🧐", "Let me check"]
         if random.random() > 0.7:  # 30% chance
             response = random.choice(thinkers) + "... " + response.lower()
         
@@ -3552,7 +3552,7 @@ class AdvancedReasoningEngine:
     def explain_status(self, channel, status):
         explanations = {
             "online": [
-                "Everything seems to be working smoothly!",
+                "Everything seems to be working smoothly! 😊",
                 "The stream is coming through perfectly.",
                 "No issues detected - enjoy your viewing!"
             ],

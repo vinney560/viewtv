@@ -51,23 +51,26 @@ from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
 
 #=============================
-
-import json
 import os
+import json
 import time
 import random
-import threading
-from threading import Lock
-from datetime import datetime, timedelta
-from difflib import get_close_matches
-import requests
+import re
 import numpy as np
+from datetime import datetime, timedelta
+import requests
+from flask import Flask, render_template, request, session, redirect, url_for
+from flask_session import Session
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.utils.class_weight import compute_class_weight
+from difflib import get_close_matches
 import joblib
-from flask import Flask, render_template, request, session, redirect, url_for
+from threading import Lock
+import threading
+from collections import Counter
+
 
 # ============================
 # CONFIGURATION & INIT

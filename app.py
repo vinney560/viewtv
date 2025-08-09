@@ -124,8 +124,6 @@ app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_USERNAME")
 
-app.config["SESSION_TYPE"] = "filesystem"
-
 app.permanent_session_lifetime = timedelta(hours=732)
 
 class CustomCSRFProtect(CSRFProtect):
@@ -145,9 +143,6 @@ mail = Mail(app)
 csrf = CustomCSRFProtect(app)
 limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
-
-Session(app)
-
 login_manager.login_view = "login"
 CORS(app, resources={r"/*": {"origins": "https://viewstream-1.onrender.com"}})
 

@@ -193,14 +193,14 @@
 
       <!-- NEW: Select Database Button (Superadmin & Admin1) -->
       {% if user.role in ['superadmin', 'admin1'] %}
-      <a href="#"
+      <a href="/chat"
          class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
         <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
           </svg>
         </div>
-        <span>Select Database</span>
+        <span>AI Assistance</span>
         <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
       </a>
       {% endif %}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural IPTV Assistant</title>
+    <title>View TV Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -83,14 +83,14 @@
             border-radius: var(--radius-md);
             line-height: 1.6;
             position: relative;
-            animation: fadeIn 0.3s ease-out;
+            animation: fadeInSlide 0.3s ease-out;
             font-size: 0.9375rem;
             box-shadow: var(--shadow-sm);
             word-wrap: break-word;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(0.5rem); }
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -179,6 +179,12 @@
         button:active {
             transform: translateY(0);
             background-color: var(--primary-dark);
+        }
+
+        button:disabled {
+            background-color: var(--gray-light);
+            cursor: not-allowed;
+            transform: none;
         }
 
         .typing-indicator {
@@ -361,7 +367,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>View Tv Assistant</h1>
+        <h1>View TV Assistant</h1>
         <p>Your intelligent streaming companion</p>
     </div>
     
@@ -378,10 +384,10 @@
         {% endfor %}
     </div>
     
-    <form method="POST" class="input-area">
+    <form id="chatForm" class="input-area">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="text" id="query" name="query" placeholder="Ask about channels (e.g., 'Is ESPN online?')" autocomplete="off" required>
-        <button type="submit" aria-label="Send message">
+        <button type="submit" id="submitBtn" aria-label="Send message">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -394,7 +400,6 @@
         const chatContainer = document.getElementById('chatContainer');
         let isAtBottom = true;
         const scrollThreshold = 100; // pixels from bottom to consider "at bottom"
-        let lastScrollHeight = chatContainer.scrollHeight;
         
         // Check if user is at/near bottom
         function checkAtBottom() {
@@ -406,7 +411,6 @@
         // Smart scroll function
         function smartScroll(force = false) {
             if (force || isAtBottom) {
-                // Use requestAnimationFrame for smoother scrolling
                 requestAnimationFrame(() => {
                     chatContainer.scrollTo({
                         top: chatContainer.scrollHeight,
@@ -421,9 +425,29 @@
             isAtBottom = checkAtBottom();
         });
         
-        // Form submission handler
-        const form = document.querySelector('form');
-        form.addEventListener('submit', function(e) {
+        // AJAX form submission
+        const chatForm = document.getElementById('chatForm');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const queryInput = document.getElementById('query');
+            const userMessage = queryInput.value.trim();
+            
+            if (!userMessage) return;
+            
+            // Disable form during submission
+            queryInput.disabled = true;
+            submitBtn.disabled = true;
+            
+            // Add user message immediately
+            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            addMessageToChat('user-message', userMessage, timestamp);
+            
+            // Clear input
+            queryInput.value = '';
+            
             // Add typing indicator
             const typingIndicator = document.createElement('div');
             typingIndicator.className = 'typing-indicator';
@@ -433,53 +457,57 @@
                 <div class="typing-dot" style="animation-delay: 0.4s"></div>
             `;
             chatContainer.appendChild(typingIndicator);
-            
-            // Always scroll to bottom when sending new message
             smartScroll(true);
-        });
-        
-        // Initial setup
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('query').focus();
-            checkAtBottom(); // Set initial scroll state
             
-            // Scroll to bottom only if no preserved position and not scrolled up
-            if (!sessionStorage.getItem('chatScrollPos') && isAtBottom) {
-                setTimeout(() => smartScroll(true), 100);
-            }
-        });
-        
-        // MutationObserver for new messages
-        const observer = new MutationObserver((mutations) => {
-            for (const mutation of mutations) {
-                if (mutation.addedNodes.length) {
-                    // Remove any typing indicators
-                    const typingIndicators = document.querySelectorAll('.typing-indicator');
-                    typingIndicators.forEach(indicator => indicator.remove());
-                    
-                    // Process new messages if they contain special elements
-                    processNewMessages(mutation.addedNodes);
-                    
-                    // Smart scroll only if user was at bottom
-                    if (isAtBottom) {
-                        smartScroll();
+            try {
+                // Send AJAX request
+                const formData = new FormData(chatForm);
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+                
+                const data = await response.json();
+                
+                // Remove typing indicator
+                const typingIndicators = document.querySelectorAll('.typing-indicator');
+                typingIndicators.forEach(indicator => indicator.remove());
+                
+                // Add bot response
+                addMessageToChat('bot-message', data.bot_message.text, data.bot_message.timestamp);
+                
+                // Process any special content in the response
+                processChannelCards();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                // Show error message
+                addMessageToChat('bot-message', "Sorry, I encountered an error. Please try again.", timestamp);
+            } finally {
+                // Re-enable form
+                queryInput.disabled = false;
+                submitBtn.disabled = false;
+                queryInput.focus();
             }
         });
         
-        observer.observe(chatContainer, { 
-            childList: true,
-            subtree: true
-        });
-        
-        // Process new messages for cards, status indicators, etc.
-        function processNewMessages(nodes) {
-            nodes.forEach(node => {
-                if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('bot-message')) {
-                    processChannelCards(node);
-                }
-            });
+        // Helper function to add messages to chat
+        function addMessageToChat(messageClass, messageText, timestamp) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${messageClass}`;
+            messageDiv.innerHTML = `
+                ${messageText}
+                <div class="message-time">${timestamp}</div>
+            `;
+            chatContainer.appendChild(messageDiv);
+            smartScroll();
         }
         
         // Process channel cards and other special content
@@ -530,6 +558,20 @@
             });
         }
         
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('query').focus();
+            checkAtBottom();
+            
+            // Scroll to bottom only if no preserved position and not scrolled up
+            if (!sessionStorage.getItem('chatScrollPos') && isAtBottom) {
+                setTimeout(() => smartScroll(true), 100);
+            }
+            
+            // Process any existing special content
+            processChannelCards();
+        });
+        
         // Preserve scroll position on page refresh
         window.addEventListener('beforeunload', () => {
             sessionStorage.setItem('chatScrollPos', chatContainer.scrollTop);
@@ -540,11 +582,6 @@
             chatContainer.scrollTop = sessionStorage.getItem('chatScrollPos');
             sessionStorage.removeItem('chatScrollPos');
         }
-        
-        // Initialize card processing
-        document.addEventListener('DOMContentLoaded', () => {
-            processChannelCards();
-        });
     </script>
 </body>
 </html>

@@ -64,8 +64,6 @@ else:
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
-# ------------------------ Advanced Reasoning Engine -----# ... [previous code remains the same] ...
-
 # ------------------------ Advanced Reasoning Engine ------------------------
 class AdvancedReasoningEngine:
     def __init__(self):
@@ -534,6 +532,38 @@ class AdvancedReasoningEngine:
             ]
             return f"{channel} might be down due to {random.choice(reasons)}"
 
+# ------------------------ Core System ------------------------
+def get_key_by_name(name):
+    for k, v in channels.items():
+        if v["name"].lower() == name.lower():
+            return k
+    return None
+
+def extract_entities(text):
+    """Enhanced entity extraction with fuzzy matching"""
+    entities = []
+    text_lower = text.lower()
+    
+    # Exact match first
+    for name in channel_names:
+        if name.lower() in text_lower:
+            entities.append(name)
+    
+    # Fuzzy match if no exact matches
+    if not entities:
+        matches = get_close_matches(text, channel_names, n=3, cutoff=0.6)
+        entities.extend(matches)
+    
+    return entities
+
+def is_follow_up(text):
+    """Enhanced follow-up detection with context awareness"""
+    follow_phrases = [
+        "about that", "what about", "and", "also", "how about",
+        "next", "following", "too", "as well", "plus", "another",
+        "other", "else", "different"
+    ]
+    return any(phrase in text.lower() for phrase in follow_phrases)
 
 # ------------------------ User Profile ------------------------
 def load_user_profiles():

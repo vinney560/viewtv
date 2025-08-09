@@ -4049,13 +4049,20 @@ def update_model(model, new_samples):
         # Combine with neural embeddings
         X_combined = np.hstack((X_tfidf.toarray(), X_embeddings))
         
+        # Get the full set of classes from the model
+        full_classes = model.named_steps['sgdclassifier'].classes_
+        
         # Partial fit for online learning
-        model.named_steps['sgdclassifier'].partial_fit(X_combined, y_new)
+        model.named_steps['sgdclassifier'].partial_fit(
+            X_combined, 
+            y_new,
+            classes=full_classes
+        )
     except Exception as e:
         print(f"Model update error: {e}")
     
     return model
-
+    
 def learn_from_interactions():
     """Periodic learning from user interactions"""
     while True:

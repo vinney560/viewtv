@@ -56,25 +56,18 @@ import json
 import os
 import time
 import random
-import requests
 import threading
-import numpy as np
+from threading import Lock
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, session, redirect, url_for
-from flask_session import Session
 from difflib import get_close_matches
-from thefuzz import fuzz
+import requests
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.utils.class_weight import compute_class_weight
 import joblib
-from threading import Lock
-from keras.models import Sequential
-from keras.layers import Embedding, Conv1D, GlobalMaxPooling1D, Dense
-from keras_preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
-from keras.optimizers import Adam
+from flask import Flask, render_template, request, session, redirect, url_for
 
 # ============================
 # CONFIGURATION & INIT
@@ -2945,13 +2938,10 @@ def set_notice():
 #========================================
 #      AI FEATURES 
 #========================================
-
-
 # ------------------------ Enhanced Config ----------------------
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
-LIGHTWEIGHT_NN_FILE = "light_nn_model.h5"
 HISTORY_LIMIT = 50
 CHECK_TIMEOUT = 5
 REASONING_DEPTH = 4
@@ -2959,9 +2949,7 @@ CONVERSATION_MEMORY = 3
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 10  # Learn after every 10 interactions
 MIN_UPDATE_SAMPLES = 3        # Minimum samples before updating model
-EMBEDDING_DIM = 32
-MAX_SEQUENCE_LENGTH = 20
-FUZZY_THRESHOLD = 85  # Minimum fuzzy match score
+
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
@@ -2975,7 +2963,7 @@ else:
     general_knowledge = {
         "greetings": ["Hello!", "Hi there!", "Hey!", "Greetings!", "What's up?", "Howdy!", "Yo!", "Heyo!", "Good to see you!", "Hiya!", "Salutations!", "Ahoy!", "Hola!", "Bonjour!", "Hey friend!", "Welcome!", "Hi-de-ho!", "What's cooking?", "Hey there, superstar!", "Hi, howdy, hey!"],
         "farewells": ["Goodbye!", "See you later!", "Bye!", "Take care!", "Catch you later!", "Farewell!", "Have a great day!", "Until next time!", "Stay safe!", "Peace out!", "Adios!", "See ya!", "Take it easy!", "Later, alligator!", "Bye-bye!"],
-        "thanks": ["You're welcome!", "My pleasure!", "Happy to help!", "Anytime!", "No problem!", "Glad I could assist!", "Don't mention it!", "Always here for you!", "It’s nothing!", "You got it!", "Sure thing!", "Cheers!", "Anytime you need!", "I'm here whenever!", "Just doing my job!"],
+        "thanks": ["You're welcome!", "My pleasure!", "Happy to help!", "Anytime!", "No problem!", "Glad I could assist!", "Don't mention it!", "Always here for you!", "It’s nothing!", "You got it!", "Sure thing!", "Cheers!", "Anytime you need!", "I’m here whenever!", "Just doing my job!"],
         "help": [
             "I can help you with TV channel status, information, recommendations, and comparisons. "
             "You can also ask me general questions!",
@@ -2988,99 +2976,13 @@ else:
             "weather": "I don't have real-time weather data, but I recommend checking a weather service for accurate forecasts.",
             "time": "The current time is {time}.",
             "name": "I'm your TV Channel Assistant, here to help with all your channel needs!",
-            "joke": ["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!", "Why did the scarecrow win an award? Because he was outstanding in his field!", "Why don't skeletons fight each other? They don't have the guts.", "I told my computer I needed a break… now it won't stop sending me KitKat ads.", "Why was the math book sad? It had too many problems.", "What do you call cheese that isn't yours? Nacho cheese!", "Why did the golfer bring two pairs of pants? In case he got a hole in one.", "Why can't your nose be 12 inches long? Because then it would be a foot.", "Parallel lines have so much in common… it's a shame they'll never meet.", "Why did the bicycle fall over? It was two-tired.", "I asked the librarian if the library had books on paranoia… she whispered, 'They're right behind you.'", "Why did the computer go to the doctor? It caught a virus.", "Why did the tomato turn red? Because it saw the salad dressing.", "I told my phone a joke… now it autocorrects everything to LOL.", "Why do bees have sticky hair? Because they use honeycombs.", "What do you call a pile of cats? A meowtain.", "Why did the music teacher go to the principal's office? She found herself in treble.", "Why did the cookie go to the hospital? It felt crumby.", "What's brown and sticky? A stick."],
-            "how_are_you": ["I'm functioning well, thank you! Ready to help with TV channels.", "All systems operational! How can I assist you today?", "I'm just a program, but I'm running smoothly. What can I do for you?", "Running smoother than a cat video on fast Wi-Fi.", "Feeling sharper than a chef's favorite knife set.", "Powered up like a coffee addict on their third espresso.", "Cooler than the other side of the pillow… and twice as comfy.", "Buzzing like a phone on silent in a group chat storm.", "I'm 100% bug-free… today. Probably.", "Feeling electric today... ready to zap into action!", "I'm at peak performance... like a freshly charged battery.", "Running like clockwork... what's our next task?", "Processing happily... let's make something awesome happen!", "Systems steady and stable... awaiting your command.", "I'm in tip-top shape... let's get started!", "Operating at maximum awesome levels.", "More ready than popcorn in a microwave.", "Cool, calm, and coded.", "Living my best algorithm life.", "Charged up and ready to compute."]
+            "joke": ["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!", "Why did the scarecrow win an award? Because he was outstanding in his field!", "Why don’t skeletons fight each other? They don’t have the guts.", "I told my computer I needed a break… now it won’t stop sending me KitKat ads.", "Why was the math book sad? It had too many problems.", "What do you call cheese that isn’t yours? Nacho cheese!", "Why did the golfer bring two pairs of pants? In case he got a hole in one.", "Why can't your nose be 12 inches long? Because then it would be a foot.", "Parallel lines have so much in common… it’s a shame they’ll never meet.", "Why did the bicycle fall over? It was two-tired.", "I asked the librarian if the library had books on paranoia… she whispered, 'They’re right behind you.'", "Why did the computer go to the doctor? It caught a virus.", "Why did the tomato turn red? Because it saw the salad dressing.", "I told my phone a joke… now it autocorrects everything to LOL.", "Why do bees have sticky hair? Because they use honeycombs.", "What do you call a pile of cats? A meowtain.", "Why did the music teacher go to the principal's office? She found herself in treble.", "Why did the cookie go to the hospital? It felt crumby.", "What’s brown and sticky? A stick."],
+            "how_are_you": ["I'm functioning well, thank you! Ready to help with TV channels.", "All systems operational! How can I assist you today?", "I'm just a program, but I'm running smoothly. What can I do for you?", "Running smoother than a cat video on fast Wi-Fi.", "Feeling sharper than a chef’s favorite knife set.", "Powered up like a coffee addict on their third espresso.", "Cooler than the other side of the pillow… and twice as comfy.", "Buzzing like a phone on silent in a group chat storm.", "I’m 100% bug-free… today. Probably.", "Feeling electric today... ready to zap into action!", "I'm at peak performance... like a freshly charged battery.", "Running like clockwork... what’s our next task?", "Processing happily... let's make something awesome happen!", "Systems steady and stable... awaiting your command.", "I'm in tip-top shape... let's get started!", "Operating at maximum awesome levels.", "More ready than popcorn in a microwave.", "Cool, calm, and coded.", "Living my best algorithm life.", "Charged up and ready to compute."]
         }
     }
 
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
-channel_name_map = {name.lower(): name for name in channel_names}
-
-# Build channel alias map for better matching
-channel_aliases = {}
-for key, data in channels.items():
-    name = data["name"].lower()
-    aliases = set()
-    aliases.add(name)
-    aliases.add(name.replace(' ', ''))
-    aliases.add(name.replace(' & ', ' and '))
-    aliases.add(''.join(c[0] for c in name.split()))
-    # Add common misspellings
-    if 'espn' in name:
-        aliases.update(['espnu', 'espnnews', 'espndeportes'])
-    if 'super' in name:
-        aliases.add(name.replace('super', 'supersport'))
-    channel_aliases[key] = aliases
-
-# Inverse mapping for lookup
-alias_to_key = {}
-for key, aliases in channel_aliases.items():
-    for alias in aliases:
-        alias_to_key[alias] = key
-
-# ------------------------ Lightweight Neural Components ----------------------
-class LightweightNN:
-    def __init__(self):
-        self.model = self.build_model()
-        self.tokenizer = None
-        self.vocab_size = 1000
-        
-    def build_model(self):
-        """Create a lightweight neural network for context understanding"""
-        model = Sequential([
-            Embedding(input_dim=self.vocab_size, output_dim=EMBEDDING_DIM, 
-                      input_length=MAX_SEQUENCE_LENGTH),
-            Conv1D(16, 3, activation='relu'),
-            GlobalMaxPooling1D(),
-            Dense(16, activation='relu'),
-            Dense(8, activation='relu')
-        ])
-        model.compile(optimizer=Adam(learning_rate=0.001), loss='mse')
-        return model
-        
-    def load_pretrained(self):
-        """Load pretrained weights if available"""
-        if os.path.exists(LIGHTWEIGHT_NN_FILE):
-            try:
-                self.model.load_weights(LIGHTWEIGHT_NN_FILE)
-                print("Loaded lightweight neural model")
-            except:
-                print("Failed to load neural model - using fresh instance")
-        else:
-            print("No pretrained neural model found - using fresh instance")
-            
-    def initialize_tokenizer(self):
-        """Initialize tokenizer with sample data"""
-        self.tokenizer = Tokenizer(num_words=self.vocab_size)
-        # Initialize with sample data
-        sample_texts = [ex[0] for ex in examples] + channel_names
-        self.tokenizer.fit_on_texts(sample_texts)
-        print("Tokenizer initialized with vocabulary size:", len(self.tokenizer.word_index))
-        
-    def get_context_embedding(self, text, history=None):
-        """Generate context-aware embedding"""
-        if self.tokenizer is None:
-            self.initialize_tokenizer()
-            
-        # Combine with conversation history for context
-        full_text = text
-        if history:
-            full_text += " " + " ".join([msg for _, msg, _ in history])
-            
-        sequence = self.tokenizer.texts_to_sequences([full_text])
-        padded = pad_sequences(sequence, maxlen=MAX_SEQUENCE_LENGTH)
-        return self.model.predict(padded, verbose=0)[0]
-        
-    def semantic_similarity(self, text1, text2):
-        """Calculate semantic similarity between two texts"""
-        emb1 = self.get_context_embedding(text1)
-        emb2 = self.get_context_embedding(text2)
-        return np.dot(emb1, emb2) / (np.linalg.norm(emb1) * np.linalg.norm(emb2))
-
-# Initialize lightweight NN
-light_nn = LightweightNN()
-light_nn.load_pretrained()
 
 # -------------- Advanced Reasoning Engine --------------
 
@@ -3089,7 +2991,6 @@ class AdvancedReasoningEngine:
         self.context = {}
         self.decision_forest = self.build_decision_forest()
         self.conversation_history = []
-        self.missing_channels = set()  # Track channels users ask about that don't exist
     
     def build_decision_forest(self):
         """Multi-layered decision forest for complex reasoning"""
@@ -3151,7 +3052,7 @@ class AdvancedReasoningEngine:
                     ("is_farewell", self.handle_farewell),
                     ("is_thanks", self.handle_thanks),
                     ("is_help", self.handle_help),
-                    ("is_how_are_you", self.handle_how_are_you),
+                    ("is_how_are_you", self.handle_how_are_you),  # Added handler
                     ("has_general_question", self.answer_general_question),
                     ("else", self.handle_unknown_query)
                 ]
@@ -3159,7 +3060,7 @@ class AdvancedReasoningEngine:
         }
     
     def reason(self, intent, context):
-        """Multi-stage reasoning process with neural enhancements"""
+        """Multi-stage reasoning process"""
         self.context = context.copy()
         self.update_conversation_history(context)
         
@@ -3169,7 +3070,7 @@ class AdvancedReasoningEngine:
         # Secondary reasoning
         response = self.execute_secondary_reasoning(intent, response)
         
-        # Add conversational elements with neural context
+        # Add conversational elements
         response = self.add_conversational_elements(response)
         
         return response
@@ -3192,15 +3093,12 @@ class AdvancedReasoningEngine:
         
         for condition, handler in self.decision_forest[intent]["secondary"]:
             if self.evaluate_condition(condition):
-                enhanced_response = handler()
-                # Use neural similarity to ensure relevance
-                if light_nn.semantic_similarity(response, enhanced_response) > 0.3:
-                    response += " " + enhanced_response
+                response += " " + handler()
         
         return response
     
     def evaluate_condition(self, condition):
-        """Enhanced condition evaluation with neural assistance"""
+        """Evaluate condition based on context and history"""
         # Entity-based conditions
         if condition == "has_entities":
             return bool(self.context.get("entities"))
@@ -3221,8 +3119,7 @@ class AdvancedReasoningEngine:
         
         # User behavior conditions
         if condition == "user_curious":
-            user_text = self.context.get("user_text", "").lower()
-            return any(word in user_text for word in ["why", "how", "cause", "reason"])
+            return "why" in self.context.get("user_text", "").lower() or "how" in self.context.get("user_text", "").lower()
         if condition == "user_engaged":
             return len(self.conversation_history) > 2
         if condition == "user_uncertain":
@@ -3239,7 +3136,7 @@ class AdvancedReasoningEngine:
             return self.context.get("intent") in ["thanks", "thank_you"]
         if condition == "is_help":
             return self.context.get("intent") in ["help", "what_can_you_do"]
-        if condition == "is_how_are_you":
+        if condition == "is_how_are_you":  # Added condition
             return self.context.get("intent") == "how_are_you"
         if condition == "has_general_question":
             return self.context.get("intent") == "general_question"
@@ -3253,16 +3150,12 @@ class AdvancedReasoningEngine:
         return False
     
     def update_conversation_history(self, context):
-        """Maintain conversation context with neural embeddings"""
+        """Maintain conversation context"""
         self.conversation_history.append({
             "text": context.get("user_text", ""),
             "intent": context.get("intent", ""),
             "entities": context.get("entities", []),
-            "timestamp": time.time(),
-            "embedding": light_nn.get_context_embedding(
-                context.get("user_text", ""),
-                self.conversation_history[-CONVERSATION_MEMORY:]
-            )
+            "timestamp": time.time()
         })
         
         # Keep only recent history
@@ -3273,12 +3166,7 @@ class AdvancedReasoningEngine:
     
     def handle_entity_status(self):
         channel = self.context["entities"][0]
-        key = get_key_by_name(channel)
-        if not key:
-            self.missing_channels.add(channel)
-            return self.handle_missing_channel(channel)
-            
-        status = self.check_channel_status(key)
+        status = self.check_channel_status(channel)
         explanation = self.explain_status(channel, status)
         
         # Store for potential follow-ups
@@ -3290,11 +3178,7 @@ class AdvancedReasoningEngine:
     def handle_follow_up_status(self):
         if "last_channel" in self.context:
             channel = self.context["last_channel"]
-            key = get_key_by_name(channel)
-            if not key:
-                return self.handle_missing_channel(channel)
-                
-            status = self.check_channel_status(key)
+            status = self.check_channel_status(channel)
             explanation = self.explain_status(channel, status)
             return self.generate_status_response(channel, status, explanation)
         return "Which channel would you like me to check?"
@@ -3311,21 +3195,16 @@ class AdvancedReasoningEngine:
         return ""
     
     def add_technical_details(self):
-        return " For more technical details, you can check the provider's status page."
+        return "For more technical details, you can check the provider's status page."
     
     def provide_enhanced_info(self):
         channel = self.context["entities"][0]
-        key = get_key_by_name(channel)
-        if not key:
-            self.missing_channels.add(channel)
-            return self.handle_missing_channel(channel)
-            
-        info = self.get_channel_info(key)
+        info = self.get_channel_info(channel)
         return f"Here's what I know about {channel}: {info}"
     
     def add_personal_context(self):
         if self.context.get("user_history"):
-            personalizers = ["I remember you've asked about similar channels before.", "Based on your previous interests,", "Since you often inquire about this type of content,", "From what I've learned about your preferences,", "Considering your past favorites,", "Given your usual picks,", "Remembering what caught your attention last time,", "Thinking about what you liked before,"]
+            personalizers = ["I remember you've asked about similar channels before.", "Based on your previous interests,", "Since you often inquire about this type of content,", "From what I’ve learned about your preferences,", "Considering your past favorites,", "Given your usual picks,", "Remembering what caught your attention last time,", "Thinking about what you liked before,"]
             return " " + random.choice(personalizers)
         return ""
     
@@ -3339,51 +3218,43 @@ class AdvancedReasoningEngine:
     
     def recommend_from_history(self):
         channels = self.get_recommendations(self.context["user_history"])
-        return "Based on your history, I recommend: " + ", ".join(channels[:3])
+        return "Based on your history, I recommend: " + ", ".join(channels)
     
     def recommend_from_preferences(self):
         if self.context.get("user_preferences"):
             top_category = max(self.context["user_preferences"].items(), key=lambda x: x[1])[0]
             recommendations = {
-                "sports": ["ESPN", "Fox Sports", "NBA TV", "NFL Network"],
-                "news": ["CNN", "BBC News", "Al Jazeera", "Fox News"],
-                "movie": ["HBO", "Showtime", "MovieSphere", "Starz"],
-                "entertainment": ["AMC", "FX", "TNT", "Bravo"],
+                "sports": ["ESPN", "Fox Sports", "NBA TV"],
+                "news": ["CNN", "BBC News", "Al Jazeera"],
+                "movie": ["HBO", "Showtime", "MovieSphere"],
+                "entertainment": ["AMC", "FX", "TNT"],
                 "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon", "Toonami"],
-                "music": ["MTV", "VH1", "BET", "CMT"],
-                "documentary": ["Discovery", "National Geographic", "Military History", "History Channel"]
+                "music": ["MTV", "VH1", "BET"],
+                "documentary": ["Discovery", "National Geographic", "Military History"]
             }
-            return f"Based on your interest in {top_category}, I recommend: {', '.join(recommendations.get(top_category, ['ESPN', 'CNN', 'HBO']))}"
+            return f"Based on your interest in {top_category}, I recommend: {', '.join(recommendations.get(top_category, []))}"
         return self.recommend_popular()
     
     def recommend_popular(self):
-        return "Popular channels right now: ESPN, CNN, HBO"
+        return "Popular channels: ESPN, CNN, HBO"
     
     def explain_recommendation(self):
-        return " My recommendations are based on channel popularity and your viewing history."
+        return "My recommendations are based on channel popularity and your viewing history."
     
     def compare_channels(self):
         ch1, ch2 = self.context["entities"][:2]
-        key1 = get_key_by_name(ch1)
-        key2 = get_key_by_name(ch2)
-        
-        if not key1 or not key2:
-            missing = [ch for ch in [ch1, ch2] if not get_key_by_name(ch)]
-            if missing:
-                return f"I don't have information about {', '.join(missing)}. " + self.handle_missing_channel(missing[0])
-                
         comparison = self.create_comparison(ch1, ch2)
         return f"Comparing {ch1} and {ch2}: {comparison}"
     
     def add_comparison_details(self):
-        return " For a more detailed comparison, I can provide specific technical specifications."
+        return "For a more detailed comparison, I can provide specific technical specifications."
     
     def suggest_comparison(self):
         channel = self.context["entities"][0]
         similar = self.find_similar_channels(channel)
         if similar:
-            return f" Would you like me to compare {channel} with {random.choice(similar)}?"
-        return " Which other channel would you like to compare it with?"
+            return f"Would you like me to compare {channel} with {random.choice(similar)}?"
+        return "Which other channel would you like to compare it with?"
     
     def ask_for_channels(self):
         return "Which channels would you like me to compare?"
@@ -3397,10 +3268,7 @@ class AdvancedReasoningEngine:
     def explain_general(self):
         if self.context.get("entities"):
             channel = self.context["entities"][0]
-            key = get_key_by_name(channel)
-            if not key:
-                return self.handle_missing_channel(channel)
-            status = self.check_channel_status(key)
+            status = self.check_channel_status(channel)
             return self.create_explanation(status, channel)
         return "Which channel's status would you like explained?"
     
@@ -3408,7 +3276,7 @@ class AdvancedReasoningEngine:
         return "For which channel would you like an explanation?"
     
     def provide_technical_explanation(self):
-        return " The status is determined by server response codes and network connectivity."
+        return "The status is determined by server response codes and network connectivity."
     
     def handle_greeting(self):
         return random.choice(general_knowledge["greetings"]) + " How can I help you with TV channels today?"
@@ -3422,7 +3290,7 @@ class AdvancedReasoningEngine:
     def handle_help(self):
         return random.choice(general_knowledge["help"])
     
-    def handle_how_are_you(self):
+    def handle_how_are_you(self):  # Added handler
         return random.choice(general_knowledge["general_qa"]["how_are_you"])
     
     def answer_general_question(self):
@@ -3452,45 +3320,11 @@ class AdvancedReasoningEngine:
         return ("I'm not sure I understand. I specialize in TV channels - you can ask me about "
                 "channel status, information, recommendations, or comparisons!")
     
-    def handle_missing_channel(self, channel_name):
-        """Handle requests for channels we don't have in our database"""
-        suggestions = []
-        
-        # 1. Check for similar names using neural similarity
-        best_match = None
-        best_score = 0
-        for name in channel_names:
-            score = light_nn.semantic_similarity(channel_name, name)
-            if score > 0.7 and score > best_score:
-                best_match = name
-                best_score = score
-                
-        if best_match:
-            suggestions.append(best_match)
-            
-        # 2. Check for fuzzy matches
-        for name in channel_names:
-            if fuzz.token_set_ratio(channel_name, name) > FUZZY_THRESHOLD:
-                if name not in suggestions:
-                    suggestions.append(name)
-                    
-        # 3. Check for similar content
-        if not suggestions:
-            content_match = self.find_similar_channels_by_content(channel_name)
-            if content_match:
-                suggestions.append(content_match)
-        
-        # Build response
-        base = f"I don't have information about {channel_name}."
-        if suggestions:
-            return base + f" Did you mean {random.choice(suggestions)}?"
-        return base + " Please try another channel."
-    
     # -------------------- Natural Language Generation --------------------
     def generate_status_response(self, channel, status, explanation):
         """Generate varied status responses"""
         templates = {
-            "online": [f"Great news! {channel} is up and running perfectly right now. {explanation}", f"I just checked - {channel} is live and working without issues. {explanation}", f"You're in luck! {channel} is currently streaming. {explanation}", f"Good to go! {channel} is streaming smoothly as we speak. {explanation}", f"Looks like {channel} is online and ready for your viewing pleasure. {explanation}", f"The stream for {channel} is active and clear. {explanation}", f"All systems green for {channel}! Enjoy the show. {explanation}", f"No interruptions detected, {channel} is live. {explanation}", f"You can tune in to {channel} right now, it's all set. {explanation}", f"{channel} is broadcasting without a hitch. {explanation}"],
+            "online": [f"Great news! {channel} is up and running perfectly right now. {explanation}", f"I just checked - {channel} is live and working without issues. {explanation}", f"You're in luck! {channel} is currently streaming. {explanation}", f"Good to go! {channel} is streaming smoothly as we speak. {explanation}", f"Looks like {channel} is online and ready for your viewing pleasure. {explanation}", f"The stream for {channel} is active and clear. {explanation}", f"All systems green for {channel}! Enjoy the show. {explanation}", f"No interruptions detected, {channel} is live. {explanation}", f"You can tune in to {channel} right now, it’s all set. {explanation}", f"{channel} is broadcasting without a hitch. {explanation}"],
             "offline": [
                 f"Looks like {channel} is currently unavailable. {explanation}",
                 f"I'm showing {channel} is down at the moment. {explanation}",
@@ -3507,7 +3341,7 @@ class AdvancedReasoningEngine:
     def add_conversational_elements(self, response):
         """Make responses more natural and human-like"""
         # Add thinking expressions
-        thinkers = ["Hmm", "Let me see", "Well", "You know", "Actually", "Interesting...", "Give me a moment", "Let's think about that 🤔", "Hold on 🧐", "Let me check"]
+        thinkers = ["Hmm", "Let me see", "Well", "You know", "Actually", "Interesting...", "Give me a moment", "Let’s think about that", "Hold on", "Let me check"]
         if random.random() > 0.7:  # 30% chance
             response = random.choice(thinkers) + "... " + response.lower()
         
@@ -3516,31 +3350,17 @@ class AdvancedReasoningEngine:
         if random.random() > 0.6 and "?" not in response:  # 40% chance
             response += ". " + random.choice(connectors) + "..."
         
-        # Add personal touch using neural context
+        # Add personal touch
         if self.context.get("user_history") and random.random() > 0.5:
-            # Find most relevant historical context
-            current_embedding = light_nn.get_context_embedding(response)
-            best_match = ""
-            best_sim = 0
-            for entry in self.context["user_history"]:
-                sim = np.dot(current_embedding, entry["embedding"])
-                if sim > best_sim:
-                    best_match = entry["text"]
-                    best_sim = sim
-            
-            if best_sim > 0.5:
-                personalizers = [
-                    f"Speaking of {best_match.split()[0]}...",
-                    f"That reminds me of when you asked about {best_match}...",
-                    f"Similar to our conversation about {best_match}..."
-                ]
-                response += " " + random.choice(personalizers)
+            personalizers = ["I remember you've asked about similar channels before.", "Based on your previous interests,", "Since you often inquire about this type of content,", "From what I’ve learned about your preferences,", "Considering your past favorites,", "Given your usual picks,", "Remembering what caught your attention last time,", "Thinking about what you liked before,"]
+            response += " " + random.choice(personalizers) + "."
         
         return response
     
     # -------------------- Utility Methods --------------------
-    def check_channel_status(self, key):
-        if key in channels:
+    def check_channel_status(self, channel):
+        key = get_key_by_name(channel)
+        if key:
             url = channels[key]["url"]
             try:
                 r = requests.get(url, timeout=CHECK_TIMEOUT)
@@ -3552,7 +3372,7 @@ class AdvancedReasoningEngine:
     def explain_status(self, channel, status):
         explanations = {
             "online": [
-                "Everything seems to be working smoothly! 😊",
+                "Everything seems to be working smoothly!",
                 "The stream is coming through perfectly.",
                 "No issues detected - enjoy your viewing!"
             ],
@@ -3569,188 +3389,95 @@ class AdvancedReasoningEngine:
         }
         return random.choice(explanations.get(status, explanations["unknown"]))
     
-    def get_channel_info(self, key):
-        if key in channels:
+    def get_channel_info(self, channel):
+        key = get_key_by_name(channel)
+        if key:
             data = channels[key]
             info = f"{data.get('group-title', 'Unknown category')} channel"
             if "country" in data:
                 info += f" from {data['country']}"
-            if "description" in data:
-                info += f". {data['description']}"
             return info
         return "No information available for this channel."
     
-    def find_similar_channels(self, channel_name):
-        """Find similar channels using neural embeddings"""
-        current_embedding = light_nn.get_context_embedding(channel_name)
-        similarities = []
+    def find_similar_channels(self, channel):
+        key = get_key_by_name(channel)
+        if not key:
+            return []
         
-        for name in channel_names:
-            if name == channel_name:
+        current_category = channels[key].get("group-title", "")
+        similar = []
+        
+        for k, v in channels.items():
+            if k == key:
                 continue
-            name_embedding = light_nn.get_context_embedding(name)
-            similarity = np.dot(current_embedding, name_embedding)
-            similarities.append((name, similarity))
+            if v.get("group-title") == current_category:
+                similar.append(v["name"])
         
-        # Sort by similarity and return top 3
-        similarities.sort(key=lambda x: x[1], reverse=True)
-        return [name for name, _ in similarities[:3]]
-    
-    def find_similar_channels_by_content(self, channel_name):
-        """Find similar channels based on content keywords"""
-        content_keywords = {
-            "sport": ["ESPN", "Fox Sports", "NBA TV"],
-            "news": ["CNN", "BBC News", "Al Jazeera"],
-            "movie": ["HBO", "Showtime", "MovieSphere"],
-            "entertainment": ["AMC", "FX", "TNT"],
-            "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon"],
-            "music": ["MTV", "VH1", "BET"],
-            "documentary": ["Discovery", "National Geographic", "Military History"]
-        }
-        
-        for keyword, channels in content_keywords.items():
-            if keyword in channel_name.lower():
-                return random.choice(channels)
-        return None
+        return similar if similar else ["ESPN", "CNN", "HBO"]  # Default suggestions
     
     def get_recommendations(self, history):
-        # Content-based recommendation using neural embeddings
-        if not history:
-            return ["ESPN", "CNN", "HBO"]
-            
-        # Create embedding of historical interests
-        history_embedding = np.zeros(EMBEDDING_DIM)
-        for entry in history:
-            if "embedding" in entry:
-                history_embedding += entry["embedding"]
-        history_embedding /= len(history)
+        # Simple content-based recommendation
+        history_text = " ".join([msg for _, msg, _ in history]).lower()
         
-        # Find most similar channels
-        similarities = []
-        for name in channel_names:
-            name_embedding = light_nn.get_context_embedding(name)
-            similarity = np.dot(history_embedding, name_embedding)
-            similarities.append((name, similarity))
-        
-        # Sort by similarity and return top 3
-        similarities.sort(key=lambda x: x[1], reverse=True)
-        return [name for name, _ in similarities[:3]]
+        if any(word in history_text for word in ["sport", "football", "basketball"]):
+            return ["ESPN", "Fox Sports", "NBA TV"]
+        if any(word in history_text for word in ["news", "current", "event"]):
+            return ["CNN", "BBC News", "Al Jazeera"]
+        if any(word in history_text for word in ["movie", "film", "cinema"]):
+            return ["HBO", "Showtime", "MovieSphere"]
+        return ["Discovery Channel", "National Geographic", "Military History"]
     
     def create_comparison(self, ch1, ch2):
-        key1 = get_key_by_name(ch1)
-        key2 = get_key_by_name(ch2)
-        aspects = []
-        
-        if key1 and key2:
-            data1 = channels[key1]
-            data2 = channels[key2]
-            
-            # Content comparison
-            if data1.get("group-title") == data2.get("group-title"):
-                aspects.append(f"Both are {data1['group-title']} channels")
-            else:
-                aspects.append(f"{ch1} focuses on {data1.get('group-title', 'various content')} while {ch2} is more about {data2.get('group-title', 'different content')}")
-            
-            # Popularity comparison
-            pop1 = data1.get("popularity", 3)
-            pop2 = data2.get("popularity", 3)
-            if pop1 > pop2:
-                aspects.append(f"{ch1} is generally more popular than {ch2}")
-            elif pop2 > pop1:
-                aspects.append(f"{ch2} tends to be more popular than {ch1}")
-            else:
-                aspects.append("Both have similar popularity")
-        else:
-            # Fallback generic comparison
-            aspects = [
-                f"{ch1} tends to focus more on {random.choice(['live events', 'original programming', 'specialized content'])}",
-                f"{ch2} generally offers better {random.choice(['picture quality', 'reliability', 'variety'])}",
-                f"both have their strengths but {random.choice([ch1, ch2])} might be better for {random.choice(['most viewers', 'your interests', 'current trends'])}"
-            ]
-            
+        aspects = [
+            f"{ch1} tends to focus more on {random.choice(['live events', 'original programming', 'specialized content'])}",
+            f"{ch2} generally offers better {random.choice(['picture quality', 'reliability', 'variety'])}",
+            f"both have their strengths but {random.choice([ch1, ch2])} might be better for {random.choice(['most viewers', 'your interests', 'current trends'])}"
+        ]
         return " ".join(aspects[:2])
     
     def create_explanation(self, status, channel):
-        """Create contextual explanation with neural enhancement"""
+        """Create contextual explanation"""
         if status == "online":
             return f"{channel} is functioning normally with no reported issues"
         else:
-            # Neural-based explanation
-            user_text = self.context.get("user_text", "").lower()
-            if "why" in user_text:
-                return self.generate_technical_explanation(channel)
-            return f"{channel} might be experiencing temporary issues"
-    
-    def generate_technical_explanation(self, channel):
-        """Generate more technical explanation using neural context"""
-        explanations = [
-            f"Our systems show {channel} is experiencing server connectivity issues",
-            f"{channel} appears to be undergoing scheduled maintenance",
-            f"We're detecting a content delivery network outage affecting {channel}",
-            f"{channel} is reporting higher-than-normal error rates from their origin servers",
-            f"Our monitoring indicates regional routing problems for {channel}"
-        ]
-        return random.choice(explanations)
+            reasons = [
+                "server maintenance",
+                "content rights issues",
+                "temporary technical problems",
+                "high traffic causing overload"
+            ]
+            return f"{channel} might be down due to {random.choice(reasons)}"
 
 # ------------------------ Core System ------------------------
 def get_key_by_name(name):
-    """Enhanced channel lookup with aliases and fuzzy matching"""
-    # Try exact match in aliases
-    for alias, key in alias_to_key.items():
-        if alias == name.lower():
-            return key
-    
-    # Try fuzzy match
-    best_match = None
-    best_score = 0
-    for key, aliases in channel_aliases.items():
-        for alias in aliases:
-            score = fuzz.token_set_ratio(name.lower(), alias)
-            if score > FUZZY_THRESHOLD and score > best_score:
-                best_match = key
-                best_score = score
-    
-    return best_match
+    for k, v in channels.items():
+        if v["name"].lower() == name.lower():
+            return k
+    return None
 
 def extract_entities(text):
-    """Hybrid entity extraction with neural matching"""
+    """Enhanced entity extraction with fuzzy matching"""
     entities = []
     text_lower = text.lower()
     
-    # 1. Check exact aliases
-    for alias in alias_to_key.keys():
-        if alias in text_lower:
-            entities.append(channels[alias_to_key[alias]]["name"])
+    # Exact match first
+    for name in channel_names:
+        if name.lower() in text_lower:
+            entities.append(name)
     
-    # 2. Fuzzy match if no exact matches
+    # Fuzzy match if no exact matches
     if not entities:
-        for name in channel_names:
-            name_lower = name.lower()
-            # Fuzzy match
-            ratio = fuzz.token_set_ratio(text_lower, name_lower)
-            if ratio > FUZZY_THRESHOLD:
-                entities.append(name)
+        matches = get_close_matches(text, channel_names, n=3, cutoff=0.6)
+        entities.extend(matches)
     
-    # 3. Neural similarity as fallback
-    if not entities:
-        best_match = None
-        best_sim = 0
-        for name in channel_names:
-            sim = light_nn.semantic_similarity(text, name)
-            if sim > 0.6 and sim > best_sim:
-                best_match = name
-                best_sim = sim
-        if best_match:
-            entities.append(best_match)
-    
-    return list(set(entities))  # Return unique entities
+    return entities
 
 def is_follow_up(text):
     """Enhanced follow-up detection with context awareness"""
     follow_phrases = [
         "about that", "what about", "and", "also", "how about",
         "next", "following", "too", "as well", "plus", "another",
-        "other", "else", "different", "what's", "how's", "is"
+        "other", "else", "different"
     ]
     return any(phrase in text.lower() for phrase in follow_phrases)
 
@@ -3782,28 +3509,16 @@ def update_user_profile(user_id, text, intent, response):
     profile["interaction_count"] += 1
     profile["last_intents"].append(intent)
     
-    # Track topics using neural embeddings
-    channel_embedding = np.zeros(EMBEDDING_DIM)
-    entities = extract_entities(text)
-    for entity in entities:
-        if entity:
-            channel_embedding += light_nn.get_context_embedding(entity)
-    
-    # Find dominant category
-    if np.any(channel_embedding):
-        category_scores = {}
-        for category in ["sports", "news", "movie", "entertainment", "kids", "music", "documentary"]:
-            category_embedding = light_nn.get_context_embedding(category)
-            score = np.dot(channel_embedding, category_embedding)
-            category_scores[category] = score
-        
-        dominant_category = max(category_scores, key=category_scores.get)
-        profile["common_topics"][dominant_category] = profile["common_topics"].get(dominant_category, 0) + 1
+    # Track topics
+    for word in ["sports", "news", "movie", "entertainment", "kids", "music", "documentary"]:
+        if word in text.lower():
+            profile["common_topics"][word] = profile["common_topics"].get(word, 0) + 1
     
     # Track preferred channels
-    for name in entities:
-        if name and name not in profile["preferred_channels"]:
-            profile["preferred_channels"].append(name)
+    for name in channel_names:
+        if name.lower() in text.lower():
+            if name not in profile["preferred_channels"]:
+                profile["preferred_channels"].append(name)
     
     # Track response time
     profile["response_times"].append(time.time())
@@ -3812,8 +3527,7 @@ def update_user_profile(user_id, text, intent, response):
     profile["learning_samples"].append({
         "text": text,
         "intent": intent,
-        "timestamp": time.time(),
-        "embedding": light_nn.get_context_embedding(text).tolist()
+        "timestamp": time.time()
     })
     
     # Keep only recent data
@@ -3973,7 +3687,6 @@ examples = [
     ("what can you tell me", "general_question"),
     ("do you know any trivia", "general_question")
 ]
-
 # Create model with online learning capability
 model_lock = Lock()
 
@@ -4004,7 +3717,7 @@ def initialize_model():
     print("Training new model...")
     vectorizer = TfidfVectorizer(
         max_features=100,
-        ngram_range=(1, 2),  # Use bigrams for better context
+        ngram_range=(1, 1),
         stop_words='english'
     )
     
@@ -4031,38 +3744,25 @@ def initialize_model():
         raise RuntimeError("Failed to initialize model") from e
 
 def update_model(model, new_samples):
-    """Update model with new samples using neural-enhanced features"""
+    """Update model with new samples"""
     if not new_samples:
         return model
     
     X_new = [sample["text"] for sample in new_samples]
     y_new = [sample["intent"] for sample in new_samples]
     
-    # Get neural embeddings
-    X_embeddings = [light_nn.get_context_embedding(text) for text in X_new]
-    
     # Update the model incrementally
     try:
-        # Convert to TF-IDF features
-        X_tfidf = model.named_steps['tfidfvectorizer'].transform(X_new)
-        
-        # Combine with neural embeddings
-        X_combined = np.hstack((X_tfidf.toarray(), X_embeddings))
-        
-        # Get the full set of classes from the model
-        full_classes = model.named_steps['sgdclassifier'].classes_
-        
         # Partial fit for online learning
         model.named_steps['sgdclassifier'].partial_fit(
-            X_combined, 
+            model.named_steps['tfidfvectorizer'].transform(X_new),
             y_new,
-            classes=full_classes
-        )
+            classes=np.unique(y_new))
     except Exception as e:
         print(f"Model update error: {e}")
     
     return model
-    
+
 def learn_from_interactions():
     """Periodic learning from user interactions"""
     while True:
@@ -4095,8 +3795,7 @@ def learn_from_interactions():
                     
                     # Clear samples after learning
                     for user_id in profiles:
-                        if "learning_samples" in profiles[user_id]:
-                            profiles[user_id]["learning_samples"] = []
+                        profiles[user_id]["learning_samples"] = []
                     save_user_profiles(profiles)
             except Exception as e:
                 print(f"Learning thread error: {e}")
@@ -4120,9 +3819,6 @@ def index():
     
     if request.method == 'POST':
         user_text = request.form['query'].strip()
-        
-        if not user_text:
-            return render_template('chat.html', history=session.get('history', []))
         
         # Predict intent with thread-safe access
         with model_lock:

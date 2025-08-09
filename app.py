@@ -3586,38 +3586,60 @@ examples = [
 
 # Create model with online learning capability
 model_lock = Lock()
-
 def initialize_model():
     """Initialize or load the intent classification model"""
     if os.path.exists(MODEL_FILE):
-        return joblib.load(MODEL_FILE)
+        try:
+            model = joblib.load(MODEL_FILE)
+            # Verify model dimensions and compatibility
+            if (hasattr(model, 'n_features_in_') and 
+                model.n_features_in_ != len(examples)):
+                print("Dimension mismatch - retraining fresh model")
+                model = None  # Force retrain
+        except Exception as e:
+            print(f"Model loading failed: {e}")
+            model = None
     
-    X_train = [x[0] for x in examples]
-    y_train = [x[1] for x in examples]
+    if not os.path.exists(MODEL_FILE) or model is None:
+        X_train = [x[0] for x in examples]
+        y_train = [x[1] for x in examples]
+        
+        # Initialize with consistent dimensions and updated parameters
+        vectorizer = TfidfVectorizer(
+            max_features=100,
+            ngram_range=(1, 2)  # Consider bigrams for better context
+        )
+        
+        model = make_pipeline(
+            vectorizer,
+            SGDClassifier(
+                loss='log_loss',  # Updated parameter name
+                penalty='l2',
+                alpha=1e-4,
+                max_iter=1000,
+                tol=1e-3,
+                early_stopping=True,
+                validation_fraction=0.2,
+                n_iter_no_change=5,
+                warm_start=True
+            )
+        )
+        
+        try:
+            model.fit(X_train, y_train)
+            joblib.dump(model, MODEL_FILE)
+        except Exception as e:
+            print(f"Model training failed: {e}")
+            raise
     
-    # Use SGDClassifier for online learning capabilities
-    model = make_pipeline(
-        TfidfVectorizer(),
-        SGDClassifier(loss='log_loss', warm_start=True, max_iter=100, tol=1e-3)
-    )
-    model.fit(X_train, y_train)
+    # Verify the loaded model
+    if not hasattr(model.named_steps['sgdclassifier'], 'coef_'):
+        print("Model not properly trained - retraining")
+        model.fit(X_train, y_train)
+        joblib.dump(model, MODEL_FILE)
+    
     return model
 
-def update_model(model, new_samples):
-    """Update model with new samples"""
-    if not new_samples:
-        return model
-    
-    X_new = [sample["text"] for sample in new_samples]
-    y_new = [sample["intent"] for sample in new_samples]
-    
-    # Update the model incrementally
-    try:
-        model.fit(X_new, y_new)
-    except Exception as e:
-        print(f"Model update error: {e}")
-    
-    return model
 
 def learn_from_interactions():
     """Periodic learning from user interactions"""

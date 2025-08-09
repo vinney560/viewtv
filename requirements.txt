@@ -39,8 +39,8 @@ numpy
 joblib
 fuzzywuzzy==0.18.0
 python-Levenshtein==0.25.0
-tensorflow==2.16.1
-keras==3.3.3
+tensorflow
+keras
 
 # Utilities
 tqdm>=4.62.0

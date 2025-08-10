@@ -54,22 +54,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import os
 import json
 import time
-import random
 import re
-import numpy as np
-from datetime import datetime, timedelta
 import requests
-from flask import Flask, render_template, request, session, redirect, url_for
-from flask_session import Session
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import SGDClassifier
-from sklearn.pipeline import make_pipeline
-from sklearn.utils.class_weight import compute_class_weight
-from difflib import get_close_matches
-import joblib
-from threading import Lock
-import threading
-from collections import Counter, defaultdict
+from datetime import datetime
+from flask import Flask, render_template, request, session
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
@@ -3070,7 +3058,7 @@ class TVAssistant:
                 outputs = self.model.generate(
                     inputs.input_ids,
                     attention_mask=inputs.attention_mask,
-                    max_length=min(len(inputs.input_ids[0]) + MAX_GENERATIVE_LENGTH, 300),
+                    max_length=min(len(inputs.input_ids[0]) + MAX_GENERATIVE_LENGTH, 512),
                     temperature=TEMPERATURE,
                     top_k=TOP_K,
                     top_p=TOP_P,

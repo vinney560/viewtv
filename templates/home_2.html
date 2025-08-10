@@ -633,7 +633,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
       </svg>
-      <span class="relative">View TV Playlist</span>
+      <span class="relative">View TV Channels</span>
     </a>
 
     <!-- Movies Row -->
@@ -1021,7 +1021,7 @@
       }
       
       // Handle server status
-      if (lowerMessage.includes('server status') || lowerMessage.includes('is server down')) {
+      if (lowerMessage.includes('server status') || lowerMessage.includes('is server down') || lowerMessage.includes('server offline') || lowerMessage.includes('status of server') || lowerMessage.includes('is site down') || lowerMessage.includes('server not working') || lowerMessage.includes('site status') || lowerMessage.includes('website down') || /server.*status/.test(lowerMessage) || /status.*server/.test(lowerMessage)) {
         return {
           content: "I've checked our server status: 🟢 All systems are operational!\n\n" +
                    "If you're experiencing issues, it might be a local connection problem. Try refreshing or checking your internet connection.",
@@ -1030,8 +1030,7 @@
       }
       
       // Handle viewing habits analysis
-      if (lowerMessage.includes('viewing habits') || lowerMessage.includes('watch history') || 
-          lowerMessage.includes('analytics')) {
+      if (lowerMessage.includes('viewing habits') || lowerMessage.includes('watch history') || lowerMessage.includes('analytics') || lowerMessage.includes('view history') || lowerMessage.includes('watching patterns') || lowerMessage.includes('watch data') || lowerMessage.includes('watch stats') || lowerMessage.includes('watching analytics') || lowerMessage.includes('view stats') || /view.*history/.test(lowerMessage) || /watch.*history/.test(lowerMessage)) {
         const viewingHabits = generateViewingHabits();
         const analytics = generateUserAnalytics();
         
@@ -1057,8 +1056,7 @@
       }
       
       // Handle content recommendations
-      if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest') || 
-          lowerMessage.includes('what to watch')) {
+      if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest') || lowerMessage.includes('what to watch') || lowerMessage.includes('movie suggestions') || lowerMessage.includes('show recommendations') || lowerMessage.includes('suggestions') || lowerMessage.includes('recommendations') || lowerMessage.includes('what should I watch') || lowerMessage.includes('any good shows') || /recommend.*watch/.test(lowerMessage) || /suggest.*watch/.test(lowerMessage)) {
         return {
           content: "Based on your viewing habits, I recommend these:\n\n" +
                    "🎬 Action Movies: 'The Last Stand' - 85% match\n" +
@@ -1072,7 +1070,7 @@
       }
       
       // Handle account analytics
-      if (lowerMessage.includes('account stats') || lowerMessage.includes('usage analytics')) {
+      if (lowerMessage.includes('account stats') || lowerMessage.includes('usage analytics') || lowerMessage.includes('account statistics') || lowerMessage.includes('usage stats') || lowerMessage.includes('account usage') || lowerMessage.includes('profile stats') || lowerMessage.includes('profile analytics') || lowerMessage.includes('user stats') || lowerMessage.includes('user analytics') || /account.*stats/.test(lowerMessage) || /usage.*analytics/.test(lowerMessage)) {
         const analytics = generateUserAnalytics();
         
         return {
@@ -1093,11 +1091,7 @@
       }
       
       // Handle common issues
-      if (lowerMessage.includes('not working') || 
-          lowerMessage.includes('problem') || 
-          lowerMessage.includes('issue') ||
-          lowerMessage.includes('trouble') ||
-          lowerMessage.includes('error')) {
+      if (lowerMessage.includes('not working') || lowerMessage.includes('problem') || lowerMessage.includes('issue') || lowerMessage.includes('trouble') || lowerMessage.includes('error') || lowerMessage.includes('bug') || lowerMessage.includes('fail') || lowerMessage.includes('crash') || lowerMessage.includes('broken') || lowerMessage.includes('glitch') || /not.*working/.test(lowerMessage) || /having.*problem/.test(lowerMessage) || /error/.test(lowerMessage)) {
         return {
           content: "I'm sorry you're having trouble. Let me help you troubleshoot:\n\n" +
                    "1. Try refreshing the page or restarting the app\n" +
@@ -1111,8 +1105,7 @@
       }
       
       // Handle subscription questions
-      if (lowerMessage.includes('plus') || lowerMessage.includes('premium') || 
-          lowerMessage.includes('subscription') || lowerMessage.includes('upgrade')) {
+      if (lowerMessage.includes('plus') || lowerMessage.includes('premium') || lowerMessage.includes('subscription') || lowerMessage.includes('upgrade') || lowerMessage.includes('subscribe') || lowerMessage.includes('plan') || lowerMessage.includes('membership') || lowerMessage.includes('paid account') || lowerMessage.includes('pro version') || lowerMessage.includes('billing') || /subscription.*plan/.test(lowerMessage) || /upgrade.*account/.test(lowerMessage)) {
         return {
           content: "ViewTV Plus offers:\n\n" +
                    "✅ Ad-free experience\n" +
@@ -1126,77 +1119,68 @@
       }
       
       // Handle content navigation
-      if (lowerMessage.includes('sport') || lowerMessage.includes('football') || 
-          lowerMessage.includes('game') || lowerMessage.includes('match')) {
+      if (lowerMessage.includes('sport') || lowerMessage.includes('football') || lowerMessage.includes('game') || lowerMessage.includes('match') || lowerMessage.includes('soccer') || lowerMessage.includes('basketball') || lowerMessage.includes('tennis') || lowerMessage.includes('cricket') || lowerMessage.includes('tournament') || lowerMessage.includes('player') || lowerMessage.includes('score') || lowerMessage.includes('team') || lowerMessage.includes('league') || lowerMessage.includes('goal')) {
         return {
           content: "Taking you to Sports content. You'll find live matches, highlights, and sports news there!",
           type: 'info',
           action: 'navigate_sports'
         };
       }
-      else if (lowerMessage.includes('movie') || lowerMessage.includes('film') || 
-               lowerMessage.includes('cinema')) {
+      else if (lowerMessage.includes('movie') || lowerMessage.includes('film') || lowerMessage.includes('cinema') || lowerMessage.includes('actor') || lowerMessage.includes('actress') || lowerMessage.includes('director') || lowerMessage.includes('hollywood') || lowerMessage.includes('bollywood') || lowerMessage.includes('trailer') || lowerMessage.includes('screenplay') || lowerMessage.includes('blockbuster') || lowerMessage.includes('premiere') || lowerMessage.includes('documentary')) {
         return {
           content: "I've found some great movies for you. Taking you to our Movies section!",
           type: 'info',
           action: 'navigate_movies'
         };
       }
-      else if (lowerMessage.includes('category') || lowerMessage.includes('type') || 
-               lowerMessage.includes('genre')) {
+      else if (lowerMessage.includes('category') || lowerMessage.includes('type') || lowerMessage.includes('genre') || lowerMessage.includes('class') || lowerMessage.includes('group') || lowerMessage.includes('kind') || lowerMessage.includes('sort') || lowerMessage.includes('section') || lowerMessage.includes('classification')) {
         return {
           content: "Let me show you our content categories. You can browse by genre, topic, or content type.",
           type: 'info',
           action: 'navigate_categories'
         };
       }
-      else if (lowerMessage.includes('country') || lowerMessage.includes('region') || 
-               lowerMessage.includes('local')) {
+      else if (lowerMessage.includes('country') || lowerMessage.includes('region') || lowerMessage.includes('local') || lowerMessage.includes('city') || lowerMessage.includes('state') || lowerMessage.includes('province') || lowerMessage.includes('area') || lowerMessage.includes('territory') || lowerMessage.includes('district') || lowerMessage.includes('nation')) {
         return {
           content: "You can browse content by country. I'll take you to our Countries section now.",
           type: 'info',
           action: 'navigate_countries'
         };
       }
-      else if (lowerMessage.includes('playlist') || lowerMessage.includes('channel') || 
-               lowerMessage.includes('favorites')) {
+      else if (lowerMessage.includes('playlist') || lowerMessage.includes('channel') || lowerMessage.includes('favorites') || lowerMessage.includes('music') || lowerMessage.includes('songs') || lowerMessage.includes('album') || lowerMessage.includes('artist') || lowerMessage.includes('track') || lowerMessage.includes('stream') || lowerMessage.includes('radio') || lowerMessage.includes('podcast')) {
         return {
           content: "Our curated playlists are perfect for you! Taking you to View TV Playlists.",
           type: 'info',
           action: 'navigate_playlists'
         };
       }
-      else if (lowerMessage.includes('help') || lowerMessage.includes('support') || 
-               lowerMessage.includes('faq')) {
+      else if (lowerMessage.includes('help') || lowerMessage.includes('support') || lowerMessage.includes('faq') || lowerMessage.includes('assist') || lowerMessage.includes('contact') || lowerMessage.includes('service') || lowerMessage.includes('customer') || lowerMessage.includes('problem') || lowerMessage.includes('issue') || lowerMessage.includes('guide') || lowerMessage.includes('manual')) {
         return {
           content: "You can find answers to common questions in our Help section. I'll take you there now.",
           type: 'info',
           action: 'navigate_help'
         };
       }
-      else if (lowerMessage.includes('account') || lowerMessage.includes('profile') || 
-               lowerMessage.includes('settings')) {
+      else if (lowerMessage.includes('account') || lowerMessage.includes('profile') || lowerMessage.includes('settings') || lowerMessage.includes('password') || lowerMessage.includes('login') || lowerMessage.includes('logout') || lowerMessage.includes('user') || lowerMessage.includes('security') || lowerMessage.includes('privacy') || lowerMessage.includes('preferences') || lowerMessage.includes('update')) {
         return {
           content: "Taking you to your account settings where you can manage your preferences and subscription.",
           type: 'info',
           action: 'navigate_account'
         };
       }
-      else if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || 
-               lowerMessage.includes('hey') || lowerMessage.includes('greetings')) {
+      else if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('hey') || lowerMessage.includes('greetings') || lowerMessage.includes('howdy') || lowerMessage.includes('yo') || lowerMessage.includes('hiya') || lowerMessage.includes('good morning') || lowerMessage.includes('good afternoon') || lowerMessage.includes('good evening')) {
         return {
           content: "Hello there! 😊 I'm your ViewTV assistant. I can help you navigate the platform, troubleshoot issues, or find content. What can I do for you today?",
           type: 'info'
         };
       }
-      else if (lowerMessage.includes('thank')) {
+      else if (lowerMessage.includes('thank') || lowerMessage.includes('thanks') || lowerMessage.includes('thank you') || lowerMessage.includes('thx') || lowerMessage.includes('appreciate') || lowerMessage.includes('grateful')) {
         return {
           content: "You're very welcome! 😊 I'm here whenever you need assistance with ViewTV. Enjoy your streaming!",
           type: 'info'
         };
       }
-      else if (lowerMessage.includes('feature') || lowerMessage.includes('new') || 
-               lowerMessage.includes('update')) {
+      else if (lowerMessage.includes('feature') || lowerMessage.includes('new') || lowerMessage.includes('update') || lowerMessage.includes('upgrade') || lowerMessage.includes('improve') || lowerMessage.includes('enhancement') || lowerMessage.includes('release') || lowerMessage.includes('patch') || lowerMessage.includes('version') || lowerMessage.includes('fix')) {
         return {
           content: "We recently added these exciting features:\n\n" +
                    "✨ Enhanced AI assistant (that's me!)\n" +
@@ -1207,13 +1191,8 @@
           type: 'info'
         };
       }
-      else if (lowerMessage.includes('joke') || lowerMessage.includes('funny')) {
-        const jokes = [
-          "Why did the streamer bring a ladder to the cinema? Because they heard the movies were on another level!",
-          "What's a streamer's favorite exercise? Buffer-ing!",
-          "Why don't streaming services ever get lost? Because they always follow the bandwidth!",
-          "Why was the computer cold? It left its Windows open!"
-        ];
+      else if (lowerMessage.includes('joke') || lowerMessage.includes('funny') || lowerMessage.includes('humor') || lowerMessage.includes('laugh') || lowerMessage.includes('comedian') || lowerMessage.includes('hilarious') || lowerMessage.includes('fun')) {
+        const jokes =["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!", "Why did the scarecrow win an award? Because he was outstanding in his field!", "Why don't skeletons fight each other? They don't have the guts.", "I told my computer I needed a break… now it won't stop sending me KitKat ads.", "Why was the math book sad? It had too many problems.", "What do you call cheese that isn't yours? Nacho cheese!", "Why did the golfer bring two pairs of pants? In case he got a hole in one.", "Why can't your nose be 12 inches long? Because then it would be a foot.", "Parallel lines have so much in common… it's a shame they'll never meet.", "Why did the bicycle fall over? It was two-tired.", "I asked the librarian if the library had books on paranoia… she whispered, 'They're right behind you.'", "Why did the computer go to the doctor? It caught a virus.", "Why did the tomato turn red? Because it saw the salad dressing.", "I told my phone a joke… now it autocorrects everything to LOL.", "Why do bees have sticky hair? Because they use honeycombs.", "What do you call a pile of cats? A meowtain.", "Why did the music teacher go to the principal's office? She found herself in treble.", "Why did the cookie go to the hospital? It felt crumby.", "What's brown and sticky? A stick."];
         const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
         return {
           content: `Sure, here's a streaming joke for you:\n\n${randomJoke} 😄`,

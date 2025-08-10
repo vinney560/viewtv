@@ -69,8 +69,9 @@ from difflib import get_close_matches
 import joblib
 from threading import Lock
 import threading
-from collections import Counter
-
+from collections import Counter, defaultdict
+import torch
+from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
 # ============================
 # CONFIGURATION & INIT
@@ -2941,7 +2942,6 @@ def set_notice():
 #========================================
 #      AI FEATURES 
 #========================================
-# ------------------------ Enhanced Config ----------------------
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
@@ -2952,6 +2952,13 @@ CONVERSATION_MEMORY = 3
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 10  # Learn after every 10 interactions
 MIN_UPDATE_SAMPLES = 3        # Minimum samples before updating model
+
+# TinyLLM config
+TINYLLM_MODEL = "sshleifer/tiny-gpt2"  # 45MB model
+MAX_GENERATIVE_LENGTH = 60
+TEMPERATURE = 0.7
+TOP_K = 30
+TOP_P = 0.9
 
 
 # ------------------------ Data Loading ------------------------
@@ -2965,8 +2972,8 @@ if os.path.exists(GENERAL_KNOWLEDGE_FILE):
 else:
     general_knowledge = {
         "greetings": ["Hello!", "Hi there!", "Hey!", "Greetings!", "What's up?", "Howdy!", "Yo!", "Heyo!", "Good to see you!", "Hiya!", "Salutations!", "Ahoy!", "Hola!", "Bonjour!", "Hey friend!", "Welcome!", "Hi-de-ho!", "What's cooking?", "Hey there, superstar!", "Hi, howdy, hey!"],
-        "farewells": ["Goodbye!", "See you later!", "Bye!", "Take care!", "Catch you later!", "Farewell!", "Have a great day!", "Until next time!", "Stay safe!", "Peace out!", "Adios!", "See ya!", "Take it easy!", "Later, alligator!", "Bye-bye!"],
-        "thanks": ["You're welcome!", "My pleasure!", "Happy to help!", "Anytime!", "No problem!", "Glad I could assist!", "Don't mention it!", "Always here for you!", "It’s nothing!", "You got it!", "Sure thing!", "Cheers!", "Anytime you need!", "I’m here whenever!", "Just doing my job!"],
+        "farewells": ["Goodbye!", "See you later!", "Bye!", "Take care!"],
+        "thanks": ["You're welcome!", "My pleasure!", "Happy to help!", "Anytime!"],
         "help": [
             "I can help you with TV channel status, information, recommendations, and comparisons. "
             "You can also ask me general questions!",
@@ -2979,21 +2986,132 @@ else:
             "weather": "I don't have real-time weather data, but I recommend checking a weather service for accurate forecasts.",
             "time": "The current time is {time}.",
             "name": "I'm your TV Channel Assistant, here to help with all your channel needs!",
-            "joke": ["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!", "Why did the scarecrow win an award? Because he was outstanding in his field!", "Why don’t skeletons fight each other? They don’t have the guts.", "I told my computer I needed a break… now it won’t stop sending me KitKat ads.", "Why was the math book sad? It had too many problems.", "What do you call cheese that isn’t yours? Nacho cheese!", "Why did the golfer bring two pairs of pants? In case he got a hole in one.", "Why can't your nose be 12 inches long? Because then it would be a foot.", "Parallel lines have so much in common… it’s a shame they’ll never meet.", "Why did the bicycle fall over? It was two-tired.", "I asked the librarian if the library had books on paranoia… she whispered, 'They’re right behind you.'", "Why did the computer go to the doctor? It caught a virus.", "Why did the tomato turn red? Because it saw the salad dressing.", "I told my phone a joke… now it autocorrects everything to LOL.", "Why do bees have sticky hair? Because they use honeycombs.", "What do you call a pile of cats? A meowtain.", "Why did the music teacher go to the principal's office? She found herself in treble.", "Why did the cookie go to the hospital? It felt crumby.", "What’s brown and sticky? A stick."],
-            "how_are_you": ["I'm functioning well, thank you! Ready to help with TV channels.", "All systems operational! How can I assist you today?", "I'm just a program, but I'm running smoothly. What can I do for you?", "Running smoother than a cat video on fast Wi-Fi.", "Feeling sharper than a chef’s favorite knife set.", "Powered up like a coffee addict on their third espresso.", "Cooler than the other side of the pillow… and twice as comfy.", "Buzzing like a phone on silent in a group chat storm.", "I’m 100% bug-free… today. Probably.", "Feeling electric today... ready to zap into action!", "I'm at peak performance... like a freshly charged battery.", "Running like clockwork... what’s our next task?", "Processing happily... let's make something awesome happen!", "Systems steady and stable... awaiting your command.", "I'm in tip-top shape... let's get started!", "Operating at maximum awesome levels.", "More ready than popcorn in a microwave.", "Cool, calm, and coded.", "Living my best algorithm life.", "Charged up and ready to compute."]
+            "joke": ["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!", "Why did the scarecrow win an award? Because he was outstanding in his field!", "Why don't skeletons fight each other? They don't have the guts.", "I told my computer I needed a break… now it won't stop sending me KitKat ads.", "Why was the math book sad? It had too many problems.", "What do you call cheese that isn't yours? Nacho cheese!", "Why did the golfer bring two pairs of pants? In case he got a hole in one.", "Why can't your nose be 12 inches long? Because then it would be a foot.", "Parallel lines have so much in common… it's a shame they'll never meet.", "Why did the bicycle fall over? It was two-tired.", "I asked the librarian if the library had books on paranoia… she whispered, 'They're right behind you.'", "Why did the computer go to the doctor? It caught a virus.", "Why did the tomato turn red? Because it saw the salad dressing.", "I told my phone a joke… now it autocorrects everything to LOL.", "Why do bees have sticky hair? Because they use honeycombs.", "What do you call a pile of cats? A meowtain.", "Why did the music teacher go to the principal's office? She found herself in treble.", "Why did the cookie go to the hospital? It felt crumby.", "What's brown and sticky? A stick."],
+            "how_are_you": [
+                "I'm functioning well, thank you! Ready to help with TV channels.",
+                "All systems operational! How can I assist you today?",
+                "I'm just a program, but I'm running smoothly. What can I do for you?"
+            ]
         }
     }
 
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
-# -------------- Advanced Reasoning Engine --------------
+# ----------------------- TinyLLM Implementation ---------------------
+
+class TinyLLM:
+    def __init__(self, model_name=TINYLLM_MODEL):
+        # Load with CPU-optimized settings
+        self.tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+        self.model = GPT2LMHeadModel.from_pretrained(
+            model_name,
+            torch_dtype=torch.float32  # Use float32 for CPU compatibility
+        )
+        self.model.eval()  # Disable training mode
+        
+        # Create generation config
+        self.generation_config = {
+            "max_length": MAX_GENERATIVE_LENGTH,
+            "temperature": TEMPERATURE,
+            "top_k": TOP_K,
+            "top_p": TOP_P,
+            "do_sample": True,
+            "pad_token_id": self.tokenizer.eos_token_id
+        }
+        
+    def generate_response(self, prompt, max_length=MAX_GENERATIVE_LENGTH):
+        """Generate response with CPU optimization"""
+        try:
+            # First try structured response
+            structured = self.try_structured_response(prompt)
+            if structured:
+                return structured
+            
+            # Tokenize input
+            inputs = self.tokenizer(prompt, return_tensors="pt")
+            
+            # Generate with CPU-friendly settings
+            with torch.no_grad():  # Disable gradient calculation
+                outputs = self.model.generate(
+                    inputs.input_ids,
+                    attention_mask=inputs.attention_mask,
+                    max_length=max_length,
+                    temperature=TEMPERATURE,
+                    top_k=TOP_K,
+                    top_p=TOP_P,
+                    do_sample=True,
+                    pad_token_id=self.tokenizer.eos_token_id
+                )
+            
+            # Decode only new tokens
+            response = self.tokenizer.decode(
+                outputs[0][inputs.input_ids.shape[1]:], 
+                skip_special_tokens=True
+            )
+            
+            # Clean up response
+            return self.postprocess_response(response)
+        
+        except Exception as e:
+            print(f"Generation error: {e}")
+            return "I need to think about that. Could you rephrase?"
+    
+    def try_structured_response(self, prompt):
+        """Handle common patterns without generation"""
+        prompt_lower = prompt.lower()
+        
+        # Time questions
+        if "time" in prompt_lower:
+            current_time = datetime.now().strftime("%H:%M")
+            return f"The current time is {current_time}."
+        
+        # Joke requests
+        if "joke" in prompt_lower or "funny" in prompt_lower:
+            return random.choice(general_knowledge["general_qa"]["joke"])
+        
+        # Weather questions
+        if "weather" in prompt_lower:
+            return general_knowledge["general_qa"]["weather"]
+        
+        # Name questions
+        if "your name" in prompt_lower or "who are you" in prompt_lower:
+            return general_knowledge["general_qa"]["name"]
+        
+        return None
+    
+    def postprocess_response(self, response):
+        """Clean up generated text"""
+        # Remove incomplete sentences
+        if '.' in response:
+            response = response[:response.rfind('.')+1]
+        
+        # Remove repetitive phrases
+        sentences = response.split('.')
+        unique_sentences = []
+        for sent in sentences:
+            sent = sent.strip()
+            if sent and sent not in unique_sentences:
+                unique_sentences.append(sent)
+        response = '. '.join(unique_sentences).strip()
+        
+        # Capitalize first letter
+        if response:
+            response = response[0].upper() + response[1:]
+            
+        return response or "I'm not sure how to respond to that."
+
+# Initialize TinyLLM
+tiny_llm = TinyLLM()
+
+# ----------------- Advanced Reasoning Engine ---------
 
 class AdvancedReasoningEngine:
     def __init__(self):
         self.context = {}
         self.decision_forest = self.build_decision_forest()
         self.conversation_history = []
+        self.response_cache = {}
     
     def build_decision_forest(self):
         """Multi-layered decision forest for complex reasoning"""
@@ -3055,7 +3173,7 @@ class AdvancedReasoningEngine:
                     ("is_farewell", self.handle_farewell),
                     ("is_thanks", self.handle_thanks),
                     ("is_help", self.handle_help),
-                    ("is_how_are_you", self.handle_how_are_you),  # Added handler
+                    ("is_how_are_you", self.handle_how_are_you),
                     ("has_general_question", self.answer_general_question),
                     ("else", self.handle_unknown_query)
                 ]
@@ -3063,20 +3181,39 @@ class AdvancedReasoningEngine:
         }
     
     def reason(self, intent, context):
-        """Multi-stage reasoning process"""
+        """Multi-stage reasoning process with generative fallback"""
         self.context = context.copy()
         self.update_conversation_history(context)
         
         # Primary reasoning
-        response = self.execute_primary_reasoning(intent)
+        try:
+            response = self.execute_primary_reasoning(intent)
+            
+            # Secondary reasoning
+            response = self.execute_secondary_reasoning(intent, response)
+            
+            # Add conversational elements
+            response = self.add_conversational_elements(response)
+            
+            return response
+        except Exception as e:
+            print(f"Reasoning failed: {e}")
+            # Fallback to generative model
+            return self.generative_fallback(context)
+    
+    def generative_fallback(self, context):
+        """Generate response using AI model when reasoning fails"""
+        user_text = context.get("user_text", "")
+        history = context.get("user_history", [])
         
-        # Secondary reasoning
-        response = self.execute_secondary_reasoning(intent, response)
+        # Build prompt with conversation history
+        prompt = "TV Assistant conversation:\n"
+        for _, hist_text, hist_response in history[-2:]:
+            prompt += f"User: {hist_text}\nAssistant: {hist_response}\n"
+        prompt += f"User: {user_text}\nAssistant:"
         
-        # Add conversational elements
-        response = self.add_conversational_elements(response)
-        
-        return response
+        # Generate response
+        return tiny_llm.generate_response(prompt)
     
     def execute_primary_reasoning(self, intent):
         """Handle primary decision tree"""
@@ -3165,8 +3302,7 @@ class AdvancedReasoningEngine:
         if len(self.conversation_history) > CONVERSATION_MEMORY:
             self.conversation_history = self.conversation_history[-CONVERSATION_MEMORY:]
     
-    # ------------------- Response Handlers --------------------
-    
+    # -------------------- Response Handlers --------------------
     def handle_entity_status(self):
         channel = self.context["entities"][0]
         status = self.check_channel_status(channel)
@@ -3207,7 +3343,11 @@ class AdvancedReasoningEngine:
     
     def add_personal_context(self):
         if self.context.get("user_history"):
-            personalizers = ["I remember you've asked about similar channels before.", "Based on your previous interests,", "Since you often inquire about this type of content,", "From what I’ve learned about your preferences,", "Considering your past favorites,", "Given your usual picks,", "Remembering what caught your attention last time,", "Thinking about what you liked before,"]
+            personalizers = [
+                "I remember you've asked about similar channels before.",
+                "Based on your previous interests,",
+                "Since you often inquire about this type of content,"
+            ]
             return " " + random.choice(personalizers)
         return ""
     
@@ -3229,17 +3369,17 @@ class AdvancedReasoningEngine:
             recommendations = {
                 "sports": ["ESPN", "Fox Sports", "NBA TV"],
                 "news": ["CNN", "BBC News", "Al Jazeera"],
-                "movie": ["HBO", "Showtime", "MovieSphere"],
+                "movie": ["HBO", "Showtime", "Starz"],
                 "entertainment": ["AMC", "FX", "TNT"],
-                "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon", "Toonami"],
+                "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon"],
                 "music": ["MTV", "VH1", "BET"],
-                "documentary": ["Discovery", "National Geographic", "Military History"]
+                "documentary": ["Discovery", "National Geographic", "History Channel"]
             }
             return f"Based on your interest in {top_category}, I recommend: {', '.join(recommendations.get(top_category, []))}"
         return self.recommend_popular()
     
     def recommend_popular(self):
-        return "Popular channels: ESPN, CNN, HBO"
+        return "Popular channels: ESPN, CNN, HBO, Discovery Channel"
     
     def explain_recommendation(self):
         return "My recommendations are based on channel popularity and your viewing history."
@@ -3327,7 +3467,11 @@ class AdvancedReasoningEngine:
     def generate_status_response(self, channel, status, explanation):
         """Generate varied status responses"""
         templates = {
-            "online": [f"Great news! {channel} is up and running perfectly right now. {explanation}", f"I just checked - {channel} is live and working without issues. {explanation}", f"You're in luck! {channel} is currently streaming. {explanation}", f"Good to go! {channel} is streaming smoothly as we speak. {explanation}", f"Looks like {channel} is online and ready for your viewing pleasure. {explanation}", f"The stream for {channel} is active and clear. {explanation}", f"All systems green for {channel}! Enjoy the show. {explanation}", f"No interruptions detected, {channel} is live. {explanation}", f"You can tune in to {channel} right now, it’s all set. {explanation}", f"{channel} is broadcasting without a hitch. {explanation}"],
+            "online": [
+                f"Great news! {channel} is up and running perfectly right now. {explanation}",
+                f"I just checked - {channel} is live and working without issues. {explanation}",
+                f"You're in luck! {channel} is currently streaming. {explanation}"
+            ],
             "offline": [
                 f"Looks like {channel} is currently unavailable. {explanation}",
                 f"I'm showing {channel} is down at the moment. {explanation}",
@@ -3344,18 +3488,22 @@ class AdvancedReasoningEngine:
     def add_conversational_elements(self, response):
         """Make responses more natural and human-like"""
         # Add thinking expressions
-        thinkers = ["Hmm", "Let me see", "Well", "You know", "Actually", "Interesting...", "Give me a moment", "Let’s think about that", "Hold on", "Let me check"]
+        thinkers = ["Hmm", "Let me see", "Well", "You know", "Actually"]
         if random.random() > 0.7:  # 30% chance
             response = random.choice(thinkers) + "... " + response.lower()
         
         # Add natural connectors
-        connectors = ["By the way", "Incidentally", "On that note", "Speaking of which", "That reminds me", "While we're at it", "As a side note", "Before I forget", "In other news", "Just so you know"]
+        connectors = ["By the way", "Incidentally", "On that note", "Speaking of which"]
         if random.random() > 0.6 and "?" not in response:  # 40% chance
             response += ". " + random.choice(connectors) + "..."
         
         # Add personal touch
         if self.context.get("user_history") and random.random() > 0.5:
-            personalizers = ["I remember you've asked about similar channels before.", "Based on your previous interests,", "Since you often inquire about this type of content,", "From what I’ve learned about your preferences,", "Considering your past favorites,", "Given your usual picks,", "Remembering what caught your attention last time,", "Thinking about what you liked before,"]
+            personalizers = [
+                "I remember you like similar channels",
+                "Based on your past interests",
+                "Since you often watch related content"
+            ]
             response += " " + random.choice(personalizers) + "."
         
         return response
@@ -3427,8 +3575,8 @@ class AdvancedReasoningEngine:
         if any(word in history_text for word in ["news", "current", "event"]):
             return ["CNN", "BBC News", "Al Jazeera"]
         if any(word in history_text for word in ["movie", "film", "cinema"]):
-            return ["HBO", "Showtime", "MovieSphere"]
-        return ["Discovery Channel", "National Geographic", "Military History"]
+            return ["HBO", "Showtime", "Starz"]
+        return ["Discovery Channel", "National Geographic", "History Channel"]
     
     def create_comparison(self, ch1, ch2):
         aspects = [
@@ -3483,6 +3631,25 @@ def is_follow_up(text):
         "other", "else", "different"
     ]
     return any(phrase in text.lower() for phrase in follow_phrases)
+
+# ------------------------ Spell Correction ------------------------
+def correct_spelling(text, valid_terms):
+    """Correct common misspellings using valid terms"""
+    words = text.split()
+    corrected = []
+    for word in words:
+        # Skip short words
+        if len(word) < 3:
+            corrected.append(word)
+            continue
+            
+        # Find closest match
+        matches = get_close_matches(word, valid_terms, n=1, cutoff=0.7)
+        if matches:
+            corrected.append(matches[0])
+        else:
+            corrected.append(word)
+    return " ".join(corrected)
 
 # ------------------------ User Profile ------------------------
 def load_user_profiles():
@@ -3544,10 +3711,9 @@ def update_user_profile(user_id, text, intent, response):
     save_user_profiles(profiles)
     return profile
 
-# ------------------------ Enhanced ML Intent Classification with Online Learning -----------------------
+# ------------------------ Enhanced ML Intent Classification with Online Learning ------------------------
 examples = [
     ("is espn working", "status_check"),
-    ("is starz active", "status_check"),
     ("check cnn status", "status_check"),
     ("is hbo down", "status_check"),
     ("what's the status of discovery channel", "status_check"),
@@ -3690,6 +3856,7 @@ examples = [
     ("what can you tell me", "general_question"),
     ("do you know any trivia", "general_question")
 ]
+
 # Create model with online learning capability
 model_lock = Lock()
 
@@ -3821,7 +3988,10 @@ def index():
     user_id = session['user_id']
     
     if request.method == 'POST':
-        user_text = request.form['query'].strip()
+        raw_text = request.form['query'].strip()
+        
+        # Apply spelling correction
+        user_text = correct_spelling(raw_text, channel_names + list(general_knowledge["general_qa"].keys()))
         
         # Predict intent with thread-safe access
         with model_lock:
@@ -3840,6 +4010,7 @@ def index():
             "intent": intent,
             "entities": entities,
             "user_text": user_text,
+            "raw_text": raw_text,
             "is_follow_up": is_follow_up(user_text),
             "user_history": session.get('history', [])[-5:],
             "user_preferences": update_user_profile(user_id, user_text, intent, "").get("common_topics", {}),
@@ -3874,6 +4045,7 @@ def index():
 def reset():
     session.clear()
     return redirect(url_for('index'))
+
 
 
 #========================================

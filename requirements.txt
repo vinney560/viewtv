@@ -37,6 +37,10 @@ Flask-Session
 scikit-learn
 numpy
 joblib
+# Optimized Tiny LLM
+transformers==4.36.0  # Latest optimized version
+torch
+accelerate # Better CPU performance
 
 # Utilities
 tqdm>=4.62.0

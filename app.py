@@ -154,7 +154,6 @@ mail = Mail(app)
 csrf = CustomCSRFProtect(app)
 limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
-Session(app)
 login_manager.login_view = "login"
 CORS(app, resources={r"/*": {"origins": "https://viewstream-1.onrender.com"}})
 

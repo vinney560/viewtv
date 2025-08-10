@@ -49,6 +49,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_session import Session
 
 #=============================
 import os
@@ -58,6 +59,7 @@ import re
 import requests
 from datetime import datetime
 from flask import Flask, render_template, request, session
+from flask_session import Session
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
@@ -154,6 +156,7 @@ mail = Mail(app)
 csrf = CustomCSRFProtect(app)
 limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
+Session(app)
 login_manager.login_view = "login"
 CORS(app, resources={r"/*": {"origins": "https://viewstream-1.onrender.com"}})
 

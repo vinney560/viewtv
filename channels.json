@@ -456,6 +456,48 @@
     "access": "paid",
     "group-title": "Sports"
   },
+  "tsports": {
+    "name": "T Sports",
+    "url": "http://163.172.59.25/crc1/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "eurosports2": {
+    "name": "EuroSports 2 HD",
+    "url": "http://178.217.72.66:8080/Eurosport_2_HD/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "tycsports": {
+    "name": "Tyc Sports",
+    "url": "http://38.7.204.232:8010/play/a2md/77575752.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "matchi": {
+    "name": "MatchI",
+    "url": "http://178.217.72.66:8080/Match_Arena_HD/video.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "matchifutbal2": {
+    "name": "MatchI Futbal 2",
+    "url": "http://178.217.72.66:8080/Match_Futbol_2_HD/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "matchifutbal3": {
+    "name": "MatchI Futbal 3",
+    "url": "http://178.217.72.66:8080/Match_Futbol_3_HD/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "matchihd": {
+    "name": "MatchI HD",
+    "url": "http://178.217.72.66:8080/Match_HD/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
   "all-sports": {
     "name": "All Sports",
     "url": "http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8",

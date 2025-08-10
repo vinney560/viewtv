@@ -50,6 +50,8 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
+from flask_compress import Compress
+
 
 #=============================
 
@@ -149,6 +151,7 @@ csrf = CustomCSRFProtect(app)
 limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
 Session(app)
+Compress(app)
 login_manager.login_view = "login"
 CORS(app, resources={r"/*": {"origins": "https://viewstream-1.onrender.com"}})
 

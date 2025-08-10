@@ -2930,6 +2930,7 @@ def set_notice():
 #========================================
 #      AI FEATURES 
 #========================================
+# ------------------------ Config ------------------------
 HISTORY_FILE = "history.json"
 HISTORY_LIMIT = 50
 CHECK_TIMEOUT = 3
@@ -2940,6 +2941,7 @@ TOP_P = 0.9
 
 # TinyLLM config
 TINYLLM_MODEL = "sshleifer/tiny-gpt2"  # 45MB model
+
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
@@ -3022,7 +3024,7 @@ class TVAssistant:
             history_text += f"{timestamp} - Assistant: {assistant}\n\n"
         
         # Get current time
-        current_time = (datetime.now() + timedelta(hours=3)).strftime("%Y-%m-%d %H:%M")
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M")
         
         # Extract mentioned channels
         mentioned_channels = []
@@ -3050,15 +3052,24 @@ class TVAssistant:
     def generate_response(self, prompt):
         """Generate response with CPU optimization"""
         try:
-            # Tokenize input
-            inputs = self.tokenizer(prompt, return_tensors="pt", max_length=512, truncation=True)
+            # Tokenize input with truncation to model's max capacity
+            inputs = self.tokenizer(
+                prompt, 
+                return_tensors="pt", 
+                truncation=True,
+                max_length=512  # Increased from 300
+            )
+            
+            # Calculate max generation length
+            input_length = inputs.input_ids.shape[1]
+            max_new_tokens = min(MAX_GENERATIVE_LENGTH, 1024 - input_length)  # Don't exceed model limit
             
             # Generate with CPU-friendly settings
             with torch.no_grad():
                 outputs = self.model.generate(
                     inputs.input_ids,
                     attention_mask=inputs.attention_mask,
-                    max_length=min(len(inputs.input_ids[0]) + MAX_GENERATIVE_LENGTH, 512),
+                    max_new_tokens=max_new_tokens,  # Use max_new_tokens instead of max_length
                     temperature=TEMPERATURE,
                     top_k=TOP_K,
                     top_p=TOP_P,
@@ -3134,8 +3145,6 @@ def index():
 def reset():
     session.clear()
     return redirect(url_for('index'))
-
-
 
 
 #========================================

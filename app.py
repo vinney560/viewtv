@@ -1831,23 +1831,34 @@ def plus_play(key):
 @plus_required
 def api_plus_channels():
     try:
-        with open('channels.json') as f:
+        with open('channels.json', 'r') as f:
             channels = json.load(f)
-        channel_list = []
-        for key, data in channels.items():
-            channel_list.append({
+
+        # Ensure channels is a dictionary
+        if not isinstance(channels, dict):
+            return jsonify({'error': 'channels.json is not in the expected format'}), 500
+
+        # Build the list that the JS expects
+        channel_list = [
+            {
                 'key': key,
                 'name': data.get('name', ""),
                 'logo': data.get('logo', ""),
                 'group': data.get('group-title', 'Uncategorized'),
                 'url': data.get('url', ""),
                 'token': data.get('token', "")
-            })
-        return jsonify(channel_list)
+            }
+            for key, data in channels.items()
+        ]
+
+        return jsonify(channel_list)  # Always an array when success
+
+    except FileNotFoundError:
+        return jsonify({'error': 'channels.json not found'}), 404
+    except json.JSONDecodeError:
+        return jsonify({'error': 'Invalid JSON format in channels.json'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-
 #------------------------------------------------------------------------
 #extra player for external URL test and not updated routes-requests
 

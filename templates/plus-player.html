@@ -597,7 +597,7 @@
     let isPlaying = false;
     let isIframePlayer = false;
     let currentChannelKey = '';
-    let channelList = {};
+    let channelList = {}; // Changed from array to object
     let hideTimeout;
 
     // Get URL and token from Flask template variables
@@ -994,7 +994,7 @@
           break;
         case 'low':
           window.hls.currentLevel = levels.reduce((minIdx, level, idx) => 
-            level.bitrate < levels[minIdx].bitrate ? idx : minIdx, 0
+            level.bitrate < levels[minIdx].bitrate ? idx : minIndex, 0
           );
           break;
       }
@@ -1112,8 +1112,12 @@
       fetch('/api/plus_channels')
         .then(response => response.json())
         .then(data => {
-          if (data && data.channels) {
-            channelList = data.channels;
+          if (data && Array.isArray(data)) {
+            // Convert array to object with key as property
+            channelList = {};
+            data.forEach(ch => {
+              channelList[ch.key] = ch;
+            });
             renderChannelCards();
           }
         })
@@ -1131,6 +1135,7 @@
         const channel = channelList[key];
         const card = document.createElement('div');
         card.className = 'channel-card';
+        card.dataset.key = key;   // Add data-key attribute
         if (currentChannelKey === key) {
           card.classList.add('active');
         }
@@ -1153,7 +1158,10 @@
 
     // Switch channel
     function switchChannel(channelKey) {
-      if (!channelList[channelKey]) return;
+      if (!channelList || !channelList[channelKey]) {
+        showToast('Channel data not loaded', 'error');
+        return;
+      }
       
       const channel = channelList[channelKey];
       currentChannelKey = channelKey;
@@ -1172,6 +1180,8 @@
       const newUrl = channel.url;
       const newToken = channel.token;
       
+      console.log(`Switching to channel: ${channel.name}, URL: ${newUrl}`);
+      
       // Initialize player with new source
       initializePlayer(newUrl, newToken);
       
@@ -1179,7 +1189,10 @@
       document.querySelectorAll('.channel-card').forEach(card => {
         card.classList.remove('active');
       });
-      document.querySelector(`.channel-card:nth-child(${Object.keys(channelList).indexOf(channelKey) + 1})`).classList.add('active');
+      const activeCard = document.querySelector(`.channel-card[data-key="${channelKey}"]`);
+      if (activeCard) {
+        activeCard.classList.add('active');
+      }
     }
 
     // Reset player
@@ -1349,6 +1362,14 @@
       
       // Fetch channels for cards
       fetchChannels();
+
+      // Attach custom control events
+      if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', togglePlayPause);
+      }
+      if (volumeToggleBtn) {
+        volumeToggleBtn.addEventListener('click', toggleMute);
+      }
     })();
 
     (function setupUIControls() {

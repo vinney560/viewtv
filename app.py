@@ -738,10 +738,6 @@ def home_2():
 def curated():
     return render_template("test-player.html") 
 #=======================================
-# Exclusive sport Logic
-import time
-import sports
-# Keyword mappings for competitions
 competition_keywords = {
     "La Liga": ["la liga", "laliga"],
     "EPL": ["premier league", "epl", "sky sports", "bt sport"],
@@ -753,17 +749,6 @@ competition_keywords = {
     "Other": []
 }
 
-# List of sports dictionaries in your sports.py
-SPORTS_GROUPS = [
-    "DAZN", "BEIN", "FUTBOL", "SPORT", "ALL_SPORTS", "FOX_SPORTS", "EUROSPORT",
-    "ACTION_SPORT", "ADVENTURE_SPORTS", "AFRICA_SPORT", "ANTENA_SPORT", "AUTO_SPORT_MOTOR",
-    "CBS_SPORTS", "CNAR", "ELEVEN_SPORTS", "E_SPORT", "EXTREME_SPORTS", "FIFA", "FAST_SPORTS",
-    "FL_SPORT", "FUBO_SPORTS", "KTV", "LAX", "M4", "MNB", "MORE_THAN_SPORTS", "NBA", "NBC",
-    "NFL", "OMAN", "PLUTO", "PTV", "RAI", "RED_BULL", "SEO", "SMG", "SONY", "SPIEGEL",
-    "T_SPORT", "PORT", "ATG", "TIGO", "TR", "TV_3", "TVR", "TVS", "UNBEATEN", "US_TODAY",
-    "VIJU", "FREESPORTS", "X_SPORTS"
-]
-
 def match_competition(channel_name):
     name = channel_name.lower()
     for comp, keywords in competition_keywords.items():
@@ -771,65 +756,42 @@ def match_competition(channel_name):
             return comp
     return "Other"
 
-def get_grouped_channels():
-    grouped = {}
-
-    for group_name in SPORTS_GROUPS:
-        group_dict = getattr(sports, group_name, None)
-        if not isinstance(group_dict, dict):
-            continue
-
-        for ch in group_dict.values():
-            name = ch.get("name", "").strip()
-            url = ch.get("url", "").strip()
-            logo = ch.get("tvg-logo", "").strip()
-            country = ch.get("tvg-country", "").strip()
-
-            if not name or not url:
-                continue  # skip incomplete entries
-
-            competition = match_competition(name)
-            label = f"{group_name} ? {competition}"
-
-            grouped.setdefault(label, []).append({
-                "name": name,
-                "url": url,
-                "logo": logo,
-                "country": country
-            })
-
-    return grouped
-
 @app.route("/sports_playlist")
 @limiter.limit("30 per minute")
 @plus_required
 @login_required
 def sports_playlist():
     # Load channels from football.json
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(current_dir, 'football.json')
+    with open("football.json", "r") as f:
+        football_data = json.load(f)
     
-    try:
-        with open(json_path, 'r', encoding='utf-8') as f:
-            football_data = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        football_data = {}
-
-    # Group channels by their group-title
     channels_by_group = {}
+    
     for ch_id, ch in football_data.items():
-        group = ch.get('group-title', 'Sports')
-        if group not in channels_by_group:
-            channels_by_group[group] = []
-            
-        channels_by_group[group].append({
-            "name": ch.get('name', ''),
-            "url": ch.get('url', ''),
-            "logo": ch.get('logo', ''),
-            "country": ch.get('country', ''),
-            "token": ""  # Add empty token to match template
+        name = ch.get("name", "")
+        url = ch.get("url", "")
+        logo = ch.get("logo", "")
+        country = ch.get("country", "")
+        group_title = ch.get("group-title", "Sports")  # Default group if missing
+        
+        if not name or not url:
+            continue  # Skip invalid entries
+        
+        # Determine competition (La Liga, EPL, etc.)
+        competition = match_competition(name)
+        
+        # Create the label expected by the template (e.g., "BEIN ? La Liga")
+        label = f"{group_title} ? {competition}"
+        
+        # Add channel to the group
+        channels_by_group.setdefault(label, []).append({
+            "name": name,
+            "url": url,
+            "logo": logo,
+            "country": country,
+            "token": ""  # Required by template
         })
-
+    
     return render_template(
         "sports_playlist.html",
         channels_by_group=channels_by_group,

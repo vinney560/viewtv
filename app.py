@@ -2987,25 +2987,26 @@ USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
 INTENT_FILE = "intent_data.json"
 SYNONYMS_FILE = "synonyms.json"
-HISTORY_LIMIT = 60
+HISTORY_LIMIT = 50
 CHECK_TIMEOUT = 5
-REASONING_DEPTH = 7
-CONVERSATION_MEMORY = 10
+REASONING_DEPTH = 4
+CONVERSATION_MEMORY = 5
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 5
 MIN_UPDATE_SAMPLES = 3
-MIN_CONFIDENCE = 0.6
+MIN_CONFIDENCE = 0.3
 
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
     channels = json.load(f)
 
-# Load intent data if exists
-if os.path.exists(INTENT_FILE):
-    with open(INTENT_FILE, "r") as f:
+# Load intent data if exists, else initialize empty structure
+try:
+    with open(INTENT_FILE, "r", encoding="utf-8") as f:
         intent_data = json.load(f)
-else:
+except (FileNotFoundError, json.JSONDecodeError) as e:
+    print(f"Warning: {e}. Initializing empty intent data.")
     intent_data = {
         "intents": {},
         "examples": []

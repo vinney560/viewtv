@@ -630,91 +630,100 @@
         </div>
       </div>
     </div>
-  </footer>
+  </footer>  
 
-  <!-- Security Scripts -->
-  <script nonce="2726c7f5c9">
-    // Toast notification system
-    function showToast(message, type) {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      toast.className = `toast ${type === 'success' ? 'toast-success' : 'toast-error'}`;
+  <!-- Security Scripts -->  
+  <script nonce="2726c7f5c9">  
+    // Toast notification system  
+    function showToast(message, type) {  
+      const container = document.getElementById('toastContainer');  
+      const toast = document.createElement('div');  
+      toast.className = `toast ${type === 'success' ? 'toast-success' : 'toast-error'}`;  
+        
+      const header = document.createElement('div');  
+      header.className = 'toast-header';  
+        
+      const icon = document.createElement('div');  
+      icon.className = 'flex-shrink-0';  
+      icon.innerHTML = type === 'success' ?   
+        `<svg class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">  
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />  
+        </svg>` :  
+        `<svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">  
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />  
+        </svg>`;  
+        
+      const messageDiv = document.createElement('div');  
+      messageDiv.className = 'ml-3 flex-1 pt-0.5';  
+      messageDiv.innerHTML = `<p class="text-sm font-medium">${message}</p>`;  
+        
+      const closeBtn = document.createElement('button');  
+      closeBtn.className = 'toast-close';  
+      closeBtn.innerHTML = `  
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">  
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />  
+        </svg>  
+      `;  
+      closeBtn.onclick = () => dismissToast(toast);  
+        
+      header.appendChild(icon);  
+      header.appendChild(messageDiv);  
+      header.appendChild(closeBtn);  
+        
+      const progress = document.createElement('div');  
+      progress.className = 'toast-progress';  
+      progress.innerHTML = '<div class="toast-progress-bar"></div>';  
+        
+      toast.appendChild(header);  
+      toast.appendChild(progress);  
+      container.appendChild(toast);  
+        
+      // Auto-dismiss after 5 seconds  
+      setTimeout(() => dismissToast(toast), 5000);  
+    }  
       
-      const header = document.createElement('div');
-      header.className = 'toast-header';
+    function dismissToast(toast) {  
+      toast.classList.add('fade-out');  
+      setTimeout(() => toast.remove(), 500);  
+    }  
       
-      const icon = document.createElement('div');
-      icon.className = 'flex-shrink-0';
-      icon.innerHTML = type === 'success' ? 
-        `<svg class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>` :
-        `<svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>`;
+    // Initialize toast notifications from flashed messages  
+    document.addEventListener('DOMContentLoaded', () => {  
+      const startBtn = document.getElementById('startStreamingBtn');  
+      const learnBtn = document.getElementById('learnMoreBtn');  
+        
+      if (startBtn) {  
+        startBtn.addEventListener('click', () => {  
+          location.href = '/login';  
+        });  
+      }  
+        
+      if (learnBtn) {  
+        learnBtn.addEventListener('click', () => {  
+          location.href = '/about';  
+        });  
+      }  
+
+      // Show Flask flash messages as toasts
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            showToast("{{ message }}", "{{ category }}");
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+        
+      // Simulate flashed messages for demo (can be removed in production)  
+      setTimeout(() => {  
+        showToast('Secure connection established', 'success');  
+      }, 1000);  
+    });  
       
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'ml-3 flex-1 pt-0.5';
-      messageDiv.innerHTML = `<p class="text-sm font-medium">${message}</p>`;
-      
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'toast-close';
-      closeBtn.innerHTML = `
-        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      `;
-      closeBtn.onclick = () => dismissToast(toast);
-      
-      header.appendChild(icon);
-      header.appendChild(messageDiv);
-      header.appendChild(closeBtn);
-      
-      const progress = document.createElement('div');
-      progress.className = 'toast-progress';
-      progress.innerHTML = '<div class="toast-progress-bar"></div>';
-      
-      toast.appendChild(header);
-      toast.appendChild(progress);
-      container.appendChild(toast);
-      
-      // Auto-dismiss after 5 seconds
-      setTimeout(() => dismissToast(toast), 5000);
-    }
-    
-    function dismissToast(toast) {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 500);
-    }
-    
-    // Initialize toast notifications from flashed messages
-    document.addEventListener('DOMContentLoaded', () => {
-      const startBtn = document.getElementById('startStreamingBtn');
-      const learnBtn = document.getElementById('learnMoreBtn');
-      
-      if (startBtn) {
-        startBtn.addEventListener('click', () => {
-          location.href = '/login';
-        });
-      }
-      
-      if (learnBtn) {
-        learnBtn.addEventListener('click', () => {
-          location.href = '/about';
-        });
-      }
-      
-      // Simulate flashed messages for demo
-      setTimeout(() => {
-        showToast('Secure connection established', 'success');
-      }, 1000);
-    });
-    
-    // PWA install prompt blocker
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      return false;
-    });
-  </script>
-</body>
+    // PWA install prompt blocker  
+    window.addEventListener('beforeinstallprompt', (e) => {  
+      e.preventDefault();  
+      return false;  
+    });  
+  </script>  
+</body>  
 </html>

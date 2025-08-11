@@ -2340,6 +2340,12 @@ def home():
         channels = dict(sorted(BASIC_CHANNELS.items(),
                                key=lambda item: item[1]['name'].lower()))
         return render_template("index.html", channels=channels, current_year=datetime.now().year)
+
+@app.route("/server")
+def server():
+    flash("Welcome to View Tv Home of Great Content and Security")
+    return redirect(url_for("home"))
+
 #--------------------------------------------------------------------------
 @app.route("/about")
 def about():

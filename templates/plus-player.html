@@ -1,3 +1,4 @@
+<!-- Updated Advance player -->
 <!DOCTYPE html>
 <html lang="en" class="bg-black text-white">
 <head>
@@ -11,7 +12,6 @@
   <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    /* All original styles remain unchanged */
     html, body {
       margin: 0; padding: 0; height: 100%;
       background-color: #000;
@@ -471,7 +471,7 @@
         </div>
       </div>
       
-      <!-- Audio Only Toggle -->
+      <!-- Audio Only Toggle (now with music note icon) -->
       <button id="audio-only-toggle" title="Toggle Audio Only Mode" aria-label="Toggle audio only mode">
         <svg id="audio-only-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
@@ -479,7 +479,7 @@
         <div id="audio-only-badge"></div>
       </button>
       
-      <!-- Data Saver Toggle -->
+      <!-- Data Saver Toggle (now with two up arrows and one down arrow) -->
       <button id="data-saver-toggle" title="Toggle Data Saver" aria-label="Toggle data saver">
         <div id="data-usage-container">
           <div id="data-usage-toggle" title="Toggle persistent display">P</div>
@@ -597,7 +597,7 @@
     let isPlaying = false;
     let isIframePlayer = false;
     let currentChannelKey = '';
-    let channelList = {};
+    let channelList = {}; // Changed from array to object
     let hideTimeout;
 
     // Get URL and token from Flask template variables
@@ -1336,7 +1336,6 @@
         volumeOffIcon.classList.add('hidden');
       }
       
-      // Auto-enable data saver for slow connections
       if (navigator.connection) {
         const connection = navigator.connection;
         if (connection.effectiveType.includes('2g') || connection.saveData) {

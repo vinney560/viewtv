@@ -1833,29 +1833,24 @@ def api_plus_channels():
         with open('channels.json', 'r') as f:
             channels = json.load(f)
 
+        # Ensure channels is a dictionary
         if not isinstance(channels, dict):
             return jsonify({'error': 'channels.json is not in the expected format'}), 500
 
-        channel_list = []
-
-        for key, data in channels.items():
-            url = data.get('url', "").strip()
-
-            # Detect IP + port (e.g., 192.168.1.10:8080)
-            if re.search(r'\b\d{1,3}(\.\d{1,3}){3}:\d+\b', url):
-                # Redirect to IP URL immediately (opens in browser/search bar)
-                return redirect(url)
-
-            channel_list.append({
+        # Build the list that the JS expects
+        channel_list = [
+            {
                 'key': key,
                 'name': data.get('name', ""),
                 'logo': data.get('logo', ""),
                 'group': data.get('group-title', 'Uncategorized'),
-                'url': url,
+                'url': data.get('url', ""),
                 'token': data.get('token', "")
-            })
+            }
+            for key, data in channels.items()
+        ]
 
-        return jsonify(channel_list)  # Return array when no IP URLs triggered a redirect
+        return jsonify(channel_list)  # Always an array when success
 
     except FileNotFoundError:
         return jsonify({'error': 'channels.json not found'}), 404

@@ -3,44 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>View Tv | Stream Tv</title>
+  <title>View Tv | StreamTv</title>
 
-  <!-- Meta Tags -->
-  <meta name="description" content="ViewTV is your all-in-one streaming platform offering free and paid access to live TV, sports, and popular channels. Watch FIFA, UEFA, and EPL anytime on your phone with no ads. To get premium content, just enter your mobile number and confirm a secure payment on your phone — it’s fast, safe, and easy, giving you instant access." />
-  <meta name="keywords" content="ViewTV, live TV, free live streaming, global TV, local channels, Kiswahili channels, English news, FIFA live, UEFA matches, EPL streaming online, Maisha Magic, PPP TV, mobile TV app, sports streaming, watch TV online, African shows, Kenya live TV, entertainment app, full-screen video, YouTube live, ViewTV app, view TV on mobile, WebView TV, global live channels, free IPTV alternative, local news live, ViewTV streaming, international channels, African streaming platform, movie box, movie streamer, watch live news, free movies, latest movies, stream online, live football, citizen live stream, cartoons, animation streamer, watch live, horror movies, latest movies online, watch now live, kenya live, nickelodean live tv, many channels, live tv online, View Tv, stream tv, youtube live channels, streaming platform, kids channels, live tvs, free tv online" />
-  <meta name="author" content="Vincent Kipngetich" />
+  <!-- Security Headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; frame-src 'none'; object-src 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+  <!-- Safe Meta Tags -->
+  <meta name="description" content="StreamView is a secure entertainment platform providing access to various content categories with an ad-free experience." />
+  <meta name="keywords" content="streaming, entertainment, TV shows, movies, family entertainment, online content" />
+  <meta name="author" content="StreamView Team" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://viewstream-1.onrender.com" />
-  <link rel="icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}" />
-  <!-- Manifest removed to prevent PWA installation prompts -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📺</text></svg>" />
   <meta name="msvalidate.01" content="D06687A71C3ABB4C7B414D718375B902" />
 
   <!-- Social Meta -->
-  <meta property="og:title" content="View Tv - Best Streamer" />
-  <meta property="og:description" content="Start streaming your favorite Movies, TV channels, Sports, Music, Kids shows worldwide instantly." />
-  <meta property="og:image" content="https://viewstream-1.onrender.com/favicon.ico" />
+  <meta property="og:title" content="StreamView - Entertainment Platform" />
+  <meta property="og:description" content="Stream various entertainment content safely and securely" />
+  <meta property="og:image" content="https://viewstream-1.onrender.com/logo.png" />
   <meta property="og:url" content="https://viewstream-1.onrender.com" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:card" content="summary" />
 
   <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "ViewTV",
-    "url": "https://viewstream-1.onrender.com",
-    "author": {
-      "@type": "Person",
-      "name": "Vincent Kipngetich"
-    },
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://viewstream-1.onrender.com/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
   <script>
     tailwind.config = {
       theme: {
@@ -48,7 +36,6 @@
           animation: {
             'fade-in': 'fadeIn 0.5s ease-in-out',
             'float': 'float 3s ease-in-out infinite',
-            'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
           },
           keyframes: {
             fadeIn: {
@@ -58,16 +45,16 @@
             float: {
               '0%, 100%': { transform: 'translateY(0)' },
               '50%': { transform: 'translateY(-5px)' },
-            },
-            pulse: {
-              '0%, 100%': { opacity: '1' },
-              '50%': { opacity: '0.8' },
             }
           },
           colors: {
             premium: {
-              DEFAULT: '#FFD700',
-              dark: '#D4AF37',
+              DEFAULT: '#4CAF50',
+              dark: '#388E3C',
+            },
+            primary: {
+              DEFAULT: '#3B82F6',
+              dark: '#2563EB',
             }
           }
         }
@@ -79,15 +66,17 @@
     
     body {
       font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
+      color: #e2e8f0;
     }
     
     .glow-hover:hover {
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
       transform: translateY(-2px);
     }
     
     .gradient-text {
-      background: linear-gradient(90deg, #00ffff, #00bfff);
+      background: linear-gradient(90deg, #3B82F6, #8B5CF6);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -97,8 +86,8 @@
       background: rgba(30, 30, 40, 0.6);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(0, 255, 255, 0.18);
-      box-shadow: 0 8px 32px rgba(0, 31, 135, 0.37);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 31, 135, 0.2);
     }
     
     .channel-card {
@@ -107,201 +96,411 @@
     
     .channel-card:hover {
       transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 10px 25px rgba(0, 200, 255, 0.3);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
     }
     
     .channel-logo {
-      width: 48px;
-      height: 48px;
+      width: 56px;
+      height: 56px;
       object-fit: contain;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(15, 23, 42, 0.7);
       padding: 2px;
     }
     
-    .premium-glow {
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(59, 130, 246, 0.15);
+      border-radius: 20px;
+      font-size: 0.85rem;
     }
     
-    @keyframes premium-pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
-      70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+    .premium-badge {
+      background: rgba(76, 175, 80, 0.15);
+      color: #4CAF50;
     }
     
-    .premium-channel {
-      animation: premium-pulse 2s infinite;
-      border: 1px solid rgba(255, 215, 0, 0.3);
+    .paid-badge {
+      background: rgba(239, 68, 68, 0.15);
+      color: #EF4444;
     }
     
-    .paid-channel {
-      border: 1px solid rgba(255, 100, 100, 0.3);
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-in-out;
     }
   </style>
 </head>
 
-<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen">
+  <!-- Security Badge -->
+  <div class="w-full bg-blue-900/30 text-blue-300 text-center py-2 text-sm border-b border-blue-800/50">
+    <div class="max-w-6xl mx-auto flex justify-center items-center gap-4 flex-wrap">
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        Secure HTTPS Connection
+      </span>
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+        Privacy Protected
+      </span>
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
+        </svg>
+        DMCA Compliant
+      </span>
+    </div>
+  </div>
 
   <!-- Navigation -->
-  <header class="w-full sticky top-0 z-30 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800 shadow-lg p-4 flex justify-end space-x-4">
-    <a href="/login" class="text-cyan-400 font-medium px-5 py-2 rounded-full hover:bg-cyan-400/10 hover:text-cyan-300 glow-hover transition-all duration-300 border border-cyan-400/30">
-      Login
-    </a>
-    <a href="/register" class="bg-cyan-400/10 text-cyan-400 font-medium px-5 py-2 rounded-full hover:bg-cyan-400 hover:text-gray-900 glow-hover transition-all duration-300 border border-cyan-400/30">
-      Register
-    </a>
+  <header class="w-full sticky top-0 z-30 bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 shadow-lg p-4 flex justify-between items-center">
+    <div class="flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span class="text-2xl font-bold text-gray-100">View<span class="text-blue-400">Tv</span></span>
+    </div>
+    <div class="flex space-x-4">
+      <a href="/login" class="text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400/10 hover:text-blue-300 transition-all duration-300 border border-blue-400/30">
+        Login
+      </a>
+      <a href="/register" class="bg-blue-400/10 text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400 hover:text-gray-900 transition-all duration-300 border border-blue-400/30">
+        Register
+      </a>
+    </div>
   </header>
 
-  <!-- Flash Messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div id="flash-container" class="fixed top-20 right-5 z-40 space-y-2 max-w-xs animate-fade-in">
-        {% for category, message in messages %}
-          <div class="px-4 py-3 rounded-lg font-medium shadow-xl 
-                      {{ 'bg-red-500/90 text-white' if category == 'error' else 'bg-green-400/90 text-gray-900' }} transition-all duration-300 border 
-                      {{ 'border-red-400' if category == 'error' else 'border-green-300' }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-      <script>
-        setTimeout(() => {
-          const flash = document.getElementById('flash-container');
-          if (flash) {
-            flash.style.opacity = '0';
-            setTimeout(() => flash.remove(), 600);
-          }
-        }, 4000);
-      </script>
-    {% endif %}
-  {% endwith %}
-
   <!-- Main Content -->
-  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-10 space-y-12">
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-10 space-y-16">
     
-    <!-- Channel List - MOVED TO TOP -->
-    <section class="space-y-8">
-      <h2 class="text-4xl font-bold text-center text-gray-200 mb-8">
-        <span class="gradient-text">Available Channels</span>
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {% for key, ch in channels.items() %}
-          <div class="channel-card glass-morph p-5 rounded-2xl transition-all duration-300 hover:border-cyan-400/50 
-                      {% if ch.access == 'premium' %}premium-channel{% elif ch.access == 'paid' %}paid-channel{% endif %}">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-4">
-                {% if ch.logo %}
-                  <img src="{{ ch.logo }}" alt="{{ ch.name }} logo" class="channel-logo">
-                {% else %}
-                  <div class="w-12 h-12 rounded-lg bg-cyan-400/10 flex items-center justify-center border border-cyan-400/20">
-                    <span class="text-2xl">📺</span>
-                  </div>
-                {% endif %}
-                <div>
-                  <h3 class="text-lg font-semibold text-gray-100">{{ ch.name }}</h3>
-                  <p class="text-sm text-gray-400">{{ ch.get('group-title', 'General') }}</p>
+    <!-- Hero Section -->
+    <section class="glass-morph p-8 md:p-12 rounded-3xl shadow-2xl border border-blue-500/30">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-6 tracking-tight">Your Secure Entertainment Hub</h1>
+          <p class="text-xl text-gray-300/90 mb-8 leading-relaxed">
+            ViewStream provides a safe entertainment platform with verified content and security-first design. Enjoy a wide variety of shows without compromising your safety.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button onclick="location.href='/login'" class="glow-hover bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-all duration-300 transform">
+              Start Streaming
+            </button>
+            <button class="bg-transparent text-blue-400 font-medium py-3 px-6 rounded-full border border-blue-400/30 hover:bg-blue-400/10 transition">
+              Learn More
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-center animate-float">
+          <div class="relative">
+            <div class="absolute -inset-4 bg-blue-500/20 rounded-2xl blur-lg opacity-50"></div>
+            <div class="relative bg-slate-800/50 border border-blue-500/30 rounded-2xl p-6">
+              <div class="grid grid-cols-3 gap-3">
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <span class="text-3xl">🎬</span>
                 </div>
-              </div>
-              
-              <!-- Access Indicator -->
-              {% if ch.access == 'paid' %}
-                <div class="flex items-center" title="Paid Channel">
-                  <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
-                  </svg>
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <span class="text-3xl">📺</span>
                 </div>
-              {% elif ch.access == 'premium' %}
-                <div class="flex items-center" title="Premium Channel">
-                  <svg class="w-5 h-5 text-premium" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                  </svg>
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <span class="text-3xl">🎮</span>
                 </div>
-              {% endif %}
-            </div>
-
-            <div class="mt-6 flex justify-between items-center">
-              <div>
-                {% if ch.access == 'free' %}
-                  <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
-                    Free Access
-                  </span>
-                {% elif ch.access == 'paid' %}
-                  <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
-                    Subscription Required
-                  </span>
-                {% elif ch.access == 'premium' %}
-                  <span class="px-3 py-1 rounded-full text-xs font-medium bg-premium/20 text-premium-dark">
-                    Premium Channel
-                  </span>
-                {% endif %}
-              </div>
-              
-              <div>
-                {% if ch.url %}
-                  <a href="{{ url_for('plus_play', key=key) }}" target="_blank"
-                     class="inline-flex items-center py-2 px-4 rounded-full bg-cyan-400/10 text-cyan-400 hover:bg-cyan-400 hover:text-gray-900 font-medium transition-all duration-300 border border-cyan-400/20 glow-hover">
-                    Watch Now <span class="ml-2">→</span>
-                  </a>
-                {% else %}
-                  <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-700/50 text-gray-400">
-                    Coming Soon
-                  </span>
-                {% endif %}
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <span class="text-3xl">🎵</span>
+                </div>
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <span class="text-3xl">🏈</span>
+                </div>
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <span class="text-3xl">🌍</span>
+                </div>
               </div>
             </div>
           </div>
-        {% endfor %}
+        </div>
       </div>
     </section>
 
-    <!-- Welcome Section - MOVED BELOW CHANNELS -->
-    <section class="glass-morph p-10 rounded-3xl shadow-2xl border border-cyan-400/30 animate-float">
-      <h1 class="text-5xl md:text-6xl font-bold gradient-text mb-6 tracking-tight">View Tv</h1>
-      <p class="text-xl text-gray-300/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-        View TV is a modern, full-featured streaming platform that enables users to stream over 100 global TV channels instantly. Enjoy sports, kids content, news, movies, and more with:
+    <!-- Features Section -->
+    <section class="space-y-10">
+      <h2 class="text-3xl font-bold text-center text-gray-200 mb-4">
+        <span class="gradient-text">Why Choose ViewTv?</span>
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-morph p-6 rounded-2xl border border-blue-500/30">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-100">Verified Content</h3>
+          </div>
+          <p class="text-gray-400">All content is properly licensed and rights-compliant, ensuring a safe streaming experience.</p>
+        </div>
+        
+        <div class="glass-morph p-6 rounded-2xl border border-blue-500/30">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-100">Secure Access</h3>
+          </div>
+          <p class="text-gray-400">Encrypted connections and protected user data with industry-standard security measures.</p>
+        </div>
+        
+        <div class="glass-morph p-6 rounded-2xl border border-blue-500/30">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-100">Ad-Free Experience</h3>
+          </div>
+          <p class="text-gray-400">Enjoy uninterrupted streaming without ads, popups, or distractions from your content.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Channel List -->
+    <section class="space-y-8">
+      <h2 class="text-3xl font-bold text-center text-gray-200 mb-4">
+        <span class="gradient-text">Featured Channels</span>
+      </h2>
+      <p class="text-center text-gray-400 max-w-2xl mx-auto mb-8">
+        Explore our diverse selection of entertainment channels across various categories
       </p>
-      <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <li class="flex items-center">
-          <svg class="w-5 h-5 text-cyan-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-          <span>Distraction-Free Streaming</span>
-        </li>
-        <li class="flex items-center">
-          <svg class="w-5 h-5 text-cyan-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-          <span>Zero Ads & Popups</span>
-        </li>
-        <li class="flex items-center">
-          <svg class="w-5 h-5 text-cyan-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-          <span>Direct "Watch Now" Functionality</span>
-        </li>
-        <li class="flex items-center">
-          <svg class="w-5 h-5 text-cyan-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-          <span>Optimized Player Experience</span>
-        </li>
-      </ul>
-      <button onclick="location.href='/login'" class="glow-hover bg-cyan-400 text-gray-900 font-bold py-3 px-12 rounded-full shadow-lg hover:scale-105 transition-all duration-300 transform hover:shadow-cyan-400/30">
-        Get Started
-      </button>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Channel 1 -->
+        <div class="channel-card glass-morph p-6 rounded-2xl transition-all duration-300 border border-blue-500/30 animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="channel-logo bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                <span class="text-2xl">🎬</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">Cinema Classics</h3>
+                <p class="text-sm text-gray-400">Movies</p>
+              </div>
+            </div>
+            <div class="flex items-center" title="Free Access">
+              <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-between items-center">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+              Free Access
+            </span>
+            <a href="/plus-channels" class="inline-flex items-center py-2 px-4 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white font-medium transition-all duration-300 border border-blue-500/20">
+              View Content
+            </a>
+          </div>
+        </div>
+        
+        <!-- Channel 2 -->
+        <div class="channel-card glass-morph p-6 rounded-2xl transition-all duration-300 border border-green-500/30 animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="channel-logo bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                <span class="text-2xl">🌍</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">Global View</h3>
+                <p class="text-sm text-gray-400">Documentaries</p>
+              </div>
+            </div>
+            <div class="flex items-center" title="Premium Access">
+              <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-between items-center">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+              Premium
+            </span>
+            <a href="/plus-channels" class="inline-flex items-center py-2 px-4 rounded-full bg-green-500/10 text-green-400 hover:bg-green-500 hover:text-white font-medium transition-all duration-300 border border-green-500/20">
+              View Content
+            </a>
+          </div>
+        </div>
+        
+        <!-- Channel 3 -->
+        <div class="channel-card glass-morph p-6 rounded-2xl transition-all duration-300 border border-blue-500/30 animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="channel-logo bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                <span class="text-2xl">🎭</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">Drama Central</h3>
+                <p class="text-sm text-gray-400">Entertainment</p>
+              </div>
+            </div>
+            <div class="flex items-center" title="Free Access">
+              <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-between items-center">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+              Free Access
+            </span>
+            <a href="/plus-channels" class="inline-flex items-center py-2 px-4 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white font-medium transition-all duration-300 border border-blue-500/20">
+              View Content
+            </a>
+          </div>
+        </div>
+        
+        <!-- Channel 4 -->
+        <div class="channel-card glass-morph p-6 rounded-2xl transition-all duration-300 border border-red-500/30 animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="channel-logo bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                <span class="text-2xl">🏈</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">Action Sports</h3>
+                <p class="text-sm text-gray-400">Sports</p>
+              </div>
+            </div>
+            <div class="flex items-center" title="Subscription Required">
+              <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-between items-center">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
+              Subscription
+            </span>
+            <a href="/plus-channels" class="inline-flex items-center py-2 px-4 rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white font-medium transition-all duration-300 border border-red-500/20">
+              Subscribe
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="space-y-8">
+      <h2 class="text-3xl font-bold text-center text-gray-200 mb-4">
+        <span class="gradient-text">Content Categories</span>
+      </h2>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass-morph p-5 rounded-2xl border border-blue-500/30 text-center">
+          <div class="w-16 h-16 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">🎬</span>
+          </div>
+          <h3 class="font-semibold text-gray-100 mb-2">Movies</h3>
+          <p class="text-sm text-gray-400">Latest releases and classics</p>
+        </div>
+        
+        <div class="glass-morph p-5 rounded-2xl border border-purple-500/30 text-center">
+          <div class="w-16 h-16 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">📺</span>
+          </div>
+          <h3 class="font-semibold text-gray-100 mb-2">TV Shows</h3>
+          <p class="text-sm text-gray-400">Binge-worthy series</p>
+        </div>
+        
+        <div class="glass-morph p-5 rounded-2xl border border-green-500/30 text-center">
+          <div class="w-16 h-16 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">👶</span>
+          </div>
+          <h3 class="font-semibold text-gray-100 mb-2">Kids</h3>
+          <p class="text-sm text-gray-400">Family-friendly content</p>
+        </div>
+        
+        <div class="glass-morph p-5 rounded-2xl border border-yellow-500/30 text-center">
+          <div class="w-16 h-16 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mx-auto mb-4">
+            <span class="text-3xl">🎓</span>
+          </div>
+          <h3 class="font-semibold text-gray-100 mb-2">Learning</h3>
+          <p class="text-sm text-gray-400">Educational programs</p>
+        </div>
+      </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="mt-16 py-8 text-gray-500 text-center border-t border-gray-800/50">
-    <div class="max-w-4xl mx-auto px-4">
-      <p class="text-sm">&copy; {{ current_year }} View Tv | Stream Tv • Built for seamless streaming.</p>
-      <div class="flex justify-center space-x-6 mt-4">
-        <a href="/terms" class="text-gray-400 hover:text-cyan-400 transition">Terms</a>
-        <a href="/privacy" class="text-gray-400 hover:text-cyan-400 transition">Privacy</a>
-        <a href="/copyright" class="text-gray-400 hover:text-cyan-400 transition">Copyright</a>
-        <a href="/data-saver/info" class="text-gray-400 hover:text-cyan-400 transition">Data Saver</a>
+  <footer class="mt-16 py-12 text-gray-500 text-center border-t border-slate-800/50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
+        <div class="text-left">
+          <div class="flex items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span class="text-2xl font-bold text-gray-100">View<span class="text-blue-400">Tv</span></span>
+          </div>
+          <p class="max-w-xs text-gray-400 text-sm">
+            Providing secure, high-quality streaming entertainment since 2025.
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 text-left">
+          <div>
+            <h4 class="font-bold text-gray-200 mb-4">Company</h4>
+            <ul class="space-y-2">
+              <li><a href="/about" class="text-gray-400 hover:text-blue-400 transition">About Us</a></li>
+              <li><a href="/developer" class="text-gray-400 hover:text-blue-400 transition">Careers</a></li>
+              <li><a href="mailto:vincentkipngetich479@gmail.com" class="text-gray-400 hover:text-blue-400 transition">Contact</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-bold text-gray-200 mb-4">Legal</h4>
+            <ul class="space-y-2">
+              <li><a href="/terms" class="text-gray-400 hover:text-blue-400 transition">Terms</a></li>
+              <li><a href="/privacy" class="text-gray-400 hover:text-blue-400 transition">Privacy</a></li>
+              <li><a href="/copyright" class="text-gray-400 hover:text-blue-400 transition">Copyright</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-bold text-gray-200 mb-4">Support</h4>
+            <ul class="space-y-2">
+              <li><a href="/assistance" class="text-gray-400 hover:text-blue-400 transition">Help Center</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-blue-400 transition">FAQ</a></li>
+              <li><a href="mailto:vincentkipngetich479@gmail.com" class="text-gray-400 hover:text-blue-400 transition">Contacts</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="pt-8 border-t border-slate-800/30">
+        <p class="text-sm">&copy; {{current_year}} • ViewTv | StreamTv • Built for seamless streaming.</p>
+        <div class="mt-4 text-xs text-gray-600">
+          <p>All content is provided by licensed partners and verified sources</p>
+        </div>
       </div>
     </div>
   </footer>
 
-  <!-- Removed install prompt functionality -->
+  <!-- PWA install prompt blocker -->
   <script>
-    // Prevent any PWA installation prompts
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       return false;

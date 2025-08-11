@@ -739,8 +739,8 @@ def curated():
     return render_template("test-player.html") 
 #=======================================
 # Exclusive sport Logic
-import sports  # from sports.py file
 import time
+import sports
 # Keyword mappings for competitions
 competition_keywords = {
     "La Liga": ["la liga", "laliga"],
@@ -799,6 +799,42 @@ def get_grouped_channels():
             })
 
     return grouped
+
+@app.route("/sports_playlist")
+@limiter.limit("30 per minute")
+@plus_required
+@login_required
+def sports_playlist():
+    # Load channels from football.json
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(current_dir, 'football.json')
+    
+    try:
+        with open(json_path, 'r', encoding='utf-8') as f:
+            football_data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        football_data = {}
+
+    # Group channels by their group-title
+    channels_by_group = {}
+    for ch_id, ch in football_data.items():
+        group = ch.get('group-title', 'Sports')
+        if group not in channels_by_group:
+            channels_by_group[group] = []
+            
+        channels_by_group[group].append({
+            "name": ch.get('name', ''),
+            "url": ch.get('url', ''),
+            "logo": ch.get('logo', ''),
+            "country": ch.get('country', ''),
+            "token": ""  # Add empty token to match template
+        })
+
+    return render_template(
+        "sports_playlist.html",
+        channels_by_group=channels_by_group,
+        current_year=datetime.now().year
+    )
 #----------------------------------------------------------------------
 @app.route("/return-football")
 @limiter.limit("30 per minute")
@@ -807,17 +843,6 @@ def get_grouped_channels():
 def return_football():
     return render_template("return_football.html")
 
-@app.route("/sports_playlist")
-@limiter.limit("30 per minute")
-@plus_required
-@login_required
-def sports_playlist():
-    channels_by_group = get_grouped_channels()
-    return render_template(
-        "sports_playlist.html",
-        channels_by_group=channels_by_group,
-        current_year=datetime.now().year
-    )
 #----------------------------------------------------------------------
 @app.route('/proxy/<path:stream_url>')
 def proxy_redirect(stream_url):

@@ -61,7 +61,7 @@
       border-radius: 0 !important;
     }
 
-    #fullscreen-toggle, #data-saver-toggle, #audio-only-toggle, #quality-toggle {
+    #fullscreen-toggle, #data-saver-toggle, #audio-only-toggle, #quality-toggle, #channel-toggle {
       background: transparent;
       border: none;
       cursor: pointer;
@@ -74,11 +74,11 @@
       color: #22d3ee;
       position: relative;
     }
-    #fullscreen-toggle:hover, #data-saver-toggle:hover, #audio-only-toggle:hover, #quality-toggle:hover {
+    #fullscreen-toggle:hover, #data-saver-toggle:hover, #audio-only-toggle:hover, #quality-toggle:hover, #channel-toggle:hover {
       color: #ffffff;
     }
 
-    #fullscreen-toggle.hide, #data-saver-toggle.hide, #audio-only-toggle.hide, #quality-toggle.hide, #custom-controls.hide {
+    #fullscreen-toggle.hide, #data-saver-toggle.hide, #audio-only-toggle.hide, #quality-toggle.hide, #custom-controls.hide, #channel-toggle.hide {
       opacity: 0;
       pointer-events: none;
     }
@@ -456,6 +456,13 @@
     </button>
     <h1 id="channel-title" class="font-bold text-white flex items-center gap-2"><span class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>LIVE</h1>
     <div class="flex space-x-4">
+      <!-- Channel Toggle Button -->
+      <button id="channel-toggle" title="Show Channels">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </button>
+      
       <!-- Quality Selector Button -->
       <div class="relative">
         <button id="quality-toggle" title="Select Quality">
@@ -471,7 +478,7 @@
         </div>
       </div>
       
-      <!-- Audio Only Toggle (now with music note icon) -->
+      <!-- Audio Only Toggle -->
       <button id="audio-only-toggle" title="Toggle Audio Only Mode" aria-label="Toggle audio only mode">
         <svg id="audio-only-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
@@ -479,7 +486,7 @@
         <div id="audio-only-badge"></div>
       </button>
       
-      <!-- Data Saver Toggle (now with two up arrows and one down arrow) -->
+      <!-- Data Saver Toggle -->
       <button id="data-saver-toggle" title="Toggle Data Saver" aria-label="Toggle data saver">
         <div id="data-usage-container">
           <div id="data-usage-toggle" title="Toggle persistent display">P</div>
@@ -599,6 +606,10 @@
     let currentChannelKey = '';
     let channelList = {}; // Changed from array to object
     let hideTimeout;
+    let isChannelCardsVisible = false;
+    let channelCardsHideTimeout;
+    let networkSpeedCheckInterval;
+    let currentRateKBps = 0;
 
     // Get URL and token from Flask template variables
     const streamUrl = "{{ url }}";
@@ -667,6 +678,7 @@
       dataUsageInterval = setInterval(() => {
         const currentMB = (segmentBytesLoaded / (1024 * 1024)).toFixed(2);
         const totalMB = (totalBytesLoaded / (1024 * 1024)).toFixed(2);
+        currentRateKBps = segmentBytesLoaded / 1024; // KB/s
         const ratePerHour = player.currentTime ? 
           (segmentBytesLoaded / player.currentTime * 3600 / (1024 * 1024)).toFixed(2) : '0.00';
         
@@ -675,6 +687,29 @@
       }, 1000);
 
       player.addEventListener('progress', trackProgress);
+      
+      // Start network speed monitoring
+      startNetworkSpeedMonitoring();
+    }
+
+    function startNetworkSpeedMonitoring() {
+      clearInterval(networkSpeedCheckInterval);
+      
+      networkSpeedCheckInterval = setInterval(() => {
+        if (currentRateKBps < 300) { // Less than 300 KB/s
+          if (currentDataSaverLevel < DATA_SAVER_LEVELS.HIGH) {
+            setDataSaverLevel(DATA_SAVER_LEVELS.HIGH);
+            dataSaverBtn.classList.add('active');
+            showToast("Low network detected. Enabled data saving", 'info');
+          }
+        }
+        else if (currentRateKBps < 700) { // Less than 700 KB/s
+          if (currentDataSaverLevel < DATA_SAVER_LEVELS.MEDIUM) {
+            setDataSaverLevel(DATA_SAVER_LEVELS.MEDIUM);
+            dataSaverBtn.classList.add('active');
+          }
+        }
+      }, 10000);
     }
 
     function togglePersistentDisplay() {
@@ -1086,9 +1121,10 @@
 
     // Toast notifications
     function showToast(message, type = 'info') {
-      const container = document.createElement('div');
-      container.id = 'toast-container';
-      if (!document.getElementById('toast-container')) {
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
         document.body.appendChild(container);
       }
       
@@ -1193,6 +1229,9 @@
       if (activeCard) {
         activeCard.classList.add('active');
       }
+      
+      // Hide channel cards after switching
+      hideChannelCards();
     }
 
     // Reset player
@@ -1210,6 +1249,9 @@
       player.src = '';
       player.load();
       document.getElementById('iframe-player').classList.add('hidden');
+      
+      // Stop network monitoring
+      clearInterval(networkSpeedCheckInterval);
     }
 
     // Initialize player (refactored to accept parameters)
@@ -1351,6 +1393,38 @@
       }
     }
 
+    // Channel Cards Visibility Functions
+    function showChannelCards() {
+      if (!document.fullscreenElement) return;
+      
+      channelCardsContainer.style.display = 'block';
+      setTimeout(() => {
+        channelCardsContainer.classList.add('visible');
+        isChannelCardsVisible = true;
+      }, 10);
+      
+      resetHideTimeout();
+    }
+
+    function hideChannelCards() {
+      channelCardsContainer.classList.remove('visible');
+      setTimeout(() => {
+        channelCardsContainer.style.display = 'none';
+        isChannelCardsVisible = false;
+      }, 300);
+    }
+
+    function toggleChannelCards() {
+      if (!document.fullscreenElement) {
+        return;
+      }
+      if (isChannelCardsVisible) {
+        hideChannelCards();
+      } else {
+        showChannelCards();
+      }
+    }
+
     (function main() {
       // Initialize player with initial stream
       initializePlayer();
@@ -1375,6 +1449,7 @@
     (function setupUIControls() {
       const fullscreenBtn = document.getElementById('fullscreen-toggle');
       const fullscreenIcon = document.getElementById('fullscreen-icon');
+      const channelToggleBtn = document.getElementById('channel-toggle');
       let hideTimeout;
 
       const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6';
@@ -1413,19 +1488,14 @@
       }
 
       function resetHideTimeout() {
-        if (isIframePlayer) return [dataSaverBtn, audioOnlyBtn, qualityToggle, customControls].forEach(el => el.classList.add('hide'));
+        if (isIframePlayer) return [dataSaverBtn, audioOnlyBtn, qualityToggle, customControls, channelToggleBtn].forEach(el => el.classList.add('hide'));
         
         fullscreenBtn.classList.remove('hide');
         dataSaverBtn.classList.remove('hide');
         audioOnlyBtn.classList.remove('hide');
         qualityToggle.classList.remove('hide');
         customControls.classList.remove('hide');
-        
-        // Show channel cards in fullscreen
-        if (document.fullscreenElement) {
-          channelCardsContainer.style.display = 'block';
-          channelCardsContainer.classList.add('visible');
-        }
+        channelToggleBtn.classList.remove('hide');
         
         clearTimeout(hideTimeout);
         hideTimeout = setTimeout(() => {
@@ -1434,16 +1504,17 @@
           audioOnlyBtn.classList.add('hide');
           qualityToggle.classList.add('hide');
           customControls.classList.add('hide');
+          channelToggleBtn.classList.add('hide');
           
           // Hide channel cards
-          channelCardsContainer.classList.remove('visible');
-          setTimeout(() => {
-            channelCardsContainer.style.display = 'none';
-          }, 300);
+          if (isChannelCardsVisible) {
+            hideChannelCards();
+          }
         }, 3000);
       }
 
       fullscreenBtn.addEventListener('click', toggleFullscreen);
+      channelToggleBtn.addEventListener('click', toggleChannelCards);
       dataSaverBtn.addEventListener('click', toggleDataSaver);
       audioOnlyBtn.addEventListener('click', toggleAudioOnlyMode);
       dataUsageToggle.addEventListener('click', (e) => {
@@ -1454,6 +1525,17 @@
       document.addEventListener('fullscreenchange', () => {
         setIcon(!!document.fullscreenElement);
         resetHideTimeout();
+        if (!document.fullscreenElement) {
+          hideChannelCards();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (isChannelCardsVisible && 
+            !channelCardsContainer.contains(e.target) && 
+            !channelToggleBtn.contains(e.target)) {
+          hideChannelCards();
+        }
       });
 
       document.addEventListener('mousemove', resetHideTimeout);

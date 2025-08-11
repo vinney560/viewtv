@@ -1824,6 +1824,30 @@ def plus_play(key):
         return "Channel database missing", 500
     except json.JSONDecodeError:
         return "Channel database corrupted", 500
+
+
+@app.route('/api/plus_channels')
+@login_required
+@plus_required
+def api_plus_channels():
+    try:
+        with open('channels.json') as f:
+            channels = json.load(f)
+        channel_list = []
+        for key, data in channels.items():
+            channel_list.append({
+                'key': key,
+                'name': data.get('name', ""),
+                'logo': data.get('logo', ""),
+                'group': data.get('group-title', 'Uncategorized'),
+                'url': data.get('url', ""),
+                'token': data.get('token', "")
+            })
+        return jsonify(channel_list)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 #------------------------------------------------------------------------
 #extra player for external URL test and not updated routes-requests
 

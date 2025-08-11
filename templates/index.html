@@ -12,7 +12,7 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://viewstream-1.onrender.com" />
   <link rel="icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}" />
-  <link rel="manifest" href="/manifest.json" />
+  <!-- Manifest removed to prevent PWA installation prompts -->
   <meta name="msvalidate.01" content="D06687A71C3ABB4C7B414D718375B902" />
 
   <!-- Social Meta -->
@@ -137,34 +137,6 @@
     
     .paid-channel {
       border: 1px solid rgba(255, 100, 100, 0.3);
-    }
-    
-    #install-notice {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      max-width: 300px;
-      background: rgba(255, 234, 186, 0.95);
-      padding: 15px;
-      border-radius: 8px;
-      color: #333;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-      display: none;
-    }
-    
-    #install-notice button {
-      background: #4CAF50;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      margin-top: 8px;
-      cursor: pointer;
-    }
-    
-    #install-notice button:hover {
-      background: #45a049;
     }
   </style>
 </head>
@@ -327,53 +299,12 @@
     </div>
   </footer>
 
-  <!-- Install Notice -->
-  <div id="install-notice">
-    <p>Install ViewTV for a better experience?</p>
-    <button id="install-button">Install</button>
-    <button id="dismiss-button" style="background: #f44336; margin-left: 5px;">Dismiss</button>
-  </div>
-
+  <!-- Removed install prompt functionality -->
   <script>
-    let deferredPrompt;
-    const installNotice = document.getElementById('install-notice');
-    const installButton = document.getElementById('install-button');
-    const dismissButton = document.getElementById('dismiss-button');
-
-    // Hide install notice by default
-    installNotice.style.display = 'none';
-
+    // Prevent any PWA installation prompts
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent the default prompt
       e.preventDefault();
-      // Stash the event so it can be triggered later
-      deferredPrompt = e;
-      // Show the custom install notice
-      installNotice.style.display = 'block';
-    });
-
-    installButton.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        // Show the install prompt
-        deferredPrompt.prompt();
-        // Wait for the user to respond to the prompt
-        const { outcome } = await deferredPrompt.userChoice;
-        // Hide our custom install notice
-        installNotice.style.display = 'none';
-        // Clear the deferredPrompt variable
-        deferredPrompt = null;
-      }
-    });
-
-    dismissButton.addEventListener('click', () => {
-      installNotice.style.display = 'none';
-    });
-
-    window.addEventListener('appinstalled', () => {
-      // Hide the install notice if the app is installed
-      installNotice.style.display = 'none';
-      // Clear the deferredPrompt variable
-      deferredPrompt = null;
+      return false;
     });
   </script>
 </body>

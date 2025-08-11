@@ -153,7 +153,13 @@ limiter.init_app(app)
 Session(app)
 Compress(app)
 login_manager.login_view = "login"
-CORS(app, resources={r"/*": {"origins": "https://viewstream-1.onrender.com"}})
+CORS(app, resources={
+    r"/*": {
+        "origins": [
+            r"https://*.onrender.com"
+        ]
+    }
+})
 
 # ============================
 # MODELS

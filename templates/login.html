@@ -718,10 +718,7 @@
       }
       
       // Handle account status
-      if (lowerMessage.includes('account status') || 
-          lowerMessage.includes('is my account active') || 
-          lowerMessage.includes('am i banned') || 
-          lowerMessage.includes('account suspended')) {
+      if (lowerMessage.includes('account status') || lowerMessage.includes('is my account active') || lowerMessage.includes('am i banned') || lowerMessage.includes('account suspended') || lowerMessage.includes('account locked') || lowerMessage.includes('account disabled') || lowerMessage.includes('account deactivated') || lowerMessage.includes('is my account locked') || lowerMessage.includes('am i blocked') || lowerMessage.includes('account on hold') || lowerMessage.includes('account frozen') || lowerMessage.includes('account inactive') || lowerMessage.includes('account terminated') || lowerMessage.includes('account banned') || lowerMessage.includes('account restricted') || lowerMessage.includes('account status check') || lowerMessage.includes('account cancelled') || lowerMessage.includes('check account status') || lowerMessage.includes('is account active') || lowerMessage.includes('account suspended status') || lowerMessage.includes('account status update') || lowerMessage.includes('am i suspended') || lowerMessage.includes('account locked out') || lowerMessage.includes('account status inquiry') || lowerMessage.includes('account disabled status') || lowerMessage.includes('is my account disabled') || lowerMessage.includes('am i restricted') || lowerMessage.includes('account status verification') || lowerMessage.includes('am i deactivated') || lowerMessage.includes('account status checkup') || lowerMessage.includes('account suspended check') || lowerMessage.includes('account banned status') || lowerMessage.includes('is account suspended') || lowerMessage.includes('account locked status') || lowerMessage.includes('am i locked out') || lowerMessage.includes('account on hold status') || lowerMessage.includes('am i cancelled') || lowerMessage.includes('account status report') || lowerMessage.includes('am i frozen') || lowerMessage.includes('account inactive status') || lowerMessage.includes('account status info') || lowerMessage.includes('am i terminated') || lowerMessage.includes('account suspended inquiry') || lowerMessage.includes('check if account is active') || lowerMessage.includes('account status question') || lowerMessage.includes('am i banned status') || lowerMessage.includes('account disabled inquiry') || lowerMessage.includes('account status details') || lowerMessage.includes('am i on hold') || lowerMessage.includes('account banned inquiry') || lowerMessage.includes('account suspension status') || lowerMessage.includes('am i restricted status') || lowerMessage.includes('account locked inquiry') || lowerMessage.includes('is my account frozen') || lowerMessage.includes('am i locked') || lowerMessage.includes('account on hold inquiry') || lowerMessage.includes('account suspended report') || lowerMessage.includes('am i deactivated status') || lowerMessage.includes('account status check request') || lowerMessage.includes('am i cancelled status') || lowerMessage.includes('account inactive inquiry') || lowerMessage.includes('account status confirmation') || lowerMessage.includes('am i frozen status') || lowerMessage.includes('account banned check') || lowerMessage.includes('account suspended confirmation')) {
         return {
           content: "To check your account status, I'll need to verify your email. Please enter your email address:",
           type: 'info',
@@ -857,7 +854,7 @@
             };
           } else {
             // Show checking message
-            addMessageToChat(`Checking email: ${message}...`, 'ai', 'info');
+            addMessageToChat(`Checking email: ${message}°•°•`, 'ai', 'info');
             
             // Simulate API call delay
             setTimeout(async () => {
@@ -879,8 +876,8 @@
                 }
                 
                 addMessageToChat(
-                  `Account found for: ${userData.email}\n\n` +
-                  `Name: ${userData.name}\n` +
+                  `Account found for: ${userData.email} • \n\n` +
+                  `Name: ${userData.name} • \n` +
                   `Status: ${accountStatus}\n\n` +
                   (userData.status === "Banned" 
                     ? "Your account has been banned. Contact support for assistance." 

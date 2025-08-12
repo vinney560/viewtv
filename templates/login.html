@@ -497,7 +497,7 @@
             <a href="/register" class="text-white font-medium hover:text-cyan-200 transition">Sign Up</a>
           </p>
           <p class="mt-2">
-            <a href="/forgot-password" class="hover:text-cyan-200 transition">Forgot password?</a>
+            <a href="/forgot_password" class="hover:text-cyan-200 transition">Forgot password?</a>
           </p>
         </div>
       </form>
@@ -854,11 +854,11 @@
             };
           } else {
             // Show checking message
-            addMessageToChat(`Checking email: ${message} <svg xmlns="http://www.w3.org/2000/svg" style="width:80px;height:24px;vertical-align:middle;" viewBox="0 0 80 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            addMessageToChat(`Checking email: ${message} <svg id="waveDots" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:24px;vertical-align:middle;" viewBox="0 0 80 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <circle cx="12" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0s,0s"/>
   <circle cx="40" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0.2s,0.2s"/>
   <circle cx="68" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0.4s,0.4s"/>
-</svg>`, 'ai', 'info'); document.head.insertAdjacentHTML('beforeend', `<style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}@keyframes updown{0%{transform:translateY(0)}100%{transform:translateY(-5px)}}</style>`);
+</svg>`, 'ai', 'info'); document.head.insertAdjacentHTML('beforeend', `<style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}@keyframes updown{0%{transform:translateY(0)}100%{transform:translateY(-5px)}}</style>`); setTimeout(() => {document.querySelectorAll('#waveDots circle').forEach(c => c.style.animation = 'none');}, 5000);
             
             // Simulate API call delay
             setTimeout(async () => {

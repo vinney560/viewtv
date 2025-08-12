@@ -742,6 +742,27 @@ def login():
         return render_template('login.html', email=email_addr, password=password)
 
     return render_template('login.html')
+#------------------------------------------------------------------------
+@app.route('/api/check_user', methods=['POST'])
+def check_user():
+    data = request.get_json()
+    email = data.get('email')
+    
+    if not email:
+        return jsonify({'error': 'Email is required'}), 400
+    
+    user = User.query.filter_by(email=email).first()
+    
+    if not user:
+        return jsonify({'exists': False})
+    
+    # Return non-sensitive user info
+    return jsonify({
+        'exists': True,
+        'email': user.email,
+        'name': user.name,
+        'status': user.status
+    })
 #=======================================
 #           >>>>ROLE BASED ACTIONS<<<<
 #=======================================
@@ -4271,10 +4292,6 @@ learning_thread.start()
 
 # ------------------------ Flask Routes ------------------------
 reasoning_engine = AdvancedReasoningEngine()
-
-@app.route('/')
-def home():
-    return redirect(url_for('index'))
 
 @app.route('/chat', methods=['GET', 'POST'])
 def index():

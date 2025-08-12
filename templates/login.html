@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="index, follow" />
-  <meta property="og:image" content="https://viewtv-p2s3.onrender.com/favicon.ico" />
-  <meta property="og:url" content="https://viewtv-p2s3.onrender.com" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Login | View TV</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -19,7 +17,9 @@
           animation: {
             'fade-in': 'fadeIn 0.5s ease-out',
             'float': 'float 6s ease-in-out infinite',
-            'toast': 'toast 4s forwards'
+            'toast': 'toast 4s forwards',
+            'pulse': 'pulse 2s infinite',
+            'voice-wave': 'voiceWave 1.2s infinite ease-in-out'
           },
           keyframes: {
             fadeIn: {
@@ -33,6 +33,15 @@
             toast: {
               '0%, 90%': { opacity: '1', transform: 'translateY(0)' },
               '100%': { opacity: '0', transform: 'translateY(-20px)' }
+            },
+            pulse: {
+              '0%': { boxShadow: '0 0 0 0 rgba(6, 182, 212, 0.7)' },
+              '70%': { boxShadow: '0 0 0 10px rgba(6, 182, 212, 0)' },
+              '100%': { boxShadow: '0 0 0 0 rgba(6, 182, 212, 0)' }
+            },
+            voiceWave: {
+              '0%, 100%': { height: '8px' },
+              '50%': { height: '25px' }
             }
           }
         }
@@ -40,6 +49,14 @@
     }
   </script>
   <style>
+    :root {
+      --primary: #06b6d4;
+      --secondary: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+    
     .glass-card {
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -75,12 +92,270 @@
       border-radius: 50%;
       pointer-events: none;
     }
+    
+    /* AI Assistant Styles */
+    .ai-assistant {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.5);
+      transition: all 0.3s ease;
+    }
+    .ai-assistant:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.8);
+    }
+    .ai-assistant.listening {
+      animation: pulse 1.5s infinite;
+    }
+    .ai-panel {
+      position: fixed;
+      bottom: 110px;
+      right: 30px;
+      width: 350px;
+      background: rgba(8, 51, 68, 0.95);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 100;
+      padding: 15px;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .ai-panel.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .ai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .ai-content {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+    .ai-message {
+      background: rgba(6, 182, 212, 0.15);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .ai-message.user {
+      background: rgba(31, 41, 55, 0.8);
+      text-align: right;
+    }
+    .ai-message.error {
+      background: rgba(239, 68, 68, 0.15);
+    }
+    .ai-message.warning {
+      background: rgba(245, 158, 11, 0.15);
+    }
+    .ai-message.info {
+      background: rgba(59, 130, 246, 0.15);
+    }
+    .ai-message.success {
+      background: rgba(16, 185, 129, 0.15);
+    }
+    .ai-message.data {
+      background: rgba(139, 92, 246, 0.15);
+    }
+    .ai-input {
+      display: flex;
+      margin-top: 10px;
+    }
+    .ai-input input {
+      flex: 1;
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 8px 15px;
+      color: white;
+      outline: none;
+      font-size: 14px;
+    }
+    .ai-input button {
+      background: var(--primary);
+      border: none;
+      border-radius: 20px;
+      color: white;
+      padding: 8px 15px;
+      margin-left: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .ai-input button:hover {
+      background: #0891b2;
+    }
+    .voice-wave {
+      display: flex;
+      align-items: flex-end;
+      height: 30px;
+      gap: 2px;
+    }
+    .voice-bar {
+      width: 3px;
+      background: var(--primary);
+      border-radius: 2px;
+      animation: voiceWave 1.2s infinite ease-in-out;
+    }
+    .voice-bar:nth-child(2) { animation-delay: 0.1s; height: 8px; }
+    .voice-bar:nth-child(3) { animation-delay: 0.2s; height: 15px; }
+    .voice-bar:nth-child(4) { animation-delay: 0.3s; height: 20px; }
+    .voice-bar:nth-child(5) { animation-delay: 0.4s; height: 25px; }
+    .voice-bar:nth-child(6) { animation-delay: 0.5s; height: 20px; }
+    .voice-bar:nth-child(7) { animation-delay: 0.6s; height: 15px; }
+    .voice-bar:nth-child(8) { animation-delay: 0.7s; height: 8px; }
+    .ai-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .ai-action-btn {
+      flex: 1;
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ai-action-btn:hover {
+      background: rgba(6, 182, 212, 0.2);
+      transform: translateY(-2px);
+    }
+    .ai-web-search {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(31, 41, 55, 0.7);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .ai-web-search a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .ai-web-search a:hover {
+      text-decoration: underline;
+    }
+    .ai-data-analysis {
+      background: rgba(139, 92, 246, 0.15);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .ai-data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .data-card {
+      background: rgba(31, 41, 55, 0.5);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .data-card h4 {
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #9ca3af;
+    }
+    .data-card p {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    /* Responsive additions */
+    @media (max-width: 640px) {
+      .ai-panel {
+        width: 90%;
+        left: 5%;
+        right: auto;
+      }
+      .ai-assistant {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+      }
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-900 text-white min-h-screen flex items-center justify-center p-4 overflow-hidden">
 
   <!-- Animated Background Particles -->
   <div id="particles" class="bg-particles"></div>
+
+  <!-- Enhanced AI Assistant Panel -->
+  <div id="aiPanel" class="ai-panel">
+    <div class="ai-header">
+      <div class="flex items-center">
+        <i class="fas fa-robot text-cyan-400 mr-2"></i>
+        <h3 class="gradient-text font-bold">Login Assistant</h3>
+      </div>
+      <button id="closeAiPanel">
+        <i class="fas fa-times text-gray-400 hover:text-white"></i>
+      </button>
+    </div>
+    <div class="ai-content" id="aiChat">
+      <div class="ai-message">
+        <p>Hi there! I'm your login assistant. 😊 How can I help you today?</p>
+        <p class="text-xs text-cyan-300 mt-3">I can help with:</p>
+        <ul class="text-xs text-gray-300 list-disc pl-5 mt-1 space-y-1">
+          <li>Troubleshooting login errors</li>
+          <li>Checking if your email is registered</li>
+          <li>Explaining account status (active, banned, etc.)</li>
+          <li>Guiding you through password recovery</li>
+          <li>Explaining error messages like CSRF token missing</li>
+          <li>Helping with server errors (500, 502, etc.)</li>
+        </ul>
+        <p class="text-xs text-cyan-300 mt-3">Try saying: "Why am I getting invalid credentials?" or "Check if my email is registered"</p>
+      </div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Ask me about login issues...">
+      <button id="sendAiMessage"><i class="fas fa-paper-plane"></i></button>
+    </div>
+    <div class="ai-actions">
+      <div class="ai-action-btn" id="voiceCommandBtn">
+        <i class="fas fa-microphone mr-1"></i> Voice
+      </div>
+      <div class="ai-action-btn" id="helpBtn">
+        <i class="fas fa-question-circle mr-1"></i> Help
+      </div>
+      <div class="ai-action-btn" id="clearChatBtn">
+        <i class="fas fa-trash mr-1"></i> Clear
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Assistant Button -->
+  <div id="aiAssistant" class="ai-assistant pulse">
+    <i class="fas fa-robot text-white text-2xl"></i>
+  </div>
 
   <div class="w-full max-w-md animate-fade-in">
     <div class="glass-card rounded-3xl shadow-2xl p-10 relative overflow-hidden">
@@ -108,39 +383,20 @@
       </div>
 
       <!-- Flash Messages -->
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div id="flash-message" class="mb-6 space-y-2">
-            {% for category, message in messages %}
-              <div class="animate-toast rounded-xl px-4 py-3 font-medium shadow-lg
-                {% if category == 'success' %}
-                  bg-green-600/90 border border-green-500
-                {% elif category == 'error' %}
-                  bg-red-600/90 border border-red-500
-                {% else %}
-                  bg-cyan-600/90 border border-cyan-500
-                {% endif %}">
-                <div class="flex items-center">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    {% if category == 'success' %}
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    {% elif category == 'error' %}
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    {% else %}
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    {% endif %}
-                  </svg>
-                  {{ message }}
-                </div>
-              </div>
-            {% endfor %}
+      <div id="flash-message" class="mb-6 space-y-2">
+        <div class="animate-toast rounded-xl px-4 py-3 font-medium shadow-lg bg-red-600/90 border border-red-500">
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Invalid credentials. Please try again.
           </div>
-        {% endif %}
-      {% endwith %}
+        </div>
+      </div>
 
       <!-- Login Form -->
       <form action="/login" method="POST" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="csrf_token" value="sample_csrf_token">
         
         <!-- Email Field -->
         <div>
@@ -152,7 +408,7 @@
               type="email"
               required
               placeholder="you@example.com"
-              value="{{ email }}"
+              value="user@example.com"
               class="w-full glass-card border border-cyan-700/50 placeholder-cyan-400/70 text-white px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition"
             />
             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -175,7 +431,6 @@
               minlength="4"
               maxlength="10"
               placeholder="Enter your password"
-              value="{{ password }}"
               class="w-full glass-card border border-cyan-700/50 placeholder-cyan-400/70 text-white px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition pr-12"
             />
             <button
@@ -210,7 +465,7 @@
         </div>
 
         <!-- Submit Button -->
-        <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+        <input type="hidden" name="next" value="">
         <button
           type="submit"
           class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl glow-hover transition-all duration-300 shadow-lg"
@@ -282,6 +537,503 @@
     
     // Initialize particles when page loads
     window.addEventListener('load', createParticles);
+    
+    // ================== AI Assistant Logic ==================
+    const aiAssistant = document.getElementById('aiAssistant');
+    const aiPanel = document.getElementById('aiPanel');
+    const closeAiPanel = document.getElementById('closeAiPanel');
+    const aiChat = document.getElementById('aiChat');
+    const aiInput = document.getElementById('aiInput');
+    const sendAiMessage = document.getElementById('sendAiMessage');
+    const voiceCommandBtn = document.getElementById('voiceCommandBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const clearChatBtn = document.getElementById('clearChatBtn');
+    let recognition;
+    let conversationContext = {};
+    let aiIsThinking = false;
+    
+    // Initialize speech recognition if available
+    function initSpeechRecognition() {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          aiInput.value = transcript;
+          processAiMessage(transcript);
+        };
+        
+        recognition.onerror = function(event) {
+          console.error('Speech recognition error', event.error);
+          addMessageToChat("Speech recognition error: " + event.error, 'ai', 'error');
+        };
+        
+        recognition.onend = function() {
+          aiAssistant.classList.remove('listening');
+        };
+      }
+    }
+    
+    // Enhanced typing indicator with animation
+    function showTypingIndicator() {
+      const typingIndicator = document.createElement('div');
+      typingIndicator.id = 'typing-indicator';
+      typingIndicator.className = 'typing-indicator';
+      typingIndicator.innerHTML = `
+        <div class="voice-wave">
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+        </div>
+      `;
+      aiChat.appendChild(typingIndicator);
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    function hideTypingIndicator() {
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) typingIndicator.remove();
+    }
+    
+    function addMessageToChat(message, sender, type = '', additionalData = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('ai-message');
+      
+      if (sender === 'user') messageDiv.classList.add('user');
+      if (type) messageDiv.classList.add(type);
+      
+      messageDiv.innerHTML = `<p>${message}</p>`;
+      aiChat.appendChild(messageDiv);
+      
+      // Add additional data if provided
+      if (additionalData) {
+        if (additionalData.type === 'data-grid') {
+          const dataGrid = document.createElement('div');
+          dataGrid.className = 'ai-data-grid';
+          
+          additionalData.items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'data-card';
+            card.innerHTML = `
+              <h4>${item.title}</h4>
+              <p>${item.value}</p>
+            `;
+            dataGrid.appendChild(card);
+          });
+          
+          messageDiv.appendChild(dataGrid);
+        }
+      }
+      
+      // Scroll to bottom
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    // API call to check user email
+    async function checkUserEmail(email) {
+      try {
+        const response = await fetch('/api/check_user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({ email })
+        });
+        
+        if (!response.ok) {
+          throw new Error('API request failed');
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Error checking user email:', error);
+        return { error: 'Unable to check user information at this time' };
+      }
+    }
+    
+    // Enhanced AI response generation for login issues
+    function generateAiResponse(message) {
+      const lowerMessage = message.toLowerCase();
+      
+      // Handle error codes
+      const errorMatch = message.match(/\b(404|500|502|403|401|400)\b/);
+      if (errorMatch) {
+        return {
+          content: explainErrorCode(errorMatch[0]),
+          type: 'error',
+          webSearch: true
+        };
+      }
+      
+      // Handle invalid credentials
+      if (lowerMessage.includes('invalid credentials') || 
+          lowerMessage.includes('wrong password') || 
+          lowerMessage.includes('incorrect password') || 
+          lowerMessage.includes('invalid email') || 
+          lowerMessage.includes('can\'t login') || 
+          lowerMessage.includes('login failed')) {
+        return {
+          content: "I see you're having trouble with your credentials. Let me help:\n\n" +
+                   "1. Double-check your email address for typos\n" +
+                   "2. Make sure your Caps Lock is off\n" +
+                   "3. Try clicking 'Forgot password' to reset\n" +
+                   "4. If you just registered, check your email for verification\n\n" +
+                   "Would you like me to check if your email is registered?",
+          type: 'warning',
+          action: 'prompt_email_check'
+        };
+      }
+      
+      // Handle email check
+      if (lowerMessage.includes('check email') || 
+          lowerMessage.includes('is my email registered') || 
+          lowerMessage.includes('check if registered') || 
+          lowerMessage.includes('verify email')) {
+        return {
+          content: "Sure, I can check if your email is registered with us. Please enter your email address below:",
+          type: 'info',
+          action: 'prompt_email_input'
+        };
+      }
+      
+      // Handle account status
+      if (lowerMessage.includes('account status') || 
+          lowerMessage.includes('is my account active') || 
+          lowerMessage.includes('am i banned') || 
+          lowerMessage.includes('account suspended')) {
+        return {
+          content: "To check your account status, I'll need to verify your email. Please enter your email address:",
+          type: 'info',
+          action: 'prompt_email_input'
+        };
+      }
+      
+      // Handle password reset
+      if (lowerMessage.includes('forgot password') || 
+          lowerMessage.includes('reset password') || 
+          lowerMessage.includes('can\'t remember password')) {
+        return {
+          content: "You can reset your password easily:\n\n" +
+                   "1. Click the 'Forgot password' link below the login form\n" +
+                   "2. Enter your email address\n" +
+                   "3. Check your inbox for a password reset link\n" +
+                   "4. Follow the instructions to create a new password\n\n" +
+                   "Would you like me to take you to the password reset page?",
+          type: 'success',
+          action: 'navigate_forgot_password'
+        };
+      }
+      
+      // Handle CSRF token issues
+      if (lowerMessage.includes('csrf') || 
+          lowerMessage.includes('token missing') || 
+          lowerMessage.includes('invalid token')) {
+        return {
+          content: "The CSRF token error usually occurs when:\n\n" +
+                   "• Your session has expired\n" +
+                   "• You have cookies disabled\n" +
+                   "• You're using an outdated browser\n\n" +
+                   "Try these solutions:\n" +
+                   "1. Refresh the page\n" +
+                   "2. Enable cookies in your browser\n" +
+                   "3. Clear your browser cache\n" +
+                   "4. Update your browser to the latest version",
+          type: 'warning'
+        };
+      }
+      
+      // Handle general login issues
+      if (lowerMessage.includes('trouble logging in') || 
+          lowerMessage.includes('login problem') || 
+          lowerMessage.includes('can\'t sign in') || 
+          lowerMessage.includes('login error')) {
+        return {
+          content: "I'm sorry you're having trouble logging in. Here are some things to try:\n\n" +
+                   "1. Make sure you're connected to the internet\n" +
+                   "2. Check that your email and password are correct\n" +
+                   "3. Try resetting your password\n" +
+                   "4. Clear your browser cache and cookies\n" +
+                   "5. Try using a different browser\n\n" +
+                   "Would you like me to check if your email is registered?",
+          type: 'info',
+          action: 'prompt_email_check'
+        };
+      }
+      
+      // Handle account verification
+      if (lowerMessage.includes('verify account') || 
+          lowerMessage.includes('email not verified') || 
+          lowerMessage.includes('account not activated')) {
+        return {
+          content: "Account verification is important for security. Here's what to do:\n\n" +
+                   "1. Check your email inbox (and spam folder) for a verification email\n" +
+                   "2. Click the verification link in that email\n" +
+                   "3. If you can't find it, we can resend the verification email\n\n" +
+                   "Would you like me to resend the verification email?",
+          type: 'info',
+          action: 'prompt_email_resend_verification'
+        };
+      }
+      
+      // Handle general questions
+      if (lowerMessage.includes('hi') || 
+          lowerMessage.includes('hello') || 
+          lowerMessage.includes('help') || 
+          lowerMessage.includes('support')) {
+        return {
+          content: "Hello! I'm your login assistant. 😊 I can help with:\n\n" +
+                   "• Login errors and troubleshooting\n" +
+                   "• Password reset assistance\n" +
+                   "• Account status checks\n" +
+                   "• Email verification issues\n\n" +
+                   "What can I help you with today?",
+          type: 'info'
+        };
+      }
+      else {
+        return {
+          content: "I'm not entirely sure about that, but I can help you with login issues!\n\n" +
+                   "You can ask me about:\n" +
+                   "- Why you're getting 'invalid credentials'\n" +
+                   "- How to reset your password\n" +
+                   "- Checking if your email is registered\n" +
+                   "- Account status (active, banned, etc.)\n" +
+                   "- CSRF token errors\n" +
+                   "- Server errors (500, 502, etc.)",
+          type: 'info'
+        };
+      }
+    }
+    
+    function explainErrorCode(code) {
+      const explanations = {
+        '400': "Bad Request: Oops! It seems your request was malformed or invalid. Please check your input and try again.",
+        '401': "Unauthorized: You need to be logged in to access this resource. Please sign in and try again.",
+        '403': "Forbidden: Sorry, you don't have permission to access this content. If you believe this is an error, contact support.",
+        '404': "Page Not Found: The content you're looking for doesn't exist or has been moved. Try checking the URL or navigating from our homepage.",
+        '500': "Internal Server Error: Something went wrong on our end. Our team has been notified and is working to fix it. Please try again later.",
+        '502': "Bad Gateway: Our servers are having trouble communicating. This is usually temporary - please try refreshing the page in a moment."
+      };
+      
+      return explanations[code] || `Error ${code}: This is a server error. Please try again later or contact support if the problem persists.`;
+    }
+    
+    async function processAiMessage(message) {
+      if (aiIsThinking) return;
+      
+      // Add user message to chat
+      addMessageToChat(message, 'user');
+      
+      // Store message in context
+      conversationContext.lastMessage = message;
+      
+      // Show typing indicator
+      showTypingIndicator();
+      aiIsThinking = true;
+      
+      // Process the message and generate AI response
+      setTimeout(async () => {
+        hideTypingIndicator();
+        let response;
+        
+        // Handle specific actions
+        if (conversationContext.awaitingEmail) {
+          // Validate email format
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(message)) {
+            response = {
+              content: "That doesn't look like a valid email address. Please enter a valid email:",
+              type: 'error',
+              action: 'prompt_email_input'
+            };
+          } else {
+            // Show checking message
+            addMessageToChat(`Checking email: ${message}...`, 'ai', 'info');
+            
+            // Simulate API call delay
+            setTimeout(async () => {
+              // Check user email via API
+              const userData = await checkUserEmail(message);
+              
+              if (userData.error) {
+                addMessageToChat("Sorry, we couldn't check your email at this time. Please try again later.", 'ai', 'error');
+              } else if (userData.exists) {
+                let accountStatus = "Active";
+                let statusClass = "success";
+                
+                if (userData.status === "banned") {
+                  accountStatus = "Banned";
+                  statusClass = "error";
+                } else if (userData.status === "pending") {
+                  accountStatus = "Pending Verification";
+                  statusClass = "warning";
+                }
+                
+                addMessageToChat(
+                  `Account found for: ${userData.email}\n\n` +
+                  `Name: ${userData.name}\n` +
+                  `Status: ${accountStatus}\n\n` +
+                  (userData.status === "banned" 
+                    ? "Your account has been banned. Contact support for assistance." 
+                    : userData.status === "pending"
+                      ? "Your account is pending verification. Check your email for a verification link."
+                      : "Your account is active and ready to use."),
+                  'ai',
+                  statusClass
+                );
+                
+                // Add account actions
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'ai-actions mt-3';
+                actionsDiv.innerHTML = `
+                  <div class="ai-action-btn" data-action="reset_password">
+                    <i class="fas fa-key mr-1"></i> Reset Password
+                  </div>
+                  <div class="ai-action-btn" data-action="contact_support">
+                    <i class="fas fa-headset mr-1"></i> Contact Support
+                  </div>
+                `;
+                aiChat.appendChild(actionsDiv);
+                
+                // Add event listeners to action buttons
+                actionsDiv.querySelector('[data-action="reset_password"]').addEventListener('click', () => {
+                  window.location.href = "/forgot_password";
+                });
+                
+                actionsDiv.querySelector('[data-action="contact_support"]').addEventListener('click', () => {
+                  addMessageToChat("You can contact our support team at support@viewtv.com or call +1-800-VIEWTV", 'ai');
+                });
+              } else {
+                addMessageToChat(
+                  `Sorry, the email "${message}" is not registered with us.\n\n` +
+                  "Possible reasons:\n" +
+                  "• You may have used a different email\n" +
+                  "• Your account might have been deleted\n" +
+                  "• There could be a typo in the email\n\n" +
+                  "Would you like to create a new account?",
+                  'ai',
+                  'error'
+                );
+                
+                // Add sign up action
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'ai-actions mt-3';
+                actionsDiv.innerHTML = `
+                  <div class="ai-action-btn" data-action="sign_up">
+                    <i class="fas fa-user-plus mr-1"></i> Sign Up
+                  </div>
+                `;
+                aiChat.appendChild(actionsDiv);
+                
+                actionsDiv.querySelector('[data-action="sign_up"]').addEventListener('click', () => {
+                  window.location.href = "/register";
+                });
+              }
+            }, 1500);
+            
+            conversationContext.awaitingEmail = false;
+            aiIsThinking = false;
+            return;
+          }
+        } else {
+          response = generateAiResponse(message);
+        }
+        
+        if (response) {
+          addMessageToChat(response.content, 'ai', response.type, response.additionalData);
+          
+          // Set context for follow-up actions
+          if (response.action === 'prompt_email_input' || response.action === 'prompt_email_check') {
+            conversationContext.awaitingEmail = true;
+          }
+          
+          // If response has action, perform it
+          if (response.action && response.action.startsWith('navigate')) {
+            performAction(response.action);
+          }
+        }
+        
+        aiIsThinking = false;
+      }, 1500);
+    }
+    
+    function performAction(action) {
+      switch(action) {
+        case 'navigate_forgot_password':
+          window.location.href = "/forgot_password";
+          break;
+      }
+    }
+    
+    // Initialize the AI assistant
+    function initAIAssistant() {
+      aiAssistant.addEventListener('click', () => {
+        aiPanel.classList.toggle('active');
+        
+        if (recognition && !aiPanel.classList.contains('active')) {
+          recognition.stop();
+        }
+      });
+      
+      closeAiPanel.addEventListener('click', () => {
+        aiPanel.classList.remove('active');
+      });
+      
+      sendAiMessage.addEventListener('click', () => {
+        if (aiInput.value.trim() !== '') {
+          processAiMessage(aiInput.value);
+          aiInput.value = '';
+        }
+      });
+      
+      aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && aiInput.value.trim() !== '') {
+          processAiMessage(aiInput.value);
+          aiInput.value = '';
+        }
+      });
+      
+      voiceCommandBtn.addEventListener('click', () => {
+        if (recognition) {
+          aiAssistant.classList.add('listening');
+          recognition.start();
+          addMessageToChat("Listening... Speak now", 'ai');
+        } else {
+          addMessageToChat("Voice commands not supported in your browser", 'ai');
+        }
+      });
+      
+      helpBtn.addEventListener('click', () => {
+        addMessageToChat("What can I help you with? Here are some ideas:\n- Why am I getting invalid credentials?\n- Check if my email is registered\n- How do I reset my password?\n- Why is my account banned?\n- What does CSRF token missing mean?", 'ai');
+      });
+      
+      clearChatBtn.addEventListener('click', () => {
+        aiChat.innerHTML = '';
+        conversationContext = {};
+        addMessageToChat("Hi there! I'm your login assistant. 😊 How can I help you today?", 'ai');
+      });
+    }
+    
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize AI assistant
+      initSpeechRecognition();
+      initAIAssistant();
+    });
   </script>
+  
+  <!-- Font Awesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
 </body>
 </html>

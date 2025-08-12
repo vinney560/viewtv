@@ -3356,9 +3356,9 @@ class AdvancedReasoningEngine:
                 "news": ["CNN", "BBC News", "Al Jazeera"],
                 "movie": ["HBO", "Showtime", "Starz"],
                 "entertainment": ["AMC", "FX", "TNT"],
-                "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon"],
+                "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon", "Toonami Aftermath"],
                 "music": ["MTV", "VH1", "BET"],
-                "documentary": ["Discovery", "National Geographic", "History Channel"]
+                "documentary": ["Discovery", "National Geographic", "Military History"]
             }
             return f"Based on your interest in {top_category}, I recommend: {', '.join(recommendations.get(top_category, []))}"
         return self.recommend_popular()

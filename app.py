@@ -63,7 +63,7 @@ import re
 import numpy as np
 from datetime import datetime, timedelta
 import requests
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 from flask_session import Session
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
@@ -74,6 +74,7 @@ import joblib
 from threading import Lock
 import threading
 from collections import Counter
+import Levenshtein
 
 
 # ============================
@@ -2982,7 +2983,6 @@ def set_notice():
 
 
 # ------------------------ Enhanced Config ----------------------
-
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
@@ -2990,38 +2990,15 @@ INTENT_FILE = "intent_data.json"
 SYNONYMS_FILE = "synonyms.json"
 HISTORY_LIMIT = 60
 CHECK_TIMEOUT = 5
-REASONING_DEPTH = 5
-CONVERSATION_MEMORY = 5
+REASONING_DEPTH = 7
+CONVERSATION_MEMORY = 10
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 5
 MIN_UPDATE_SAMPLES = 3
-MIN_CONFIDENCE = 0.3
+MIN_CONFIDENCE = 0.6
+SPELLING_THRESHOLD = 0.8  # Minimum similarity for spelling correction
+CREATIVITY_LEVEL = 0.3    # Probability of creative response
 
-# ------------------------ Channel Families ----------------------
-
-CHANNEL_FAMILIES = {
-    "ESPN": ["ESPN", "ESPN2", "ESPNU", "ESPNEWS", "ESPN DEPORTES"],
-    "Fox Sports": ["Fox Sports 1", "Fox Sports 2", "Fox Soccer Plus"],
-    "HBO": ["HBO", "HBO 2", "HBO Family", "HBO Signature", "HBO Comedy"],
-    "Showtime": ["Showtime", "Showtime 2", "Showtime Showcase", "Showtime Extreme"],
-    "Discovery": ["Discovery Channel", "Discovery Science", "Discovery Turbo", "Discovery Family"],
-    "CNN": ["CNN", "CNN International", "CNN en Español"],
-    "NBC": ["NBC", "NBC Sports", "NBC News Now", "NBC Golf"],
-    "Disney": ["Disney Channel", "Disney Junior", "Disney XD"],
-    "Starz": ["Starz", "Starz Comedy", "Starz Edge", "Starz Kids & Family"],
-    "Nickelodeon": ["Nickelodeon", "Nick Jr", "Nicktoons", "TeenNick"],
-
-    # New groups added below
-
-    "AMC Networks": ["AMC", "BBC America", "IFC", "SundanceTV"],
-    "Universal": ["USA Network", "Syfy", "Bravo", "E!"],
-    "Warner Bros": ["TNT", "TBS", "Cartoon Network", "Adult Swim"],
-    "Paramount": ["CBS", "Comedy Central", "MTV", "VH1"],
-    "PBS": ["PBS", "PBS Kids", "Create", "World Channel"],
-    "National Geographic": ["Nat Geo", "Nat Geo Wild"],
-    "Lifetime": ["Lifetime", "Lifetime Movies", "Lifetime Real Women"],
-    "TLC": ["TLC", "Discovery Life", "Animal Planet"]
-}
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
@@ -3029,8 +3006,8 @@ with open("channels.json", "r") as f:
 
 # Load intent data if exists
 if os.path.exists(INTENT_FILE):
-    with open(INTENT_FILE, "r") as i:
-        intent_data = json.load(i)
+    with open(INTENT_FILE, "r") as f:
+        intent_data = json.load(f)
 else:
     intent_data = {
         "intents": {},
@@ -3056,8 +3033,8 @@ def save_synonyms():
 
 # Load general knowledge base
 if os.path.exists(GENERAL_KNOWLEDGE_FILE):
-    with open(GENERAL_KNOWLEDGE_FILE, "r") as g:
-        general_knowledge = json.load(g)
+    with open(GENERAL_KNOWLEDGE_FILE, "r") as f:
+        general_knowledge = json.load(f)
 else:
     general_knowledge = {
         "greetings": [
@@ -3088,33 +3065,157 @@ else:
             "Need help with: program guides, device compatibility, picture quality, or subscription options? Just ask!",
             "Your TV assistant can: compare channels, explain technical terms, recommend packages, and troubleshoot issues!"
         ],
-        "general_qa": {
-            "weather": "I don't have real-time weather data, but I recommend checking a weather service for accurate forecasts.",
-            "time": "The current time is {time}.",
-            "name": "I'm your TV Channel Assistant, here to help with all your channel needs!",
-            "joke": [
-                "Why don't scientists trust atoms? Because they make up everything!",
-                "What do you call a fake noodle? An impasta!",
-                "Why did the scarecrow win an award? Because he was outstanding in his field!"
-            ],
-            "how_are_you": [
-                "I'm functioning well, thank you! Ready to help with TV channels.",
-                "All systems operational! How can I assist you today?",
-                "I'm just a program, but I'm running smoothly. What can I do for you?"
-            ]
-        }
+        "popular_channels": ["ESPN", "CNN", "HBO", "Discovery Channel", "Fox News", "BBC News", "National Geographic"],
+        "error_responses": [
+            "Let's try that again - could you rephrase your question?",
+            "I'm still learning about TV channels - could you ask in a different way?",
+            "I didn't quite catch that. Mind trying a different phrasing?",
+            "TV channels can be tricky! Could you clarify what you're looking for?",
+            "I might need more details to help with that specific channel request."
+        ],
+        "creative_topics": [
+            "television", "entertainment", "broadcast", "streaming", 
+            "movies", "sports", "news", "documentaries", "comedy",
+            "drama", "adventure", "technology", "cinema", "media"
+        ]
     }
 
 channel_keys = list(channels.keys())
 channel_names = [v["name"] for v in channels.values()]
 
-# --------------- Advanced Reasoning Engine -------------
+# --------------- Creative Response Generator -------------
+class CreativeGenerator:
+    def __init__(self):
+        self.cache = {}
+        self.last_fetch = 0
+        self.cache_duration = 3600  # 1 hour cache
+        
+    def get_related_words(self, topic):
+        """Fetch related words from Datamuse API with caching."""
+        # Use cached results if recent
+        if topic in self.cache and time.time() - self.last_fetch < self.cache_duration:
+            return self.cache[topic]
+            
+        url = f"https://api.datamuse.com/words?ml={topic}"
+        try:
+            res = requests.get(url, timeout=2).json()
+            words = [w['word'] for w in res if ' ' not in w]  # Skip multi-word phrases
+            if not words: 
+                words = [topic]
+                
+            # Cache results
+            self.cache[topic] = words
+            self.last_fetch = time.time()
+            return words[:10]
+        except Exception as e:
+            print(f"Creative API error: {e}")
+            return [topic]  # Fallback to topic
+    
+    def generate_sentence(self, topic):
+        """Create a creative sentence using related words."""
+        words = self.get_related_words(topic)
+        if len(words) < 3:
+            words += [topic] * (3 - len(words))  # Pad if too short
 
+        templates = [
+            f"The {random.choice(words)} brings {random.choice(words)} to life.",
+            f"Every {random.choice(words)} tells a story of {random.choice(words)}.",
+            f"In the world of {random.choice(words)}, {random.choice(words)} never ends.",
+            f"{random.choice(words).capitalize()} is the key to {random.choice(words)}.",
+            f"Where {random.choice(words)} meets {random.choice(words)}, magic happens.",
+            f"Through the lens of {random.choice(words)}, we see {random.choice(words)}.",
+            f"The art of {random.choice(words)} reveals {random.choice(words)}.",
+            f"When {random.choice(words)} and {random.choice(words)} collide, wonders emerge."
+        ]
+        return random.choice(templates)
+    
+    def add_creative_element(self, base_response, context):
+        """Add creative flair to responses occasionally"""
+        if random.random() > CREATIVITY_LEVEL:
+            return base_response
+            
+        # Determine creative topic
+        topic = None
+        if context.get("entities"):
+            topic = context["entities"][0].split()[0]  # First word of first entity
+        elif context.get("intent") == "recommend":
+            topic = "entertainment"
+        elif context.get("user_preferences"):
+            topic = max(context["user_preferences"].items(), key=lambda x: x[1])[0]
+        else:
+            topic = random.choice(general_knowledge.get("creative_topics", ["television"]))
+        
+        try:
+            creative_part = self.generate_sentence(topic)
+            connectors = [
+                "On a creative note,",
+                "Speaking of entertainment,",
+                "Fun thought:",
+                "Did you know?",
+                "Here's an interesting perspective:"
+            ]
+            return f"{base_response} {random.choice(connectors)} {creative_part}"
+        except:
+            return base_response
+
+# --------------- Enhanced Channel Matching Engine -------------
+class ChannelMatcher:
+    def __init__(self):
+        self.channel_list = channel_names
+        self.channel_map = {name.lower(): name for name in channel_names}
+        
+    def find_best_match(self, query, threshold=SPELLING_THRESHOLD):
+        """Find best channel match with advanced spelling correction"""
+        query_lower = query.lower()
+        
+        # 1. Check exact match
+        if query_lower in self.channel_map:
+            return self.channel_map[query_lower]
+            
+        # 2. Check close matches with threshold
+        matches = get_close_matches(query_lower, self.channel_map.keys(), n=1, cutoff=threshold)
+        if matches:
+            return self.channel_map[matches[0]]
+            
+        # 3. Use Levenshtein distance for better correction
+        best_match = None
+        best_score = 0
+        
+        for channel in self.channel_list:
+            channel_lower = channel.lower()
+            # Use Jaro-Winkler similarity for better handling of prefixes
+            score = Levenshtein.jaro_winkler(query_lower, channel_lower)
+            if score > best_score:
+                best_score = score
+                best_match = channel
+        
+        return best_match if best_score >= threshold else None
+        
+    def suggest_alternatives(self, query, count=3):
+        """Suggest alternative channels based on similarity"""
+        query_lower = query.lower()
+        scored_channels = []
+        
+        for channel in self.channel_list:
+            channel_lower = channel.lower()
+            score = Levenshtein.jaro_winkler(query_lower, channel_lower)
+            scored_channels.append((channel, score))
+            
+        # Sort by similarity score
+        scored_channels.sort(key=lambda x: x[1], reverse=True)
+        
+        # Return top matches (excluding the query itself)
+        return [chan for chan, score in scored_channels[:count] if score > 0.3]
+
+# --------------- Advanced Reasoning Engine -------------
 class AdvancedReasoningEngine:
     def __init__(self):
         self.context = {}
+        self.channel_matcher = ChannelMatcher()
+        self.creative_generator = CreativeGenerator()
         self.decision_forest = self.build_decision_forest()
         self.conversation_history = []
+        self.error_responses = general_knowledge.get("error_responses", [])
     
     def build_decision_forest(self):
         """Multi-layered decision forest for complex reasoning"""
@@ -3127,7 +3228,8 @@ class AdvancedReasoningEngine:
                 ],
                 "secondary": [
                     ("status_offline", self.suggest_alternatives),
-                    ("user_curious", self.add_technical_details)
+                    ("user_curious", self.add_technical_details),
+                    ("low_confidence", self.suggest_possible_channels)
                 ]
             },
             "info": {
@@ -3137,7 +3239,8 @@ class AdvancedReasoningEngine:
                     ("else", self.ask_for_channel)
                 ],
                 "secondary": [
-                    ("user_engaged", self.offer_related_info)
+                    ("user_engaged", self.offer_related_info),
+                    ("low_confidence", self.suggest_possible_channels)
                 ]
             },
             "recommend": {
@@ -3147,7 +3250,8 @@ class AdvancedReasoningEngine:
                     ("else", self.recommend_popular)
                 ],
                 "secondary": [
-                    ("user_uncertain", self.explain_recommendation)
+                    ("user_uncertain", self.explain_recommendation),
+                    ("low_confidence", self.clarify_recommendation)
                 ]
             },
             "compare": {
@@ -3157,7 +3261,8 @@ class AdvancedReasoningEngine:
                     ("else", self.ask_for_channels)
                 ],
                 "secondary": [
-                    ("complex_comparison", self.add_comparison_details)
+                    ("complex_comparison", self.add_comparison_details),
+                    ("low_confidence", self.clarify_comparison)
                 ]
             },
             "explain_status": {
@@ -3167,7 +3272,8 @@ class AdvancedReasoningEngine:
                     ("else", self.ask_for_channel_status)
                 ],
                 "secondary": [
-                    ("technical_question", self.provide_technical_explanation)
+                    ("technical_question", self.provide_technical_explanation),
+                    ("low_confidence", self.suggest_possible_channels)
                 ]
             },
             "general": {
@@ -3180,33 +3286,50 @@ class AdvancedReasoningEngine:
                     ("has_general_question", self.answer_general_question),
                     ("else", self.handle_unknown_query)
                 ]
+            },
+            "channel_not_found": {
+                "primary": [
+                    ("has_entities", self.handle_unclear_channel),
+                    ("else", self.ask_for_channel_clarification)
+                ]
             }
         }
     
     def reason(self, intent, context):
-        """Multi-stage reasoning process"""
-        self.context = context.copy()
-        self.update_conversation_history(context)
-        
-        # Primary reasoning
-        response = self.execute_primary_reasoning(intent)
-        
-        # Secondary reasoning
-        response = self.execute_secondary_reasoning(intent, response)
-        
-        # Add conversational elements
-        response = self.add_conversational_elements(response)
-        
-        return response
+        """Multi-stage reasoning process with error resilience"""
+        try:
+            self.context = context.copy()
+            self.update_conversation_history(context)
+            
+            # Primary reasoning
+            response = self.execute_primary_reasoning(intent)
+            
+            # Secondary reasoning
+            response = self.execute_secondary_reasoning(intent, response)
+            
+            # Add conversational elements
+            response = self.add_conversational_elements(response)
+            
+            # Add creative elements occasionally
+            response = self.creative_generator.add_creative_element(response, context)
+            
+            return response
+        except Exception as e:
+            print(f"Reasoning error: {e}")
+            return self.generate_error_response()
     
     def execute_primary_reasoning(self, intent):
-        """Handle primary decision tree"""
+        """Handle primary decision tree with resilience"""
         if intent not in self.decision_forest:
             intent = "general"  # Fallback to general handling
         
         for condition, handler in self.decision_forest[intent]["primary"]:
             if self.evaluate_condition(condition):
-                return handler()
+                try:
+                    return handler()
+                except Exception as e:
+                    print(f"Handler error for {intent}: {e}")
+                    return self.generate_error_response()
         
         return "I need more information to help with that. Could you clarify?"
     
@@ -3217,12 +3340,15 @@ class AdvancedReasoningEngine:
         
         for condition, handler in self.decision_forest[intent]["secondary"]:
             if self.evaluate_condition(condition):
-                response += " " + handler()
-        
+                try:
+                    response += " " + handler()
+                except Exception as e:
+                    print(f"Secondary handler error: {e}")
+                    # Continue without secondary addition
         return response
     
     def evaluate_condition(self, condition):
-        """Evaluate condition based on context and history"""
+        """Enhanced condition evaluation with confidence checks"""
         # Entity-based conditions
         if condition == "has_entities":
             return bool(self.context.get("entities"))
@@ -3241,6 +3367,10 @@ class AdvancedReasoningEngine:
         if condition == "has_status_context":
             return "last_status" in self.context
         
+        # Confidence conditions
+        if condition == "low_confidence":
+            return self.context.get("confidence", 1.0) < 0.7
+            
         # User behavior conditions
         if condition == "user_curious":
             return "why" in self.context.get("user_text", "").lower() or "how" in self.context.get("user_text", "").lower()
@@ -3289,7 +3419,14 @@ class AdvancedReasoningEngine:
     # -------------------- Response Handlers ------------------
     
     def handle_entity_status(self):
-        channel = self.context["entities"][0]
+        channel_query = self.context["entities"][0]
+        channel = self.channel_matcher.find_best_match(channel_query)
+        
+        if not channel:
+            self.context["intent"] = "channel_not_found"
+            self.context["unclear_channel"] = channel_query
+            return self.execute_primary_reasoning("channel_not_found")
+        
         status = self.check_channel_status(channel)
         explanation = self.explain_status(channel, status)
         
@@ -3306,6 +3443,50 @@ class AdvancedReasoningEngine:
             explanation = self.explain_status(channel, status)
             return self.generate_status_response(channel, status, explanation)
         return "Which channel would you like me to check?"
+    
+    def handle_unclear_channel(self):
+        unclear_channel = self.context.get("unclear_channel", "that channel")
+        suggestions = self.channel_matcher.suggest_alternatives(unclear_channel, 3)
+        
+        if suggestions:
+            return (f"I couldn't find '{unclear_channel}'. Did you mean one of these? "
+                    f"{', '.join(suggestions)} Or try rephrasing your request.")
+        
+        popular = general_knowledge.get("popular_channels", ["ESPN", "CNN", "HBO"])
+        return (f"I couldn't find '{unclear_channel}'. Maybe try a popular channel "
+                f"like {random.choice(popular)}? Or ask about channel availability.")
+    
+    def ask_for_channel_clarification(self):
+        return "I'm not sure which channel you're referring to. Could you provide more details?"
+    
+    def suggest_possible_channels(self):
+        """Suggest possible channels when confidence is low"""
+        if self.context.get("entities"):
+            channel_query = self.context["entities"][0]
+            suggestions = self.channel_matcher.suggest_alternatives(channel_query, 3)
+            if suggestions:
+                return (f" By the way, did you mean one of these: {', '.join(suggestions)}? "
+                        "I can check any of them for you!")
+        return ""
+    
+    def clarify_recommendation(self):
+        """Clarify recommendation when confidence is low"""
+        if self.context.get("user_preferences"):
+            preferences = list(self.context["user_preferences"].keys())
+            if preferences:
+                return (" Based on your interests in " + 
+                        ", ".join(preferences[:2]) + 
+                        ", I think you might enjoy these suggestions.")
+        return ""
+    
+    def clarify_comparison(self):
+        """Clarify comparison when confidence is low"""
+        if self.context.get("entities"):
+            entities = self.context["entities"]
+            if len(entities) > 1:
+                return (f" Comparing {entities[0]} and {entities[1]} is interesting! "
+                        "Let me know if you'd like more details.")
+        return ""
     
     def ask_for_channel(self):
         return "Which channel would you like me to check?"
@@ -3356,15 +3537,15 @@ class AdvancedReasoningEngine:
                 "news": ["CNN", "BBC News", "Al Jazeera"],
                 "movie": ["HBO", "Showtime", "Starz"],
                 "entertainment": ["AMC", "FX", "TNT"],
-                "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon", "Toonami Aftermath"],
+                "kids": ["Cartoon Network", "Disney Channel", "Nickelodeon"],
                 "music": ["MTV", "VH1", "BET"],
-                "documentary": ["Discovery", "National Geographic", "Military History"]
+                "documentary": ["Discovery", "National Geographic", "History Channel"]
             }
             return f"Based on your interest in {top_category}, I recommend: {', '.join(recommendations.get(top_category, []))}"
         return self.recommend_popular()
     
     def recommend_popular(self):
-        return "Popular channels: ESPN, CNN, HBO, Discovery Channel"
+        return "Popular channels: " + ", ".join(general_knowledge.get("popular_channels", ["ESPN", "CNN", "HBO"]))
     
     def explain_recommendation(self):
         return "My recommendations are based on channel popularity and your viewing history."
@@ -3419,7 +3600,7 @@ class AdvancedReasoningEngine:
         return random.choice(general_knowledge["help"])
     
     def handle_how_are_you(self):
-        return random.choice(general_knowledge["general_qa"]["how_are_you"])
+        return random.choice(general_knowledge.get("general_qa", {}).get("how_are_you", ["I'm functioning well, thank you!"]))
     
     def answer_general_question(self):
         text = self.context["user_text"].lower()
@@ -3427,19 +3608,20 @@ class AdvancedReasoningEngine:
         # Time questions
         if "time" in text:
             current_time = (datetime.now() + timedelta (hours=3)).strftime("%H:%M")
-            return general_knowledge["general_qa"]["time"].format(time=current_time)
+            return general_knowledge.get("general_qa", {}).get("time", "The current time is {time}").format(time=current_time)
         
         # Name questions
         if "your name" in text or "who are you" in text:
-            return general_knowledge["general_qa"]["name"]
+            return general_knowledge.get("general_qa", {}).get("name", "I'm your TV Channel Assistant!")
         
         # Joke requests
         if "joke" in text or "funny" in text:
-            return random.choice(general_knowledge["general_qa"]["joke"])
+            jokes = general_knowledge.get("general_qa", {}).get("joke", [])
+            return random.choice(jokes) if jokes else "Why don't scientists trust atoms? Because they make up everything!"
         
         # Weather questions
         if "weather" in text:
-            return general_knowledge["general_qa"]["weather"]
+            return general_knowledge.get("general_qa", {}).get("weather", "I don't have real-time weather data.")
         
         # Fallback for general questions
         return "I'm primarily a TV channel assistant, but I'd be happy to help with channel-related questions!"
@@ -3471,16 +3653,6 @@ class AdvancedReasoningEngine:
         }
         
         response = random.choice(templates.get(status, templates["unknown"]))
-        
-        # Add family alternatives for offline/unknown status
-        if status in ["offline", "unknown"]:
-            family = self.get_channel_family(channel)
-            if family:
-                family_channels = [m for m in CHANNEL_FAMILIES[family] 
-                                  if m != channel and get_key_by_name(m)]
-                if family_channels:
-                    response += f" You might try other {family} channels like {', '.join(family_channels[:2])}."
-        
         return response
     
     def add_conversational_elements(self, response):
@@ -3506,12 +3678,35 @@ class AdvancedReasoningEngine:
         
         return response
     
+    def generate_error_response(self):
+        """Generate creative error response"""
+        error_types = [
+            "Hmm, I'm having trouble with that request.",
+            "Looks like I need to tune my circuits for that one.",
+            "My channel scanner seems to be glitching on that request.",
+            "I'm getting static on that question - mind rephrasing?",
+            "That request is giving me digital snow - try again?"
+        ]
+        
+        recovery_suggestions = [
+            "Try asking about a specific channel like ESPN or HBO.",
+            "You could ask 'What channels are available?' for options.",
+            "How about checking a popular channel's status?",
+            "Want me to recommend something to watch?",
+            "Need help with your TV setup? I can assist!"
+        ]
+        
+        return (f"{random.choice(error_types)} "
+                f"{random.choice(recovery_suggestions)}")
+
     # -------------------- Utility Methods --------------------
     def get_channel_family(self, channel):
         """Find which family a channel belongs to"""
-        for family, members in CHANNEL_FAMILIES.items():
-            if channel in members:
-                return family
+        # Simplified for this version - could be enhanced
+        if "ESPN" in channel: return "ESPN"
+        if "HBO" in channel: return "HBO"
+        if "Fox" in channel: return "Fox"
+        if "CNN" in channel: return "CNN"
         return None
     
     def check_channel_status(self, channel):
@@ -3577,10 +3772,9 @@ class AdvancedReasoningEngine:
         # Then try channel family
         family = self.get_channel_family(channel)
         if family:
-            similar.extend([m for m in CHANNEL_FAMILIES[family] 
-                          if m != channel and get_key_by_name(m)])
+            similar.extend([chan for chan in channel_names if family in chan and chan != channel])
         
-        return similar if similar else ["ESPN", "CNN", "HBO"]  # Default suggestions
+        return similar if similar else general_knowledge.get("popular_channels", ["ESPN", "CNN", "HBO"])
     
     def get_recommendations(self, history):
         # Simple content-based recommendation
@@ -3617,45 +3811,40 @@ class AdvancedReasoningEngine:
 
 # ------------------------ Core System ------------------------
 def get_key_by_name(name):
-    # Try exact match first
+    # Use advanced matching
+    matcher = ChannelMatcher()
+    channel_name = matcher.find_best_match(name)
+    if not channel_name:
+        return None
+        
     for k, v in channels.items():
-        if v["name"].lower() == name.lower():
+        if v["name"].lower() == channel_name.lower():
             return k
-    
-    # Try family match
-    for family, members in CHANNEL_FAMILIES.items():
-        if name.lower() in [m.lower() for m in members]:
-            # Find first available family member
-            for member in members:
-                for k, v in channels.items():
-                    if v["name"].lower() == member.lower():
-                        return k
     return None
 
 def extract_entities(text):
-    """Enhanced entity extraction with fuzzy matching and synonyms"""
+    """Enhanced entity extraction with spelling correction"""
     entities = []
     text_lower = text.lower()
+    matcher = ChannelMatcher()
     
     # 1. Check synonyms first
     for word, alternatives in synonyms.items():
         if word in text_lower:
             entities.extend(alternatives)
     
-    # 2. Check channel families
-    for family, members in CHANNEL_FAMILIES.items():
-        if family.lower() in text_lower:
-            entities.extend(members)
-    
-    # 3. Exact match
+    # 2. Check for exact channel name matches
     for name in channel_names:
         if name.lower() in text_lower:
             entities.append(name)
     
-    # 4. Fuzzy match if no exact matches
-    if not entities:
-        matches = get_close_matches(text, channel_names, n=3, cutoff=0.6)
-        entities.extend(matches)
+    # 3. Use advanced matching for potential misspellings
+    words = re.findall(r'\b\w+\b', text)
+    for word in words:
+        if len(word) > 3:  # Only consider longer words
+            match = matcher.find_best_match(word)
+            if match and match not in entities:
+                entities.append(match)
     
     # Remove duplicates while preserving order
     seen = set()
@@ -4082,6 +4271,10 @@ learning_thread.start()
 
 # ------------------------ Flask Routes ------------------------
 reasoning_engine = AdvancedReasoningEngine()
+
+@app.route('/')
+def home():
+    return redirect(url_for('index'))
 
 @app.route('/chat', methods=['GET', 'POST'])
 def index():

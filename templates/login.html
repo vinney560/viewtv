@@ -854,7 +854,7 @@
             };
           } else {
             // Show checking message
-            addMessageToChat(`Checking email: ${message}°•°•`, 'ai', 'info');
+            addMessageToChat(`Checking email: ${message} <span style="display:inline-block;font-weight:bold;color:#666;animation:blink 1.5s infinite">•°•°•</span>`, 'ai', 'info');document.head.insertAdjacentHTML('beforeend', '<style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}</style>');
             
             // Simulate API call delay
             setTimeout(async () => {

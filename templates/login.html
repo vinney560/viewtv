@@ -695,12 +695,7 @@
       }
       
       // Handle invalid credentials
-      if (lowerMessage.includes('invalid credentials') || 
-          lowerMessage.includes('wrong password') || 
-          lowerMessage.includes('incorrect password') || 
-          lowerMessage.includes('invalid email') || 
-          lowerMessage.includes('can\'t login') || 
-          lowerMessage.includes('login failed')) {
+      if (lowerMessage.includes('invalid credentials') || lowerMessage.includes('wrong password') || lowerMessage.includes('incorrect password') || lowerMessage.includes('invalid email') || lowerMessage.includes('can\'t login') || lowerMessage.includes('login failed') || lowerMessage.includes('invalid username') || lowerMessage.includes('wrong username') || lowerMessage.includes('incorrect username') || lowerMessage.includes('username not found') || lowerMessage.includes('password incorrect') || lowerMessage.includes('login error') || lowerMessage.includes('authentication failed') || lowerMessage.includes('user not found') || lowerMessage.includes('account not found') || lowerMessage.includes('bad credentials') || lowerMessage.includes('failed login') || lowerMessage.includes('login unsuccessful') || lowerMessage.includes('access denied') || lowerMessage.includes('invalid login') || lowerMessage.includes('incorrect login') || lowerMessage.includes('cannot login') || lowerMessage.includes('failed authentication') || lowerMessage.includes('invalid password') || lowerMessage.includes('wrong login') || lowerMessage.includes('login blocked') || lowerMessage.includes('account locked') || lowerMessage.includes('authentication error') || lowerMessage.includes('login refused') || lowerMessage.includes('user disabled') || lowerMessage.includes('invalid user') || lowerMessage.includes('bad login') || lowerMessage.includes('account disabled') || lowerMessage.includes('cannot access account') || lowerMessage.includes('login failed attempt') || lowerMessage.includes('incorrect credentials') || lowerMessage.includes('invalid sign in') || lowerMessage.includes('wrong credentials') || lowerMessage.includes('incorrect sign in') || lowerMessage.includes('unauthorized access') || lowerMessage.includes('sign in error') || lowerMessage.includes('failed sign in') || lowerMessage.includes('login denied') || lowerMessage.includes('user locked out') || lowerMessage.includes('account suspended') || lowerMessage.includes('sign in failed') || lowerMessage.includes('login credentials incorrect') || lowerMessage.includes('invalid user credentials') || lowerMessage.includes('failed user authentication') || lowerMessage.includes('bad username or password') || lowerMessage.includes('invalid account') || lowerMessage.includes('incorrect account') || lowerMessage.includes('unable to login') || lowerMessage.includes('access failure') || lowerMessage.includes('login credentials invalid') || lowerMessage.includes('password mismatch') || lowerMessage.includes('user not authorized') || lowerMessage.includes('invalid login attempt') || lowerMessage.includes('unauthorized login') || lowerMessage.includes('login unsuccessful attempt') || lowerMessage.includes('account login error') || lowerMessage.includes('login access denied') || lowerMessage.includes('account login failed') || lowerMessage.includes('user authentication failed') || lowerMessage.includes('login attempt failed') || lowerMessage.includes('login problem') || lowerMessage.includes('failed to login') || lowerMessage.includes('invalid sign in credentials') || lowerMessage.includes('incorrect login details')) {
         return {
           content: "I see you're having trouble with your credentials. Let me help:\n\n" +
                    "1. Double-check your email address for typos\n" +
@@ -714,10 +709,7 @@
       }
       
       // Handle email check
-      if (lowerMessage.includes('check email') || 
-          lowerMessage.includes('is my email registered') || 
-          lowerMessage.includes('check if registered') || 
-          lowerMessage.includes('verify email')) {
+      if (lowerMessage.includes('check email') || lowerMessage.includes('is my email registered') || lowerMessage.includes('check if registered') || lowerMessage.includes('verify email') || lowerMessage.includes('email verification') || lowerMessage.includes('email registered') || lowerMessage.includes('email exists') || lowerMessage.includes('email registered already') || lowerMessage.includes('check email registration') || lowerMessage.includes('is this email registered') || lowerMessage.includes('verify my email') || lowerMessage.includes('email confirmation') || lowerMessage.includes('email status') || lowerMessage.includes('email in system') || lowerMessage.includes('check if email exists') || lowerMessage.includes('check email status') || lowerMessage.includes('email check') || lowerMessage.includes('email found') || lowerMessage.includes('email not registered') || lowerMessage.includes('email is registered') || lowerMessage.includes('email verification status') || lowerMessage.includes('is email valid') || lowerMessage.includes('registered email') || lowerMessage.includes('check email address') || lowerMessage.includes('confirm email') || lowerMessage.includes('email registration check') || lowerMessage.includes('email is on file') || lowerMessage.includes('email verification needed') || lowerMessage.includes('check my email') || lowerMessage.includes('is email confirmed') || lowerMessage.includes('email verified') || lowerMessage.includes('email registered with you') || lowerMessage.includes('email present') || lowerMessage.includes('email associated') || lowerMessage.includes('email linked') || lowerMessage.includes('email in database') || lowerMessage.includes('email registered before') || lowerMessage.includes('check if email is registered') || lowerMessage.includes('email in records') || lowerMessage.includes('email exists in system') || lowerMessage.includes('check email account') || lowerMessage.includes('email is on record') || lowerMessage.includes('registered with email') || lowerMessage.includes('email address check') || lowerMessage.includes('check registered email') || lowerMessage.includes('email available') || lowerMessage.includes('email status check') || lowerMessage.includes('check email validity') || lowerMessage.includes('email registered status') || lowerMessage.includes('email not found') || lowerMessage.includes('email verified status') || lowerMessage.includes('confirm if email is registered') || lowerMessage.includes('email registered confirmation') || lowerMessage.includes('verify email address') || lowerMessage.includes('email presence') || lowerMessage.includes('email in system records') || lowerMessage.includes('email already registered') || lowerMessage.includes('check if email is confirmed') || lowerMessage.includes('email found in database') || lowerMessage.includes('email checked') || lowerMessage.includes('email confirmation status') || lowerMessage.includes('email verified before') || lowerMessage.includes('email exists in records') || lowerMessage.includes('email validation') || lowerMessage.includes('email is valid') || lowerMessage.includes('email registered check') || lowerMessage.includes('email status confirmed')) {
         return {
           content: "Sure, I can check if your email is registered with us. Please enter your email address below:",
           type: 'info',
@@ -738,9 +730,7 @@
       }
       
       // Handle password reset
-      if (lowerMessage.includes('forgot password') || 
-          lowerMessage.includes('reset password') || 
-          lowerMessage.includes('can\'t remember password')) {
+      if (lowerMessage.includes('forgot password') || lowerMessage.includes('reset password') || lowerMessage.includes('can\'t remember password') || lowerMessage.includes('password recovery') || lowerMessage.includes('password reset link') || lowerMessage.includes('change password') || lowerMessage.includes('update password') || lowerMessage.includes('lost password') || lowerMessage.includes('forgot my password') || lowerMessage.includes('password help') || lowerMessage.includes('reset my password') || lowerMessage.includes('forgot login') || lowerMessage.includes('password assistance') || lowerMessage.includes('recover password') || lowerMessage.includes('forgot pass') || lowerMessage.includes('reset pass') || lowerMessage.includes('password issue') || lowerMessage.includes('password problem') || lowerMessage.includes('password not working') || lowerMessage.includes('password change request') || lowerMessage.includes('send reset link') || lowerMessage.includes('password reset email') || lowerMessage.includes('password link') || lowerMessage.includes('reset credentials') || lowerMessage.includes('forgotten password') || lowerMessage.includes('password reset code') || lowerMessage.includes('cannot remember password') || lowerMessage.includes('need new password') || lowerMessage.includes('help with password') || lowerMessage.includes('password reset token') || lowerMessage.includes('password expired') || lowerMessage.includes('password locked') || lowerMessage.includes('password recovery email') || lowerMessage.includes('resetting password') || lowerMessage.includes('password reset failed') || lowerMessage.includes('reset password request') || lowerMessage.includes('change my password') || lowerMessage.includes('reset password link expired') || lowerMessage.includes('password reset instructions') || lowerMessage.includes('send password reset') || lowerMessage.includes('request password reset') || lowerMessage.includes('password reset confirmation') || lowerMessage.includes('password reset successful') || lowerMessage.includes('password recovery link') || lowerMessage.includes('reset password token') || lowerMessage.includes('forgot password email') || lowerMessage.includes('password reset process') || lowerMessage.includes('forgot password help') || lowerMessage.includes('password reset support') || lowerMessage.includes('forgot password link') || lowerMessage.includes('reset password email sent') || lowerMessage.includes('password reset email link') || lowerMessage.includes('password reset page') || lowerMessage.includes('password reset verification') || lowerMessage.includes('forgot my pass') || lowerMessage.includes('reset my pass') || lowerMessage.includes('password reset requested') || lowerMessage.includes('need password reset') || lowerMessage.includes('password assistance needed') || lowerMessage.includes('help resetting password') || lowerMessage.includes('forgot password token') || lowerMessage.includes('forgot password procedure') || lowerMessage.includes('password reset code sent') || lowerMessage.includes('forgot password notification') || lowerMessage.includes('password reset confirmation email') || lowerMessage.includes('reset password help') || lowerMessage.includes('forgot password recovery') || lowerMessage.includes('password reset instructions sent')) {
         return {
           content: "You can reset your password easily:\n\n" +
                    "1. Click the 'Forgot password' link below the login form\n" +
@@ -754,9 +744,7 @@
       }
       
       // Handle CSRF token issues
-      if (lowerMessage.includes('csrf') || 
-          lowerMessage.includes('token missing') || 
-          lowerMessage.includes('invalid token')) {
+      if (lowerMessage.includes('csrf') || lowerMessage.includes('token missing') || lowerMessage.includes('invalid token') || lowerMessage.includes('csrf token') || lowerMessage.includes('csrf error') || lowerMessage.includes('token expired') || lowerMessage.includes('missing token') || lowerMessage.includes('token invalid') || lowerMessage.includes('csrf protection') || lowerMessage.includes('csrf failed') || lowerMessage.includes('csrf attack') || lowerMessage.includes('csrf validation failed') || lowerMessage.includes('csrf token missing') || lowerMessage.includes('csrf token invalid') || lowerMessage.includes('csrf token expired') || lowerMessage.includes('invalid csrf') || lowerMessage.includes('csrf not valid') || lowerMessage.includes('csrf check failed') || lowerMessage.includes('token check failed') || lowerMessage.includes('csrf token check') || lowerMessage.includes('csrf validation error') || lowerMessage.includes('csrf token error') || lowerMessage.includes('missing csrf') || lowerMessage.includes('csrf token not found') || lowerMessage.includes('csrf token failure') || lowerMessage.includes('csrf token required') || lowerMessage.includes('invalid csrf token') || lowerMessage.includes('csrf error occurred') || lowerMessage.includes('csrf token incorrect') || lowerMessage.includes('csrf security error')) {
         return {
           content: "The CSRF token error usually occurs when:\n\n" +
                    "• Your session has expired\n" +
@@ -772,10 +760,7 @@
       }
       
       // Handle general login issues
-      if (lowerMessage.includes('trouble logging in') || 
-          lowerMessage.includes('login problem') || 
-          lowerMessage.includes('can\'t sign in') || 
-          lowerMessage.includes('login error')) {
+      if (lowerMessage.includes('trouble logging in') || lowerMessage.includes('login problem') || lowerMessage.includes('can\'t sign in') || lowerMessage.includes('login error') || lowerMessage.includes('unable to login') || lowerMessage.includes('forgot password') || lowerMessage.includes('reset password') || lowerMessage.includes('password not working') || lowerMessage.includes('account locked') || lowerMessage.includes('login failed') || lowerMessage.includes('sign in issue') || lowerMessage.includes('cannot access account') || lowerMessage.includes('login help') || lowerMessage.includes('access problem') || lowerMessage.includes('authentication failed') || lowerMessage.includes('user not found') || lowerMessage.includes('invalid password') || lowerMessage.includes('password reset') || lowerMessage.includes('can\'t log in') || lowerMessage.includes('login blocked') || lowerMessage.includes('account disabled') || lowerMessage.includes('login timeout') || lowerMessage.includes('session expired') || lowerMessage.includes('two factor failed') || lowerMessage.includes('forgot username') || lowerMessage.includes('account recovery') || lowerMessage.includes('unlock account') || lowerMessage.includes('reset login') || lowerMessage.includes('sign in error') || lowerMessage.includes('login assistance') || lowerMessage.includes('can\'t access account') || lowerMessage.includes('login not working') || lowerMessage.includes('login unsuccessful') || lowerMessage.includes('login issue') || lowerMessage.includes('password issue') || lowerMessage.includes('forgot login') || lowerMessage.includes('can\'t remember password') || lowerMessage.includes('account access problem') || lowerMessage.includes('login credentials problem') || lowerMessage.includes('failed to login') || lowerMessage.includes('login blocked') || lowerMessage.includes('unable to sign in') || lowerMessage.includes('sign in failed') || lowerMessage.includes('authentication error') || lowerMessage.includes('account locked out') || lowerMessage.includes('login problems') || lowerMessage.includes('can\'t login') || lowerMessage.includes('password problems') || lowerMessage.includes('reset credentials') || lowerMessage.includes('login screen issue') || lowerMessage.includes('sign in blocked') || lowerMessage.includes('user locked out') || lowerMessage.includes('forgot my password') || lowerMessage.includes('account sign in error') || lowerMessage.includes('failed sign in') || lowerMessage.includes('locked account') || lowerMessage.includes('password reset link') || lowerMessage.includes('unable to sign in') || lowerMessage.includes('login failed error')) {
         return {
           content: "I'm sorry you're having trouble logging in. Here are some things to try:\n\n" +
                    "1. Make sure you're connected to the internet\n" +
@@ -790,9 +775,7 @@
       }
       
       // Handle account verification
-      if (lowerMessage.includes('verify account') || 
-          lowerMessage.includes('email not verified') || 
-          lowerMessage.includes('account not activated')) {
+      if (lowerMessage.includes('verify account') || lowerMessage.includes('email not verified') || lowerMessage.includes('account not activated') || lowerMessage.includes('confirm email') || lowerMessage.includes('activate account') || lowerMessage.includes('verification email') || lowerMessage.includes('account verification') || lowerMessage.includes('resend verification') || lowerMessage.includes('email confirmation') || lowerMessage.includes('verify your email') || lowerMessage.includes('activate your account') || lowerMessage.includes('email pending') || lowerMessage.includes('not verified') || lowerMessage.includes('pending verification') || lowerMessage.includes('email activation') || lowerMessage.includes('confirm your account') || lowerMessage.includes('verification required') || lowerMessage.includes('account not verified') || lowerMessage.includes('verify now') || lowerMessage.includes('verification failed')) {
         return {
           content: "Account verification is important for security. Here's what to do:\n\n" +
                    "1. Check your email inbox (and spam folder) for a verification email\n" +
@@ -805,12 +788,9 @@
       }
       
       // Handle general questions
-      if (lowerMessage.includes('hi') || 
-          lowerMessage.includes('hello') || 
-          lowerMessage.includes('help') || 
-          lowerMessage.includes('support')) {
+      if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('how are you') || lowerMessage.includes('what’s your name') || lowerMessage.includes('how old are you') || lowerMessage.includes('where are you from') || lowerMessage.includes('what can you do') || lowerMessage.includes('how do you work') || lowerMessage.includes('can you help me') || lowerMessage.includes('what is the time') || lowerMessage.includes('what is the date') || lowerMessage.includes('tell me a joke') || lowerMessage.includes('how is the weather') || lowerMessage.includes('help') || lowerMessage.includes('support') || lowerMessage.includes('good morning') || lowerMessage.includes('good afternoon') || lowerMessage.includes('good evening') || lowerMessage.includes('thank you') || lowerMessage.includes('thanks') || lowerMessage.includes('bye') || lowerMessage.includes('goodbye') || lowerMessage.includes('see you') || lowerMessage.includes('what can you tell me') || lowerMessage.includes('who are you') || lowerMessage.includes('are you real') || lowerMessage.includes('what is your purpose') || lowerMessage.includes('what do you know') || lowerMessage.includes('can you talk') || lowerMessage.includes('do you learn') || lowerMessage.includes('are you smart') || lowerMessage.includes('what is ai') || lowerMessage.includes('what is machine learning') || lowerMessage.includes('can you help') || lowerMessage.includes('tell me something') || lowerMessage.includes('are you a bot') || lowerMessage.includes('do you sleep') || lowerMessage.includes('can you sing') || lowerMessage.includes('can you dance') || lowerMessage.includes('what is your name') || lowerMessage.includes('how do i use you') || lowerMessage.includes('can you answer questions') || lowerMessage.includes('what languages do you speak') || lowerMessage.includes('do you understand me') || lowerMessage.includes('can you write code') || lowerMessage.includes('tell me a story') || lowerMessage.includes('what is your favorite color') || lowerMessage.includes('do you have feelings') || lowerMessage.includes('can you learn new things') || lowerMessage.includes('are you alive') || lowerMessage.includes('can you joke')) {
         return {
-          content: "Hello! I'm your login assistant. 😊 I can help with:\n\n" +
+          content: "Hello! I'm your ViewTv | login assistant. I only respond to specific queries. 😊 I can help with:\n\n" +
                    "• Login errors and troubleshooting\n" +
                    "• Password reset assistance\n" +
                    "• Account status checks\n" +
@@ -890,7 +870,7 @@
                 let accountStatus = "Active";
                 let statusClass = "success";
                 
-                if (userData.status === "banned") {
+                if (userData.status === "Banned") {
                   accountStatus = "Banned";
                   statusClass = "error";
                 } else if (userData.status === "pending") {
@@ -902,7 +882,7 @@
                   `Account found for: ${userData.email}\n\n` +
                   `Name: ${userData.name}\n` +
                   `Status: ${accountStatus}\n\n` +
-                  (userData.status === "banned" 
+                  (userData.status === "Banned" 
                     ? "Your account has been banned. Contact support for assistance." 
                     : userData.status === "pending"
                       ? "Your account is pending verification. Check your email for a verification link."
@@ -926,11 +906,11 @@
                 
                 // Add event listeners to action buttons
                 actionsDiv.querySelector('[data-action="reset_password"]').addEventListener('click', () => {
-                  window.location.href = "/forgot-password";
+                  window.location.href = "/forgot_password";
                 });
                 
                 actionsDiv.querySelector('[data-action="contact_support"]').addEventListener('click', () => {
-                  addMessageToChat("You can contact our support team at support@viewtv.com or call +1-800-VIEWTV", 'ai');
+                  addMessageToChat("You can contact our support team at vincentkipngetich479@gmail.com or call +254112167195 | ViewTv", 'ai');
                 });
               } else {
                 addMessageToChat(
@@ -989,7 +969,7 @@
     function performAction(action) {
       switch(action) {
         case 'navigate_forgot_password':
-          window.location.href = "/forgot-password";
+          window.location.href = "/forgot_password";
           break;
       }
     }

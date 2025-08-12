@@ -156,7 +156,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 class CustomCSRFProtect(CSRFProtect):
     def _get_token(self):
         # Try header first (used by fetch)
-        token = request.headers.get("X-CSRFToken")
+        token = request.headers.get("X-CSRF-Token")
         if token:
             return token
         # Fallback to default

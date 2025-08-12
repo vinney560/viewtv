@@ -2981,32 +2981,57 @@ def set_notice():
 #========================================
 
 
-# ------------------------ Enhanced Config ------------------------
+# ------------------------ Enhanced Config ----------------------
+
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
 INTENT_FILE = "intent_data.json"
 SYNONYMS_FILE = "synonyms.json"
-HISTORY_LIMIT = 50
+HISTORY_LIMIT = 60
 CHECK_TIMEOUT = 5
-REASONING_DEPTH = 4
+REASONING_DEPTH = 5
 CONVERSATION_MEMORY = 5
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 5
 MIN_UPDATE_SAMPLES = 3
 MIN_CONFIDENCE = 0.3
 
+# ------------------------ Channel Families ----------------------
+
+CHANNEL_FAMILIES = {
+    "ESPN": ["ESPN", "ESPN2", "ESPNU", "ESPNEWS", "ESPN DEPORTES"],
+    "Fox Sports": ["Fox Sports 1", "Fox Sports 2", "Fox Soccer Plus"],
+    "HBO": ["HBO", "HBO 2", "HBO Family", "HBO Signature", "HBO Comedy"],
+    "Showtime": ["Showtime", "Showtime 2", "Showtime Showcase", "Showtime Extreme"],
+    "Discovery": ["Discovery Channel", "Discovery Science", "Discovery Turbo", "Discovery Family"],
+    "CNN": ["CNN", "CNN International", "CNN en Español"],
+    "NBC": ["NBC", "NBC Sports", "NBC News Now", "NBC Golf"],
+    "Disney": ["Disney Channel", "Disney Junior", "Disney XD"],
+    "Starz": ["Starz", "Starz Comedy", "Starz Edge", "Starz Kids & Family"],
+    "Nickelodeon": ["Nickelodeon", "Nick Jr", "Nicktoons", "TeenNick"],
+
+    # New groups added below
+
+    "AMC Networks": ["AMC", "BBC America", "IFC", "SundanceTV"],
+    "Universal": ["USA Network", "Syfy", "Bravo", "E!"],
+    "Warner Bros": ["TNT", "TBS", "Cartoon Network", "Adult Swim"],
+    "Paramount": ["CBS", "Comedy Central", "MTV", "VH1"],
+    "PBS": ["PBS", "PBS Kids", "Create", "World Channel"],
+    "National Geographic": ["Nat Geo", "Nat Geo Wild"],
+    "Lifetime": ["Lifetime", "Lifetime Movies", "Lifetime Real Women"],
+    "TLC": ["TLC", "Discovery Life", "Animal Planet"]
+}
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
     channels = json.load(f)
 
-# Load intent data if exists, else initialize empty structure
-try:
-    with open(INTENT_FILE, "r", encoding="utf-8") as f:
-        intent_data = json.load(f)
-except (FileNotFoundError, json.JSONDecodeError) as e:
-    print(f"Warning: {e}. Initializing empty intent data.")
+# Load intent data if exists
+if os.path.exists(INTENT_FILE):
+    with open(INTENT_FILE, "r") as i:
+        intent_data = json.load(i)
+else:
     intent_data = {
         "intents": {},
         "examples": []
@@ -3031,20 +3056,37 @@ def save_synonyms():
 
 # Load general knowledge base
 if os.path.exists(GENERAL_KNOWLEDGE_FILE):
-    with open(GENERAL_KNOWLEDGE_FILE, "r") as f:
-        general_knowledge = json.load(f)
+    with open(GENERAL_KNOWLEDGE_FILE, "r") as g:
+        general_knowledge = json.load(g)
 else:
     general_knowledge = {
-        "greetings": ["Hello!", "Hi there!", "Hey!", "Greetings!"],
-        "farewells": ["Goodbye!", "See you later!", "Bye!", "Take care!"],
-        "thanks": ["You're welcome!", "My pleasure!", "Happy to help!", "Anytime!"],
+        "greetings": [
+            "Hello! Ready to assist with all your TV viewing needs!",
+            "Hi there! Let's find something great to watch!",
+            "Greetings! Your personal TV guide at your service!",
+            "Hey! How can I enhance your entertainment experience today?",
+            "Welcome back! What shall we explore in the world of television?"
+        ],
+        "farewells": [
+            "Enjoy your shows! Come back if you need more recommendations!",
+            "Happy viewing! Remember I'm here 24/7 for TV help!",
+            "Signing off - your TV questions are always welcome!",
+            "Bye for now! May your streaming be buffer-free!",
+            "See you later! Don't hesitate to ask about shows!"
+        ],
+        "thanks": [
+            "You're welcome! Enjoy your entertainment journey!",
+            "Happy to help enhance your viewing experience!",
+            "Always a pleasure to assist with TV matters!",
+            "Glad I could help with your entertainment needs!",
+            "My pleasure! The perfect show awaits you!"
+        ],
         "help": [
-            "I can help you with TV channel status, information, recommendations, and comparisons. "
-            "You can also ask me general questions!",
-            "I specialize in TV channels but can also chat about general topics. "
-            "Try asking about channel status or recommendations!",
-            "Need help? I can check channel status, provide information, recommend channels, "
-            "or just chat about general topics!"
+            "I specialize in all things TV: channel status, show recommendations, technical troubleshooting, and parental controls!",
+            "Ask me about: program schedules, channel packages, streaming quality, or content filters!",
+            "I can: check channel availability, suggest shows, explain error codes, and help optimize your setup!",
+            "Need help with: program guides, device compatibility, picture quality, or subscription options? Just ask!",
+            "Your TV assistant can: compare channels, explain technical terms, recommend packages, and troubleshoot issues!"
         ],
         "general_qa": {
             "weather": "I don't have real-time weather data, but I recommend checking a weather service for accurate forecasts.",
@@ -3409,7 +3451,7 @@ class AdvancedReasoningEngine:
     # ------------ Natural Language Generation ----------
     
     def generate_status_response(self, channel, status, explanation):
-        """Generate varied status responses"""
+        """Generate varied status responses with channel family awareness"""
         templates = {
             "online": [
                 f"Great news! {channel} is up and running perfectly right now. {explanation}",
@@ -3427,7 +3469,19 @@ class AdvancedReasoningEngine:
                 f"I don't have current information for {channel}. {explanation}"
             ]
         }
-        return random.choice(templates.get(status, templates["unknown"]))
+        
+        response = random.choice(templates.get(status, templates["unknown"]))
+        
+        # Add family alternatives for offline/unknown status
+        if status in ["offline", "unknown"]:
+            family = self.get_channel_family(channel)
+            if family:
+                family_channels = [m for m in CHANNEL_FAMILIES[family] 
+                                  if m != channel and get_key_by_name(m)]
+                if family_channels:
+                    response += f" You might try other {family} channels like {', '.join(family_channels[:2])}."
+        
+        return response
     
     def add_conversational_elements(self, response):
         """Make responses more natural and human-like"""
@@ -3453,6 +3507,13 @@ class AdvancedReasoningEngine:
         return response
     
     # -------------------- Utility Methods --------------------
+    def get_channel_family(self, channel):
+        """Find which family a channel belongs to"""
+        for family, members in CHANNEL_FAMILIES.items():
+            if channel in members:
+                return family
+        return None
+    
     def check_channel_status(self, channel):
         key = get_key_by_name(channel)
         if key:
@@ -3489,6 +3550,12 @@ class AdvancedReasoningEngine:
         if key:
             data = channels[key]
             info = f"{data.get('group-title', 'Unknown category')} channel"
+            
+            # Add channel family info
+            family = self.get_channel_family(channel)
+            if family:
+                info += f" (part of the {family} family)"
+                
             if "country" in data:
                 info += f" from {data['country']}"
             return info
@@ -3496,17 +3563,22 @@ class AdvancedReasoningEngine:
     
     def find_similar_channels(self, channel):
         key = get_key_by_name(channel)
-        if not key:
-            return []
-        
-        current_category = channels[key].get("group-title", "")
         similar = []
         
-        for k, v in channels.items():
-            if k == key:
-                continue
-            if v.get("group-title") == current_category:
-                similar.append(v["name"])
+        # First try same category
+        if key:
+            current_category = channels[key].get("group-title", "")
+            for k, v in channels.items():
+                if k == key:
+                    continue
+                if v.get("group-title") == current_category:
+                    similar.append(v["name"])
+        
+        # Then try channel family
+        family = self.get_channel_family(channel)
+        if family:
+            similar.extend([m for m in CHANNEL_FAMILIES[family] 
+                          if m != channel and get_key_by_name(m)])
         
         return similar if similar else ["ESPN", "CNN", "HBO"]  # Default suggestions
     
@@ -3545,9 +3617,19 @@ class AdvancedReasoningEngine:
 
 # ------------------------ Core System ------------------------
 def get_key_by_name(name):
+    # Try exact match first
     for k, v in channels.items():
         if v["name"].lower() == name.lower():
             return k
+    
+    # Try family match
+    for family, members in CHANNEL_FAMILIES.items():
+        if name.lower() in [m.lower() for m in members]:
+            # Find first available family member
+            for member in members:
+                for k, v in channels.items():
+                    if v["name"].lower() == member.lower():
+                        return k
     return None
 
 def extract_entities(text):
@@ -3560,12 +3642,17 @@ def extract_entities(text):
         if word in text_lower:
             entities.extend(alternatives)
     
-    # 2. Exact match
+    # 2. Check channel families
+    for family, members in CHANNEL_FAMILIES.items():
+        if family.lower() in text_lower:
+            entities.extend(members)
+    
+    # 3. Exact match
     for name in channel_names:
         if name.lower() in text_lower:
             entities.append(name)
     
-    # 3. Fuzzy match if no exact matches
+    # 4. Fuzzy match if no exact matches
     if not entities:
         matches = get_close_matches(text, channel_names, n=3, cutoff=0.6)
         entities.extend(matches)
@@ -3900,17 +3987,33 @@ def initialize_model():
 
 def predict_intent(text, model):
     """Predict intent with confidence threshold"""
-    probabilities = model.predict_proba([text])[0]
-    classes = model.classes_
-    max_idx = np.argmax(probabilities)
-    max_prob = probabilities[max_idx]
-    intent = classes[max_idx]
-    
-    if max_prob < MIN_CONFIDENCE:
-        # Check if we have similar existing intents
-        similar_intents = get_close_matches(text, list(intent_data["intents"].keys()), n=1, cutoff=0.5)
-        return similar_intents[0] if similar_intents else "general_question"
-    return intent
+    try:
+        probabilities = model.predict_proba([text])[0]
+        classes = model.classes_
+        max_idx = np.argmax(probabilities)
+        max_prob = probabilities[max_idx]
+        intent = classes[max_idx]
+        
+        if max_prob < MIN_CONFIDENCE:
+            # Check if we have similar existing intents
+            similar_intents = get_close_matches(text, list(intent_data["intents"].keys()), n=1, cutoff=0.5)
+            return similar_intents[0] if similar_intents else "general_question"
+        return intent
+    except Exception as e:
+        print(f"Intent prediction error: {e}")
+        # Fallback to simple keyword matching
+        text_lower = text.lower()
+        if any(greeting in text_lower for greeting in ["hello", "hi", "hey", "greetings"]):
+            return "greeting"
+        if any(farewell in text_lower for farewell in ["bye", "goodbye", "see you", "later"]):
+            return "goodbye"
+        if any(thanks in text_lower for thanks in ["thank", "thanks", "appreciate"]):
+            return "thanks"
+        if "how are you" in text_lower:
+            return "how_are_you"
+        if "help" in text_lower:
+            return "help"
+        return "general_question"
 
 def update_model(model, new_samples):
     """Update model with new samples"""
@@ -3979,7 +4082,6 @@ learning_thread.start()
 
 # ------------------------ Flask Routes ------------------------
 reasoning_engine = AdvancedReasoningEngine()
-
 
 @app.route('/chat', methods=['GET', 'POST'])
 def index():
@@ -4098,6 +4200,7 @@ def list_intents():
 @app.route('/synonyms')
 def list_synonyms():
     return jsonify(synonyms)
+
 
 
 #========================================

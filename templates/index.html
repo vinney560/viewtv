@@ -725,6 +725,6 @@
       e.preventDefault();  
       return false;  
     });  
-  </script>  
+  </script><script>if("serviceWorker"in navigator){navigator.serviceWorker.register("/service-worker.js").then(()=>console.log("SW Registered")).catch(err=>console.log("SW failed:",err));}</script>
 </body>  
 </html>

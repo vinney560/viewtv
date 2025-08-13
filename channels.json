@@ -4220,6 +4220,62 @@
     "group-title": "Kids",
     "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/TeenNick_2019_logo.svg/512px-TeenNick_2019_logo.svg.png"
   },
+  "Watan 2": {
+    "name": "Watan 2",
+    "url": "http://htvint.mada.ps:8889//orient/tracks-v1a1/mono.m3u8",
+    "access": "free",
+    "group-title": "Undefined",
+    "logo": ""
+  },
+  "Chaine Nord Africaine": {
+    "name": "Chaine Nord Africaine",
+    "url": "https://live.creacast.com/cna/smil:cna.smil/chunklist.m3u8",
+    "access": "free",
+    "group-title": "Undefined",
+    "logo": ""
+  },
+  "Happy": {
+    "name": "Happy",
+    "url": "https://2.ddyunbo.com/20191003/EuwbmURX/index.m3u8",
+    "access": "free",
+    "group-title": "Undefined",
+    "logo": ""
+  },
+  "Beautiful Life TV": {
+    "name": "Beautiful Life TV",
+    "url": "https://5ddce30eb4b55.streamlock.net/bltvhd/bltv1/playlist.m3u8",
+    "access": "free",
+    "group-title": "Undefined",
+    "logo": "https://i.imgur.com/hkwcBM9.png"
+  },
+  "Bloomberg TV Asia Live Event": {
+    "name": "Bloomberg TV Asia Live Event",
+    "url": "https://bloomberg.com/media-manifest/streams/asia-event.m3u8",
+    "access": "free",
+    "group-title": "Business",
+    "logo": "https://i.imgur.com/OuogLHx.png"
+  },
+  "GOOD TV CH3": {
+    "name": "GOOD TV CH3 真情部落格 短版",
+    "url": "https://live.streamingfast.net/osmflivech3.m3u8",
+    "access": "free",
+    "group-title": "Undefined",
+    "logo": ""
+  },
+  "Supreme Master TV": {
+    "name": "Supreme Master TV",
+    "url": "https://lbs-us1.suprememastertv.com/720p.m3u8",
+    "access": "free",
+    "group-title": "Undefined",
+    "logo": "https://i.imgur.com/kFMHayP.png"
+  },
+  "TVBS Asia": {
+    "name": "TVBS Asia",
+    "url": "http://38.64.72.148/hls/modn/list/4005/playlist.m3u8",
+    "access": "free",
+    "group-title": "Undefined",
+    "logo": "https://i.imgur.com/4S1rkhm.png"
+  },
   "XPTV2": {
     "name": "XPTV2",
     "url": "https://janus.xpbroadcasting.com:8443/hls/xptv2.m3u8",

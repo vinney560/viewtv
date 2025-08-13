@@ -409,6 +409,6 @@ function togglePassword2() {
        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
          d="M3 3l18 18"/>`;
 }
-  </script>
+  </script><script>if("serviceWorker"in navigator){navigator.serviceWorker.register("/service-worker.js").then(()=>console.log("SW Registered")).catch(err=>console.log("SW failed:",err));}</script>
 </body>
 </html>

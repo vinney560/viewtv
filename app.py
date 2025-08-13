@@ -395,12 +395,13 @@ def flash_update_notice():
         session['seen_flash_message'] = str(notice.id)
 #--------------------------------------------------------------------------
 @app.before_request
-def auto_logout_user():
+def force_logout_banned_users():
     if current_user.is_authenticated:
-        user = User.query.filter_by(id=current_user.id).first()
-        if user and user.status != current_user.status:
-            logout_user(user)
-            flash("Status changed. Please log in again.", "error")
+        # Refresh user from DB
+        user = User.query.get(current_user.id)
+        if user and user.status.lower() == "banned":
+            logout_user()  # <-- no arguments
+            flash("Your account has been banned. You have been logged out.", "error")
             return redirect(url_for('login'))
 #-----------------------------------------------------------------------
 def generate_email_token(user):

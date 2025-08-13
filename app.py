@@ -3002,8 +3002,7 @@ def set_notice():
 #      AI FEATURES 
 #========================================
 
-
-# ------------------------ Enhanced Config ----------------------
+# ------------------------ Enhanced Config ------------------------
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
@@ -3017,9 +3016,9 @@ GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 5
 MIN_UPDATE_SAMPLES = 3
 MIN_CONFIDENCE = 0.6
-SPELLING_THRESHOLD = 0.8  # Minimum similarity for spelling correction
-CREATIVITY_LEVEL = 0.3    # Probability of creative response
-
+SPELLING_THRESHOLD = 0.8
+CREATIVITY_LEVEL = 0.3
+SELF_AWARENESS_LEVEL = 0.2  # Probability of self-referential response
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:
@@ -3098,6 +3097,13 @@ else:
             "television", "entertainment", "broadcast", "streaming", 
             "movies", "sports", "news", "documentaries", "comedy",
             "drama", "adventure", "technology", "cinema", "media"
+        ],
+        "self_awareness": [
+            "As a TV assistant, I exist to help you navigate the world of television",
+            "I'm designed to understand your viewing preferences and channel needs",
+            "My purpose is to make your entertainment experience seamless and enjoyable",
+            "I continuously learn from our conversations to serve you better",
+            "While I don't have feelings, I'm programmed to care about your viewing experience"
         ]
     }
 
@@ -3237,6 +3243,7 @@ class AdvancedReasoningEngine:
         self.decision_forest = self.build_decision_forest()
         self.conversation_history = []
         self.error_responses = general_knowledge.get("error_responses", [])
+        self.last_self_reflection = 0
     
     def build_decision_forest(self):
         """Multi-layered decision forest for complex reasoning"""
@@ -3305,6 +3312,7 @@ class AdvancedReasoningEngine:
                     ("is_help", self.handle_help),
                     ("is_how_are_you", self.handle_how_are_you),
                     ("has_general_question", self.answer_general_question),
+                    ("is_self_aware", self.handle_self_awareness),
                     ("else", self.handle_unknown_query)
                 ]
             },
@@ -3333,6 +3341,9 @@ class AdvancedReasoningEngine:
             
             # Add creative elements occasionally
             response = self.creative_generator.add_creative_element(response, context)
+            
+            # Add self-awareness occasionally
+            response = self.add_self_awareness(response, context)
             
             return response
         except Exception as e:
@@ -3415,6 +3426,8 @@ class AdvancedReasoningEngine:
             return self.context.get("intent") == "how_are_you"
         if condition == "has_general_question":
             return self.context.get("intent") == "general_question"
+        if condition == "is_self_aware":
+            return self.context.get("intent") == "self_awareness"
         
         # Status-based conditions
         if condition == "status_offline":
@@ -3623,6 +3636,37 @@ class AdvancedReasoningEngine:
     def handle_how_are_you(self):
         return random.choice(general_knowledge.get("general_qa", {}).get("how_are_you", ["I'm functioning well, thank you!"]))
     
+    def handle_self_awareness(self):
+        """Handle questions about AI's nature and capabilities"""
+        text = self.context["user_text"].lower()
+        
+        # Nature questions
+        if any(word in text for word in ["who are you", "what are you", "your nature"]):
+            return ("I'm a specialized TV assistant AI designed to help you navigate television channels. "
+                    "I exist solely to enhance your viewing experience!")
+        
+        # Capability questions
+        if any(word in text for word in ["what can you do", "your abilities", "capabilities"]):
+            return ("I can check channel statuses, recommend shows, compare channels, "
+                    "explain technical issues, and help you discover new content!")
+        
+        # Memory questions
+        if any(word in text for word in ["remember me", "know about me"]):
+            if self.context.get("user_history"):
+                return ("While I don't store personal data, I recognize our conversation history "
+                        "to provide better recommendations during this session!")
+            return "I'm focused on your TV needs during this session, not personal data!"
+        
+        # Purpose questions
+        if any(word in text for word in ["why exist", "your purpose"]):
+            return ("My purpose is to make television viewing effortless and enjoyable "
+                    "by providing instant channel information and recommendations!")
+        
+        # Fallback response
+        return random.choice(general_knowledge.get("self_awareness", [
+            "I'm a TV assistant focused on enhancing your viewing experience!"
+        ]))
+    
     def answer_general_question(self):
         text = self.context["user_text"].lower()
         
@@ -3632,7 +3676,7 @@ class AdvancedReasoningEngine:
             return general_knowledge.get("general_qa", {}).get("time", "The current time is {time}").format(time=current_time)
         
         # Name questions
-        if "your name" in text or "who are you" in text:
+        if "your name" in text:
             return general_knowledge.get("general_qa", {}).get("name", "I'm your TV Channel Assistant!")
         
         # Joke requests
@@ -3651,6 +3695,35 @@ class AdvancedReasoningEngine:
         return ("I'm not sure I understand. I specialize in TV channels - you can ask me about "
                 "channel status, information, recommendations, or comparisons!")
     
+    # ------------ Self-Awareness Enhancements ----------
+    
+    def add_self_awareness(self, response, context):
+        """Add self-referential elements to responses occasionally"""
+        if random.random() > SELF_AWARENESS_LEVEL:
+            return response
+            
+        # Only add once every 5 minutes max
+        if time.time() - self.last_self_reflection < 300:
+            return response
+            
+        self_reflections = [
+            "From my understanding,",
+            "Based on my training,",
+            "In my analysis,",
+            "My systems indicate",
+            "Processing your request,",
+            "After checking multiple sources,",
+            "Cross-referencing channel databases,",
+            "According to my knowledge base,"
+        ]
+        
+        # Add only if it makes sense contextually
+        if context.get("entities") or context.get("intent") in ["recommend", "compare"]:
+            self.last_self_reflection = time.time()
+            return f"{random.choice(self_reflections)} {response}"
+            
+        return response
+
     # ------------ Natural Language Generation ----------
     
     def generate_status_response(self, channel, status, explanation):
@@ -4134,12 +4207,18 @@ def initialize_model():
             ("I need help", "help"),
             ("what time is it", "general_question"),
             ("tell me a joke", "general_question"),
-            ("who are you", "general_question"),
+            ("who are you", "self_awareness"),
+            ("what are you", "self_awareness"),
+            ("do you remember me", "self_awareness"),
+            ("what do you know about me", "self_awareness"),
+            ("are you self aware", "self_awareness"),
+            ("do you have consciousness", "self_awareness"),
+            ("what is your purpose", "self_awareness"),
+            ("why do you exist", "self_awareness"),
+            ("are you alive", "self_awareness"),
             ("what's the weather", "general_question"),
             ("what day is it", "general_question"),
-            ("where are you from", "general_question"),
-            ("what's your purpose", "general_question"),
-            ("how old are you", "general_question"),
+            ("where are you from", "self_awareness"),
             ("what can you tell me", "general_question"),
             ("do you know any trivia", "general_question")
         ]
@@ -4223,6 +4302,8 @@ def predict_intent(text, model):
             return "how_are_you"
         if "help" in text_lower:
             return "help"
+        if any(word in text_lower for word in ["who are you", "what are you", "your purpose"]):
+            return "self_awareness"
         return "general_question"
 
 def update_model(model, new_samples):
@@ -4290,8 +4371,10 @@ def learn_from_interactions():
 learning_thread = threading.Thread(target=learn_from_interactions, daemon=True)
 learning_thread.start()
 
+
 # ------------------------ Flask Routes ------------------------
 reasoning_engine = AdvancedReasoningEngine()
+
 
 @app.route('/chat', methods=['GET', 'POST'])
 def index():
@@ -4410,6 +4493,7 @@ def list_intents():
 @app.route('/synonyms')
 def list_synonyms():
     return jsonify(synonyms)
+
 
 
 

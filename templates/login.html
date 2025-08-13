@@ -858,7 +858,7 @@
   <circle cx="12" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0s,0s"/>
   <circle cx="40" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0.2s,0.2s"/>
   <circle cx="68" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0.4s,0.4s"/>
-</svg>`, 'ai', 'info'); document.head.insertAdjacentHTML('beforeend', `<style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}@keyframes updown{0%{transform:translateY(0)}100%{transform:translateY(-5px)}}</style>`); setTimeout(() => {document.querySelectorAll('#waveDots circle').forEach(c => c.style.animation = 'none');}, 5000);
+</svg>`, 'ai', 'info'); document.head.insertAdjacentHTML('beforeend', `<style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}@keyframes updown{0%{transform:translateY(0)}100%{transform:translateY(-5px)}}</style>`); setTimeout(() => {document.querySelectorAll('#waveDots circle').forEach(c => c.style.animation = 'none');}, 7000);
             
             // Simulate API call delay
             setTimeout(async () => {

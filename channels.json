@@ -1479,11 +1479,18 @@
     "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
     "group-title": "Entertainment"
   },
-  "wwe": {
+  "whshe": {
     "name": "Cable 14 Hamilton",
     "access": "paid",
     "url": "https://flowcaster1-ch.cdn.clearcable.net/C14/smil:C14.smil/playlist.m3u8?iimae0UC2aendtime=1665196120&iimae0UC2ahash=NzcDbuotaJAVf1DsNxuGHBlfCXSvHDIt5sqMUMgrRMU=&iimae0UC2astarttime=1665181720",
     "logo": "https://i.imgur.com/bJ7ygTq.png",
+    "group-title": ""
+  },
+  "wwe-aaggg": {
+    "name": "WWE YouTube",
+    "access": "paid",
+    "url": "https://www.youtube.com/embed/f9xpB6hxM78?rel=0&controls=1",
+    "logo": "https://viewstream-1.onrender.com/uploads/wrestling.png",
     "group-title": ""
   },
   "jee": {
@@ -1493,21 +1500,21 @@
     "logo": "https://caribbeanadvantage.com/images/CAtv-logo-512.png",
     "group-title": "General"
   },
-  "iu": {
+  "ihwgwu": {
     "name": "CBN Gospel",
     "access": "paid",
     "url": "https://59d39900ebfb8.streamlock.net/ccbn/ccbn/playlist.m3u8",
     "logo": "https://i.imgur.com/SHBAblV.png",
     "group-title": "Religious"
   },
-  "iop": {
+  "iodjp": {
     "name": "CBN TV",
     "access": "paid",
     "url": "https://5790d294af2dc.streamlock.net/CBNVI/CBNVI/playlist.m3u8",
     "logo": "https://i.imgur.com/SHBAblV.png",
     "group-title": "General"
   },
-  "yuh": {
+  "yuhh": {
     "name": "CeeJay TV",
     "access": "paid",
     "url": "https://asiakwa.com/ceejaytv/index.fmp4.m3u8",
@@ -1528,14 +1535,14 @@
     "logo": "https://i.imgur.com/8Ff5b3e.png",
     "group-title": "Entertainment"
   },
-  "qer": {
+  "qtrder": {
     "name": "Deluxe Dance",
     "access": "paid",
     "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/64733/64733_264_live.m3u8",
     "logo": "https://i.imgur.com/Qu7t15Y.png",
     "group-title": "Music"
   },
-  "bbb": {
+  "bbcfhb": {
     "name": "Deluxe Rap",
     "access": "paid",
     "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/65183/65183_264_live.m3u8",
@@ -1549,7 +1556,7 @@
     "logo": "https://i.imgur.com/8MRNFb9.png",
     "group-title": "News"
   },
-  "yyj": {
+  "yyggpj": {
     "name": "EbS",
     "access": "paid",
     "url": "https://streams.prd.commavservices.eu/live/ebs/index.m3u8",

@@ -190,13 +190,13 @@
     "group-title": "Sports"
   },
   "bein-3": {
-    "name": "Bein 6",
+    "name": "Bein 3",
     "url": "http://125x.org:8080/bn3hd/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },
   "bein-4": {
-    "name": "Bein 6",
+    "name": "Bein 4",
     "url": "http://125x.org:8080/bn4hd/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"

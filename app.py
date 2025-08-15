@@ -2058,7 +2058,7 @@ HEADERS = {
 LEAGUES = {
     "African Nations Championship": {
         "id": 479, 
-        "urls": ["http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8", "http://125x.org:8080/bn4hd/tracks-v1a1/mono.m3u8"]
+        "urls": ["https://viewstream-1.onrender.com/channel/MxnX55fd3xBKXDtro__7xw/bein-4.m3u8", "https://viewstream-1.onrender.com/channel/K1djSXCOgZruEQ9UM57I9g/bein-6.m3u8"]
     },
     "FIFA World Cup": {
         "id": 1, 
@@ -2074,7 +2074,7 @@ LEAGUES = {
             "http://190.92.10.66:4000/play/a001/index.m3u8"
         ]
     },
-    "Premier League": {  # Changed from EPL to full name
+    "Premier League": {
         "id": 39,
         "urls": [
             "http://190.92.10.66:4000/play/a001/index.m3u8",

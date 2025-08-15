@@ -3011,6 +3011,9 @@ def saved_channels():
         flash(f"Error loading channels: {str(e)}", "error")
         return redirect(url_for("home_admin"))
 #------------------------------------------------------------------------
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
 @app.route("/admin/clone_data")
 @login_required
 @superadmin_required
@@ -3019,7 +3022,7 @@ def clone_data():
     db2_url = os.getenv("DATABASE_URL_2")
 
     if not db1_url or not db2_url:
-        flash("Database URLs not set in environment file.", "error")
+        flash("Database URLs not set.", "error")
         return redirect(url_for("home_admin"))
 
     source_engine = create_engine(db1_url)
@@ -3031,24 +3034,43 @@ def clone_data():
     dest_session = DestSession()
 
     try:
-        # Drop all tables in destination DB
+        # Drop & recreate tables (parents first, children later)
         db.metadata.drop_all(bind=dest_engine)
-
-        # Recreate tables
         db.metadata.create_all(bind=dest_engine)
 
-        # Now clone data
-        for model in [User]:  # add your models here
+        # List models in dependency order
+        models = [User, AdminCode, Streams, Payment, FlashNotice, FootballMatch, MatchURL, Channel]
+
+        for model in models:
             rows = source_session.query(model).all()
             for row in rows:
-                clone = model(**{col.name: getattr(row, col.name) for col in model.__table__.columns})
+                data = {col.name: getattr(row, col.name)
+                        for col in model.__table__.columns
+                        if not col.primary_key or getattr(row, col.name) is not None}
+                clone = model(**data)
                 dest_session.add(clone)
-        dest_session.commit()
-        flash("Cloning completed successfully.", "success")
 
-    except Exception as e:
+        dest_session.commit()
+
+        # Reset sequences
+        for model in models:
+            table_name = model.__table__.name
+            pk_column = [c.name for c in model.__table__.columns if c.primary_key][0]
+            reset_seq_sql = text(f"""
+                SELECT setval(
+                    pg_get_serial_sequence('{table_name}', '{pk_column}'),
+                    COALESCE((SELECT MAX({pk_column}) FROM {table_name}), 1),
+                    true
+                );
+            """)
+            dest_session.execute(reset_seq_sql)
+        dest_session.commit()
+
+        flash("Database cloned successfully!", "success")
+
+    except SQLAlchemyError as e:
         dest_session.rollback()
-        flash(f"Cloning failed: {e}", "error")
+        flash(f"Cloning failed: {str(e)}", "error")
 
     finally:
         source_session.close()

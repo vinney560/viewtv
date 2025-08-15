@@ -420,6 +420,24 @@
     "url": "http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8",
     "group-title": "Sports"
   },
+  "History-Channel": {
+    "name": "History Channel",
+    "access": "paid",
+    "url": "http://104.255.88.155/history/index.m3u8",
+    "group-title": "Documentary"
+  },
+  "NGG": {
+    "name": "Nat Geo",
+    "access": "paid",
+    "url": "http://212.102.60.231/National_Geographic/index.m3u8",
+    "group-title": "Documentary"
+  },
+  "TLC-2": {
+    "name": "TLC 2",
+    "access": "paid",
+    "url": "http://143.244.60.30/TLC/index.m3u8",
+    "group-title": "Documentary"
+  },
   "bein-1": {
     "name": "Bein 1",
     "url": "http://125x.org:8080/bn1hd/tracks-v1a1/mono.m3u8",
@@ -435,6 +453,18 @@
   "bein-2-hd": {
     "name": "Bein 2 HD",
     "url": "http://125x.org:8080/bn2hd/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "bein-3": {
+    "name": "Bein 1",
+    "url": "http://125x.org:8080/bn3hd/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "bein-4": {
+    "name": "Bein 1",
+    "url": "http://125x.org:8080/bn4hd/tracks-v1a1/mono.m3u8",
     "access": "paid",
     "group-title": "Sports"
   },

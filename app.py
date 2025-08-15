@@ -302,6 +302,13 @@ class FootballMatch(db.Model):
             return primary
         return self.urls[0].url if self.urls else "#"
 #----------------------------------------------------------------------
+class Channel(db.Model):
+    __tablename__ = "channels"
+    key = db.Column(db.String(512), primary_key=True)
+    name = db.Column(db.String(1055), nullable=False)
+    url = db.Column(db.String(2024), nullable=False)
+    token = db.Column(db.String(512), unique=True, nullable=False)
+#-----------------------------------------------------------------------
 with app.app_context():
     db.create_all()
 #======================================
@@ -2050,7 +2057,7 @@ HEADERS = {
 LEAGUES = {
     "African Nations Championship": {
         "id": 479, 
-        "urls": ["http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8"]
+        "urls": ["http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8", "http://125x.org:8080/bn4hd/tracks-v1a1/mono.m3u8"]
     },
     "FIFA World Cup": {
         "id": 1, 
@@ -2205,89 +2212,71 @@ def init_scheduler(app):
 
 #=====================≠================
 
-# Configuration
+# ---------------- Load Channels ----------------
 BASIC_CHANNELS_FILE = 'raw_channels.json'
-TOKENS_FILE = 'channel_tokens.json'
-CHANNELS = {}
-TOKEN_MAP = {}
 
-def load_or_create_tokens():
-    """Load tokens from file or generate new ones"""
-    tokens = {}
-    
-    if os.path.exists(TOKENS_FILE):
-        try:
-            with open(TOKENS_FILE, 'r') as f:
-                tokens = json.load(f)
-        except:
-            pass  # If file is corrupt, we'll regenerate tokens
-            
-    return tokens
-
-def load_channels():
-    """Load channels and attach persistent tokens"""
+def load_channels_from_file():
     if not os.path.exists(BASIC_CHANNELS_FILE):
-        return {}
-    
+        return
+
     with open(BASIC_CHANNELS_FILE, 'r') as f:
         channels = json.load(f)
-    
-    valid_channels = {}
-    tokens = load_or_create_tokens()
-    new_tokens = False
-    
+
     for key, data in channels.items():
-        if not all(field in data for field in ['name', 'url']):
+        if 'name' not in data or 'url' not in data:
             continue
-            
-        # Generate new token if none exists
-        if key not in tokens:
-            tokens[key] = secrets.token_urlsafe(16)
-            new_tokens = True
-            
-        # Attach token to channel data
-        data['token'] = tokens[key]
-        valid_channels[key] = data
-    
-    # Save new tokens if generated
-    if new_tokens:
-        with open(TOKENS_FILE, 'w') as f:
-            json.dump(tokens, f)
-    
-    return valid_channels
 
-# Initialize channels and tokens
-CHANNELS = load_channels()
-TOKEN_MAP = {data['token']: key for key, data in CHANNELS.items()}
+        channel = Channel.query.get(key)
+        if not channel:
+            token = secrets.token_urlsafe(16)
+            channel = Channel(
+                key=key,
+                name=data['name'],
+                url=data['url'],
+                token=token
+            )
+            db.session.add(channel)
+        else:
+            # Update name/url if changed
+            channel.name = data['name']
+            channel.url = data['url']
 
-# Custom endpoint for channel URLs
+    db.session.commit()
+
+load_channels_from_file()
+
+# ---------------- Token Map ----------------
+def get_token_map():
+    return {channel.token: channel.key for channel in Channel.query.all()}
+
+# ---------------- Routes ----------------
 @app.route("/madeup_url")
 def madeup_url():
     base_url = "https://viewstream-1.onrender.com"
     channel_urls = []
-    
-    for key, channel in CHANNELS.items():
-        m3u8_url = f"{base_url}/channel/{channel['token']}/{key}.m3u8"
-        channel_urls.append({
-            "name": channel["name"],
-            "url": m3u8_url,
-            "token": channel['token']
-        })
-    
-    return render_template('made_channels.html', 
-                         channel_urls=channel_urls,
-                         base_url=base_url)
 
+    for channel in Channel.query.all():
+        m3u8_url = f"{base_url}/channel/{channel.token}/{channel.key}.m3u8"
+        channel_urls.append({
+            "name": channel.name,
+            "url": m3u8_url,
+            "token": channel.token
+        })
+
+    return render_template('made_channels.html',
+                           channel_urls=channel_urls,
+                           base_url=base_url)
 
 @app.route("/channel/<token>/<key>.m3u8")
 def channel_m3u8(token, key):
-    if token not in TOKEN_MAP:
+    token_map = get_token_map()
+    if token not in token_map:
         return "Invalid token", 403
-    
-    if TOKEN_MAP[token] != key:
+
+    if token_map[token] != key:
         return "Token-key mismatch", 403
 
-    channel = CHANNELS.get(key)
+    channel = Channel.query.get(key)
     if not channel:
         return "Channel not found", 404
 
@@ -2296,14 +2285,12 @@ def channel_m3u8(token, key):
 #EXT-X-VERSION:3
 #EXT-X-INDEPENDENT-SEGMENTS
 #EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2"
-{channel['url']}
+{channel.url}
 """
     return m3u8_content, 200, {
         'Content-Type': 'application/vnd.apple.mpegurl',
         'Access-Control-Allow-Origin': '*'
     }
-
-
 
 #======================================
 

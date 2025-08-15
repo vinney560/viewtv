@@ -1,23 +1,19 @@
-import requests
-from datetime import datetime, timedelta
-import time
 import threading
 from flask import current_app
-from app import db
-from app.models import FootballMatch, MatchURL
 
-# Configuration
+
+# Configuration - Updated to match working cURL example
 API_KEY = "4406e83311msh635cb32b3525e4bp17f9c1jsn874626c65441"
-BASE_URL = "https://v3.football.api-sports.io/fixtures"
+BASE_URL = "https://api-football-v1.p.rapidapi.com/v3/fixtures"
 HEADERS = {
     "x-rapidapi-key": API_KEY,
-    "x-rapidapi-host": "v3.football.api-sports.io"
+    "x-rapidapi-host": "api-football-v1.p.rapidapi.com"
 }
 
-# League IDs with corresponding streaming URLs
+# Verified League IDs with corresponding streaming URLs
 LEAGUES = {
-    "CHAN": {
-        "id": 915, 
+    "African Nations Championship": {
+        "id": 479, 
         "urls": ["http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8"]
     },
     "FIFA World Cup": {
@@ -34,7 +30,7 @@ LEAGUES = {
             "http://190.92.10.66:4000/play/a001/index.m3u8"
         ]
     },
-    "EPL": {
+    "Premier League": {  # Changed from EPL to full name
         "id": 39,
         "urls": [
             "http://190.92.10.66:4000/play/a001/index.m3u8",

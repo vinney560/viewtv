@@ -2213,6 +2213,7 @@ def init_scheduler(app):
 
 
 #=====================≠================
+
 # ---------------- Load Channels ----------------
 BASIC_CHANNELS_FILE = 'raw_channels.json'
 
@@ -2220,26 +2221,21 @@ def load_channels_from_file():
     if not os.path.exists(BASIC_CHANNELS_FILE):
         return
 
-    with app.app_context():  # ensure we are in app context for DB access
-        with open(BASIC_CHANNELS_FILE, 'r') as f:
+    with open(BASIC_CHANNELS_FILE, 'r') as f:
+        try:
             channels = json.load(f)
+        except json.JSONDecodeError:
+            print("Error: raw_channels.json is not valid JSON.")
+            return
 
+    with app.app_context():
         for key, data in channels.items():
             if 'name' not in data or 'url' not in data:
                 continue
 
+            # Only update existing channels
             channel = Channel.query.get(key)
-            if not channel:
-                token = secrets.token_urlsafe(16)
-                channel = Channel(
-                    key=key,
-                    name=data['name'],
-                    url=data['url'],
-                    token=token
-                )
-                db.session.add(channel)
-            else:
-                # Update name/url if changed
+            if channel:
                 channel.name = data['name']
                 channel.url = data['url']
 
@@ -2249,7 +2245,7 @@ load_channels_from_file()
 
 # ---------------- Token Map ----------------
 def get_token_map():
-    with app.app_context():  # ensure DB access
+    with app.app_context():
         return {channel.token: channel.key for channel in Channel.query.all()}
 
 # ---------------- Routes ----------------
@@ -2258,7 +2254,7 @@ def madeup_url():
     base_url = "https://viewstream-1.onrender.com"
     channel_urls = []
 
-    with app.app_context():  # ensure DB access
+    with app.app_context():
         for channel in Channel.query.all():
             m3u8_url = f"{base_url}/channel/{channel.token}/{channel.key}.m3u8"
             channel_urls.append({
@@ -2280,7 +2276,7 @@ def channel_m3u8(token, key):
     if token_map[token] != key:
         return "Token-key mismatch", 403
 
-    with app.app_context():  # ensure DB access
+    with app.app_context():
         channel = Channel.query.get(key)
         if not channel:
             return "Channel not found", 404

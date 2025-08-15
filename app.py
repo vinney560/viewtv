@@ -2213,87 +2213,89 @@ def init_scheduler(app):
 
 
 #=====================≠================
-
 # ---------------- Load Channels ----------------
-#BASIC_CHANNELS_FILE = 'raw_channels.json'
+BASIC_CHANNELS_FILE = 'raw_channels.json'
 
-#def load_channels_from_file():
-#    if not os.path.exists(BASIC_CHANNELS_FILE):
-#        return
+def load_channels_from_file():
+    if not os.path.exists(BASIC_CHANNELS_FILE):
+        return
 
-#    with open(BASIC_CHANNELS_FILE, 'r') as f:
-#        channels = json.load(f)
+    with app.app_context():  # ensure we are in app context for DB access
+        with open(BASIC_CHANNELS_FILE, 'r') as f:
+            channels = json.load(f)
 
-#    for key, data in channels.items():
-#        if 'name' not in data or 'url' not in data:
-#            continue
+        for key, data in channels.items():
+            if 'name' not in data or 'url' not in data:
+                continue
 
-#        channel = Channel.query.get(key)
-#        if not channel:
-#            token = secrets.token_urlsafe(16)
-#            channel = Channel(
-#                key=key,
-#                name=data['name'],
-#                url=data['url'],
-#                token=token
-#            )
-#            db.session.add(channel)
-#        else:
-#            # Update name/url if changed
-#            channel.name = data['name']
-#            channel.url = data['url']
+            channel = Channel.query.get(key)
+            if not channel:
+                token = secrets.token_urlsafe(16)
+                channel = Channel(
+                    key=key,
+                    name=data['name'],
+                    url=data['url'],
+                    token=token
+                )
+                db.session.add(channel)
+            else:
+                # Update name/url if changed
+                channel.name = data['name']
+                channel.url = data['url']
 
-#    db.session.commit()
+        db.session.commit()
 
-#load_channels_from_file()
+load_channels_from_file()
 
 # ---------------- Token Map ----------------
-#def get_token_map():
-#    return {channel.token: channel.key for channel in Channel.query.all()}
+def get_token_map():
+    with app.app_context():  # ensure DB access
+        return {channel.token: channel.key for channel in Channel.query.all()}
 
 # ---------------- Routes ----------------
-#@app.route("/madeup_url")
-#def madeup_url():
-#    base_url = "https://viewstream-1.onrender.com"
-#    channel_urls = []
+@app.route("/madeup_url")
+def madeup_url():
+    base_url = "https://viewstream-1.onrender.com"
+    channel_urls = []
 
-#    for channel in Channel.query.all():
-#        m3u8_url = f"{base_url}/channel/{channel.token}/{channel.key}.m3u8"
-#        channel_urls.append({
-#            "name": channel.name,
-#            "url": m3u8_url,
-#            "token": channel.token
-#        })
+    with app.app_context():  # ensure DB access
+        for channel in Channel.query.all():
+            m3u8_url = f"{base_url}/channel/{channel.token}/{channel.key}.m3u8"
+            channel_urls.append({
+                "name": channel.name,
+                "url": m3u8_url,
+                "token": channel.token
+            })
 
-#    return render_template('made_channels.html',
-#                           channel_urls=channel_urls,
-#                           base_url=base_url)
+    return render_template('made_channels.html',
+                           channel_urls=channel_urls,
+                           base_url=base_url)
 
-#@app.route("/channel/<token>/<key>.m3u8")
-#def channel_m3u8(token, key):
-#    token_map = get_token_map()
-#    if token not in token_map:
-#        return "Invalid token", 403
+@app.route("/channel/<token>/<key>.m3u8")
+def channel_m3u8(token, key):
+    token_map = get_token_map()
+    if token not in token_map:
+        return "Invalid token", 403
 
-#    if token_map[token] != key:
-#        return "Token-key mismatch", 403
+    if token_map[token] != key:
+        return "Token-key mismatch", 403
 
-#    channel = Channel.query.get(key)
-#    if not channel:
-#        return "Channel not found", 404
+    with app.app_context():  # ensure DB access
+        channel = Channel.query.get(key)
+        if not channel:
+            return "Channel not found", 404
 
-#    # VLC-compatible HLS wrapper
-#    m3u8_content = f"""#EXTM3U
+        # VLC-compatible HLS wrapper
+        m3u8_content = f"""#EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-INDEPENDENT-SEGMENTS
 #EXT-X-STREAM-INF:BANDWIDTH=4000000,RESOLUTION=1280x720,CODECS="avc1.64001f,mp4a.40.2"
 #{channel.url}
 #"""
-#    return m3u8_content, 200, {
-#        'Content-Type': 'application/vnd.apple.mpegurl',
-#        'Access-Control-Allow-Origin': '*'
-#    }
-
+        return m3u8_content, 200, {
+            'Content-Type': 'application/vnd.apple.mpegurl',
+            'Access-Control-Allow-Origin': '*'
+        }
 #======================================
 
 

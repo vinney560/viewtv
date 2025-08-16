@@ -2586,6 +2586,10 @@ def assistance():
 def manifest():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'manifest.json', mimetype='application/manifest+json')
 #-------------------------------------------------------------------------
+@app.route('/service-worker.js')
+def service_worker():
+    return send_from_directory('static', 'service-worker.js')
+#-------------------------------------------------------------------------
 @app.route("/dashboard")
 @login_required
 def dashboard():

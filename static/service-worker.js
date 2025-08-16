@@ -1,82 +1,47 @@
-const CACHE_NAME = "app-cache-v2";
-const urlsToCache = [
-  "/",          // landing page route
-  "/login",     
-  "/register",  
-  "/home_2",
-  "/home_1",
-  "/uploads/favicon.ico"
-];
+// This is the "Offline page" service worker
 
-// Install: cache static assets
-self.addEventListener("install", event => {
-  self.skipWaiting();
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
+
+const CACHE = "pwabuilder-page";
+
+// TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
+const offlineFallbackPage = "ToDo-replace-this-name.html";
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+self.addEventListener('install', async (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE)
+      .then((cache) => cache.add(offlineFallbackPage))
   );
 });
 
-// Activate: remove old caches
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => key !== CACHE_NAME && caches.delete(key))
-      )
-    )
-  );
-  self.clients.claim();
-});
+if (workbox.navigationPreload.isSupported()) {
+  workbox.navigationPreload.enable();
+}
 
-// Fetch: advanced network management
-self.addEventListener("fetch", event => {
-  const requestUrl = new URL(event.request.url);
+self.addEventListener('fetch', (event) => {
+  if (event.request.mode === 'navigate') {
+    event.respondWith((async () => {
+      try {
+        const preloadResp = await event.preloadResponse;
 
-  // 1. API requests: network-first
-  if (requestUrl.pathname.startsWith("/api/")) {
-    event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const resClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, resClone));
-          return response;
-        })
-        .catch(() => caches.match(event.request))
-    );
-    return;
+        if (preloadResp) {
+          return preloadResp;
+        }
+
+        const networkResp = await fetch(event.request);
+        return networkResp;
+      } catch (error) {
+
+        const cache = await caches.open(CACHE);
+        const cachedResp = await cache.match(offlineFallbackPage);
+        return cachedResp;
+      }
+    })());
   }
-
-  // 2. Static assets: cache-first
-  if (urlsToCache.includes(requestUrl.pathname)) {
-    event.respondWith(
-      caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
-        const resClone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, resClone));
-        return response;
-      }))
-    );
-    return;
-  }
-
-  // 3. Page routes: stale-while-revalidate
-  if (event.request.mode === "navigate") {
-    event.respondWith(
-      caches.match(event.request).then(cached => {
-        const networkFetch = fetch(event.request)
-          .then(response => {
-            const resClone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, resClone));
-            return response;
-          })
-          .catch(() => null); // fallback handled below
-        return cached || networkFetch || caches.match("/"); // landing page fallback
-      })
-    );
-    return;
-  }
-
-  // 4. Default: try network, fallback to cache
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
 });

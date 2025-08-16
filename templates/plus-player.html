@@ -11,7 +11,6 @@
   <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    /* All original styles remain unchanged */
     html, body {
       margin: 0; padding: 0; height: 100%;
       background-color: #000;
@@ -232,6 +231,7 @@
       animation: spin 1s ease-in-out infinite;
       z-index: 100;
       display: none;
+      pointer-events: none; /* Allow clicks through spinner */
     }
     
     @keyframes spin {
@@ -248,9 +248,10 @@
       background: transparent;
       z-index: 50;
       display: none;
+      pointer-events: none; /* Allow clicks through overlay */
     }
 
-    /* CUSTOM CONTROLS */
+    /* CUSTOM CONTROLS - TV STYLE */
     #custom-controls {
       position: absolute;
       bottom: 0;
@@ -262,27 +263,140 @@
       justify-content: space-between;
       align-items: center;
       z-index: 10;
-      opacity: 1; /* Always visible */
+      opacity: 1;
     }
     
     #play-pause {
       background: rgba(0,0,0,0.5);
       border: none;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       cursor: pointer;
+      margin: 0 10px;
     }
     
     #volume-container {
       display: flex;
       align-items: center;
-      margin-right: 10px;
+      margin: 0 10px;
     }
+    
+    .tv-control-btn {
+      background: rgba(0,0,0,0.5);
+      border: 2px solid #334155;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      margin: 0 5px;
+      font-size: 20px;
+      transition: all 0.2s;
+    }
+    
+    .tv-control-btn:hover {
+      background: rgba(59, 130, 246, 0.5);
+      transform: scale(1.05);
+    }
+    
+    .tv-control-btn:active {
+      transform: scale(0.95);
+    }
+    
+    #channel-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 15px;
+    }
+    
+    #channel-info {
+      background: rgba(0,0,0,0.7);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      min-width: 120px;
+      text-align: center;
+    }
+    
+    #channel-nav {
+      display: flex;
+    }
+    
+    #channel-up, #channel-down {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+    
+    #channel-number {
+      margin: 0 10px;
+      font-size: 18px;
+      min-width: 40px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #progress-container {
+      flex-grow: 1;
+      height: 8px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      margin: 0 15px;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    #progress-bar {
+      height: 100%;
+      background: #06b6d4;
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+    
+    #progress-time {
+      position: absolute;
+      top: -25px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      display: none;
+    }
+    
+    #network-status {
+      display: flex;
+      align-items: center;
+      margin: 0 15px;
+      font-size: 14px;
+      background: rgba(0,0,0,0.7);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    
+    .network-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .network-good { background: #10b981; }
+    .network-moderate { background: #f59e0b; }
+    .network-poor { background: #ef4444; }
 
     /* New Styles */
     #channel-cards-container {
@@ -520,9 +634,13 @@
         <div id="channel-cards"></div>
       </div>
       
-      <!-- Custom Controls -->
+      <!-- Enhanced TV-like Controls -->
       <div id="custom-controls" class="hidden">
-        <button id="play-pause">
+        <div class="tv-control-btn" id="prev-channel" title="Previous Channel">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+        
+        <button id="play-pause" title="Play/Pause">
           <svg id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
             <path d="M8 5v14l11-7z"/>
           </svg>
@@ -530,8 +648,31 @@
             <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
           </svg>
         </button>
+        
+        <div class="tv-control-btn" id="next-channel" title="Next Channel">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div id="channel-controls">
+          <div id="channel-info">Channel 1</div>
+          <div id="channel-nav">
+            <div class="tv-control-btn" id="channel-down" title="Channel Down">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div id="channel-number">1</div>
+            <div class="tv-control-btn" id="channel-up" title="Channel Up">
+              <i class="fas fa-chevron-up"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div id="progress-container">
+          <div id="progress-bar"></div>
+          <div id="progress-time">00:00</div>
+        </div>
+        
         <div id="volume-container">
-          <button id="volume-toggle">
+          <button id="volume-toggle" class="tv-control-btn" title="Mute/Unmute">
             <svg id="volume-on-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
               <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
             </svg>
@@ -539,6 +680,11 @@
               <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
             </svg>
           </button>
+        </div>
+        
+        <div id="network-status">
+          <div class="network-indicator network-good"></div>
+          <span>Network: Good</span>
         </div>
       </div>
     </div>
@@ -571,6 +717,8 @@
     const channelCardsContainer = document.getElementById('channel-cards-container');
     const channelCards = document.getElementById('channel-cards');
     const channelTitle = document.getElementById('channel-title');
+    const networkStatus = document.getElementById('network-status');
+    const networkIndicator = document.querySelector('.network-indicator');
 
     // Custom Controls Elements
     const playPauseBtn = document.getElementById('play-pause');
@@ -579,6 +727,15 @@
     const volumeToggleBtn = document.getElementById('volume-toggle');
     const volumeOnIcon = document.getElementById('volume-on-icon');
     const volumeOffIcon = document.getElementById('volume-off-icon');
+    const prevChannelBtn = document.getElementById('prev-channel');
+    const nextChannelBtn = document.getElementById('next-channel');
+    const channelUpBtn = document.getElementById('channel-up');
+    const channelDownBtn = document.getElementById('channel-down');
+    const channelNumber = document.getElementById('channel-number');
+    const channelInfo = document.getElementById('channel-info');
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
+    const progressTime = document.getElementById('progress-time');
 
     // Data Saver Configuration
     const DATA_SAVER_LEVELS = {
@@ -598,7 +755,14 @@
     let isIframePlayer = false;
     let currentChannelKey = '';
     let channelList = {};
+    let currentChannelIndex = 0;
+    let channelKeys = [];
     let hideTimeout;
+    let networkQuality = 'good';
+    let networkCheckInterval;
+    let retryCount = 0;
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 3000; // 3 seconds
 
     // Get URL and token from Flask template variables
     const streamUrl = "{{ url }}";
@@ -614,6 +778,7 @@
     function showError(msg) {
       errorMsg.textContent = msg;
       errorMsg.classList.remove('hidden');
+      showToast(msg, 'error');
     }
 
     function showSpinner() {
@@ -629,6 +794,55 @@
         spinner.style.display = 'none';
         disabledOverlay.style.display = 'none';
         isBuffering = false;
+        retryCount = 0; // Reset retry counter on successful play
+      }
+    }
+
+    // Network monitoring
+    function startNetworkMonitoring() {
+      clearInterval(networkCheckInterval);
+      
+      networkCheckInterval = setInterval(() => {
+        if (navigator.connection) {
+          const connection = navigator.connection;
+          let newStatus = 'good';
+          
+          if (connection.effectiveType.includes('2g') || connection.downlink < 1) {
+            newStatus = 'poor';
+          } else if (connection.effectiveType.includes('3g') || connection.downlink < 2.5) {
+            newStatus = 'moderate';
+          }
+          
+          if (newStatus !== networkQuality) {
+            networkQuality = newStatus;
+            updateNetworkIndicator();
+            
+            // Automatically enable data saving for poor connections
+            if (networkQuality === 'poor' && currentDataSaverLevel < DATA_SAVER_LEVELS.HIGH) {
+              setDataSaverLevel(DATA_SAVER_LEVELS.HIGH);
+              dataSaverBtn.classList.add('active');
+              showToast("Poor network detected. Enabling data saver.", 'info');
+            }
+          }
+        }
+      }, 5000);
+    }
+    
+    function updateNetworkIndicator() {
+      networkIndicator.className = 'network-indicator';
+      switch(networkQuality) {
+        case 'good':
+          networkIndicator.classList.add('network-good');
+          networkStatus.querySelector('span').textContent = 'Network: Good';
+          break;
+        case 'moderate':
+          networkIndicator.classList.add('network-moderate');
+          networkStatus.querySelector('span').textContent = 'Network: Moderate';
+          break;
+        case 'poor':
+          networkIndicator.classList.add('network-poor');
+          networkStatus.querySelector('span').textContent = 'Network: Poor';
+          break;
       }
     }
 
@@ -1084,11 +1298,36 @@
       }
     }
 
+    function updateProgressBar() {
+      if (player.duration && player.currentTime) {
+        const percent = (player.currentTime / player.duration) * 100;
+        progressBar.style.width = `${percent}%`;
+        
+        // Update time display
+        const currentTime = formatTime(player.currentTime);
+        const duration = formatTime(player.duration);
+        progressTime.textContent = `${currentTime} / ${duration}`;
+      }
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function seekToPosition(e) {
+      const rect = progressContainer.getBoundingClientRect();
+      const pos = (e.clientX - rect.left) / rect.width;
+      player.currentTime = pos * player.duration;
+    }
+
     // Toast notifications
     function showToast(message, type = 'info') {
-      const container = document.createElement('div');
-      container.id = 'toast-container';
-      if (!document.getElementById('toast-container')) {
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
         document.body.appendChild(container);
       }
       
@@ -1115,10 +1354,16 @@
           if (data && Array.isArray(data)) {
             // Convert array to object with key as property
             channelList = {};
-            data.forEach(ch => {
+            channelKeys = [];
+            data.forEach((ch, index) => {
               channelList[ch.key] = ch;
+              channelKeys.push(ch.key);
+              if (ch.key === currentChannelKey) {
+                currentChannelIndex = index;
+              }
             });
             renderChannelCards();
+            updateChannelInfo();
           }
         })
         .catch(error => {
@@ -1154,6 +1399,42 @@
         card.addEventListener('click', () => switchChannel(key));
         channelCards.appendChild(card);
       });
+    }
+
+    function updateChannelInfo() {
+      if (channelList[currentChannelKey]) {
+        const channel = channelList[currentChannelKey];
+        channelInfo.textContent = channel.name;
+        channelNumber.textContent = (currentChannelIndex + 1).toString();
+      }
+    }
+
+    function nextChannel() {
+      if (channelKeys.length === 0) return;
+      
+      currentChannelIndex = (currentChannelIndex + 1) % channelKeys.length;
+      const nextKey = channelKeys[currentChannelIndex];
+      switchChannel(nextKey);
+    }
+
+    function prevChannel() {
+      if (channelKeys.length === 0) return;
+      
+      currentChannelIndex = (currentChannelIndex - 1 + channelKeys.length) % channelKeys.length;
+      const prevKey = channelKeys[currentChannelIndex];
+      switchChannel(prevKey);
+    }
+
+    function channelUp() {
+      currentChannelIndex = Math.min(currentChannelIndex + 1, channelKeys.length - 1);
+      const nextKey = channelKeys[currentChannelIndex];
+      switchChannel(nextKey);
+    }
+
+    function channelDown() {
+      currentChannelIndex = Math.max(currentChannelIndex - 1, 0);
+      const prevKey = channelKeys[currentChannelIndex];
+      switchChannel(prevKey);
     }
 
     // Switch channel
@@ -1193,6 +1474,9 @@
       if (activeCard) {
         activeCard.classList.add('active');
       }
+      
+      // Update channel info in controls
+      updateChannelInfo();
     }
 
     // Reset player
@@ -1228,7 +1512,17 @@
       player.addEventListener('stalled', showSpinner);
       player.addEventListener('playing', hideSpinner);
       player.addEventListener('canplay', hideSpinner);
-      player.addEventListener('error', hideSpinner);
+      player.addEventListener('error', () => {
+        hideSpinner();
+        // Retry logic for poor network conditions
+        if (retryCount < MAX_RETRIES) {
+          retryCount++;
+          showToast(`Connection issue. Retrying... (${retryCount}/${MAX_RETRIES})`, 'info');
+          setTimeout(() => initializePlayer(url, tk), RETRY_DELAY);
+        } else {
+          showError("Playback failed after multiple attempts");
+        }
+      });
 
       if (ext === 'm3u8') {
         isIframePlayer = false;
@@ -1243,7 +1537,13 @@
             abrBandWidthUpFactor: 0.7,
             abrMaxWithRealBitrate: true,
             lowLatencyMode: false,
-            backBufferLength: 60
+            backBufferLength: 60,
+            fragLoadingRetryDelay: 1000,
+            fragLoadingMaxRetry: 6,
+            manifestLoadingRetryDelay: 1000,
+            manifestLoadingMaxRetry: 6,
+            levelLoadingRetryDelay: 1000,
+            levelLoadingMaxRetry: 6
           });
           window.hls = hls;
           originalQuality = hls.currentLevel;
@@ -1265,13 +1565,19 @@
           });
           player.style.display = 'block';
           player.muted = false;
-          player.play().then(startTrackingDataUsage).catch(e => {
+          player.play().then(() => {
+            startTrackingDataUsage();
+            retryCount = 0;
+          }).catch(e => {
             showError("Playback failed: " + e.message);
           });
         } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
           player.src = urlWithToken;
           player.style.display = 'block';
-          player.play().then(startTrackingDataUsage).catch(e => {
+          player.play().then(() => {
+            startTrackingDataUsage();
+            retryCount = 0;
+          }).catch(e => {
             showError("Playback failed: " + e.message);
           });
         } else {
@@ -1299,12 +1605,33 @@
                 bufferAheadToKeep: 600,
                 bufferBehindToKeep: 600,
                 initialBufferLevel: 600
+              },
+              retryIntervals: {
+                MP4: 1000,
+                MPD: 1000,
+                XLink: 1000,
+                mediaSegment: 1000,
+                initializationSegment: 1000,
+                indexSegment: 1000,
+                bitstreamSwitchingSegment: 1000,
+                other: 1000
+              },
+              retryAttempts: {
+                MP4: 6,
+                MPD: 6,
+                XLink: 6,
+                mediaSegment: 6,
+                initializationSegment: 6,
+                indexSegment: 6,
+                bitstreamSwitchingSegment: 6,
+                other: 6
               }
             }
           });
           dashPlayer.initialize(player, urlWithToken, true);
           player.style.display = 'block';
           startTrackingDataUsage();
+          retryCount = 0;
           
           // Fix for muted MPD streams
           player.muted = false;
@@ -1316,7 +1643,10 @@
         customControls.classList.remove('hidden');
         player.src = urlWithToken;
         player.style.display = 'block';
-        player.play().then(startTrackingDataUsage).catch(e => {
+        player.play().then(() => {
+          startTrackingDataUsage();
+          retryCount = 0;
+        }).catch(e => {
           showError("Playback failed: " + e.message);
         });
       } else {
@@ -1359,10 +1689,15 @@
       // Set current channel name in title
       if (channelName) {
         channelTitle.innerHTML = `<span class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>${channelName}`;
+        currentChannelKey = "{{ key }}"; // Assuming key is passed from backend
       }
       
       // Fetch channels for cards
       fetchChannels();
+
+      // Start network monitoring
+      startNetworkMonitoring();
+      updateNetworkIndicator();
 
       // Attach custom control events
       if (playPauseBtn) {
@@ -1371,6 +1706,68 @@
       if (volumeToggleBtn) {
         volumeToggleBtn.addEventListener('click', toggleMute);
       }
+      if (prevChannelBtn) {
+        prevChannelBtn.addEventListener('click', prevChannel);
+      }
+      if (nextChannelBtn) {
+        nextChannelBtn.addEventListener('click', nextChannel);
+      }
+      if (channelUpBtn) {
+        channelUpBtn.addEventListener('click', channelUp);
+      }
+      if (channelDownBtn) {
+        channelDownBtn.addEventListener('click', channelDown);
+      }
+      if (progressContainer) {
+        progressContainer.addEventListener('click', seekToPosition);
+        progressContainer.addEventListener('mousemove', (e) => {
+          if (player.duration) {
+            const rect = progressContainer.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            const time = pos * player.duration;
+            progressTime.textContent = formatTime(time);
+            progressTime.style.display = 'block';
+            progressTime.style.left = `${pos * 100}%`;
+          }
+        });
+        progressContainer.addEventListener('mouseleave', () => {
+          progressTime.style.display = 'none';
+        });
+      }
+      
+      // Keyboard controls
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        
+        switch(e.key) {
+          case ' ':
+            togglePlayPause();
+            break;
+          case 'ArrowUp':
+            channelUp();
+            break;
+          case 'ArrowDown':
+            channelDown();
+            break;
+          case 'ArrowLeft':
+            prevChannel();
+            break;
+          case 'ArrowRight':
+            nextChannel();
+            break;
+          case 'm':
+          case 'M':
+            toggleMute();
+            break;
+          case 'f':
+          case 'F':
+            toggleFullscreen();
+            break;
+        }
+      });
+      
+      // Update progress bar
+      setInterval(updateProgressBar, 1000);
     })();
 
     (function setupUIControls() {

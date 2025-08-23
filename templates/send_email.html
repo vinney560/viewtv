@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Email to Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-800 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-8">
+        <h1 class="text-3xl font-bold text-emerald-500 text-center mb-8">Send Email to Users</h1>
+
+        <form method="POST" class="space-y-6">
+            <div>
+                <h3 class="text-gray-700 font-semibold mb-2">Select Users</h3>
+                <ul class="space-y-2 max-h-64 overflow-y-auto pr-2">
+                    {% for user in users %}
+                        <li class="flex items-center space-x-2">
+                            <input type="checkbox" name="emails" value="{{ user.email }}" class="h-4 w-4 text-emerald-500 rounded focus:ring-emerald-500">
+                            <span class="text-gray-600">{{ user.email }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div>
+                <label for="subject" class="block text-gray-700 font-semibold mb-1">Subject</label>
+                <input type="text" name="subject" id="subject" required 
+                       class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-400 bg-gray-50">
+            </div>
+
+            <div>
+                <label for="message" class="block text-gray-700 font-semibold mb-1">Message</label>
+                <textarea name="message" id="message" required 
+                          class="w-full h-40 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-emerald-400 bg-gray-50"></textarea>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            </div>
+
+            <button type="submit" 
+                    class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-lg transition duration-300">
+                Send Email
+            </button>
+        </form>
+    </div>
+</body>
+</html>

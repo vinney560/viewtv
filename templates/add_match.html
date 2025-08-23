@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Match</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #2a1a6c, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: white;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .admin-header {
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #ffd700, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+        }
+        
+        .form-actions {
+            grid-column: span 2;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(90deg, #ff8c00, #ffd700);
+            color: #1a2a6c;
+            flex: 1;
+        }
+        
+        .cancel-btn {
+            background: rgba(255, 0, 0, 0.3);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .flash-messages {
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
+        .flash-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .flash-success {
+            background: rgba(0, 128, 0, 0.3);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        
+        .flash-danger {
+            background: rgba(255, 0, 0, 0.3);
+            border: 1px solid rgba(255, 100, 100, 0.2);
+        }
+        
+        .flash-warning {
+            background: rgba(255, 165, 0, 0.3);
+            border: 1px solid rgba(255, 200, 0, 0.2);
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: rgba(255, 215, 0, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .url-input-group {
+            display: flex;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+        
+        .url-input-group input {
+            flex: 1;
+        }
+        
+        .url-input-group button {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: rgba(0, 128, 255, 0.3);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .url-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .url-actions button {
+            width: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-group.full-width {
+                grid-column: 1;
+            }
+            
+            .form-actions {
+                grid-column: 1;
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .back-btn {
+                position: relative;
+                margin-bottom: 15px;
+                left: auto;
+                top: auto;
+                display: inline-flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <a href="{{ url_for('admin_match_dashboard') }}" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back
+        </a>
+        <h1><i class="fas fa-plus-circle"></i> Add New Match</h1>
+        <p>Create a new football event</p>
+    </div>
+    
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <div class="form-container">
+        <form method="POST" action="{{ url_for('add_match') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="home_team">Home Team</label>
+                    <input type="text" id="home_team" name="home_team" placeholder="Enter home team name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="away_team">Away Team</label>
+                    <input type="text" id="away_team" name="away_team" placeholder="Enter away team name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="home_logo">Home Team Logo URL</label>
+                    <input type="text" id="home_logo" name="home_logo" placeholder="Enter logo URL" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="away_logo">Away Team Logo URL</label>
+                    <input type="text" id="away_logo" name="away_logo" placeholder="Enter logo URL" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="match_date">Match Date & Time</label>
+                    <input type="datetime-local" id="match_date" name="match_date" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="competition">Competition</label>
+                    <input type="text" id="competition" name="competition" placeholder="Enter competition name" required>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label>Event URLs</label>
+                    <div id="url-container">
+                        <div class="url-input-group">
+                            <input type="url" name="event_urls[]" placeholder="Enter primary event URL" required>
+                            <div class="url-actions">
+                                <button type="button" class="add-url-btn"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="primary_url" name="primary_url" value="0">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn submit-btn">
+                        <i class="fas fa-save"></i> Create Match
+                    </button>
+                    <a href="{{ url_for('admin_match_dashboard') }}" class="btn cancel-btn">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Set current datetime as default for match date input
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('match_date').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        
+        // URL management
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('url-container');
+            
+            // Add new URL field
+            container.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-url-btn') || 
+                    e.target.parentElement.classList.contains('add-url-btn')) {
+                    const newGroup = document.createElement('div');
+                    newGroup.className = 'url-input-group';
+                    newGroup.innerHTML = `
+                        <input type="url" name="event_urls[]" placeholder="Enter event URL">
+                        <div class="url-actions">
+                            <button type="button" class="set-primary-btn" title="Set as primary"><i class="fas fa-star"></i></button>
+                            <button type="button" class="remove-url-btn"><i class="fas fa-minus"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(newGroup);
+                }
+                
+                if (e.target.classList.contains('remove-url-btn') || 
+                    e.target.parentElement.classList.contains('remove-url-btn')) {
+                    if (container.children.length > 1) {
+                        e.target.closest('.url-input-group').remove();
+                        updatePrimaryUrlIndex();
+                    }
+                }
+                
+                if (e.target.classList.contains('set-primary-btn') || 
+                    e.target.parentElement.classList.contains('set-primary-btn')) {
+                    const groups = container.querySelectorAll('.url-input-group');
+                    groups.forEach(group => {
+                        group.querySelector('.set-primary-btn').innerHTML = '<i class="fas fa-star"></i>';
+                        group.querySelector('.set-primary-btn').classList.remove('active');
+                    });
+                    
+                    const btn = e.target.closest('.set-primary-btn');
+                    btn.innerHTML = '<i class="fas fa-star"></i> Primary';
+                    btn.classList.add('active');
+                    
+                    // Update primary index
+                    groups.forEach((group, index) => {
+                        if (group.contains(btn)) {
+                            document.getElementById('primary_url').value = index;
+                        }
+                    });
+                }
+            });
+            
+            // Initialize primary button
+            function updatePrimaryUrlIndex() {
+                const groups = container.querySelectorAll('.url-input-group');
+                groups.forEach((group, index) => {
+                    const btn = group.querySelector('.set-primary-btn');
+                    if (index === 0) {
+                        btn.innerHTML = '<i class="fas fa-star"></i> Primary';
+                        btn.classList.add('active');
+                        document.getElementById('primary_url').value = 0;
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-star"></i>';
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+            
+            updatePrimaryUrlIndex();
+        });
+    </script>
+</body>
+</html>

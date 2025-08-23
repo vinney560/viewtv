@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ name }} - Streaming</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+    }
+    #bufferSpinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #22d3ee;
+      font-weight: 700;
+      font-size: 1.25rem;
+      text-shadow: 0 0 12px rgba(34, 211, 238, 0.7);
+      display: none;
+      pointer-events: none;
+      user-select: none;
+      z-index: 999;
+    }
+    .channel-list {
+      scrollbar-width: thin;
+      scrollbar-color: #22d3ee #0f172a;
+    }
+    .channel-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .channel-list::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    .channel-list::-webkit-scrollbar-thumb {
+      background-color: #22d3ee;
+      border-radius: 3px;
+    }
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+    }
+    .video-container {
+      aspect-ratio: 16/9;
+    }
+    .back-btn {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+    }
+    .video-playing .back-btn {
+      opacity: 0;
+    }
+    body:hover .back-btn {
+      opacity: 1;
+    }
+    .channel-active {
+      background: rgba(8, 145, 178, 0.15);
+      border-left: 3px solid #22d3ee;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #22d3ee;
+      padding: 12px 20px;
+      border-radius: 8px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body class="text-white min-h-screen flex flex-col">
+
+  <!-- Back Button -->
+  <button id="backBtn" onclick="tryClose()" class="back-btn fixed top-6 left-6 z-50 flex items-center text-cyan-300 hover:text-cyan-200 transition-all duration-200 group bg-gray-900/80 rounded-full p-2">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Main Content -->
+  <div class="flex flex-col flex-1 pt-16">
+
+    <!-- Video Player Section -->
+    <section class="w-full bg-black">
+      <div class="relative w-full max-w-7xl mx-auto video-container" style="max-height: 75vh;">
+        <video id="video" controls autoplay playsinline class="w-full h-full object-cover bg-black"></video>
+        <iframe id="iframe" src="" allowfullscreen class="absolute inset-0 w-full h-full hidden"></iframe>
+        <div id="bufferSpinner" class="flex items-center space-x-3">
+          <svg class="animate-spin h-6 w-6 text-cyan-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>Buffering stream...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info and Controls Section -->
+    <section class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-4">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+        <div class="flex items-center">
+          <h1 id="channelTitle" class="text-xl sm:text-2xl font-bold text-cyan-100 mb-2 sm:mb-0 truncate max-w-[70%]">{{ name }}</h1>
+          <div id="channelBadge" class="ml-3 px-2 py-1 rounded-full text-xs font-semibold hidden"></div>
+        </div>
+        
+        <!-- Quality Selector -->
+        <div id="qualityContainer" class="flex items-center space-x-2 bg-gray-900/80 rounded-lg px-3 py-2 border border-cyan-900/50">
+          <label for="qualitySelect" class="text-cyan-300 text-sm font-medium select-none">QUALITY:</label>
+          <select id="qualitySelect" class="bg-transparent text-cyan-100 text-sm font-medium focus:outline-none focus:ring-0 border-none">
+            <option value="-1" selected>Auto</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Channel List Section -->
+    <section class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+      <div class="bg-gray-900/40 backdrop-blur-sm rounded-xl p-5 border border-gray-800">
+        <h2 class="text-xl font-bold text-cyan-100 mb-5 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          EXPLORE CHANNELS
+        </h2>
+        
+        <div id="channelList" class="channel-list max-h-[400px] overflow-y-auto pr-2">
+          {% for ch in channels %}
+            <div id="channel-{{ ch.key }}" class="channel-item group relative mb-3 rounded-lg overflow-hidden transition-all duration-300 hover:bg-gray-800/60">
+              <div class="flex items-center justify-between p-4">
+                <div class="flex items-center min-w-0">
+                  <span class="text-cyan-300 font-semibold mr-3 w-6 text-right">{{ loop.index }}.</span>
+                  <span class="font-medium text-gray-100 truncate" title="{{ ch.name }}">{{ ch.name }}</span>
+                </div>
+                <button
+                  data-key="{{ ch.key }}"
+                  onclick="switchChannel('{{ ch.key }}')"
+                  class="watch-btn bg-cyan-600 hover:bg-cyan-500 text-white font-semibold px-4 py-2 rounded-md transition-all duration-200 glow-hover flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Watch
+                </button>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+            </div>
+          {% else %}
+            <div class="text-center py-8 text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="font-medium">No channels available</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // DOM Elements
+    const video = document.getElementById("video");
+    const iframe = document.getElementById("iframe");
+    const qualitySelect = document.getElementById("qualitySelect");
+    const qualityContainer = document.getElementById("qualityContainer");
+    const bufferSpinner = document.getElementById("bufferSpinner");
+    const backBtn = document.getElementById("backBtn");
+    const body = document.body;
+    const toast = document.getElementById("toast");
+    const channelTitle = document.getElementById("channelTitle");
+    const channelBadge = document.getElementById("channelBadge");
+
+    // Current channel state
+    let currentChannelKey = "{{ current_key }}";
+    let currentChannelAccess = "";
+
+    // Show toast notification
+    function showToast(message, type = 'info') {
+      toast.textContent = message;
+      toast.className = `toast show ${type}`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Handle back button visibility
+    function handlePlaybackState() {
+      if (video.paused) {
+        body.classList.remove("video-playing");
+      } else {
+        body.classList.add("video-playing");
+      }
+    }
+
+    // Set up event listeners for playback state
+    video.addEventListener('play', handlePlaybackState);
+    video.addEventListener('pause', handlePlaybackState);
+    video.addEventListener('playing', handlePlaybackState);
+    video.addEventListener('waiting', handlePlaybackState);
+
+    // Mouse movement handler
+    let mouseTimer;
+    body.addEventListener('mousemove', () => {
+      backBtn.style.opacity = '1';
+      clearTimeout(mouseTimer);
+      mouseTimer = setTimeout(() => {
+        if (!video.paused) {
+          backBtn.style.opacity = '0';
+        }
+      }, 2000);
+    });
+
+    function tryClose() {
+      window.close();
+      setTimeout(() => {
+        if (!window.closed) history.back();
+      }, 300);
+    }
+
+    function isM3U8(url) {
+      return url && url.toLowerCase().includes(".m3u8");
+    }
+    
+    function hasPort(url) {
+      // Regular expression to detect port numbers in URLs
+      return /:\d+/.test(url);
+    }
+
+    // Update active channel in list
+    function updateActiveChannel(key) {
+      document.querySelectorAll('.channel-item').forEach(item => {
+        item.classList.remove('channel-active');
+      });
+      
+      const activeItem = document.getElementById(`channel-${key}`);
+      if (activeItem) {
+        activeItem.classList.add('channel-active');
+      }
+    }
+
+    // Initialize player on page load
+    function initializePlayer(streamURL) {
+      if (isM3U8(streamURL) && Hls.isSupported()) {
+        if (window.hls) {
+          window.hls.destroy();
+          window.hls = null;
+        }
+        
+        const hls = new Hls();
+        window.hls = hls;
+        hls.loadSource(streamURL);
+        hls.attachMedia(video);
+        video.classList.remove("hidden");
+        iframe.classList.add("hidden");
+        qualityContainer.classList.remove("hidden");
+
+        // Clear and add auto option
+        qualitySelect.innerHTML = '';
+        const autoOption = document.createElement("option");
+        autoOption.value = -1;
+        autoOption.text = "Auto";
+        autoOption.selected = true;
+        qualitySelect.appendChild(autoOption);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          hls.levels.forEach((level, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.text = `${level.height}p`;
+            qualitySelect.appendChild(option);
+          });
+        });
+
+        qualitySelect.onchange = function () {
+          const selected = parseInt(this.value);
+          window.hls.currentLevel = selected;
+        };
+
+        hls.on(Hls.Events.BUFFER_STALLED, () => bufferSpinner.style.display = "flex");
+        hls.on(Hls.Events.BUFFER_APPENDED, () => bufferSpinner.style.display = "none");
+        hls.on(Hls.Events.BUFFER_EOS, () => bufferSpinner.style.display = "none");
+
+      } else if (isM3U8(streamURL) && video.canPlayType("application/vnd.apple.mpegurl")) {
+        if (window.hls) {
+          window.hls.destroy();
+          window.hls = null;
+        }
+        video.src = streamURL;
+        video.classList.remove("hidden");
+        iframe.classList.add("hidden");
+        qualityContainer.classList.remove("hidden");
+
+      } else {
+        if (window.hls) {
+          window.hls.destroy();
+          window.hls = null;
+        }
+        video.classList.add("hidden");
+        qualityContainer.classList.add("hidden");
+        iframe.src = streamURL;
+        iframe.classList.remove("hidden");
+      }
+    }
+
+    // Switch channel without reload
+    async function switchChannel(key) {
+      // Disable all watch buttons during loading
+      document.querySelectorAll('.watch-btn').forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('opacity-50');
+      });
+
+      bufferSpinner.style.display = "flex";
+      
+      try {
+        const response = await fetch(`/api/channel_stream_url?key=${encodeURIComponent(key)}`);
+        
+        // Handle API errors properly
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Channel not found");
+        }
+
+        const data = await response.json();
+        const newStreamURL = data.stream_url;
+        const newName = data.name || "Streaming";
+        
+        // PORT DETECTION: If URL contains a port, open directly
+        if (hasPort(newStreamURL)) {
+          window.location.href = newStreamURL;
+          return;
+        }
+        
+        // Update UI
+        channelTitle.textContent = newName;
+        currentChannelKey = key;
+        updateActiveChannel(key);
+        
+        // Update access badge if available
+        if (data.access) {
+          channelBadge.className = `ml-3 px-2 py-1 rounded-full text-xs font-semibold ${
+            data.access === 'paid' ? 'bg-yellow-500/20 text-yellow-400' :
+            data.access === 'free' ? 'bg-green-500/20 text-green-400' :
+            'bg-purple-500/20 text-purple-400'
+          }`;
+          channelBadge.textContent = data.access.toUpperCase();
+          channelBadge.classList.remove('hidden');
+        } else {
+          channelBadge.classList.add('hidden');
+        }
+
+        initializePlayer(newStreamURL);
+        showToast(`Switched to ${newName}`, 'success');
+
+      } catch (error) {
+        console.error("Channel switch error:", error);
+        showToast(error.message, 'error');
+      } finally {
+        setTimeout(() => {
+          bufferSpinner.style.display = "none";
+          document.querySelectorAll('.watch-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+          });
+        }, 1000);
+      }
+    }
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      // PORT DETECTION: For initial page load, the backend already handles redirects
+      initializePlayer("{{ stream_url }}");
+      updateActiveChannel(currentChannelKey);
+      
+      // Highlight current channel in list
+      if (currentChannelKey) {
+        const currentItem = document.getElementById(`channel-${currentChannelKey}`);
+        if (currentItem) {
+          currentItem.classList.add('channel-active');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

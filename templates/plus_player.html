@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Player | View Tv</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background-color: #000;
+      color: white;
+    }
+    #player-container {
+      position: relative;
+      width: 100%;
+      max-width: 1600px;
+      aspect-ratio: 16 / 9;
+      margin: auto;
+      background: black;
+      border-radius: 0.5rem;
+    }
+    #player, #iframe-player {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+      background: black;
+    }
+    .hidden {
+      display: none;
+    }
+    @media (max-width: 640px) {
+      #player-container {
+        aspect-ratio: 4 / 3;
+      }
+    }
+
+    :fullscreen #player-container,
+    :-webkit-full-screen #player-container {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      aspect-ratio: unset !important;
+      border-radius: 0 !important;
+    }
+
+    #fullscreen-toggle, #data-saver-toggle, #audio-only-toggle, #quality-toggle {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #22d3ee;
+      position: relative;
+    }
+    #fullscreen-toggle:hover, #data-saver-toggle:hover, #audio-only-toggle:hover, #quality-toggle:hover {
+      color: #ffffff;
+    }
+
+    #fullscreen-toggle.hide, #data-saver-toggle.hide, #audio-only-toggle.hide, #quality-toggle.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    #data-saver-icon, #audio-only-icon {
+      transition: all 0.3s ease;
+    }
+    #data-saver-toggle.active #data-saver-icon,
+    #audio-only-toggle.active #audio-only-icon {
+      transform: scale(1.1);
+      color: #10b981;
+    }
+    #data-saver-badge, #audio-only-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 12px;
+      height: 12px;
+      background-color: #10b981;
+      border-radius: 50%;
+      border: 2px solid #000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #data-saver-toggle.active #data-saver-badge,
+    #audio-only-toggle.active #audio-only-badge {
+      opacity: 1;
+    }
+    #data-saver-toggle.active:hover #data-saver-icon,
+    #audio-only-toggle.active:hover #audio-only-icon {
+      transform: scale(1.15);
+    }
+    
+    #data-usage-container {
+      position: relative;
+      display: inline-block;
+    }
+    #data-usage-display {
+      position: absolute;
+      bottom: calc(100% + 2py);
+      right: 0;
+      background: rgba(0,0,0,0.8);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      border: 1px solid #334155;
+      min-width: 220px;
+      text-align: center;
+      transform: translateY(-5px);
+      z-index: 100;
+    }
+    #data-saver-toggle:hover #data-usage-display:not(.persistent),
+    #data-usage-display.persistent {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #data-usage-toggle {
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      width: 16px;
+      height: 16px;
+      background: #334155;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      cursor: pointer;
+      z-index: 20;
+      color: white;
+    }
+    #data-usage-toggle:hover {
+      background: #475569;
+    }
+    
+    #data-saver-level {
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 0 4px;
+      border-radius: 3px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #data-saver-toggle:hover #data-saver-level {
+      opacity: 1;
+    }
+    
+    .audio-only-mode {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      z-index: 10;
+    }
+    
+    /* Quality dropdown styles */
+    #quality-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(31, 41, 55, 0.95);
+      border: 1px solid #475569;
+      border-radius: 4px;
+      padding: 8px 0;
+      min-width: 120px;
+      z-index: 100;
+      display: none;
+    }
+    
+    #quality-dropdown.show {
+      display: block;
+    }
+    
+    .quality-option {
+      padding: 8px 16px;
+      cursor: pointer;
+      color: white;
+    }
+    
+    .quality-option:hover {
+      background: rgba(71, 85, 105, 0.8);
+    }
+    
+    .quality-option.active {
+      color: #0ea5e9;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen bg-black text-white">
+
+  <header class="flex items-center justify-between px-4 py-4 border-b border-gray-700 text-base sm:text-lg md:text-xl">
+    <button onclick="tryClose()" class="text-cyan-400 hover:text-white flex items-center space-x-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      <span>Back</span>
+    </button>
+    <h1 class="font-bold text-white flex items-center gap-2"><span class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>LIVE</h1>
+    <div class="flex space-x-4">
+      <!-- Quality Selector Button -->
+      <div class="relative">
+        <button id="quality-toggle" title="Select Quality">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10M8 7v10M12 7v10M16 7v10M20 7v10M2 5h20v14H2V5z" />
+          </svg>
+        </button>
+        <div id="quality-dropdown">
+          <div class="quality-option" data-quality="auto">Auto</div>
+          <div class="quality-option" data-quality="1080">1080p</div>
+          <div class="quality-option" data-quality="720">720p</div>
+          <div class="quality-option" data-quality="480">480p</div>
+        </div>
+      </div>
+      
+      <button id="audio-only-toggle" title="Toggle Audio Only Mode" aria-label="Toggle audio only mode">
+        <svg id="audio-only-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
+        </svg>
+        <div id="audio-only-badge"></div>
+      </button>
+      
+      <button id="data-saver-toggle" title="Toggle Data Saver" aria-label="Toggle data saver">
+        <div id="data-usage-container">
+          <div id="data-usage-toggle" title="Toggle persistent display">P</div>
+          <svg id="data-saver-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+          </svg>
+          <div id="data-saver-badge"></div>
+          <div id="data-saver-level">Level: 0</div>
+          <div id="data-usage-display">Data: 0MB | Total: 0MB | Rate: 0MB/h</div>
+        </div>
+      </button>
+      
+      <button id="fullscreen-toggle" title="Toggle Fullscreen" aria-label="Toggle fullscreen">
+        <svg id="fullscreen-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-grow flex flex-col items-center justify-center p-4">
+    <div id="player-container">
+      <div id="audio-only-indicator" class="audio-only-mode hidden">Audio Only Mode</div>
+      <video
+        id="player"
+        class="video-js vjs-default-skin"
+        controls
+        preload="auto"
+        muted
+        playsinline
+        webkit-playsinline
+      ></video>
+      <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+    </div>
+    <p id="error-message" class="mt-4 text-red-500 hidden text-sm sm:text-base"></p>
+  </main>
+
+  <footer class="text-center text-gray-500 text-sm py-4">
+    &copy; <span id="year"></span> View Tv. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Enhanced Data Tracking Variables
+    let totalBytesLoaded = 0;
+    let segmentBytesLoaded = 0;
+    let dataUsageInterval;
+    let isPersistentDisplay = false;
+    const player = document.getElementById('player');
+    const dataSaverBtn = document.getElementById('data-saver-toggle');
+    const audioOnlyBtn = document.getElementById('audio-only-toggle');
+    const dataUsageDisplay = document.getElementById('data-usage-display');
+    const dataUsageToggle = document.getElementById('data-usage-toggle');
+    const errorMsg = document.getElementById('error-message');
+    const audioOnlyIndicator = document.getElementById('audio-only-indicator');
+
+    // Data Saver Configuration
+    const DATA_SAVER_LEVELS = {
+      OFF: 0,
+      LIGHT: 1,
+      MEDIUM: 2,
+      HIGH: 3,
+      EXTREME: 4
+    };
+    
+    let currentDataSaverLevel = DATA_SAVER_LEVELS.OFF;
+    let originalQuality = null;
+    let originalVideoEnabled = true;
+    let isAudioOnlyMode = false;
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function getExtension(url) {
+      const path = url.split('?')[0].split('#')[0];
+      const extMatch = path.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv)$/i);
+      return extMatch ? extMatch[1].toLowerCase() : '';
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.remove('hidden');
+    }
+
+    function startTrackingDataUsage() {
+      totalBytesLoaded = 0;
+      segmentBytesLoaded = 0;
+      clearInterval(dataUsageInterval);
+
+      const trackProgress = () => {
+        if (player.buffered.length > 0) {
+          const duration = player.duration || 1;
+          const buffered = player.buffered.end(0) - player.buffered.start(0);
+          const bytesEstimate = (buffered / duration) * (player.videoBytesTotal || 5000000);
+          segmentBytesLoaded = bytesEstimate;
+          totalBytesLoaded = bytesEstimate;
+        }
+      };
+
+      if (window.hls) {
+        window.hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+          const bytes = data.stats.total;
+          segmentBytesLoaded += bytes;
+          totalBytesLoaded += bytes;
+        });
+      }
+
+      if (window.dashPlayer) {
+        window.dashPlayer.on('fragmentLoaded', (e) => {
+          if (e.bytes) {
+            segmentBytesLoaded += e.bytes;
+            totalBytesLoaded += e.bytes;
+          }
+        });
+      }
+
+      dataUsageInterval = setInterval(() => {
+        const currentMB = (segmentBytesLoaded / (1024 * 1024)).toFixed(2);
+        const totalMB = (totalBytesLoaded / (1024 * 1024)).toFixed(2);
+        const ratePerHour = player.currentTime ? 
+          (segmentBytesLoaded / player.currentTime * 3600 / (1024 * 1024)).toFixed(2) : '0.00';
+        
+        dataUsageDisplay.textContent = `Current: ${currentMB}MB | Total: ${totalMB}MB | Rate: ${ratePerHour}MB/h`;
+        segmentBytesLoaded = 0;
+      }, 1000);
+
+      player.addEventListener('progress', trackProgress);
+    }
+
+    function togglePersistentDisplay() {
+      isPersistentDisplay = !isPersistentDisplay;
+      dataUsageDisplay.classList.toggle('persistent', isPersistentDisplay);
+      dataUsageToggle.textContent = isPersistentDisplay ? 'X' : 'P';
+      dataUsageToggle.title = isPersistentDisplay ? 'Hide persistent display' : 'Show persistent display';
+    }
+
+    function toggleAudioOnlyMode() {
+      isAudioOnlyMode = !isAudioOnlyMode;
+      
+      try {
+        if (isAudioOnlyMode) {
+          audioOnlyBtn.classList.add('active');
+          enableAudioOnlyMode();
+        } else {
+          audioOnlyBtn.classList.remove('active');
+          disableAudioOnlyMode();
+        }
+      } catch (e) {
+        console.error("Error toggling audio-only mode:", e);
+        showError("Failed to toggle audio-only mode");
+      }
+    }
+    
+    function enableAudioOnlyMode() {
+      originalVideoEnabled = true;
+      audioOnlyIndicator.classList.remove('hidden');
+      
+      if (window.hls) {
+        const audioOnlyLevel = window.hls.levels.findIndex(level => level.videoCodec === undefined);
+        if (audioOnlyLevel !== -1) {
+          originalQuality = window.hls.currentLevel;
+          window.hls.currentLevel = audioOnlyLevel;
+          originalVideoEnabled = false;
+        } else {
+          player.style.opacity = '0';
+        }
+      }
+      
+      if (window.dashPlayer) {
+        const audioTracks = window.dashPlayer.getTracksFor('audio');
+        if (audioTracks && audioTracks.length > 0) {
+          originalVideoEnabled = window.dashPlayer.getEnabled('video');
+          window.dashPlayer.setEnabled('video', false);
+        } else {
+          player.style.opacity = '0';
+        }
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.style.opacity = '0';
+      }
+    }
+    
+    function disableAudioOnlyMode() {
+      audioOnlyIndicator.classList.add('hidden');
+      
+      if (window.hls) {
+        if (!originalVideoEnabled && originalQuality !== null) {
+          window.hls.currentLevel = originalQuality;
+        }
+        player.style.opacity = '1';
+      }
+      
+      if (window.dashPlayer) {
+        window.dashPlayer.setEnabled('video', originalVideoEnabled);
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.style.opacity = '1';
+      }
+    }
+
+    function setDataSaverLevel(level) {
+      currentDataSaverLevel = level;
+      document.getElementById('data-saver-level').textContent = `Level: ${level}`;
+      
+      if (window.hls) {
+        window.hls.currentLevel = originalQuality;
+        window.hls.config.maxMaxBufferLength = 600;
+        window.hls.config.maxBufferSize = 60000000;
+        window.hls.config.maxBufferLength = 600;
+      }
+      
+      if (window.dashPlayer) {
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 600,
+              bufferTimeAtTopQualityLongForm: 600,
+              bufferAheadToKeep: 600,
+              bufferBehindToKeep: 600,
+              initialBufferLevel: 600
+            }
+          }
+        });
+        window.dashPlayer.setQualityFor('video', 'auto');
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 1.0;
+      }
+      
+      switch(level) {
+        case DATA_SAVER_LEVELS.LIGHT:
+          enableLightDataSaving();
+          break;
+        case DATA_SAVER_LEVELS.MEDIUM:
+          enableMediumDataSaving();
+          break;
+        case DATA_SAVER_LEVELS.HIGH:
+          enableHighDataSaving();
+          break;
+        case DATA_SAVER_LEVELS.EXTREME:
+          enableExtremeDataSaving();
+          break;
+      }
+    }
+    
+    function enableLightDataSaving() {
+      if (window.hls) {
+        originalQuality = window.hls.currentLevel;
+        window.hls.currentLevel = -1;
+        window.hls.config.maxMaxBufferLength = 30;
+        window.hls.config.maxBufferSize = 3500000;
+        window.hls.config.maxBufferLength = 15;
+      }
+      
+      if (window.dashPlayer) {
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 30,
+              bufferTimeAtTopQualityLongForm: 30,
+              bufferAheadToKeep: 30,
+              bufferBehindToKeep: 30,
+              initialBufferLevel: 30
+            }
+          }
+        });
+        window.dashPlayer.setQualityFor('video', 'auto');
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 0.9;
+      }
+    }
+    
+    function enableMediumDataSaving() {
+      if (window.hls) {
+        originalQuality = window.hls.currentLevel;
+        const levels = window.hls.levels;
+        if (levels && levels.length > 1) {
+          const midLevel = Math.floor(levels.length / 3);
+          window.hls.currentLevel = midLevel;
+        }
+        window.hls.config.maxMaxBufferLength = 20;
+        window.hls.config.maxBufferSize = 3000000;
+        window.hls.config.maxBufferLength = 20;
+      }
+      
+      if (window.dashPlayer) {
+        const bitrates = window.dashPlayer.getBitrateInfoListFor('video');
+        if (bitrates && bitrates.length > 1) {
+          const sortedBitrates = bitrates.map(b => b.bitrate).sort((a, b) => a - b);
+          const midBitrate = sortedBitrates[Math.floor(sortedBitrates.length / 3)];
+          window.dashPlayer.setQualityFor('video', midBitrate);
+        }
+        
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 20,
+              bufferTimeAtTopQualityLongForm: 20,
+              bufferAheadToKeep: 20,
+              bufferBehindToKeep: 10,
+              initialBufferLevel: 10
+            }
+          }
+        });
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 0.85;
+      }
+    }
+    
+    function enableHighDataSaving() {
+      if (window.hls) {
+        originalQuality = window.hls.currentLevel;
+        const levels = window.hls.levels;
+        if (levels && levels.length > 0) {
+          window.hls.currentLevel = levels.reduce((minIndex, level, index) => 
+            level.bitrate < levels[minIndex].bitrate ? index : minIndex, 0
+          );
+        }
+        window.hls.config.maxMaxBufferLength = 10;
+        window.hls.config.maxBufferSize = 2000000;
+        window.hls.config.maxBufferLength = 10;
+      }
+      
+      if (window.dashPlayer) {
+        const bitrates = window.dashPlayer.getBitrateInfoListFor('video');
+        if (bitrates && bitrates.length > 0) {
+          const minBitrate = Math.min(...bitrates.map(b => b.bitrate));
+          window.dashPlayer.setQualityFor('video', minBitrate);
+        }
+        
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 10,
+              bufferTimeAtTopQualityLongForm: 10,
+              bufferAheadToKeep: 10,
+              bufferBehindToKeep: 5,
+              initialBufferLevel: 5
+            }
+          }
+        });
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 0.8;
+      }
+    }
+    
+    function enableExtremeDataSaving() {
+      if (!isAudioOnlyMode) {
+        toggleAudioOnlyMode();
+      }
+      
+      if (window.hls) {
+        originalQuality = window.hls.currentLevel;
+        window.hls.config.maxMaxBufferLength = 5;
+        window.hls.config.maxBufferSize = 1000000;
+        window.hls.config.maxBufferLength = 5;
+      }
+      
+      if (window.dashPlayer) {
+        window.dashPlayer.updateSettings({
+          streaming: {
+            buffer: {
+              bufferTimeAtTopQuality: 5,
+              bufferTimeAtTopQualityLongForm: 5,
+              bufferAheadToKeep: 5,
+              bufferBehindToKeep: 2,
+              initialBufferLevel: 2
+            }
+          }
+        });
+      }
+      
+      if (player.src && !window.hls && !window.dashPlayer) {
+        player.playbackRate = 0.75;
+      }
+    }
+    
+    function toggleDataSaver() {
+      const nextLevel = (currentDataSaverLevel + 1) % (Object.keys(DATA_SAVER_LEVELS).length);
+      setDataSaverLevel(nextLevel);
+      
+      if (nextLevel === DATA_SAVER_LEVELS.OFF) {
+        dataSaverBtn.classList.remove('active');
+      } else {
+        dataSaverBtn.classList.add('active');
+      }
+      
+      if (nextLevel === DATA_SAVER_LEVELS.EXTREME && !isAudioOnlyMode) {
+        toggleAudioOnlyMode();
+      }
+      
+      if (nextLevel === DATA_SAVER_LEVELS.OFF && isAudioOnlyMode) {
+        toggleAudioOnlyMode();
+      }
+    }
+
+    // Quality Selector Logic (FULLY FUNCTIONAL)
+    const qualityToggle = document.getElementById('quality-toggle');
+    const qualityDropdown = document.getElementById('quality-dropdown');
+    const qualityOptions = document.querySelectorAll('.quality-option');
+
+    qualityToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      qualityDropdown.classList.toggle('show');
+    });
+
+    function setHlsQuality(mode) {
+      const levels = window.hls.levels;
+      if (!levels || levels.length === 0) return;
+
+      switch (mode) {
+        case 'high':
+          window.hls.currentLevel = levels.reduce((maxIdx, level, idx) => 
+            level.bitrate > levels[maxIdx].bitrate ? idx : maxIdx, 0
+          );
+          break;
+        case 'mid':
+          window.hls.currentLevel = Math.floor(levels.length / 2);
+          break;
+        case 'low':
+          window.hls.currentLevel = levels.reduce((minIdx, level, idx) => 
+            level.bitrate < levels[minIdx].bitrate ? idx : minIdx, 0
+          );
+          break;
+      }
+    }
+
+    qualityOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const quality = option.dataset.quality;
+        qualityOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        qualityDropdown.classList.remove('show');
+
+        // Apply quality selection
+        if (window.hls) {
+          switch (quality) {
+            case 'auto':
+              window.hls.currentLevel = -1;
+              break;
+            case '1080':
+              setHlsQuality('high');
+              break;
+            case '720':
+              setHlsQuality('mid');
+              break;
+            case '480':
+              setHlsQuality('low');
+              break;
+          }
+        } else if (window.dashPlayer) {
+          const bitrates = window.dashPlayer.getBitrateInfoListFor('video');
+          if (bitrates && bitrates.length > 0) {
+            switch (quality) {
+              case 'auto':
+                window.dashPlayer.setQualityFor('video', 'auto');
+                break;
+              case '1080':
+                window.dashPlayer.setQualityFor('video', Math.max(...bitrates.map(b => b.bitrate)));
+                break;
+              case '720':
+                const sorted = bitrates.map(b => b.bitrate).sort((a, b) => a - b);
+                window.dashPlayer.setQualityFor('video', sorted[Math.floor(sorted.length / 2)]);
+                break;
+              case '480':
+                window.dashPlayer.setQualityFor('video', Math.min(...bitrates.map(b => b.bitrate)));
+                break;
+            }
+          }
+        } else {
+          console.warn("Quality switching not supported for this stream type");
+        }
+      });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!qualityToggle.contains(e.target)) {
+        qualityDropdown.classList.remove('show');
+      }
+    });
+
+    (function initializePlayer() {
+      const streamUrl = getQueryParam('url');
+      const token = getQueryParam('token');
+      if (!streamUrl) {
+        showError("No stream URL provided");
+        return;
+      }
+
+      const urlWithToken = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${encodeURIComponent(token)}` : streamUrl;
+      const ext = getExtension(urlWithToken);
+
+      const iframe = document.getElementById('iframe-player');
+      
+      errorMsg.classList.add('hidden');
+      player.style.display = 'none';
+      iframe.style.display = 'none';
+
+      if (ext === 'm3u8') {
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            maxMaxBufferLength: 160,
+            maxBufferSize: 55000000,
+            maxBufferLength: 120,
+            abrEwmaDefaultEstimate: 300000,
+            abrBandWidthFactor: 0.8,
+            abrBandWidthUpFactor: 0.7,
+            abrMaxWithRealBitrate: true,
+            lowLatencyMode: false,
+            backBufferLength: 60
+          });
+          window.hls = hls;
+          originalQuality = hls.currentLevel;
+          hls.loadSource(urlWithToken);
+          hls.attachMedia(player);
+          hls.on(Hls.Events.ERROR, function(event, data) {
+            if (data.fatal) {
+              switch(data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  showError("Network Error: " + data.details);
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  showError("Media Error: " + data.details);
+                  break;
+                default:
+                  showError("Playback Error: " + data.details);
+              }
+            }
+          });
+          player.style.display = 'block';
+          player.muted = false;
+          player.play().then(startTrackingDataUsage).catch(e => {
+            showError("Playback failed: " + e.message);
+          });
+        } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+          player.src = urlWithToken;
+          player.style.display = 'block';
+          player.play().then(startTrackingDataUsage).catch(e => {
+            showError("Playback failed: " + e.message);
+          });
+        } else {
+          showError("HLS not supported on this browser");
+        }
+      } else if (ext === 'mpd') {
+        try {
+          const dashPlayer = dashjs.MediaPlayer().create();
+          window.dashPlayer = dashPlayer;
+          dashPlayer.updateSettings({
+            streaming: {
+              abr: {
+                limitBitrateByPortal: true,
+                useDefaultABRRules: true,
+                autoSwitchBitrate: {
+                  audio: true,
+                  video: true
+                }
+              },
+              buffer: {
+                bufferTimeAtTopQuality: 600,
+                bufferTimeAtTopQualityLongForm: 600,
+                bufferAheadToKeep: 600,
+                bufferBehindToKeep: 600,
+                initialBufferLevel: 600
+              }
+            }
+          });
+          dashPlayer.initialize(player, urlWithToken, true);
+          player.style.display = 'block';
+          startTrackingDataUsage();
+        } catch(e) {
+          showError("DASH playback error: " + e.message);
+        }
+      } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
+        player.src = urlWithToken;
+        player.style.display = 'block';
+        player.play().then(startTrackingDataUsage).catch(e => {
+          showError("Playback failed: " + e.message);
+        });
+      } else {
+        iframe.src = urlWithToken;
+        iframe.style.display = 'block';
+      }
+      
+      if (navigator.connection) {
+        const connection = navigator.connection;
+        if (connection.effectiveType.includes('2g') || connection.saveData) {
+          setDataSaverLevel(DATA_SAVER_LEVELS.EXTREME);
+          dataSaverBtn.classList.add('active');
+        } else if (connection.effectiveType.includes('3g')) {
+          setDataSaverLevel(DATA_SAVER_LEVELS.HIGH);
+          dataSaverBtn.classList.add('active');
+        } else if (connection.downlink < 1.5) {
+          setDataSaverLevel(DATA_SAVER_LEVELS.MEDIUM);
+          dataSaverBtn.classList.add('active');
+        }
+      }
+    })();
+
+    (function setupUIControls() {
+      const fullscreenBtn = document.getElementById('fullscreen-toggle');
+      const fullscreenIcon = document.getElementById('fullscreen-icon');
+      const playerContainer = document.getElementById('player-container');
+      let hideTimeout;
+
+      const enterFullscreenPath = 'M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6';
+      const exitFullscreenPath = 'M6 18L18 6M6 6l12 12';
+
+      function setIcon(isFullscreen) {
+        fullscreenIcon.innerHTML = '';
+        if (isFullscreen) {
+          fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${exitFullscreenPath}" />`;
+        } else {
+          fullscreenIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${enterFullscreenPath}" />`;
+        }
+      }
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          playerContainer.requestFullscreen().catch(err => {
+            console.error(`Error attempting fullscreen: ${err.message}`);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      }
+
+      function resetHideTimeout() {
+        fullscreenBtn.classList.remove('hide');
+        dataSaverBtn.classList.remove('hide');
+        audioOnlyBtn.classList.remove('hide');
+        qualityToggle.classList.remove('hide');
+        clearTimeout(hideTimeout);
+        hideTimeout = setTimeout(() => {
+          fullscreenBtn.classList.add('hide');
+          dataSaverBtn.classList.add('hide');
+          audioOnlyBtn.classList.add('hide');
+          qualityToggle.classList.add('hide');
+        }, 3000);
+      }
+
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+      dataSaverBtn.addEventListener('click', toggleDataSaver);
+      audioOnlyBtn.addEventListener('click', toggleAudioOnlyMode);
+      dataUsageToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        togglePersistentDisplay();
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        setIcon(!!document.fullscreenElement);
+        resetHideTimeout();
+      });
+
+      document.addEventListener('mousemove', resetHideTimeout);
+      document.addEventListener('touchstart', resetHideTimeout);
+
+      setIcon(!!document.fullscreenElement);
+      resetHideTimeout();
+    })();
+
+    function tryClose() {
+      window.close();
+      setTimeout(() => {
+        if (!window.closed) history.back();
+      }, 300);
+    }
+  </script>
+</body>
+</html>

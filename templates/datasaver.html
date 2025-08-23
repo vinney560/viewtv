@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow" />
+    <meta name="description" content="View TV offers easy, ad-free streaming of local and global channels. Watch live sports, news, entertainment, and more — all in one place, anytime, anywhere.">
+    <title>Plus Player - Data Usage Optimization Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .gradient-border {
+            position: relative;
+            border-radius: 0.5rem;
+        }
+        .gradient-border::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 0.6rem;
+            background: linear-gradient(45deg, #0ea5e9, #6366f1);
+            z-index: -1;
+        }
+        .data-bar {
+            height: 24px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #0ea5e9 0%, #6366f1 100%);
+            transition: all 0.3s ease;
+        }
+        .toggle-container {
+            background: #1e293b;
+        }
+        .toggle-switch {
+            background: #0ea5e9;
+            transform: translateX(0);
+            transition: all 0.3s ease;
+        }
+        .toggle-active .toggle-switch {
+            transform: translateX(100%);
+            background: #10b981;
+        }
+        .info-tooltip {
+            position: relative;
+        }
+        .info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border: 1px solid #334155;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-200 font-sans">
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <!-- Header with Enhanced Explanation -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 mb-2">PLUS PLAYER DATA SAVER</h1>
+            <h2 class="text-2xl font-semibold">Smart Bandwidth Optimization Guide</h2>
+            <div class="w-24 h-1 bg-cyan-400 mx-auto mt-4 rounded-full"></div>
+            <p class="mt-4 max-w-2xl mx-auto text-slate-300">
+                Learn how our Data Saver technology reduces your bandwidth usage while maintaining 
+                good video quality through intelligent adaptive streaming techniques.
+            </p>
+        </div>
+
+        <!-- Optimization Cards with Detailed Tooltips -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+            <div class="gradient-border p-0.5 rounded-lg">
+                <div class="bg-slate-800 p-6 rounded-lg h-full">
+                    <div class="flex items-center justify-between">
+                        <div class="text-cyan-400 text-2xl mb-3">🔍</div>
+                        <div class="info-tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="tooltip-text">Dynamically adjusts quality based on your network speed and device capabilities</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Adaptive Streaming</h3>
+                    <p class="text-slate-300">
+                        Automatically selects the optimal resolution, prioritizing 360p/480p when 
+                        Data Saver is active while still allowing higher quality when bandwidth is available.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="gradient-border p-0.5 rounded-lg">
+                <div class="bg-slate-800 p-6 rounded-lg h-full">
+                    <div class="flex items-center justify-between">
+                        <div class="text-cyan-400 text-2xl mb-3">⏱️</div>
+                        <div class="info-tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="tooltip-text">Reduces the amount of video pre-loaded to balance quality and data savings</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Buffer Control</h3>
+                    <p class="text-slate-300">
+                        Smart buffer management reduces pre-loaded content from 60 seconds to 
+                        30 seconds when Data Saver is active, minimizing wasted bandwidth.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="gradient-border p-0.5 rounded-lg">
+                <div class="bg-slate-800 p-6 rounded-lg h-full">
+                    <div class="flex items-center justify-between">
+                        <div class="text-cyan-400 text-2xl mb-3">⚡</div>
+                        <div class="info-tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="tooltip-text">Optimizes how video segments are requested and delivered</span>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Playback Efficiency</h3>
+                    <p class="text-slate-300">
+                        Optimized network requests and intelligent streaming protocols 
+                        reduce data consumption without noticeable playback interruptions.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Usage Visualization with Clearer Labels -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12 border border-slate-700">
+            <h3 class="text-xl font-bold mb-6 text-center">Expected Data Consumption (Per Hour of Streaming)</h3>
+            
+            <div class="mb-8">
+                <div class="flex justify-between mb-2">
+                    <span class="font-medium">Adaptive Streams (HLS/DASH)</span>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-slate-400">Normal Mode</span>
+                        <span class="text-sm text-emerald-400 font-medium">Data Saver</span>
+                    </div>
+                </div>
+                <div class="flex h-10 bg-slate-700 rounded-lg overflow-hidden">
+                    <div class="w-3/4 bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-end pr-2 text-xs font-medium">
+                        2.5-7.5 GB (1080p/4K)
+                    </div>
+                    <div class="w-1/4 bg-gradient-to-r from-cyan-500 to-emerald-500 flex items-center justify-end pr-2 text-xs font-medium">
+                        0.4-1.5 GB (480p)
+                    </div>
+                </div>
+                <p class="text-slate-400 text-xs mt-1">
+                    Savings: 60-80% reduction by automatically switching to lower resolutions
+                </p>
+            </div>
+            
+            <div class="mb-8">
+                <div class="flex justify-between mb-2">
+                    <span class="font-medium">Standard Videos (MP4/WebM)</span>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-slate-400">Normal Mode</span>
+                        <span class="text-sm text-emerald-400 font-medium">Data Saver</span>
+                    </div>
+                </div>
+                <div class="flex h-10 bg-slate-700 rounded-lg overflow-hidden">
+                    <div class="w-2/3 bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-end pr-2 text-xs font-medium">
+                        1-6 GB (Original Quality)
+                    </div>
+                    <div class="w-1/3 bg-gradient-to-r from-cyan-500 to-emerald-500 flex items-center justify-end pr-2 text-xs font-medium">
+                        0.7-1.5 GB (Optimized)
+                    </div>
+                </div>
+                <p class="text-slate-400 text-xs mt-1">
+                    Savings: 20-30% reduction through buffer optimization
+                </p>
+            </div>
+            
+            <div class="text-center bg-slate-900/50 p-3 rounded-lg">
+                <p class="text-slate-300">
+                    <span class="text-cyan-400 font-medium">Best case:</span> Can reach 
+                    <span class="text-emerald-400">0.3-0.7 GB/hour</span> for 360p streams with strong optimization
+                </p>
+            </div>
+        </div>
+
+        <!-- Enhanced Savings Calculator -->
+        <div class="bg-slate-800 rounded-xl p-6 mb-12 border border-slate-700">
+            <h3 class="text-xl font-bold mb-6 text-center">Calculate Your Potential Savings</h3>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Stream Type</label>
+                    <select id="stream-type" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                        <option value="adaptive">Adaptive Stream (HLS/DASH)</option>
+                        <option value="static">Standard Video (MP4/WebM)</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Current Quality</label>
+                    <select id="quality" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-transparent">
+                        <option value="1080">1080p (3-6 GB/hour)</option>
+                        <option value="720">720p (1.5-3 GB/hour)</option>
+                        <option value="480">480p (0.7-1.5 GB/hour)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex items-center justify-between">
+                <span class="font-medium">Data Saver Mode</span>
+                <div id="toggle" class="toggle-container w-16 h-8 rounded-full p-1 cursor-pointer flex items-center">
+                    <div class="toggle-switch w-6 h-6 rounded-full shadow-md"></div>
+                </div>
+            </div>
+            
+            <div id="results" class="mt-8 p-4 bg-slate-700 rounded-lg space-y-2">
+                <div class="flex justify-between">
+                    <span>Current Usage:</span>
+                    <span id="current-usage" class="font-bold">3.0 GB/hour</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>With Data Saver:</span>
+                    <span id="saver-usage" class="font-bold text-emerald-400">1.2 GB/hour</span>
+                </div>
+                <div class="flex justify-between border-t border-slate-600 pt-2">
+                    <span class="font-medium">Estimated Savings:</span>
+                    <span id="savings" class="font-bold text-cyan-400">60% reduction</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monitoring Guide with Step-by-Step -->
+        <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h3 class="text-xl font-bold mb-6 text-center">How To Verify Your Actual Data Savings</h3>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-cyan-400 mb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Browser Testing
+                    </h4>
+                    <ol class="list-decimal list-inside text-sm space-y-2 text-slate-300 pl-2">
+                        <li class="mb-2">
+                            <span class="font-medium">Open Developer Tools:</span>
+                            <kbd class="bg-slate-700 px-2 py-1 rounded ml-2">F12</kbd> or 
+                            <kbd class="bg-slate-700 px-2 py-1 rounded">Ctrl+Shift+I</kbd>
+                        </li>
+                        <li class="mb-2">
+                            <span class="font-medium">Go to Network tab</span> and check "Disable cache"
+                        </li>
+                        <li class="mb-2">
+                            <span class="font-medium">Filter requests:</span> Type <code class="bg-slate-700 px-1 rounded">media</code> or <code class="bg-slate-700 px-1 rounded">m3u8</code>
+                        </li>
+                        <li class="mb-2">
+                            <span class="font-medium">Check "Transferred" column</span> for actual data used
+                        </li>
+                        <li>
+                            <span class="font-medium">Calculate hourly rate:</span>
+                            <code class="bg-slate-700 px-1 rounded">(MB transferred ÷ minutes watched) × 60</code>
+                        </li>
+                    </ol>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-cyan-400 mb-3 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        Mobile Devices
+                    </h4>
+                    <ul class="list-disc list-inside text-sm space-y-2 text-slate-300 pl-2">
+                        <li class="mb-2">
+                            <span class="font-medium">Android:</span><br>
+                            Settings → Network & Internet → Data Usage → App data usage
+                        </li>
+                        <li class="mb-2">
+                            <span class="font-medium">iOS:</span><br>
+                            Settings → Cellular → Cellular Data → Scroll to find Plus Player
+                        </li>
+                        <li class="mb-2">
+                            <span class="font-medium">Reset statistics</span> before testing for accurate measurements
+                        </li>
+                        <li>
+                            Compare usage <span class="font-medium">with/without</span> Data Saver enabled
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center text-sm text-slate-400">
+                <p>Note: Actual savings vary based on content complexity and network conditions.</p>
+                <p class="mt-2">Need help? <a href="mailto:vincentkipngetich479@gmail.com" class="text-cyan-400 hover:underline">Contact our support team</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interactive Savings Calculator
+        const calculator = {
+            init() {
+                document.getElementById('toggle').addEventListener('click', this.toggleDataSaver);
+                document.getElementById('stream-type').addEventListener('change', this.updateResults);
+                document.getElementById('quality').addEventListener('change', this.updateResults);
+                this.updateResults();
+            },
+            
+            toggleDataSaver() {
+                this.classList.toggle('toggle-active');
+                calculator.updateResults();
+            },
+            
+            updateResults() {
+                const isActive = document.getElementById('toggle').classList.contains('toggle-active');
+                const streamType = document.getElementById('stream-type').value;
+                const quality = document.getElementById('quality').value;
+                
+                // Base values
+                let currentUsage, saverUsage;
+                
+                if (streamType === 'adaptive') {
+                    if (quality === '1080') {
+                        currentUsage = 6;
+                        saverUsage = isActive ? 1.5 : 6;
+                    } else if (quality === '720') {
+                        currentUsage = 3;
+                        saverUsage = isActive ? 1.2 : 3;
+                    } else { // 480
+                        currentUsage = 1.5;
+                        saverUsage = isActive ? 0.7 : 1.5;
+                    }
+                } else { // static
+                    if (quality === '1080') {
+                        currentUsage = 6;
+                        saverUsage = isActive ? 4.5 : 6;
+                    } else if (quality === '720') {
+                        currentUsage = 3;
+                        saverUsage = isActive ? 2.4 : 3;
+                    } else { // 480
+                        currentUsage = 1.5;
+                        saverUsage = isActive ? 1.2 : 1.5;
+                    }
+                }
+                
+                const savings = Math.round((1 - (saverUsage / currentUsage)) * 100);
+                
+                // Update UI
+                document.getElementById('current-usage').textContent = `${currentUsage.toFixed(1)} GB/hour`;
+                document.getElementById('saver-usage').textContent = `${saverUsage.toFixed(1)} GB/hour`;
+                document.getElementById('savings').textContent = `${savings}% reduction`;
+                
+                // Highlight savings
+                if (isActive) {
+                    document.getElementById('results').classList.add('border-emerald-500', 'border');
+                    document.getElementById('saver-usage').classList.add('text-emerald-400');
+                } else {
+                    document.getElementById('results').classList.remove('border-emerald-500', 'border');
+                    document.getElementById('saver-usage').classList.remove('text-emerald-400');
+                }
+            }
+        };
+        
+        // Initialize calculator
+        document.addEventListener('DOMContentLoaded', () => calculator.init());
+    </script>
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ViewTv | StreamTv</title>
+
+  <!-- Enhanced Security Headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com 'nonce-2726c7f5c9'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Permissions-Policy" content="geolocation=()">
+  <meta name="google-site-verification" content="sJ42XyhDu5tg-Paz5vI6KgPbhqVKqfdNNX0cZHsbifU" />
+
+  <!-- Safe Meta Tags -->
+  <meta name="description" content="ViewTv | StreamTv is a secure entertainment platform providing access to various content categories with an ad-free experience." />
+  <meta name="keywords" content="streaming, entertainment, TV shows, movies, family entertainment, online content, watch live" />
+  <meta name="author" content="Vincent Kipngetich" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://viewtv.viewtv.gt.tc/" />
+  <link rel="icon" href="https://viewtv.viewtv.gt.tc/favicon.ico" />
+  <meta name="msvalidate.01" content="D06687A71C3ABB4C7B414D718375B902" />
+
+  <!-- Social Meta -->
+  <meta property="og:title" content="ViewTV - Entertainment Platform" />
+  <meta property="og:description" content="Stream various entertainment content safely and securely" />
+  <meta property="og:image" content="https://viewtv.viewtv.gt.tc/favicon.ico" />
+  <meta property="og:url" content="https://viewtv.viewtv.gt.tc" />
+  <meta name="twitter:card" content="summary" />
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com" nonce="2726c7f5c9"></script>
+  <script nonce="2726c7f5c9">
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'float': 'float 3s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-5px)' },
+            }
+          },
+          colors: {
+            premium: {
+              DEFAULT: '#4CAF50',
+              dark: '#388E3C',
+            },
+            primary: {
+              DEFAULT: '#3B82F6',
+              dark: '#2563EB',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
+      color: #e2e8f0;
+    }
+    
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .glass-morph {
+      background: rgba(30, 30, 40, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 31, 135, 0.2);
+    }
+    
+    .channel-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .channel-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+    }
+    
+    .channel-logo {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.7);
+      padding: 2px;
+    }
+    
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(59, 130, 246, 0.15);
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    
+    .premium-badge {
+      background: rgba(76, 175, 80, 0.15);
+      color: #4CAF50;
+    }
+    
+    .paid-badge {
+      background: rgba(239, 68, 68, 0.15);
+      color: #EF4444;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    /* Toast animations */
+    @keyframes toastSlideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes toastFadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+    
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .toast {
+      animation: toastSlideIn 0.3s ease-out;
+      max-width: 24rem;
+      width: 100%;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(71, 85, 105, 0.5);
+    }
+    
+    .toast.fade-out {
+      animation: toastFadeOut 0.5s ease-in forwards;
+    }
+    
+    .toast-success {
+      border-left: 4px solid #10b981;
+    }
+    
+    .toast-error {
+      border-left: 4px solid #ef4444;
+    }
+    
+    .toast-header {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+    }
+    
+    .toast-body {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: #e2e8f0;
+    }
+    
+    .toast-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+    
+    .toast-progress {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      width: 100%;
+    }
+    
+    .toast-progress-bar {
+      height: 100%;
+      background: #3b82f6;
+      width: 100%;
+      animation: progressBar 5s linear forwards;
+    }
+    
+    @keyframes progressBar {
+      from { width: 100%; }
+      to { width: 0%; }
+    }
+  </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+  <!-- Security Badge -->
+  <div class="w-full bg-blue-900/30 text-blue-300 text-center py-2 text-sm border-b border-blue-800/50">
+    <div class="max-w-6xl mx-auto flex justify-center items-center gap-4 flex-wrap">
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        Secure HTTPS Connection
+      </span>
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+        Privacy Protected
+      </span>
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
+        </svg>
+        DMCA Compliant
+      </span>
+      <!-- Additional security badge -->
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
+        </svg>
+        CSP Protected
+      </span>
+    </div>
+  </div>
+  
+  <!-- Toast Notifications Container -->
+  <div class="toast-container" id="toastContainer"></div>
+  
+  <!-- Navigation -->
+  <header class="w-full sticky top-0 z-30 bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 shadow-lg p-4 flex justify-between items-center">
+    <div class="flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span class="text-2xl font-bold text-gray-100">View<span class="text-blue-400">Tv</span></span>
+    </div>
+    <div class="flex space-x-4">
+      <a href="/login" class="text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400/10 hover:text-blue-300 transition-all duration-300 border border-blue-400/30">
+        Login
+      </a>
+      <a href="/register" class="bg-blue-400/10 text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400 hover:text-gray-900 transition-all duration-300 border border-blue-400/30">
+        Register
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-10 space-y-16">
+    
+    <!-- Hero Section -->
+    <section class="glass-morph p-8 md:p-12 rounded-3xl shadow-2xl border border-blue-500/30">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div>
+          <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-6 tracking-tight">Your Secure Entertainment Hub</h1>
+          <p class="text-xl text-gray-300/90 mb-8 leading-relaxed">
+            ViewStream provides a safe entertainment platform with verified content and security-first design. Enjoy a wide variety of shows without compromising your safety.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button id="startStreamingBtn" class="glow-hover bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-all duration-300 transform">
+              Start Streaming
+            </button>
+            <button id="learnMoreBtn" class="bg-transparent text-blue-400 font-medium py-3 px-6 rounded-full border border-blue-400/30 hover:bg-blue-400/10 transition">
+              Learn More
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-center animate-float">
+          <div class="relative">
+            <div class="absolute -inset-4 bg-blue-500/20 rounded-2xl blur-lg opacity-50"></div>
+            <div class="relative bg-slate-800/50 border border-blue-500/30 rounded-2xl p-6">
+              <div class="grid grid-cols-3 gap-3">
+                <!-- Movie SVG -->
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                  </svg>
+                </div>
+                <!-- TV SVG -->
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <!-- Game SVG -->
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <!-- Music SVG -->
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
+                </div>
+                <!-- Sports SVG -->
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+                  </svg>
+                </div>
+                <!-- Globe SVG -->
+                <div class="bg-slate-700/50 border border-blue-500/20 rounded-xl aspect-video flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="space-y-10">
+      <h2 class="text-3xl font-bold text-center text-gray-200 mb-4">
+        <span class="gradient-text">Why Choose ViewTv?</span>
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-morph p-6 rounded-2xl border border-blue-500/30">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-100">Verified Content</h3>
+          </div>
+          <p class="text-gray-400">All content is properly licensed and rights-compliant, ensuring a safe streaming experience.</p>
+        </div>
+        
+        <div class="glass-morph p-6 rounded-2xl border border-blue-500/30">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-100">Secure Access</h3>
+          </div>
+          <p class="text-gray-400">Encrypted connections and protected user data with industry-standard security measures.</p>
+        </div>
+        
+        <div class="glass-morph p-6 rounded-2xl border border-blue-500/30">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 mr-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-100">Ad-Free Experience</h3>
+          </div>
+          <p class="text-gray-400">Enjoy uninterrupted streaming without ads, popups, or distractions from your content.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Channel List -->
+    <section class="space-y-8">
+      <h2 class="text-3xl font-bold text-center text-gray-200 mb-4">
+        <span class="gradient-text">Featured Channels</span>
+      </h2>
+      <p class="text-center text-gray-400 max-w-2xl mx-auto mb-8">
+        Explore our diverse selection of entertainment channels across various categories
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Channel 1 -->
+        <div class="channel-card glass-morph p-6 rounded-2xl transition-all duration-300 border border-blue-500/30 animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="channel-logo bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">Cinema Classics</h3>
+                <p class="text-sm text-gray-400">Movies</p>
+              </div>
+            </div>
+            <div class="flex items-center" title="Free Access">
+              <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-between items-center">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+              Free Access
+            </span>
+            <a href="/server" class="inline-flex items-center py-2 px-4 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white font-medium transition-all duration-300 border border-blue-500/20">
+              View Content
+            </a>
+          </div>
+        </div>
+        
+        <!-- Channel 2 -->
+        <div class="channel-card glass-morph p-6 rounded-2xl transition-all duration-300 border border-green-500/30 animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="channel-logo bg-green-500/10 border border-green-500/20 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">Global View</h3>
+                <p class="text-sm text-gray-400">Documentaries</p>
+              </div>
+            </div>
+            <div class="flex items-center" title="Premium Access">
+              <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-between items-center">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+              Premium
+            </span>
+            <a href="/server" class="inline-flex items-center py-2 px-4 rounded-full bg-green-500/10 text-green-400 hover:bg-green-500 hover:text-white font-medium transition-all duration-300 border border-green-500/20">
+              View Content
+            </a>
+          </div>
+        </div>
+        
+        <!-- Channel 3 -->
+        <div class="channel-card glass-morph p-6 rounded-2xl transition-all duration-300 border border-blue-500/30 animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="channel-logo bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">Drama Central</h3>
+                <p class="text-sm text-gray-400">Entertainment</p>
+              </div>
+            </div>
+            <div class="flex items-center" title="Free Access">
+              <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-between items-center">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+              Free Access
+            </span>
+            <a href="/server" class="inline-flex items-center py-2 px-4 rounded-full bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white font-medium transition-all duration-300 border border-blue-500/20">
+              View Content
+            </a>
+          </div>
+        </div>
+        
+        <!-- Channel 4 -->
+        <div class="channel-card glass-morph p-6 rounded-2xl transition-all duration-300 border border-red-500/30 animate-fade-in">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <div class="channel-logo bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-100">Action Sports</h3>
+                <p class="text-sm text-gray-400">Sports</p>
+              </div>
+            </div>
+            <div class="flex items-center" title="Subscription Required">
+              <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-between items-center">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
+              Subscription
+            </span>
+            <a href="/server" class="inline-flex items-center py-2 px-4 rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white font-medium transition-all duration-300 border border-red-500/20">
+              Subscribe
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="space-y-8">
+      <h2 class="text-3xl font-bold text-center text-gray-200 mb-4">
+        <span class="gradient-text">Content Categories</span>
+      </h2>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass-morph p-5 rounded-2xl border border-blue-500/30 text-center">
+          <div class="w-16 h-16 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-100 mb-2">Movies</h3>
+          <p class="text-sm text-gray-400">Latest releases and classics</p>
+        </div>
+        
+        <div class="glass-morph p-5 rounded-2xl border border-purple-500/30 text-center">
+          <div class="w-16 h-16 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-100 mb-2">TV Shows</h3>
+          <p class="text-sm text-gray-400">Binge-worthy series</p>
+        </div>
+        
+        <div class="glass-morph p-5 rounded-2xl border border-green-500/30 text-center">
+          <div class="w-16 h-16 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-100 mb-2">Kids</h3>
+          <p class="text-sm text-gray-400">Family-friendly content</p>
+        </div>
+        
+        <div class="glass-morph p-5 rounded-2xl border border-yellow-500/30 text-center">
+          <div class="w-16 h-16 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <h3 class="font-semibold text-gray-100 mb-2">Learning</h3>
+          <p class="text-sm text-gray-400">Educational programs</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-16 py-12 text-gray-500 text-center border-t border-slate-800/50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
+        <div class="text-left">
+          <div class="flex items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <span class="text-2xl font-bold text-gray-100">View<span class="text-blue-400">Tv</span></span>
+          </div>
+          <p class="max-w-xs text-gray-400 text-sm">
+            Providing secure, high-quality streaming entertainment since 2025.
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 text-left">
+          <div>
+            <h4 class="font-bold text-gray-200 mb-4">Company</h4>
+            <ul class="space-y-2">
+              <li><a href="/about" class="text-gray-400 hover:text-blue-400 transition">About Us</a></li>
+              <li><a href="/developer" class="text-gray-400 hover:text-blue-400 transition">Careers</a></li>
+              <li><a href="mailto:vincentkipngetich479@gmail.com" class="text-gray-400 hover:text-blue-400 transition">Contact</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-bold text-gray-200 mb-4">Legal</h4>
+            <ul class="space-y-2">
+              <li><a href="/terms" class="text-gray-400 hover:text-blue-400 transition">Terms</a></li>
+              <li><a href="/privacy" class="text-gray-400 hover:text-blue-400 transition">Privacy</a></li>
+              <li><a href="/copyright" class="text-gray-400 hover:text-blue-400 transition">Copyright</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-bold text-gray-200 mb-4">Support</h4>
+            <ul class="space-y-2">
+              <li><a href="/assistance" class="text-gray-400 hover:text-blue-400 transition">Help Center</a></li>
+              <li><a href="/server" class="text-gray-400 hover:text-blue-400 transition">FAQ</a></li>
+              <li><a href="mailto:vincentkipngetich479@gmail.com" class="text-gray-400 hover:text-blue-400 transition">Contacts</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="pt-8 border-t border-slate-800/30">
+        <p class="text-sm">&copy; {{current_year}} • ViewTv | StreamTv • Built for seamless streaming.</p>
+        <div class="mt-4 text-xs text-gray-600">
+          <p>All content is provided by licensed partners and verified sources</p>
+        </div>
+      </div>
+    </div>
+  </footer>  
+
+  <!-- Security Scripts -->  
+  <script nonce="2726c7f5c9">  
+    // Toast notification system  
+    function showToast(message, type) {  
+      const container = document.getElementById('toastContainer');  
+      const toast = document.createElement('div');  
+      toast.className = `toast ${type === 'success' ? 'toast-success' : 'toast-error'}`;  
+        
+      const header = document.createElement('div');  
+      header.className = 'toast-header';  
+        
+      const icon = document.createElement('div');  
+      icon.className = 'flex-shrink-0';  
+      icon.innerHTML = type === 'success' ?   
+        `<svg class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">  
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />  
+        </svg>` :  
+        `<svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">  
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />  
+        </svg>`;  
+        
+      const messageDiv = document.createElement('div');  
+      messageDiv.className = 'ml-3 flex-1 pt-0.5';  
+      messageDiv.innerHTML = `<p class="text-sm font-medium">${message}</p>`;  
+        
+      const closeBtn = document.createElement('button');  
+      closeBtn.className = 'toast-close';  
+      closeBtn.innerHTML = `  
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">  
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />  
+        </svg>  
+      `;  
+      closeBtn.onclick = () => dismissToast(toast);  
+        
+      header.appendChild(icon);  
+      header.appendChild(messageDiv);  
+      header.appendChild(closeBtn);  
+        
+      const progress = document.createElement('div');  
+      progress.className = 'toast-progress';  
+      progress.innerHTML = '<div class="toast-progress-bar"></div>';  
+        
+      toast.appendChild(header);  
+      toast.appendChild(progress);  
+      container.appendChild(toast);  
+        
+      // Auto-dismiss after 5 seconds  
+      setTimeout(() => dismissToast(toast), 5000);  
+    }  
+      
+    function dismissToast(toast) {  
+      toast.classList.add('fade-out');  
+      setTimeout(() => toast.remove(), 500);  
+    }  
+      
+    // Initialize toast notifications from flashed messages  
+    document.addEventListener('DOMContentLoaded', () => {  
+      const startBtn = document.getElementById('startStreamingBtn');  
+      const learnBtn = document.getElementById('learnMoreBtn');  
+        
+      if (startBtn) {  
+        startBtn.addEventListener('click', () => {  
+          location.href = '/login';  
+        });  
+      }  
+        
+      if (learnBtn) {  
+        learnBtn.addEventListener('click', () => {  
+          location.href = '/about';  
+        });  
+      }  
+
+      // Show Flask flash messages as toasts
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            showToast("{{ message }}", "{{ category }}");
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+        
+      // Simulate flashed messages for demo (can be removed in production)  
+      setTimeout(() => {  
+        showToast('Secure connection established', 'success');  
+      }, 1000);  
+    });  
+      
+    // PWA install prompt blocker  
+    window.addEventListener('beforeinstallprompt', (e) => {  
+      e.preventDefault();  
+      return false;  
+    });  
+    'serviceWorker'in navigator&&navigator.serviceWorker.register('/service-worker.js').then(r=>console.log("SW registered:",r)).catch(e=>console.error("SW failed:",e)),window.addEventListener("online",()=>location.reload()),window.addEventListener("offline",()=>location.href="/offline.html");
+  </script>
+</body>  
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }} ({{ movie.year }}) | Plus Movie</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .backdrop {
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5)), 
+                             url('{{ movie.backdrop or movie.poster or "" }}');
+            background-size: cover;
+            background-position: center;
+            min-height: 60vh;
+        }
+        .stream-btn {
+            transition: all 0.2s ease;
+        }
+        .stream-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .movie-poster {
+            transition: transform 0.3s ease;
+        }
+        .movie-poster:hover {
+            transform: scale(1.03);
+        }
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+        .moviebox-btn {
+            background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+        }
+        .moviebox-btn:hover {
+            background: linear-gradient(135deg, #5d3a99 0%, #8c40ab 100%);
+        }
+        .platform-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 scroll-smooth">
+    <!-- Streaming Redirect Modal -->
+    <div id="streamModal" class="modal fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 opacity-0 invisible">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Where to watch <span class="text-blue-400">{{ movie.title }}</span></h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p class="mb-4 text-gray-300">Choose your preferred streaming platform:</p>
+            
+            <div class="space-y-3">
+                <button onclick="handlePlatformRedirect('moviebox')" class="stream-btn w-full moviebox-btn text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <img src="https://moviebox.ng/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="platform-icon" alt="MovieBox">
+                    Watch on MovieBox
+                </button>
+                
+                <button onclick="handlePlatformRedirect('youtube')" class="stream-btn w-full bg-red-500 hover:bg-red-400 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <img src="https://www.youtube.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="platform-icon" alt="YouTube">
+                    YouTube Movies
+                </button>
+                
+                <button onclick="handlePlatformRedirect('justwatch')" class="stream-btn w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 px-4 rounded-lg font-bold flex items-center justify-center">
+                    <img src="https://www.justwatch.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="platform-icon" alt="JustWatch">
+                    View All Options
+                </button>
+            </div>
+            
+            <div class="mt-4 text-sm text-gray-400">
+                <p>We don't host any content - these are official platform searches.</p>
+            </div>
+        </div>
+    </div>
+
+    <header class="backdrop flex flex-col">
+        <div class="container mx-auto px-4 pt-6">
+            <a href="/movieflix" class="inline-flex items-center bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>Back
+            </a>
+        </div>
+        <div class="container mx-auto px-4 mt-auto mb-8 flex flex-col md:flex-row items-end gap-6">
+            {% if movie.poster %}
+            <img src="{{ movie.poster }}" alt="{{ movie.title }}" 
+                 class="movie-poster w-48 h-64 md:w-56 md:h-80 rounded-lg shadow-xl border-4 border-white">
+            {% endif %}
+            <div class="flex-1">
+                <h1 class="text-3xl md:text-4xl font-bold">{{ movie.title }} 
+                    <span class="text-gray-400">({{ movie.year }})</span>
+                </h1>
+                
+                <div class="flex flex-wrap items-center gap-3 mt-4">
+                    <div class="flex items-center bg-blue-600 text-white py-1 px-3 rounded-full">
+                        <i class="fas fa-star mr-1"></i>{{ movie.rating|round(1) }}
+                    </div>
+                    <span class="flex items-center text-gray-300">
+                        <i class="fas fa-clock mr-1"></i>{{ movie.runtime }}
+                    </span>
+                    <span class="flex items-center text-gray-300">
+                        <i class="fas fa-film mr-1"></i>{{ movie.genre.split(',')[0] }}
+                    </span>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="flex flex-wrap gap-3 mt-6">
+                    <button onclick="showStreamModal()" class="stream-btn inline-flex items-center bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-lg font-bold">
+                        <i class="fas fa-play mr-2"></i>Watch Now
+                    </button>
+                    
+                    <a href="{{ movie.tmdb_link }}" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center bg-yellow-600 hover:bg-yellow-500 text-white py-2 px-4 rounded-lg font-bold">
+                        <i class="fab fa-imdb mr-2"></i>View on TMDB
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Overview</h2>
+            <p class="text-gray-300 leading-relaxed">{{ movie.plot or "No description available." }}</p>
+        </section>
+
+        <section id="watch-options" class="mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Streaming Options</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <button onclick="handlePlatformRedirect('moviebox')" class="stream-btn moviebox-btn text-white p-4 rounded-lg flex flex-col items-center">
+                    <img src="https://moviebox.ph/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="MovieBox">
+                    <span>MovieBox</span>
+                    <span class="text-xs mt-1 text-gray-300">Premium</span>
+                </button>
+                
+                <button onclick="handlePlatformRedirect('youtube')" class="stream-btn bg-red-500 hover:bg-red-400 text-white p-4 rounded-lg flex flex-col items-center">
+                    <img src="https://www.youtube.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="YouTube">
+                    <span>YouTube</span>
+                    <span class="text-xs mt-1 text-gray-300">Rent/Buy</span>
+                </button>
+                
+                <button onclick="handlePlatformRedirect('justwatch')" class="stream-btn bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-lg flex flex-col items-center">
+                    <img src="https://www.justwatch.com/favicon.ico" onerror="this.src='https://via.placeholder.com/24'" class="w-12 h-12 mb-2" alt="JustWatch">
+                    <span>All Options</span>
+                    <span class="text-xs mt-1 text-gray-300">Watch • Download</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Details</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="text-gray-400 text-sm uppercase font-bold mb-1">Genre</h3>
+                    <p>{{ movie.genre or "N/A" }}</p>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 text-sm uppercase font-bold mb-1">IMDb Rating</h3>
+                    <p>{{ movie.imdb_rating or "N/A" }}</p>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 text-sm uppercase font-bold mb-1">TMDB Rating</h3>
+                    <p>{{ movie.rating|round(1) if movie.rating else "N/A" }}</p>
+                </div>
+                <div>
+                    <h3 class="text-gray-400 text-sm uppercase font-bold mb-1">Runtime</h3>
+                    <p>{{ movie.runtime or "N/A" }}</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 py-8 mt-12 border-t border-gray-700">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold text-blue-400 flex items-center">
+                        <i class="fas fa-film mr-2"></i>MovieFlix
+                    </h2>
+                    <p class="text-gray-400 mt-1 text-sm">Your streaming guide</p>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">Data provided by TMDB</p>
+                    <p class="text-gray-500 text-sm mt-1">© 2025 • Plus Movie • All external links are to official platforms</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Platform configuration with enhanced URLs
+        const platforms = {
+            moviebox: {
+                name: "MovieBox",
+                type: "streaming service",
+                icon: "https://moviebox.ng/favicon.ico",
+                url: `https://moviebox.ph/web/searchResult?keyword=${encodeURIComponent('{{ movie.title }}') + '+' + encodeURIComponent('{{ movie.year }}')}&utm_source=`,
+                fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:moviebox.ng')}`
+            },
+            youtube: {
+                name: "YouTube Movies",
+                type: "rental/purchase",
+                icon: "https://www.youtube.com/favicon.ico",
+                url: `https://www.youtube.com/results?search_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }} movie')}`,
+                fallback: `https://www.google.com/search?q=${encodeURIComponent('{{ movie.title }} {{ movie.year }} site:youtube.com')}`
+            },
+            justwatch: {
+                name: "Watch • Download",
+                type: "streaming aggregator",
+                icon: "https://www.downloads-anymovies.co/favicon.ico",
+                url: `https://www.downloads-anymovies.co/search.php?zoom_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}`,
+                fallback: `https://www.downloads-anymovies.co/search.php?zoom_query=${encodeURIComponent('{{ movie.title }} {{ movie.year }}')}`
+            }
+        };
+
+        // Show streaming options modal
+        function showStreamModal() {
+            const modal = document.getElementById('streamModal');
+            modal.classList.remove('opacity-0', 'invisible');
+            modal.classList.add('opacity-100', 'visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('streamModal');
+            modal.classList.remove('opacity-100', 'visible');
+            modal.classList.add('opacity-0', 'invisible');
+            document.body.style.overflow = '';
+        }
+
+        // Enhanced redirect handler with fallback
+        function handlePlatformRedirect(platformKey) {
+            const platform = platforms[platformKey];
+            
+            if (confirm(`Redirect to ${platform.name} (${platform.type}) to find:\n\n"{{ movie.title }} ({{ movie.year }})"?`)) {
+                // Create hidden anchor tag for more reliable redirect
+                const link = document.createElement('a');
+                link.href = platform.url;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                
+                // Fallback handling
+                link.onerror = () => {
+                    showNotification(`Couldn't open ${platform.name}, trying fallback`, 'error');
+                    setTimeout(() => {
+                        window.open(platform.fallback, '_blank', 'noopener,noreferrer');
+                    }, 1500);
+                };
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Track the redirect attempt
+                trackRedirect(platformKey);
+            }
+        }
+
+        // Track redirects (example implementation)
+        function trackRedirect(platform) {
+            // In a real app, you might send this to analytics
+            console.log(`Redirect attempted to ${platform}`);
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type = 'success') {
+            const colors = {
+                success: 'bg-green-600',
+                error: 'bg-red-600',
+                info: 'bg-blue-600'
+            };
+            
+            const icons = {
+                success: 'check-circle',
+                error: 'exclamation-circle',
+                info: 'info-circle'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-4 py-2 rounded-lg shadow-lg flex items-center z-50`;
+            notification.innerHTML = `
+                <i class="fas fa-${icons[type]} mr-2"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize platform icons
+        document.addEventListener('DOMContentLoaded', () => {
+            const platformElements = document.querySelectorAll('[data-platform]');
+            platformElements.forEach(el => {
+                const platformKey = el.dataset.platform;
+                if (platforms[platformKey]) {
+                    el.querySelector('img').src = platforms[platformKey].icon;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

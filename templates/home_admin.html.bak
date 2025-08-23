@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin Home | View TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: {
+            glow: '0 0 15px rgba(0,255,255,0.6)',
+            'glow-sm': '0 0 8px rgba(0,255,255,0.4)'
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out',
+            'slide-up': 'slideUp 0.3s ease-out',
+            'toast': 'toast 4s forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            toast: {
+              '0%, 90%': { opacity: '1', transform: 'translateY(0)' },
+              '100%': { opacity: '0', transform: 'translateY(-20px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(0,255,255,0.6);
+      transform: translateY(-2px);
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, rgba(8, 51, 68, 0.8) 0%, rgba(6, 30, 51, 0.9) 100%);
+    }
+    
+    .card-glass {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(15, 23, 42, 0.7);
+    }
+    
+    .stat-card {
+      transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .role-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      z-index: 10;
+    }
+
+    /* New background image style */
+    body {
+      background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom right, rgba(3, 15, 39, 0.9), rgba(5, 25, 55, 0.95));
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-white flex justify-center items-start p-4 md:p-6">
+
+  <!-- Toast Notifications -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="fixed top-4 right-4 z-50 space-y-3 w-full max-w-xs">
+        {% for category, message in messages %}
+          <div class="animate-toast card-glass border-l-4 {{ 'border-green-500' if category == 'success' else 'border-red-500' }} rounded-lg shadow-xl overflow-hidden">
+            <div class="p-4 flex items-start">
+              <div class="flex-shrink-0">
+                {% if category == 'success' %}
+                  <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% else %}
+                  <svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% endif %}
+              </div>
+              <div class="ml-3 w-0 flex-1 pt-0.5">
+                <p class="text-sm font-medium">{{ message }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="w-full max-w-5xl space-y-8 animate-fade-in">
+
+    <!-- Header -->
+    <div class="text-center relative">
+      <h1 class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+        Admin Dashboard
+      </h1>
+      <div class="mt-4 p-4 card-glass rounded-xl shadow-lg inline-block relative">
+        <p class="text-sm text-gray-300">Logged in as: <span class="font-medium text-cyan-300">{{ user.email }}</span></p>
+        <div class="mt-2 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full"></div>
+        <span class="role-badge bg-gradient-to-r from-purple-600 to-indigo-600 font-bold">
+          {{ user.role | capitalize }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Admin Buttons -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- NEW: Chat Button (Admin2+) -->
+      {% if user.role in ['superadmin', 'admin1', 'admin2'] %}
+      <a href="/chat"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        </div>
+        <span>Chat</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin2+</span>
+      </a>
+      {% endif %}
+
+      <!-- NEW: Admin Messages Button (Admin2+) -->
+      {% if user.role in ['superadmin', 'admin1', 'admin2'] %}
+      <a href="/admin/messages"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <span>Admin Messages</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin2+</span>
+      </a>
+      {% endif %}
+
+      <!-- Superadmin & Admin1: Manage Plus Time -->
+      {% if user.role in ['superadmin', 'admin1'] %}
+      <a href="{{ url_for('manage_plus') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </div>
+        <span>Manage Plus Time</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
+      </a>
+      {% endif %}
+
+      <!-- Superadmin & Admin1 & Admin2: Manage Users -->
+      {% if user.role in ['superadmin', 'admin1', 'admin2'] %}
+      <a href="{{ url_for('manage_users') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <span>Manage Users</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin2+</span>
+      </a>
+      {% endif %}
+
+      <!-- Match Dashboard Button (Admin2+) -->
+      {% if user.role in ['superadmin', 'admin1', 'admin2'] %}
+      <a href="{{ url_for('admin_match_dashboard') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343M17.657 18.657L16.243 17.243M17.657 18.657l1.414-1.414M6.343 7.343L7.757 5.93M6.343 7.343l-1.414 1.414M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </div>
+        <span>Match Dashboard</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin2+</span>
+      </a>
+      {% endif %}
+
+      <!-- Superadmin, Admin1, Admin2 & Admin3: Manage Channels -->
+      {% if user.role in ['superadmin', 'admin1', 'admin2', 'admin3'] %}
+      <a href="{{ url_for('manage_channels') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <span>Manage Channels</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin3+</span>
+      </a>
+      {% endif %}
+
+      <!-- Superadmin & Admin1: Manage Notices -->
+      {% if user.role in ['superadmin', 'admin1'] %}
+      <a href="{{ url_for('set_notice') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <span>Manage Notices</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
+      </a>
+      {% endif %}
+
+      {% if user.role in ['superadmin', 'admin1'] %}
+      <a href="/payment-monitor"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+          </svg>
+        </div>
+        <span>Payment Monitor</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Admin1+</span>
+      </a>
+      {% endif %}
+
+      <!-- NEW: Madeup URL Button (Superadmin only) -->
+      {% if user.role == 'superadmin' %}
+      <a href="{{ url_for('madeup_url') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+          </svg>
+        </div>
+        <span>Madeup URL</span>
+        <span class="absolute top-2 right-2 text-xs bg-cyan-700 px-2 py-1 rounded-full">Superadmin</span>
+      </a>
+      {% endif %}
+
+      <!-- Account Settings (All roles) -->
+      <a href="{{ url_for('account') }}"
+         class="glow-hover gradient-bg hover:shadow-glow py-4 px-6 rounded-xl border border-cyan-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+        <div class="p-2 bg-cyan-600/20 rounded-lg group-hover:bg-cyan-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <span>Account Settings</span>
+      </a>
+
+      <!-- Superadmin Only: Clone Data -->
+      {% if user.role == 'superadmin' %}
+      <a href="{{ url_for('clone_data') }}"
+         class="glow-hover bg-gradient-to-r from-green-600 to-emerald-600 hover:shadow-glow py-4 px-6 rounded-xl border border-green-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group relative">
+        <div class="p-2 bg-green-600/20 rounded-lg group-hover:bg-green-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <span>Clone Data</span>
+        <span class="absolute top-2 right-2 text-xs bg-green-700 px-2 py-1 rounded-full">Superadmin</span>
+      </a>
+      {% endif %}
+
+      <!-- Logout (All roles) -->
+      <a href="{{ url_for('logout_current_user') }}"
+         class="glow-hover bg-gradient-to-r from-red-600 to-pink-600 hover:shadow-glow py-4 px-6 rounded-xl border border-red-400/20 flex items-center justify-center gap-3 font-bold transition-all duration-300 group">
+        <div class="p-2 bg-red-600/20 rounded-lg group-hover:bg-red-400/30 transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+        </div>
+        <span>Logout</span>
+      </a>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="card-glass p-6 rounded-xl border border-cyan-400/20 shadow-lg">
+      <h3 class="text-xl font-bold text-cyan-400 mb-4 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        Quick Stats
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="stat-card bg-gray-800/50 p-4 rounded-lg border border-gray-700 hover:border-cyan-400/30">
+          <p class="text-sm text-gray-400">Total Users</p>
+          <div class="flex items-baseline space-x-1">
+            <p class="text-2xl font-bold text-cyan-400 animate-pulse-slow">{{ stats.total_users }}</p>
+            {% if stats.user_change != 0 %}
+              <span class="text-xs {{ 'text-green-400' if stats.user_change > 0 else 'text-red-400' }}">
+                {{ '+' if stats.user_change > 0 }}{{ stats.user_change }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="stat-card bg-gray-800/50 p-4 rounded-lg border border-gray-700 hover:border-green-400/30">
+          <p class="text-sm text-gray-400">Active Today</p>
+          <div class="flex items-baseline space-x-1">
+            <p class="text-2xl font-bold text-green-400">{{ stats.active_today }}</p>
+            {% if stats.active_change != 0 %}
+              <span class="text-xs {{ 'text-green-400' if stats.active_change > 0 else 'text-red-400' }}">
+                {{ '+' if stats.active_change > 0 }}{{ stats.active_change }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="stat-card bg-gray-800/50 p-4 rounded-lg border border-gray-700 hover:border-blue-400/30">
+          <p class="text-sm text-gray-400">Channels</p>
+          <div class="flex items-baseline space-x-1">
+            <p class="text-2xl font-bold text-blue-400">{{ stats.total_channels }}</p>
+            {% if stats.channel_change != 0 %}
+              <span class="text-xs {{ 'text-green-400' if stats.channel_change > 0 else 'text-red-400' }}">
+                {{ '+' if stats.channel_change > 0 }}{{ stats.channel_change }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="stat-card bg-gray-800/50 p-4 rounded-lg border border-gray-700 hover:border-purple-400/30">
+          <p class="text-sm text-gray-400">Plus Users</p>
+          <div class="flex items-baseline space-x-1">
+            <p class="text-2xl font-bold text-purple-400">{{ stats.plus_users }}</p>
+            {% if stats.plus_change != 0 %}
+              <span class="text-xs {{ 'text-green-400' if stats.plus_change > 0 else 'text-red-400' }}">
+                {{ '+' if stats.plus_change > 0 }}{{ stats.plus_change }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Auto-refresh script -->
+  <script>
+    // Auto-refresh stats every 60 seconds
+    function refreshStats() {
+      fetch(window.location.href, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newStats = doc.querySelector('.card-glass');
+        if (newStats) {
+          document.querySelector('.card-glass').outerHTML = newStats.outerHTML;
+        }
+      })
+      .catch(err => console.log('Refresh error:', err));
+    }
+    
+    // Start auto-refresh (every 60 seconds)
+    setInterval(refreshStats, 60000);
+  </script>
+</body>
+</html>

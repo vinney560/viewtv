@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>📡 Custom Channel URLs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { 
+            background: #0f0f23; 
+            color: #fff; 
+            font-family: 'Courier New', monospace; 
+            padding: 20px; 
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 { 
+            color: #0f0; 
+            text-shadow: 0 0 5px #0f0; 
+            border-bottom: 1px solid #0f0;
+            padding-bottom: 10px;
+        }
+        .channel-list { 
+            list-style: none; 
+            padding: 0; 
+        }
+        .channel-item { 
+            background: #1a1a2e; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            border-left: 3px solid #0f0;
+            transition: all 0.3s ease;
+        }
+        .channel-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        .channel-name {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .channel-url {
+            color: #0f0; 
+            word-break: break-all; 
+            display: inline-block; 
+            padding: 8px; 
+            background: #000;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .token-info {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            h1 { font-size: 1.5rem; }
+            .channel-item { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <h1>📺 Custom Channel URLs</h1>
+    <ul class="channel-list">
+        {% for channel in channel_urls %}
+            <li class="channel-item">
+                <div class="channel-name">{{ channel.name }}</div>
+                <code class="channel-url">{{ channel.url }}</code>
+                <div class="token-info">Token: {{ channel.token }}</div>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>🔒 These tokens are persistent across server restarts</p>
+    <p>ℹ️ Base URL: <code>{{ base_url }}</code></p>
+</body>
+</html>

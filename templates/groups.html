@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Tv Channel Groups</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #ffffff;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2em;
+      color: #00e1ff;
+      letter-spacing: 1px;
+    }
+
+    .group-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .group-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+
+    .group-card:hover {
+      background: rgba(0, 225, 255, 0.1);
+      transform: scale(1.03);
+    }
+
+    .group-card a {
+      text-decoration: none;
+      color: #ffffff;
+      font-size: 1.1em;
+      font-weight: bold;
+      display: block;
+    }
+
+    .group-card a::after {
+      content: " →";
+      color: #00e1ff;
+    }
+
+    @media (max-width: 600px) {
+      .group-card {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📺 View Tv Channel Groups</h1>
+
+  <div class="group-grid">
+    {% for group in groups %}
+      <div class="group-card">
+        <a href="{{ url_for('fetch_group_channels', group_code=group['id']) }}">
+          {{ group['name'] }}
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+
+</body>
+</html>

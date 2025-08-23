@@ -1,0 +1,129 @@
+{
+  "name": "View TV",
+  "short_name": "View TV",
+  "description": "Stream your favorite movies, shows, news, local channels, kids shows, music, and sports anytime, anywhere.",
+  "lang": "en-US",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#1e1e1e",
+
+  "icons": [
+    {
+      "src": "/uploads/icon_1.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/uploads/icon_2.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/uploads/icon_3.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/uploads/icon_3.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ],
+
+  "screenshots": [
+    {
+      "src": "/uploads/screenshot_1.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    },
+    {
+      "src": "/uploads/screenshot_2.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    },
+    {
+      "src": "/uploads/screenshot_3.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Live TV",
+      "short_name": "Live",
+      "url": "/plus-playlist",
+      "description": "Watch live TV streaming",
+      "icons": [
+        {
+          "src": "/uploads/plus_playlist.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Movies",
+      "short_name": "Movies",
+      "url": "/movieflix",
+      "description": "Explore our movie collection",
+      "icons": [
+        {
+          "src": "/uploads/movies.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "L View",
+      "short_name": "L View",
+      "url": "/local-player",
+      "description": "View You Videos",
+      "icons": [
+        {
+          "src": "/uploads/local.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Sports",
+      "short_name": "Sports",
+      "url": "/live-match",
+      "description": "Watch live sports events",
+      "icons": [
+        {
+          "src": "/uploads/streamtv.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+
+  "categories": [
+    "entertainment",
+    "videos",
+    "live tvs",
+    "media",
+    "news",
+    "sports",
+    "kids"
+  ],
+
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.launcher.viewtv",
+      "id": "com.launcher.viewtv"
+    }
+  ],
+
+  "prefer_related_applications": false
+}

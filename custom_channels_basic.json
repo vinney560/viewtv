@@ -1,0 +1,480 @@
+{
+  "30a_music": {
+    "name": "30A Music",
+    "url": "https://30a-tv.com/music.m3u8",
+    "access": "paid",
+    "group-title": "Music"
+  },
+  "zee_one": {
+    "name": "Z One",
+    "access": "free",
+    "url": "https://ef56ef401101403a8b06f1dec29ef1eb.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/Samsung-de_ZeeOne/playlist.m3u8",
+    "group-title": "Entertainment"
+  },
+  "B4UMovies.in@India": {
+    "name": "B4U Movies India",
+    "url": "https://cdnb4u.wiseplayout.com/B4U_Movies/master.m3u8",
+    "logo": "https://i.imgur.com/M9kMFJl.png",
+    "country": "IN",
+    "access": "free",
+    "group-title": "Movies"
+  },
+  "national_geographic_east": {
+    "name": "Nat Geo",
+    "access": "paid",
+    "url": "https://fl3.moveonjoy.com/National_Geographic/index.m3u8",
+    "group-title": "Documentary",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Natgeologo.svg/512px-Natgeologo.svg.png"
+  },
+  "national_geographic_wild_east": {
+    "name": "Nat Geo Wild",
+    "url": "https://fl3.moveonjoy.com/Nat_Geo_Wild/index.m3u8",
+    "access": "premium",
+    "group-title": "Documentary",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/National_Geographic_Wild_logo.svg/512px-National_Geographic_Wild_logo.svg.png"
+  },
+  "reflect-tv": {
+    "name": "Reflect Tv",
+    "url": "https://edge-a3.evrideo.tv/8f37c9f0-fe22-44f4-b64a-76ad11730daf_1000026630_HLS/manifest.m3u8",
+    "access": "free",
+    "group-title": "News"
+  },
+  "dodoma-tv": {
+    "name": "Dodoma Tv",
+    "url": "https://goliveafrica.media:9998/live/625965017ed69/index.m3u8",
+    "access": "paid",
+    "group-title": "General"
+  },
+  "DisneyXD": {
+    "name": "DisneyXD",
+    "url": "https://fl5.moveonjoy.com/DISNEYXD/index.m3u8",
+    "access": "paid",
+    "group-title": "Animation"
+  },
+  "ToonamiAftermathEast.us": {
+    "name": "Toonami Aftermath East",
+    "url": "http://api.toonamiaftermath.com:3000/est/playlist.m3u8",
+    "logo": "https://i.imgur.com/aSjhZK7.png",
+    "country": "US",
+    "access": "free",
+    "group-title": "Animation",
+    "resolution": "480p"
+  },
+  "Nickelodeon_de": {
+    "name": "Nickelodeon",
+    "url": "https://fl5.moveonjoy.com/NICKELODEON/index.m3u8",
+    "group-title": "Kids",
+    "access": "paid",
+    "logo": "https://i.imgur.com/E84jnP8.png"
+  },
+  "Nick_Jr_East": {
+    "name": "Nick Jr.",
+    "url": "https://fl3.moveonjoy.com/NICK_JR/index.m3u8",
+    "group-title": "Kids",
+    "access": "premium",
+    "logo": "https://i.imgur.com/KT4tdQs.png"
+  },
+  "kids-soccer": {
+    "name": "Kids Soccer",
+    "url": "https://www.youtube.com/embed/YKlMmvkw66M?rel=0&autoplay=1&modestbranding=1&controls=1&showinfo=0",
+    "access": "premium",
+    "group-title": "Kids"
+  },
+  "afro-beats": {
+    "name": "Afro Beats",
+    "url": "https://stream.ecable.tv/afrobeats/index.m3u8",
+    "access": "free",
+    "group-title": "Music"
+  },
+  "akilikids": {
+    "name": "Akili Kids! TV",
+    "url": "https://akilikids.co.ke/live/",
+    "access": "free",
+    "group-title": "Kids"
+  },
+  "ebru-tv": {
+    "name": "Ebru Tv",
+    "url": "https://player.twitch.tv:443/?channel=ebrutvkenya&enableExtensions=true&muted=true&parent=twitch.tv&player=popout&quality=auto&volume=0.5",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/ebru.png",
+    "country": "Website",
+    "access": "free",
+    "group-title": "News"
+  },
+  "sporty-tv": {
+    "name": "Sporty Tv",
+    "url": "https://m.youtube.com:443/channel/UCwu87p766uwEyzG1p8dEMlg/live",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/sporty.png",
+    "country": "YouTube",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "cbeebies": {
+    "name": "CBeebies Kids",
+    "url": "https://vs-hls-pushb-uk-live.akamaized.net/x=3/i=urn:bbc:pips:service:cbeebies_hd/t=3840/v=pv14/b=5080016/main.m3u8",
+    "access": "paid",
+    "group-title": "Kids"
+  },
+  "citizen-tv": {
+    "name": "Citizen TV",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UChBQgieUidXV1CmDxSdRm3g&controls=1&modestbranding=1&rel=0&fs=0&disablekb=1&iv_load_policy=3",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/citizen.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "ntv-kenya": {
+    "name": "NTV",
+    "url": "https://www.youtube.com/embed/p4BWnK2xeHw",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/ntv.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "kass-tv": {
+    "name": "Kass TV",
+    "url": "https://m.youtube.com:443/@kasstvwebstream/live",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/kass.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "k24-tv": {
+    "name": "K24 TV",
+    "url": "https://m.youtube.com:443/@K24tv/live",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/k24.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "ktn": {
+    "name": "KTN Home",
+    "url": "https://www.youtube.com/embed/live_stream?channel=UCKVsdeoHExltrWMuK0hOWmg&controls=0&modestbranding=1&rel=0&fs=1&disablekb=1&iv_load_policy=3",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/ktn.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "kbc": {
+    "name": "KBC channel 1",
+    "url": "https://kenyalivetv.co.ke/embed/kbc-channel-1-live",
+    "logo": "https://kbc.co.ke/wp-content/uploads/2024/11/KBC-LOGO.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "inooro-tv": {
+    "name": "Inooro Tv",
+    "url": "https://kenyalivetv.co.ke/tv/inooro-tv-live",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/inooro.png",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  },
+  "aa": {
+    "name": "B+ TV",
+    "access": "paid",
+    "url": "https://tv.btnrwanda.com:3432/live/bpluslive.m3u8",
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "group-title": "Entertainment"
+  },
+  "wwe": {
+    "name": "Cable 14 Hamilton",
+    "access": "paid",
+    "url": "https://flowcaster1-ch.cdn.clearcable.net/C14/smil:C14.smil/playlist.m3u8?iimae0UC2aendtime=1665196120&iimae0UC2ahash=NzcDbuotaJAVf1DsNxuGHBlfCXSvHDIt5sqMUMgrRMU=&iimae0UC2astarttime=1665181720",
+    "logo": "https://i.imgur.com/bJ7ygTq.png",
+    "group-title": "General"
+  },
+  "star-sport-hd": {
+    "name": "Star Sport 1",
+    "url": "http://41.205.93.154:80/STARSPORTS1/index.m3u8",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/starsports.png",
+    "country": "International",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "jee": {
+    "name": "CAtv",
+    "access": "paid",
+    "url": "https://video2.getstreamhosting.com:19360/8216/8216.m3u8",
+    "logo": "https://caribbeanadvantage.com/images/CAtv-logo-512.png",
+    "group-title": "General"
+  },
+  "iu": {
+    "name": "CBN Gospel",
+    "access": "paid",
+    "url": "https://59d39900ebfb8.streamlock.net/ccbn/ccbn/playlist.m3u8",
+    "logo": "https://i.imgur.com/SHBAblV.png",
+    "group-title": "Religious"
+  },
+  "iop": {
+    "name": "CBN TV",
+    "access": "paid",
+    "url": "https://5790d294af2dc.streamlock.net/CBNVI/CBNVI/playlist.m3u8",
+    "logo": "https://i.imgur.com/SHBAblV.png",
+    "group-title": "General"
+  },
+  "yuh": {
+    "name": "CeeJay TV",
+    "access": "paid",
+    "url": "https://asiakwa.com/ceejaytv/index.fmp4.m3u8",
+    "logo": "https://i.imgur.com/YgLMMOr.png",
+    "group-title": "Entertainment"
+  },
+  "forfor": {
+    "name": "Channel 44",
+    "access": "paid",
+    "url": "https://d1k6kax80wecy5.cloudfront.net/WFqZJc/index.m3u8",
+    "logo": "https://i.imgur.com/P2wUGh9.png",
+    "group-title": "General"
+  },
+  "ppo": {
+    "name": "Channel 82 SD",
+    "access": "paid",
+    "url": "https://service.webvideocore.net/CL1olYogIrDWvwqiIKK7eBmnWbRkKKsu3nqabm9GlX02JOj3CDNXzodJMDEN2dk3/a_bq9clxfbupwg.m3u8",
+    "logo": "https://i.imgur.com/8Ff5b3e.png",
+    "group-title": "Entertainment"
+  },
+  "qer": {
+    "name": "Deluxe Dance",
+    "access": "paid",
+    "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/64733/64733_264_live.m3u8",
+    "logo": "https://i.imgur.com/Qu7t15Y.png",
+    "group-title": "Music"
+  },
+  "bbb": {
+    "name": "Deluxe Rap",
+    "access": "paid",
+    "url": "https://sdn-global-live-streaming-packager-cache.3qsdn.com/65183/65183_264_live.m3u8",
+    "logo": "https://i.imgur.com/s3h67hx.png",
+    "group-title": "Music"
+  },
+  "dwEn": {
+    "name": "DW English",
+    "access": "paid",
+    "url": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8",
+    "logo": "https://i.imgur.com/8MRNFb9.png",
+    "group-title": "News"
+  },
+  "yyj": {
+    "name": "EbS",
+    "access": "paid",
+    "url": "https://streams.prd.commavservices.eu/live/ebs/index.m3u8",
+    "logo": "https://i.imgur.com/DIIRPNN.png",
+    "group-title": "Legislative"
+  },
+  "uojn": {
+    "name": "EbS+",
+    "access": "paid",
+    "url": "https://streams.prd.commavservices.eu/live/ebsplus/index.m3u8",
+    "logo": "https://i.imgur.com/7V012zQ.png",
+    "group-title": "Legislative"
+  },
+  "bsb": {
+    "name": "Expo Channel",
+    "access": "paid",
+    "url": "https://tvsnhlslivetest.akamaized.net/hls/live/2034711/EXPO-MSL4/master.m3u8",
+    "logo": "https://i.imgur.com/2KzCShW.png",
+    "group-title": "Shop"
+  },
+  "tyu": {
+    "name": "FashionTV Europe",
+    "access": "paid",
+    "url": "https://fashiontv-fashiontv-5-nl.samsung.wurl.tv/playlist.m3u8",
+    "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Fashion_TV_logo.svg/512px-Fashion_TV_logo.svg.png",
+    "group-title": "Lifestyle"
+  },
+  "fifa-a": {
+    "name": "FIFA +",
+    "access": "premium",
+    "url": "https://a62dad94.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZJRkFQbHVzRW5nbGlzaF9ITFM/playlist.m3u8",
+    "logo": "https://i.imgur.com/l5iax42.png",
+    "group-title": "Sports"
+  },
+  "yuig": {
+    "name": "Firstlight",
+    "access": "paid",
+    "url": "https://uni01rtmp.tulix.tv/firstlight/firstlight.smil/playlist.m3u8",
+    "logo": "https://i.imgur.com/gtDROeT.png",
+    "group-title": "Religious"
+  },
+  "jhu": {
+    "name": "Fish TV",
+    "url": "https://tv.localstreamgh.com/fishtv/index.m3u8",
+    "access": "free",
+    "logo": "https://i.imgur.com/A4VeRnS.png",
+    "group-title": "General"
+  },
+  "uiipi": {
+    "name": "For You TV",
+    "access": "paid",
+    "url": "https://stream.az-multimedia.com:3793/live/foryoutvlive.m3u8",
+    "logo": "https://i.imgur.com/1oMboXL.png",
+    "group-title": "News"
+  },
+  "gsgs": {
+    "name": "Fresh",
+    "url": "https://origin3.afxp.telemedia.co.za/PremiumFree/freshtv/playlist.m3u8",
+    "access": "free",
+    "logo": "https://i.imgur.com/2ig8jUH.png",
+    "group-title": "General"
+  },
+  
+  "bsbs": {
+    "name": "Hard Knocks Fighting",
+    "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/manifest/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/2ee2b8d4-acc4-4296-9dc8-66f1ffd0fff8/5.m3u8",
+    "logo": "https://images-1.rakuten.tv/storage/global-live-channel/translation/artwork/13b0a6c7-4307-4c8d-9fc4-df2a4f8e8b38-hard-knocks-fighting-1602077398-width200-quality90.jpeg",
+    "access": "paid",
+    "group-title": "Wrestling"
+  },
+  "sky-sports-laliga-mx": {
+    "name": "SKY SPORTS LALIGA",
+    "url": "http://190.92.10.66:4000/play/a001/index.m3u8",
+    "country": "Mexico",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "TLC": {
+    "name": "TLC",
+    "access": "paid",
+    "url": "https://fl5.moveonjoy.com/TLC/index.m3u8",
+    "group-title": ""
+  },
+  "enbs": {
+    "name": "Kordia TV",
+    "access": "paid",
+    "url": "https://ptvlive.kordia.net.nz/out/v1/3fc2254c865a457c8d7fbbce227a2aae/index.m3u8",
+    "logo": "https://i.imgur.com/BQ0qWzX.png",
+    "group-title": "General"
+  },
+  "ebhs": {
+    "name": "Kozoom TV",
+    "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/fdd6f243-f971-4a1a-9510-97ac01d6b37f/manifest.m3u8",
+    "access": "paid",
+    "logo": "https://i.imgur.com/M1Ee79b.png",
+    "group-title": "Sports"
+  },
+  "lolwe-tv": {
+    "name": "Lolwe TV",
+    "url": "https://goliveafrica.media:9998/live/62580e144eb43/index.m3u8",
+    "access": "paid",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/lolwe.png",
+    "group-title": "News"
+  },
+  "al-jazeera-english": {
+    "name": "Al Jazeera English",
+    "url": "https://live-hls-apps-aje-v3-fa.getaj.net/AJE/index.m3u8",
+    "access": "free",
+    "logo": "https://i.imgur.com/7bRVpnu.png",
+    "group-title": "Entertainment"
+  },
+  "animax": {
+    "name": "Animax",
+    "url": "https://amg02159-kcglobal-amg02159c1-samsung-in-521.playouts.now.amagi.tv/playlist/amg02159-kcglobal-animax-samsungin/playlist.m3u8",
+    "access": "free",
+    "group-title": "Animation"
+  },
+  "baby_first": {
+    "name": "Baby First TV",
+    "url": "https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/c8d16110-566c-4e95-a1df-55d175e9e201/manifest.m3u8",
+    "access": "free",
+    "group-title": "Kids"
+  },
+  "b3_music": {
+    "name": "B3 Music",
+    "url": "https://live20.bozztv.com/akamaissh101/ssh101/d3tvnet/playlist.m3u8",
+    "access": "free",
+    "group-title": "Music"
+  },
+  "bbc_doctor_who": {
+    "name": "BBC Doctor Who",
+    "url": "https://amg00793-amg00793c15-rakuten-es-5359.playouts.now.amagi.tv/playlist.m3u8",
+    "access": "paid",
+    "group-title": "General"
+  },
+  "bollywood_classic": {
+    "name": "Bollywood Classic",
+    "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-classic/manifest.m3u8",
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "access": "paid",
+    "group-title": "Movies"
+  },
+  "bollywood_hd": {
+    "name": "Bollywood HD",
+    "url": "https://d35j504z0x2vu2.cloudfront.net/v1/master/0bc8e8376bd8417a1b6761138aa41c26c7309312/bollywood-hd/manifest.m3u8",
+    "logo": "https://i.ibb.co/WzLwj3X/IMG-20230703-155036.jpg",
+    "access": "paid",
+    "group-title": "Movies"
+  },
+  "classic_movie": {
+    "name": "Classic Movie",
+    "url": "https://30a-tv.com/feeds/pzaz/30atvmovies.m3u8",
+    "access": "paid",
+    "group-title": "Movies"
+  },
+  "hells-kitchen": {
+    "name": "Hell's Kitchen",
+    "url": "https://itv-hellskitchen-rakuten.amagi.tv/playlist.m3u8",
+    "access": "free",
+    "group-title": "Entertainment"
+  },
+  "movie-box": {
+    "name": "Movie Box",
+    "url": "https://cdn3.skygo.mn/live/disk1/Moviebox/HLS-FTA/Moviebox.m3u8",
+    "access": "free",
+    "group-title": "Movies"
+  },
+  "vevo-hip-hop": {
+    "name": "Vevo Hip Hop",
+    "access": "paid",
+    "url": "https://d3mzlmrngyf08j.cloudfront.net/v1/master/3722c60a815c199d9c0ef36c5b73da68a62b09d1/cc-55k4m9whplndi/playlist.m3u8",
+    "group-title": "Music"
+  },
+  "espn_2": {
+    "name": "ESPN 2",
+    "url": "https://fl5.moveonjoy.com/ESPN_2/index.m3u8",
+    "group-title": "Sports",
+    "access": "premium",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/espn.png"
+  },
+  "espn_u": {
+    "name": "ESPN U",
+    "url": "https://fl4.moveonjoy.com/ESPN_U/index.m3u8",
+    "group-title": "Sports",
+    "access": "premium",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/espn.png"
+  },
+  "real-madrid-tv-es": {
+    "name": "REAL MADRID TV",
+    "url": "https://rmtv.akamaized.net:443/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8",
+    "country": "Spain",
+    "access": "premium",
+    "group-title": "Sports"
+  },
+  "bein_sports": {
+    "name": "beIN SPORTS",
+    "url": "https://aegis-cloudfront-1.tubi.video/82c7f2de-f4ea-44a4-8200-069c5c0bb639/playlist.m3u8",
+    "access": "premium",
+    "logo": "https://i.imgur.com/QWo0x7S.jpg",
+    "group-title": "Sports"
+  },
+  "tom-and-jerry": {
+    "name": "Tom and Jerry",
+    "access": "paid",
+    "url": "https://live20.bozztv.com/giatvplayout7/giatv-208314/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "pbs_kids": {
+    "name": "PBS Kids",
+    "access": "paid",
+    "url": "https://kidslive-aka.amagi.tv/playlist.m3u8",
+    "group-title": "Kids"
+  },
+  "kameme-tv": {
+    "name": "Kameme TV",
+    "url": "https://m.youtube.com:443/@KamemeTv/live",
+    "logo": "",
+    "country": "Kenya",
+    "access": "free",
+    "group-title": "News"
+  }
+}

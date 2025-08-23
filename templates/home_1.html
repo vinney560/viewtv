@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="index, follow" />
+  <title>Home | View Tv</title>
+  <!-- Meta Tags -->
+  <meta name="description" content="ViewTV is your free and paid, all-in-one platform to watch live TV, sports matches, local channels like Citizen Tv, NTV, KTN Home, and global news. Stream FIFA, UEFA, and EPL matches in English—right on your phone, anywhere, anytime. Enjoy Distruction Free, Zero Ads, YouTube live integration, and smooth performance with ViewTV." />
+  <meta name="keywords" content="ViewTV, live TV, free live streaming, global TV, local channels, Kiswahili channels, English news, FIFA live, UEFA matches, EPL streaming online, Maisha Magic, PPP TV, mobile TV app, sports streaming, watch TV online, African shows, Kenya live TV, entertainment app, full-screen video, YouTube live, ViewTV app, view TV on mobile, WebView TV, global live channels, free IPTV alternative, local news live, ViewTV streaming, international channels, African streaming platform, movie box, movie streamer, watch live news, free movies, latest movies, stream online, live football, citizen live stream, cartoons, animation streamer, watch live, horror movies, latest movies online, watch now live, kenya live, nickelodean live tv, many channels, live tv online, View Tv, stream tv, youtube live channels, streaming platform, kids channels, live tvs, free tv online" />
+  <meta name="author" content="Vincent Kipngetich" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://viewstream-1.onrender.com" />
+  <link rel="icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="msvalidate.01" content="D06687A71C3ABB4C7B414D718375B902" />
+
+  <!-- Social Meta -->
+  <meta property="og:title" content="View Tv - Best Streamer" />
+  <meta property="og:description" content="Start streaming your favorite Movies, TV channels, Sports, Music, Kids shows worldwide instantly." />
+  <meta property="og:image" content="https://viewstream-1.onrender.com/favicon.ico" />
+  <meta property="og:url" content="https://viewstream-1.onrender.com" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          backdropBlur: {
+            xs: '2px',
+          },
+          boxShadow: {
+            'glass': '0 4px 30px rgba(0, 0, 0, 0.1)',
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .glass-morph {
+        background: rgba(31, 41, 55, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .glass-card {
+        background: rgba(31, 41, 55, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .access-badge {
+        @apply absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-semibold shadow-md z-10;
+      }
+      .premium-badge {
+        @apply bg-gradient-to-r from-yellow-500 to-yellow-700 text-yellow-100;
+      }
+      .free-badge {
+        @apply bg-gradient-to-r from-green-500 to-green-700 text-green-100;
+      }
+      .exclusive-badge {
+        @apply bg-gradient-to-r from-purple-500 to-purple-700 text-purple-100;
+      }
+      .play-btn {
+        @apply px-4 py-2 rounded text-sm font-medium transition-all duration-300 flex items-center;
+        background: rgba(8, 145, 178, 0.85);
+        box-shadow: 0 4px 10px rgba(6, 148, 182, 0.25);
+      }
+      .play-btn:hover {
+        background: rgba(14, 165, 203, 0.95);
+        box-shadow: 0 6px 15px rgba(6, 148, 182, 0.4);
+      }
+      .channel-card {
+        @apply rounded-xl p-4 transition-all duration-300 relative;
+        background: rgba(31, 41, 55, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      }
+      .channel-card:hover {
+        box-shadow: 0 10px 25px rgba(6, 148, 182, 0.35);
+        border-color: rgba(8, 145, 178, 0.3);
+        transform: translateY(-3px);
+      }
+      .channel-content {
+        @apply flex items-start gap-4;
+      }
+      .logo-container {
+        @apply flex-shrink-0;
+      }
+      .channel-info {
+        @apply flex-grow;
+      }
+      .channel-actions {
+        @apply flex justify-end mt-3;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-white font-sans min-h-screen">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-20 right-4 space-y-2 z-50 max-w-xs w-full">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="toast glass-morph transition duration-300 ease-out px-4 py-3 rounded-lg shadow-glass text-sm font-medium text-white
+            {% if category == 'success' %} border border-green-500/30
+            {% elif category == 'error' %} border border-red-500/30
+            {% else %} border border-blue-500/30 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Glass Morph Top Navigation -->
+  <div class="fixed top-0 left-0 w-full z-50 glass-morph border-b border-gray-700/30 shadow-glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Left: Dashboard button -->
+      <a href="{{ url_for('dashboard') }}" class="text-cyan-400 hover:text-cyan-300 transition transform hover:scale-110">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </a>
+
+      <!-- Right: + Add, Help & Profile Buttons -->
+      <div class="flex items-center gap-4">
+        <a href="{{ url_for('get_plus') }}" class="text-green-400 hover:text-green-300 transition transform hover:scale-110" title="Get Plus">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4v16m8-8H4" />
+          </svg>
+        </a>
+        <a href="{{ url_for('assistance') }}" class="text-yellow-400 hover:text-yellow-300 transition transform hover:scale-110" title="Assistance">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </a>
+        <a href="{{ url_for('account') }}" class="text-blue-400 hover:text-blue-300 transition transform hover:scale-110" title="Account">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5.121 17.804A4 4 0 0112 15a4 4 0 016.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Content -->
+  <div class="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-10">
+
+    <!-- Glass Morph Title Container -->
+    <div class="glass-morph rounded-2xl p-6 mb-8 shadow-glass fade-in">
+      <h1 class="text-3xl font-bold text-cyan-400 mb-2 text-center">Available Channels</h1>
+      <p class="text-center text-gray-400 max-w-2xl mx-auto">
+        Browse our premium collection of channels. Enjoy seamless streaming with crystal clear quality.
+      </p>
+    </div>
+
+    <!-- Channel Grid -->
+    <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {% for key, info in channels.items() %}
+      <div class="channel-card fade-in" style="animation-delay: {{ loop.index * 50 }}ms">
+        <!-- Access Badge -->
+        {% if info.get('access') %}
+          <div class="access-badge 
+            {% if info.access == 'paid' %}premium-badge
+            {% elif info.access == 'free' %}free-badge
+            {% else %}exclusive-badge{% endif %}">
+            {{ info.access }}
+          </div>
+        {% endif %}
+        
+        <div class="channel-content">
+          <!-- Channel Logo (rounded-full) -->
+          <div class="logo-container">
+            <img 
+              src="{{ info.logo or url_for('uploaded_file', filename='default_tv_icon.png') }}" 
+              alt="{{ info.name }} Logo" 
+              class="w-16 h-16 rounded-full object-cover border-2 border-cyan-500/30"
+              onerror="this.src='{{ url_for('uploaded_file', filename='default_tv_icon.png') }}'"
+            />
+          </div>
+          
+          <!-- Channel Name and Category -->
+          <div class="channel-info">
+            <h2 class="text-lg font-semibold text-white mb-1 truncate">{{ info.name }}</h2>
+            <p class="text-sm text-gray-400 line-clamp-2">
+              {{ info.get('group-title', 'Entertainment') }}
+            </p>
+          </div>
+        </div>
+        
+        <!-- Watch Button -->
+        <div class="channel-actions">
+          <a href="{{ url_for('play_channel', key=key) }}" 
+             class="play-btn text-white">
+            <span>Watch Now</span>
+            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Empty State -->
+    {% if not channels %}
+    <div class="glass-morph rounded-2xl p-12 text-center mt-10">
+      <div class="mx-auto w-24 h-24 rounded-full bg-gray-800/50 flex items-center justify-center mb-6">
+        <svg class="w-12 h-12 text-cyan-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-cyan-400 mb-2">No Channels Available</h3>
+      <p class="text-gray-400 max-w-md mx-auto">
+        It seems there are no channels available at the moment. Please check back later or contact support.
+      </p>
+      <a href="{{ url_for('assistance') }}" class="mt-4 inline-block bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-2 rounded-lg transition">
+        Contact Support
+      </a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Toast Auto Dismiss Script -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const toasts = document.querySelectorAll('.toast');
+      toasts.forEach((toast) => {
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-x-10');
+          setTimeout(() => toast.remove(), 500);
+        }, 4000);
+      });
+    });
+  </script><script>if("serviceWorker"in navigator){navigator.serviceWorker.register("/service-worker.js").then(()=>console.log("SW Registered")).catch(err=>console.log("SW failed:",err));}</script>
+
+</body>
+</html>

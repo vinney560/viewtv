@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Player | View Tv</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+  <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+  <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background-color: #000;
+      color: white;
+    }
+    #player-container {
+      position: relative;
+      width: 100%;
+      max-width: 1600px;
+      aspect-ratio: 16 / 9;
+      margin: auto;
+      background: black;
+      border-radius: 0.5rem;
+    }
+    #player, #iframe-player {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+      background: black;
+    }
+    .hidden {
+      display: none;
+    }
+    @media (max-width: 640px) {
+      #player-container {
+        aspect-ratio: 4 / 3;
+      }
+    }
+
+    :fullscreen #player-container,
+    :-webkit-full-screen #player-container {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      aspect-ratio: unset !important;
+      border-radius: 0 !important;
+    }
+
+    #fullscreen-toggle, #data-saver-toggle, #audio-only-toggle, #quality-toggle {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #22d3ee;
+      position: relative;
+    }
+    #fullscreen-toggle:hover, #data-saver-toggle:hover, #audio-only-toggle:hover, #quality-toggle:hover {
+      color: #ffffff;
+    }
+
+    #fullscreen-toggle.hide, #data-saver-toggle.hide, #audio-only-toggle.hide, #quality-toggle.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    /* Quality dropdown styles */
+    #quality-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(31, 41, 55, 0.95);
+      border: 1px solid #475569;
+      border-radius: 4px;
+      padding: 8px 0;
+      min-width: 120px;
+      z-index: 100;
+      display: none;
+    }
+    
+    #quality-dropdown.show {
+      display: block;
+    }
+    
+    .quality-option {
+      padding: 8px 16px;
+      cursor: pointer;
+      color: white;
+    }
+    
+    .quality-option:hover {
+      background: rgba(71, 85, 105, 0.8);
+    }
+    
+    .quality-option.active {
+      color: #0ea5e9;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen bg-black text-white">
+
+  <header class="flex items-center justify-between px-4 py-4 border-b border-gray-700 text-base sm:text-lg md:text-xl">
+    <button onclick="tryClose()" class="text-cyan-400 hover:text-white flex items-center space-x-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      <span>Back</span>
+    </button>
+    <h1 class="font-bold text-cyan-400">Now Streaming</h1>
+    <div class="flex space-x-4">
+      <!-- Quality Selector Button -->
+      <div class="relative">
+        <button id="quality-toggle" title="Select Quality">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10M8 7v10M12 7v10M16 7v10M20 7v10M2 5h20v14H2V5z" />
+          </svg>
+        </button>
+        <div id="quality-dropdown">
+          <div class="quality-option" data-quality="auto">Auto</div>
+          <div class="quality-option" data-quality="1080">1080p</div>
+          <div class="quality-option" data-quality="720">720p</div>
+          <div class="quality-option" data-quality="480">480p</div>
+        </div>
+      </div>
+      
+      <button id="fullscreen-toggle" title="Toggle Fullscreen">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6M4 4v6M20 4h-6M20 4v6M4 20h6M4 20v-6M20 20h-6M20 20v-6" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-grow flex flex-col items-center justify-center p-4">
+    <div id="player-container">
+      <video
+        id="player"
+        class="video-js vjs-default-skin"
+        controls
+        preload="auto"
+        muted
+        playsinline
+        webkit-playsinline
+      ></video>
+      <iframe id="iframe-player" class="hidden" frameborder="0" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+    </div>
+    <p id="error-message" class="mt-4 text-red-500 hidden text-sm sm:text-base"></p>
+  </main>
+
+  <footer class="text-center text-gray-500 text-sm py-4">
+    &copy; <span id="year"></span> View Tv. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Initialize player (unchanged from your original)
+    const player = document.getElementById('player');
+    const errorMsg = document.getElementById('error-message');
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function getExtension(url) {
+      const path = url.split('?')[0].split('#')[0];
+      const extMatch = path.match(/\.(mp4|m3u8|mpd|webm|mov|avi|mkv)$/i);
+      return extMatch ? extMatch[1].toLowerCase() : '';
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.remove('hidden');
+    }
+
+    // Quality Selector Logic (NEW ADDITION)
+    const qualityToggle = document.getElementById('quality-toggle');
+    const qualityDropdown = document.getElementById('quality-dropdown');
+    const qualityOptions = document.querySelectorAll('.quality-option');
+
+    qualityToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      qualityDropdown.classList.toggle('show');
+    });
+
+    qualityOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const quality = option.dataset.quality;
+        qualityOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        
+        // Implement quality change logic here
+        console.log(`Quality set to: ${quality}`);
+        
+        qualityDropdown.classList.remove('show');
+      });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!qualityToggle.contains(e.target)) {
+        qualityDropdown.classList.remove('show');
+      }
+    });
+
+    // Your original player initialization code below...
+    (function initializePlayer() {
+      const streamUrl = getQueryParam('url');
+      const token = getQueryParam('token');
+      if (!streamUrl) {
+        showError("No stream URL provided");
+        return;
+      }
+
+      const urlWithToken = token ? `${streamUrl}${streamUrl.includes('?') ? '&' : '?'}token=${token}` : streamUrl;
+      const ext = getExtension(urlWithToken);
+
+      const iframe = document.getElementById('iframe-player');
+      
+      errorMsg.classList.add('hidden');
+      player.style.display = 'none';
+      iframe.style.display = 'none';
+
+      if (ext === 'm3u8') {
+        if (Hls.isSupported()) {
+          const hls = new Hls();
+          window.hls = hls;
+          hls.loadSource(urlWithToken);
+          hls.attachMedia(player);
+          hls.on(Hls.Events.ERROR, function(event, data) {
+            if (data.fatal) {
+              showError("Playback Error: " + data.details);
+            }
+          });
+          player.style.display = 'block';
+          player.muted = false;
+          player.play().catch(e => {
+            showError("Playback failed: " + e.message);
+          });
+        } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+          player.src = urlWithToken;
+          player.style.display = 'block';
+          player.play().catch(e => {
+            showError("Playback failed: " + e.message);
+          });
+        } else {
+          showError("HLS not supported on this browser");
+        }
+      } else if (ext === 'mpd') {
+        try {
+          const dashPlayer = dashjs.MediaPlayer().create();
+          window.dashPlayer = dashPlayer;
+          dashPlayer.initialize(player, urlWithToken, true);
+          player.style.display = 'block';
+        } catch(e) {
+          showError("DASH playback error: " + e.message);
+        }
+      } else if (["mp4", "webm", "mov", "avi", "mkv"].includes(ext)) {
+        player.src = urlWithToken;
+        player.style.display = 'block';
+        player.play().catch(e => {
+          showError("Playback failed: " + e.message);
+        });
+      } else {
+        iframe.src = urlWithToken;
+        iframe.style.display = 'block';
+      }
+    })();
+
+    function tryClose() {
+      window.close();
+      setTimeout(() => {
+        if (!window.closed) history.back();
+      }, 300);
+    }
+  </script>
+</body>
+</html>

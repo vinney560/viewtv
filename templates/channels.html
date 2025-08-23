@@ -1,0 +1,223 @@
+<!-- templates/channels.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ViewTV Channels</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+    body {
+      background: #0a0f1c;
+      color: #e1e8ef;
+      font-family: 'Inter', sans-serif;
+      padding: 30px 20px;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 40px;
+      color: #4fc3f7;
+      text-shadow: 0 0 12px #4fc3f799;
+    }
+
+    .channel-list {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .channel {
+      background: #121829;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 255, 136, 0.15);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+
+    .channel:hover {
+      background: #1e2a38;
+      box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+    }
+
+    .channel-number {
+      font-weight: 600;
+      color: #32cd80;
+      margin-right: 10px;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .channel-name {
+      flex-grow: 1;
+      font-weight: 600;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      color: #ffffff;
+    }
+
+    .watch-link {
+      position: relative;
+      background: #00ff88;
+      color: #0d1117;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .watch-link:hover {
+      background: #00cc6a;
+      color: #d0f0e6;
+      box-shadow: 0 0 10px #00ff88;
+    }
+
+    .watch-link::before {
+      content: "▶";
+      font-size: 1.2rem;
+    }
+
+    .watch-link::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.1) 100%
+      );
+      transform: skewX(-20deg);
+      animation: shine 2.5s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% {
+        left: -75%;
+      }
+      100% {
+        left: 125%;
+      }
+    }
+
+    p.no-channels {
+      font-style: italic;
+      color: #8b949e;
+      font-size: 1rem;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    /* Top bar */
+    .top-bar {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .top-bar a {
+      color: #4fc3f7;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .top-bar input[type="text"] {
+      flex-grow: 1;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #1c2433;
+      color: #e1e8ef;
+      border: 1px solid #2b3445;
+      outline: none;
+    }
+
+    @media (max-width: 640px) {
+      .channel {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .channel-name {
+        white-space: normal;
+      }
+
+      .watch-link {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>🌐 Available Channels</h2>
+
+  <div class="top-bar">
+    <!-- Back Button -->
+    <a href="javascript:history.back()" title="Go Back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+    </a>
+
+    <!-- Search Bar -->
+    <input type="text" id="search" placeholder="Search channels..." />
+  </div>
+
+  <div class="channel-list">
+    {% for ch in channels %}
+      <div class="channel" tabindex="0" aria-label="Channel {{ loop.index }}: {{ ch.name }}">
+        <div class="channel-number">{{ loop.index }}.</div>
+        <div class="channel-name" title="{{ ch.name }}">{{ ch.name }}</div>
+        <a class="watch-link" href="{{ url_for('player', name=ch.name, url=ch.url)|safe }}" target="_blank">Watch</a>
+      </div>
+    {% else %}
+      <p class="no-channels">No channels found.</p>
+    {% endfor %}
+  </div>
+
+  <script>
+    const searchInput = document.getElementById("search");
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      const channels = document.querySelectorAll(".channel");
+      channels.forEach((channel) => {
+        const name = channel.querySelector(".channel-name").textContent.toLowerCase();
+        channel.style.display = name.includes(query) ? "flex" : "none";
+      });
+    });
+  </script>
+</body>
+</html>

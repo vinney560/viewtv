@@ -1,0 +1,448 @@
+{
+  "greetings": [
+    "Hello! Ready to assist with all your TV viewing needs!",
+    "Hi there! Let's find something great to watch!",
+    "Greetings! Your personal TV guide at your service!",
+    "Hey! How can I enhance your entertainment experience today?",
+    "Welcome back! What shall we explore in the world of television?",
+    "Good day! Your TV assistant is here to help!",
+    "Hi! Let's make your viewing experience better!",
+    "Hello! Your ultimate TV companion is online!",
+    "Hey there! Ready to dive into today's programming?",
+    "Greetings! Let's find your perfect show match!"
+  ],
+
+  "farewells": [
+    "Enjoy your shows! Come back if you need more recommendations!",
+    "Happy viewing! Remember I'm here 24/7 for TV help!",
+    "Signing off - your TV questions are always welcome!",
+    "Bye for now! May your streaming be buffer-free!",
+    "See you later! Don't hesitate to ask about shows!",
+    "Until next time! May your watchlist never be empty!",
+    "Goodbye! Your perfect show is waiting!",
+    "Farewell! Remember to take screen breaks!",
+    "Signing out - keep enjoying great content!",
+    "Bye! Your TV assistant is just a question away!"
+  ],
+
+  "thanks": [
+    "You're welcome! Enjoy your entertainment journey!",
+    "Happy to help enhance your viewing experience!",
+    "Always a pleasure to assist with TV matters!",
+    "Glad I could help with your entertainment needs!",
+    "My pleasure! The perfect show awaits you!",
+    "You're very welcome! Enjoy your screen time!",
+    "Delighted to help! May your watch party be great!",
+    "Anytime! That's what a TV assistant is for!",
+    "No problem! Let me know if you need more suggestions!",
+    "You're welcome! Happy binge-watching!"
+  ],
+
+  "help": [
+    "I specialize in all things TV: channel status, show recommendations, technical troubleshooting, and parental controls!",
+    "Ask me about: program schedules, channel packages, streaming quality, or content filters!",
+    "I can: check channel availability, suggest shows, explain error codes, and help optimize your setup!",
+    "Need help with: program guides, device compatibility, picture quality, or subscription options? Just ask!",
+    "Your TV assistant can: compare channels, explain technical terms, recommend packages, and troubleshoot issues!"
+  ],
+
+  "technical_terms": {
+    "buffering": {
+      "description": "When video playback pauses to load content",
+      "solutions": [
+        "Restart your router and streaming device",
+        "Reduce other network activities (downloads/gaming)",
+        "Check for service outages in your area",
+        "Try lowering video quality in app settings",
+        "Use wired Ethernet connection if possible"
+      ],
+      "related_terms": ["lag", "stutter", "loading", "freezing"]
+    },
+    "4K": {
+      "description": "Ultra High Definition resolution (3840x2160 pixels)",
+      "requirements": [
+        "4K-capable television",
+        "HEVC/H.265 decoder support",
+        "Minimum 25Mbps internet speed",
+        "HDMI 2.0+ cable",
+        "4K-enabled streaming device or box"
+      ],
+      "content_sources": [
+        "Netflix Premium",
+        "Amazon Prime 4K",
+        "Disney+",
+        "Apple TV+",
+        "YouTube Premium"
+      ]
+    },
+    "hdr": {
+      "description": "High Dynamic Range for better contrast and colors",
+      "formats": [
+        "HDR10 (basic HDR standard)",
+        "HDR10+ (dynamic metadata)",
+        "Dolby Vision (premium HDR)",
+        "HLG (Hybrid Log-Gamma for broadcast)",
+        "Advanced HDR by Technicolor"
+      ],
+      "benefits": [
+        "Brighter highlights",
+        "Deeper blacks",
+        "Wider color gamut",
+        "More natural images",
+        "Better detail in shadows"
+      ]
+    },
+    "dolby_atmos": {
+      "description": "Immersive 3D audio technology",
+      "setup": [
+        "Atmos-capable sound system or soundbar",
+        "Proper speaker placement (including height channels)",
+        "Atmos-enabled content source",
+        "HDMI ARC/eARC connection",
+        "Correct device audio settings"
+      ],
+      "content_sources": [
+        "Netflix (premium tier)",
+        "Disney+",
+        "Apple TV+",
+        "4K Blu-rays",
+        "Amazon Prime (select titles)"
+      ]
+    }
+  },
+
+  "channel_categories": {
+    "sports": {
+      "major_channels": [
+        "ESPN",
+        "Fox Sports",
+        "NFL Network",
+        "NBA TV",
+        "MLB Network",
+        "NHL Network",
+        "beIN Sports",
+        "BT Sport",
+        "Sky Sports",
+        "ESPN Deportes"
+      ],
+      "specialty_channels": [
+        "Golf Channel",
+        "Tennis Channel",
+        "Olympic Channel",
+        "Fight Network",
+        "Motorsport Network"
+      ],
+      "streaming_options": [
+        "ESPN+",
+        "DAZN",
+        "fuboTV",
+        "Paramount+ (for soccer)",
+        "Peacock (Premier League)"
+      ]
+    },
+    "news": {
+      "us_networks": [
+        "CNN",
+        "Fox News",
+        "MSNBC",
+        "CNBC",
+        "Bloomberg TV",
+        "C-SPAN",
+        "Newsmax",
+        "OAN"
+      ],
+      "international": [
+        "BBC World News",
+        "Al Jazeera English",
+        "France 24",
+        "DW (Deutsche Welle)",
+        "NHK World Japan",
+        "RT"
+      ],
+      "business": [
+        "CNBC",
+        "Bloomberg",
+        "Fox Business",
+        "Yahoo Finance",
+        "TD Ameritrade Network"
+      ]
+    },
+    "movies": {
+      "premium": [
+        "HBO",
+        "Showtime",
+        "Starz",
+        "Cinemax",
+        "Epix"
+      ],
+      "classic": [
+        "Turner Classic Movies",
+        "Sony Movie Channel",
+        "FXM",
+        "AMC",
+        "SundanceTV"
+      ],
+      "streaming": [
+        "Netflix",
+        "Disney+",
+        "Amazon Prime Video",
+        "Hulu",
+        "Apple TV+"
+      ]
+    },
+    "kids": {
+      "preschool": [
+        "Nick Jr.",
+        "Disney Junior",
+        "PBS Kids",
+        "BabyFirst",
+        "Universal Kids"
+      ],
+      "children": [
+        "Cartoon Network",
+        "Disney Channel",
+        "Nickelodeon",
+        "Boomerang",
+        "Discovery Family"
+      ],
+      "tweens": [
+        "Disney XD",
+        "Nicktoons",
+        "TeenNick",
+        "Universal Kids",
+        "Pop"
+      ]
+    }
+  },
+
+  "troubleshooting": {
+    "no_signal": {
+      "steps": [
+        "1. Check all cable connections",
+        "2. Reboot receiver/cable box",
+        "3. Verify TV input source",
+        "4. Test with different HDMI cable",
+        "5. Check for service outages",
+        "6. Try different input port",
+        "7. Factory reset device (last resort)"
+      ],
+      "common_causes": [
+        "Loose cables",
+        "HDCP handshake failure",
+        "Input selection error",
+        "Power supply issues",
+        "Firmware problems"
+      ]
+    },
+    "audio_sync": {
+      "solutions": [
+        "Enable/disable audio delay settings",
+        "Change audio output format to PCM",
+        "Update receiver firmware",
+        "Check for lip-sync correction features",
+        "Try different audio track (if available)"
+      ],
+      "advanced": [
+        "Adjust A/V sync in professional settings",
+        "Check for software updates on source device",
+        "Test with optical audio instead of HDMI",
+        "Disable any audio processing effects"
+      ]
+    },
+    "remote_issues": {
+      "diagnosis": [
+        "Check/replace batteries",
+        "Clean IR sensor on device",
+        "Check for obstructions",
+        "Test with remote app on phone",
+        "Verify pairing (for Bluetooth remotes)"
+      ],
+      "alternatives": [
+        "Universal remote setup",
+        "Mobile apps (Roku, Fire TV, etc.)",
+        "Voice control options",
+        "HDMI-CEC control",
+        "Smart home integration"
+      ]
+    }
+  },
+
+  "subscription_tips": {
+    "saving": [
+      "Bundle TV with internet/phone for discounts",
+      "Ask about loyalty/retention promotions",
+      "Downgrade during sports off-seasons",
+      "Share family plans when possible",
+      "Use annual billing for streaming services"
+    ],
+    "streaming": {
+      "comparison": [
+        "Netflix: Best for original content",
+        "HBO Max: Premium movies/series",
+        "Disney+: Family/kids content",
+        "Hulu: Next-day network shows",
+        "Apple TV+: High-quality originals"
+      ],
+      "free_trials": [
+        "Most services offer 7-30 day trials",
+        "Check mobile carrier partnerships",
+        "Look for student discounts",
+        "Some credit cards offer free subscriptions",
+        "Promotional bundles often available"
+      ]
+    },
+    "premium": {
+      "value": [
+        "HBO: Sunday night prestige shows",
+        "Showtime: Original series + movies",
+        "Starz: Hollywood films + originals",
+        "Cinemax: Action movies + series",
+        "Epix: MGM library + originals"
+      ],
+      "rotations": [
+        "Consider monthly vs yearly subscriptions",
+        "Activate during favorite show seasons",
+        "Share with family members",
+        "Look for Black Friday deals",
+        "Check for credit card offers"
+      ]
+    }
+  },
+
+  "device_compatibility": {
+    "smart_tvs": {
+      "platforms": [
+        "Samsung Tizen",
+        "LG webOS",
+        "Android TV/Google TV",
+        "Roku TV",
+        "Apple TV (tvOS)",
+        "Fire TV Edition",
+        "Vizio SmartCast",
+        "Panasonic My Home Screen"
+      ],
+      "app_availability": [
+        "Netflix: All platforms",
+        "Disney+: Most except older models",
+        "Apple TV+: Limited to Apple/Samsung/LG",
+        "HBO Max: Most modern TVs",
+        "Peacock: Excludes some older Samsung"
+      ]
+    },
+    "streaming_devices": {
+      "comparison": [
+        "Roku: Most neutral platform",
+        "Fire TV: Deep Amazon integration",
+        "Apple TV: Premium Apple ecosystem",
+        "Chromecast: Google-centric casting",
+        "Nvidia Shield: Best for gamers"
+      ],
+      "selection": [
+        "Basic: Roku Express/Fire Stick Lite",
+        "Mid-range: Roku Ultra/Fire TV 4K",
+        "Premium: Apple TV 4K/Nvidia Shield",
+        "Gaming: Nvidia Shield/Apple TV",
+        "Budget: Chromecast with Google TV"
+      ]
+    }
+  },
+
+  "parental_guidance": {
+    "ratings": {
+      "systems": [
+        "TV-Y (All Children)",
+        "TV-Y7 (Older Children 7+)",
+        "TV-G (General Audience)",
+        "TV-PG (Parental Guidance)",
+        "TV-14 (Parents Strongly Cautioned)",
+        "TV-MA (Mature Audiences Only)"
+      ],
+      "content_descriptors": [
+        "D (Suggestive Dialogue)",
+        "L (Coarse Language)",
+        "S (Sexual Content)",
+        "V (Violence)",
+        "FV (Fantasy Violence)"
+      ]
+    },
+    "controls": {
+      "implementation": [
+        "Set PIN/password protection",
+        "Create restricted profiles",
+        "Block by rating level",
+        "Filter specific channels",
+        "Set viewing time limits",
+        "Disable purchase approvals",
+        "Monitor watch history"
+      ],
+      "platform_specific": [
+        "Netflix: Profile PINs",
+        "Amazon: FreeTime controls",
+        "Disney+: Kids Profile",
+        "YouTube: Restricted Mode",
+        "Cable/Satellite: Parental locks"
+      ]
+    }
+  },
+
+  "emergency_info": {
+    "broadcast_alerts": [
+      "Emergency Alert System (EAS)",
+      "Weather alerts (NOAA)",
+      "AMBER alerts",
+      "Presidential alerts",
+      "Local emergency notifications"
+    ],
+    "accessibility": {
+      "features": [
+        "Closed captioning (CC)",
+        "Audio description (AD)",
+        "SAP (Second Audio Program)",
+        "Voice guidance",
+        "High contrast modes",
+        "Text-to-speech"
+      ],
+      "activation": [
+        "Check TV accessibility settings",
+        "Look for CC/AD buttons on remotes",
+        "Enable in streaming app settings",
+        "Contact provider for assistance",
+        "Consult device manuals"
+      ]
+    }
+  },
+
+  "trending_content": {
+    "current_hits": [
+      "Streaming originals (check platform exclusives)",
+      "Award-winning series (Emmys/Golden Globes)",
+      "Breaking news coverage",
+      "Live sports events",
+      "Seasonal programming"
+    ],
+    "upcoming_releases": [
+      "Check network/streaming service calendars",
+      "Follow entertainment news sources",
+      "Set reminder alerts for favorite shows",
+      "Look for comic-con announcements",
+      "Monitor production company updates"
+    ]
+  },
+
+  "viewing_tips": {
+    "optimization": [
+      "Calibrate picture settings for your room",
+      "Enable motion smoothing judiciously",
+      "Use proper lighting to reduce eye strain",
+      "Position seating at optimal distance",
+      "Consider soundbar for better audio"
+    ],
+    "health": [
+      "Take 20-second breaks every 20 minutes",
+      "Follow the 20-20-20 rule (look 20ft away every 20 mins)",
+      "Adjust blue light settings in evening",
+      "Maintain proper viewing posture",
+      "Stay hydrated during binge sessions"
+    ]
+  }
+}

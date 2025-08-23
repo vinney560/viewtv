@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Plus | View TV Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      appearance: textfield;
+    }
+    .glow-btn:hover {
+      box-shadow: 0 0 10px rgba(0,255,255,0.4);
+    }
+    /* Modern toast animation */
+    @keyframes toastIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes toastOut {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-20px); opacity: 0; }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6 relative">
+
+  <!-- Modern Toast container -->
+  <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2 w-full max-w-md px-4"></div>
+
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header with Search -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <h1 class="text-3xl font-bold text-cyan-400">Manage Plus Access</h1>
+      <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+        <!-- Search Bar -->
+        <div class="relative w-full md:w-64">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <i class="fas fa-search text-gray-400"></i>
+          </div>
+          <input type="text" id="searchInput" 
+                 class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block w-full pl-10 p-2.5" 
+                 placeholder="Search name or email...">
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 hidden" id="clearSearch">
+            <button type="button" class="text-gray-400 hover:text-white">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        
+        <a href="{{ url_for('home_admin') }}"
+           class="glow-btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold border border-gray-500 whitespace-nowrap">
+          <i class="fas fa-arrow-left mr-2"></i>Back
+        </a>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto rounded-lg shadow border border-gray-700 bg-gray-800">
+      <table class="min-w-full divide-y divide-gray-700 text-sm">
+        <thead class="bg-gray-700 text-cyan-300">
+          <tr>
+            <th class="px-4 py-3 text-left">#</th>
+            <th class="px-4 py-3 text-left">User</th>
+            <th class="px-4 py-3 text-left">Expires At</th>
+            <th class="px-4 py-3 text-left">Type</th>
+            <th class="px-4 py-3 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800" id="userTable">
+          {% for item in users %}
+          {% set user = item.user %}
+          <tr id="user-row-{{ user.id }}" class="hover:bg-gray-700" data-search="{{ user.email }} {{ user.name|default('', true)|lower }}">
+            <td class="px-4 py-2 align-top">{{ loop.index }}</td>
+
+            <!-- User Column -->
+            <td class="px-4 py-2 align-top">
+              <p class="font-semibold">{{ user.email }}</p>
+              {% if user.name %}
+                <p class="text-sm text-gray-300">{{ user.name }}</p>
+              {% endif %}
+              <p class="text-xs text-gray-400 mt-1 countdown-timer" 
+                 data-expires="{{ user.plus_expires_at.timestamp() if user.plus_expires_at else '' }}">
+                ⏳ {{ item.remaining_str }}
+              </p>
+
+              <form method="POST" action="{{ url_for('update_plus', user_id=user.id) }}"
+                    onsubmit="submitPlusForm(event, this)">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="flex gap-2 mt-2 flex-wrap items-center">
+                  <input type="number" name="hours" min="0" max="999" value="00"
+                         class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
+                         placeholder="hh" />
+                  <input type="number" name="minutes" min="0" max="59" value="00"
+                         class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
+                         placeholder="mm" />
+                  <input type="number" name="seconds" min="0" max="59" value="00"
+                         class="w-16 px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded text-sm text-center"
+                         placeholder="ss" />
+
+                  <!-- Update Button -->
+                  <button type="submit"
+                          class="bg-cyan-600 glow-btn hover:bg-cyan-500 text-white px-3 py-2 rounded text-xs flex items-center gap-1">
+                    <i class="fas fa-sync-alt text-xs"></i>
+                    Update
+                  </button>
+
+                  <!-- Add Button -->
+                  <button type="button"
+                          onclick="prefillTime(this)"
+                          data-remaining="{{ item.remaining_str }}"
+                          class="bg-green-600 glow-btn hover:bg-green-500 text-white px-3 py-2 rounded text-xs flex items-center gap-1">
+                    <i class="fas fa-plus text-xs"></i>
+                    Add
+                  </button>
+                </div>
+              </form>
+            </td>
+
+            <!-- Expiry -->
+            <td class="px-4 py-2 align-top">
+              {% if user.plus_expires_at %}
+                {{ user.plus_expires_at.strftime('%Y-%m-%d %H:%M:%S') }}
+              {% else %}
+                <span class="text-red-400">N/A</span>
+              {% endif %}
+            </td>
+
+            <!-- Type -->
+            <td class="px-4 py-2 align-top capitalize">
+              {{ user.plus_type or 'N/A' }}
+            </td>
+
+            <!-- Delete Action -->
+            <td class="px-4 py-2 text-center align-top">
+              <form method="POST" action="{{ url_for('delete_plus', user_id=user.id) }}"
+                    onsubmit="submitDeleteForm(event, this, '{{ user.id }}')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit"
+                        class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 mt-2 rounded text-xs flex items-center gap-1">
+                  <i class="fas fa-trash-alt text-xs"></i>
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JS Logic -->
+  <script>
+    // Live Search Functionality
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const clearBtn = document.getElementById('clearSearch');
+      
+      // Show/hide clear button
+      if (searchTerm.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      
+      // Filter rows
+      document.querySelectorAll('#userTable tr').forEach(row => {
+        const searchText = row.getAttribute('data-search').toLowerCase();
+        row.style.display = searchText.includes(searchTerm) ? '' : 'none';
+      });
+    });
+
+    // Clear search
+    document.getElementById('clearSearch').addEventListener('click', function() {
+      document.getElementById('searchInput').value = '';
+      this.classList.add('hidden');
+      document.querySelectorAll('#userTable tr').forEach(row => {
+        row.style.display = '';
+      });
+    });
+
+    function prefillTime(btn) {
+      const form = btn.closest('form');
+      const remaining = btn.getAttribute('data-remaining');
+      const h = form.querySelector('input[name="hours"]');
+      const m = form.querySelector('input[name="minutes"]');
+      const s = form.querySelector('input[name="seconds"]');
+
+      h.value = 0; m.value = 0; s.value = 0;
+
+      const match = remaining.match(/(\d+)\s*h.*?(\d+)\s*m.*?(\d+)\s*s/i);
+      if (match) {
+        h.value = parseInt(match[1] || "0");
+        m.value = parseInt(match[2] || "0");
+        s.value = parseInt(match[3] || "0");
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById("toast");
+      const icon = type === 'success' ? 'fa-check-circle' : 
+                  type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+      const color = type === 'success' ? 'bg-green-600' : 
+                   type === 'error' ? 'bg-red-600' : 'bg-blue-600';
+      
+      const div = document.createElement('div');
+      div.className = `px-4 py-3 rounded-lg shadow-lg text-white ${color} flex items-start animate-toastIn`;
+      div.style.animation = 'toastIn 0.3s ease-out';
+      
+      div.innerHTML = `
+        <i class="fas ${icon} mt-1 mr-3"></i>
+        <div class="flex-1">
+          <p class="font-medium">${message}</p>
+        </div>
+        <button onclick="this.parentElement.remove()" class="ml-4 text-white opacity-70 hover:opacity-100">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      toast.appendChild(div);
+      
+      setTimeout(() => {
+        div.style.animation = 'toastOut 0.3s ease-out';
+        setTimeout(() => div.remove(), 300);
+      }, 4000);
+    }
+
+    async function submitPlusForm(event, form) {
+      event.preventDefault();
+      const h = parseInt(form.hours.value || "0");
+      const m = parseInt(form.minutes.value || "0");
+      const s = parseInt(form.seconds.value || "0");
+
+      if (h === 0 && m === 0 && s === 0) {
+        showToast("⚠️ No time added. Update skipped.", "error");
+        return;
+      }
+
+      if (!confirm(`Apply ${h}h ${m}m ${s}s to this user?`)) return;
+
+      try {
+        const formData = new FormData(form);
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        showToast(data.message, data.status);
+        
+        if (data.status === 'success') {
+          setTimeout(() => window.location.reload(), 1500);
+        }
+      } catch (error) {
+        showToast("An error occurred. Please try again.", "error");
+      }
+    }
+
+    async function submitDeleteForm(event, form, userId) {
+      event.preventDefault();
+      if (!confirm("Revoke Plus for this user?")) return;
+
+      try {
+        const formData = new FormData(form);
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        showToast(data.message, data.status);
+        if (data.status === 'success') {
+          const row = document.getElementById(`user-row-${userId}`);
+          if (row) row.remove();
+        }
+      } catch (error) {
+        showToast("An error occurred. Please try again.", "error");
+      }
+    }
+
+    function updateAllCountdowns() {
+      const timers = document.querySelectorAll('.countdown-timer');
+      const now = Math.floor(Date.now() / 1000);
+      
+      timers.forEach(timer => {
+        const expires = parseFloat(timer.dataset.expires);
+        if (!expires || isNaN(expires)) {
+          timer.textContent = '⏳ N/A';
+          return;
+        }
+        
+        const remaining = expires - now;
+        
+        if (remaining <= 0) {
+          timer.textContent = '⏳ Expired';
+          timer.classList.add('text-red-400');
+          return;
+        }
+        
+        // Calculate time components
+        const hours = Math.floor(remaining / 3600);
+        const minutes = Math.floor((remaining % 3600) / 60);
+        const seconds = Math.floor(remaining % 60);
+        
+        // Format with leading zeros
+        const hh = hours.toString().padStart(2, '0');
+        const mm = minutes.toString().padStart(2, '0');
+        const ss = seconds.toString().padStart(2, '0');
+        
+        timer.textContent = `⏳ ${hh}h ${mm}m ${ss}s`;
+      });
+    }
+
+    // Initialize and update every second
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAllCountdowns();
+      setInterval(updateAllCountdowns, 1000);
+    });
+  </script>
+</body>
+</html>

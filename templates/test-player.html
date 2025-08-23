@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Sports Stream Player</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --control-bg: rgba(30, 30, 30, 0.9);
+            --control-border: rgba(255, 255, 255, 0.15);
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-faded: rgba(255, 255, 255, 0.6);
+            --highlight: #4285f4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body, #player {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            touch-action: manipulation;
+        }
+
+        #player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #000;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Top Bar */
+        #top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            pointer-events: none;
+            z-index: 1002;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #channel-info {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            max-width: 45%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #quality-select {
+            background: rgba(20, 20, 20, 0.8);
+            color: var(--text-light);
+            border: 1px solid var(--control-border);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+            pointer-events: all;
+        }
+
+        /* Right Side - Channel List */
+        #channel-panel {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%) translateX(100%);
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 8px 0 0 8px;
+            padding: 16px 8px;
+            width: 180px;
+            max-height: 70vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            pointer-events: all;
+            z-index: 1002;
+            opacity: 0;
+        }
+
+        #channel-panel.visible {
+            transform: translateY(-50%) translateX(0);
+            opacity: 1;
+        }
+
+        .channel-item {
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s ease;
+        }
+
+        .channel-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .channel-item.active {
+            background: var(--highlight);
+            color: white;
+        }
+
+        /* Video Controls */
+        #video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1002;
+        }
+
+        .control-btn {
+            background: rgba(30, 30, 30, 0.7);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+        .control-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Loading Spinner */
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--highlight);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 1001;
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="player">
+        <video id="video" autoplay playsinline></video>
+        
+        <!-- Top Bar -->
+        <div id="top-bar">
+            <div id="channel-info">Loading...</div>
+            <select id="quality-select" disabled>
+                <option value="auto">Auto Quality</option>
+            </select>
+        </div>
+        
+        <!-- Channel List -->
+        <div id="channel-panel">
+            <div class="channel-item active" data-url="http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8">USA FS 1</div>
+            <div class="channel-item" data-url="https://app.hughag.store/api/6b9c461155/playlist.m3u8">Ten-Sports Cricket</div>
+            <div class="channel-item" data-url="http://88.212.7.10/live/test_ctsport_25p/playlist.m3u8">Cts Sports</div>
+            <div class="channel-item" data-url="http://163.172.59.25/crc1/tracks-v1a1/mono.m3u8">T sports</div>
+            <div class="channel-item" data-url="http://103.15.140.138/tsports/tracks-v1a1/mono.ts.m3u8">T Sports 2</div>
+            <div class="channel-item" data-url="http://38.7.204.232:8010/play/a2md/87098117.m3u8">TycSports</div>
+            <div class="channel-item" data-url="http://212.102.60.231/FOX_SPORTS_2/tracks-v1a1/mono.ts.m3u8">Fox sports 2</div>
+            <div class="channel-item" data-url="http://57.129.73.112:8480/701/tracks-v1a1/mono.m3u8">Bein 1</div>
+            <div class="channel-item" data-url="http://57.129.73.112:8480/702/tracks-v1a1/mono.m3u8">Bein 2 SD</div>
+            <div class="channel-item" data-url="http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8">Bein 6 SD</div>
+            <div class="channel-item" data-url="http://178.217.72.66:8080/Eurosport_HD/video.m3u8">EuroSports HD</div>
+            <div class="channel-item" data-url="http://185.189.225.157/EuroSport2/tracks-v1a1/mono.m3u8">EuroSports 2</div>
+            <div class="channel-item" data-url="http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8">All Sports</div>
+            <div class="channel-item" data-url="http://41.205.93.154/STARSPORTS1/index.m3u8">Star Sport</div>
+            <div class="channel-item" data-url="http://c1.frsports.info/wcl24/index.m3u8">Willow</div>
+            <div class="channel-item" data-url="http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8">T Sports SD</div>
+        </div>
+        
+        <!-- Video Controls -->
+        <div id="video-controls">
+            <button class="control-btn" id="play-pause-btn">
+                <svg viewBox="0 0 24 24">
+                    <path id="play-icon" d="M8 5v14l11-7z"/>
+                    <path id="pause-icon" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" style="display:none"/>
+                </svg>
+            </button>
+            <button class="control-btn" id="volume-btn">
+                <svg viewBox="0 0 24 24">
+                    <path id="volume-on" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                    <path id="volume-off" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" style="display:none"/>
+                </svg>
+            </button>
+            <button class="control-btn" id="fullscreen-btn">
+                <svg viewBox="0 0 24 24">
+                    <path id="enter-fullscreen" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                    <path id="exit-fullscreen" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" style="display:none"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Loading Spinner -->
+        <div class="loader" id="loader"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const video = document.getElementById('video');
+            const player = document.getElementById('player');
+            const qualitySelect = document.getElementById('quality-select');
+            const channelInfo = document.getElementById('channel-info');
+            const channelPanel = document.getElementById('channel-panel');
+            const channelItems = document.querySelectorAll('.channel-item');
+            const loader = document.getElementById('loader');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const volumeBtn = document.getElementById('volume-btn');
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const topBar = document.getElementById('top-bar');
+            const videoControls = document.getElementById('video-controls');
+            
+            // SVG elements
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            const volumeOn = document.getElementById('volume-on');
+            const volumeOff = document.getElementById('volume-off');
+            const enterFullscreen = document.getElementById('enter-fullscreen');
+            const exitFullscreen = document.getElementById('exit-fullscreen');
+            
+            let hls;
+            let currentChannel = "USA FS 1";
+            let panelVisible = false;
+            let mouseTimer;
+            let isMuted = false;
+            let isFullscreen = false;
+            const HIDE_DELAY = 2000; // 2 seconds
+
+            // ===== UI VISIBILITY CONTROL =====
+            function showUI() {
+                topBar.style.opacity = '1';
+                videoControls.style.opacity = '1';
+                if (!panelVisible && mouseNearEdge()) {
+                    showChannelPanel();
+                }
+                resetHideTimer();
+            }
+
+            function hideUI() {
+                topBar.style.opacity = '0';
+                videoControls.style.opacity = '0';
+                if (panelVisible) {
+                    hideChannelPanel();
+                }
+            }
+
+            function resetHideTimer() {
+                clearTimeout(mouseTimer);
+                mouseTimer = setTimeout(hideUI, HIDE_DELAY);
+            }
+
+            function mouseNearEdge() {
+                const mouseX = lastMouseX || 0;
+                return mouseX > window.innerWidth - 50;
+            }
+
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+
+            // ===== CHANNEL PANEL CONTROL =====
+            function showChannelPanel() {
+                channelPanel.classList.add('visible');
+                panelVisible = true;
+                resetHideTimer();
+            }
+
+            function hideChannelPanel() {
+                channelPanel.classList.remove('visible');
+                panelVisible = false;
+            }
+
+            // ===== PLAYER INITIALIZATION =====
+            function initPlayer(streamUrl, channelName) {
+                if (hls) hls.destroy();
+                
+                channelInfo.textContent = `Loading ${channelName}...`;
+                loader.style.display = 'block';
+
+                // Update active channel
+                channelItems.forEach(item => {
+                    item.classList.toggle('active', item.textContent === channelName);
+                });
+
+                if (Hls.isSupported()) {
+                    hls = new Hls({
+                        maxMaxBufferLength: 30,
+                        enableWorker: true,
+                        startLevel: -1,
+                        xhrSetup: function(xhr, url) {
+                            // Add CORS headers to prevent manifest errors
+                            xhr.withCredentials = false;
+                        }
+                    });
+
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        if (data.fatal) {
+                            switch(data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    channelInfo.textContent = "Network Error - Trying backup stream";
+                                    tryFallbackStream(streamUrl, channelName);
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    channelInfo.textContent = "Media Error - Trying again";
+                                    hls.recoverMediaError();
+                                    break;
+                                default:
+                                    channelInfo.textContent = "Error: Cannot recover";
+                                    break;
+                            }
+                        }
+                    });
+
+                    hls.loadSource(streamUrl);
+                    hls.attachMedia(video);
+
+                    hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+                        channelInfo.textContent = channelName;
+                        loader.style.display = 'none';
+                        currentChannel = channelName;
+                        video.play();
+
+                        // Populate quality selector
+                        qualitySelect.innerHTML = '<option value="auto">Auto Quality</option>';
+                        if (data.levels?.length > 1) {
+                            data.levels.forEach((level, index) => {
+                                const label = level.height ? `${level.height}p` : `${Math.round(level.bitrate/1000)}kbps`;
+                                qualitySelect.appendChild(new Option(label, index));
+                            });
+                            qualitySelect.disabled = false;
+                        }
+                    });
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Safari fallback
+                    video.src = streamUrl;
+                    video.addEventListener('loadedmetadata', () => {
+                        channelInfo.textContent = channelName;
+                        loader.style.display = 'none';
+                        currentChannel = channelName;
+                        video.play();
+                    });
+                } else {
+                    channelInfo.textContent = "Error: HLS not supported";
+                    loader.style.display = 'none';
+                }
+            }
+
+            // Try alternative stream if primary fails
+            function tryFallbackStream(originalUrl, channelName) {
+                const fallbackUrls = {
+                    "http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8": [
+                        "http://backup1.example.com/USA_FS1.m3u8",
+                        "http://backup2.example.com/USA_FS1.m3u8"
+                    ]
+                    // Add more fallbacks for other channels as needed
+                };
+                
+                const fallbacks = fallbackUrls[originalUrl] || [];
+                let attempt = 0;
+                
+                function tryNext() {
+                    if (attempt < fallbacks.length) {
+                        channelInfo.textContent = `Trying backup ${attempt+1}...`;
+                        initPlayer(fallbacks[attempt], channelName);
+                        attempt++;
+                    } else {
+                        channelInfo.textContent = "All streams failed - retrying main";
+                        setTimeout(() => initPlayer(originalUrl, channelName), 5000);
+                    }
+                }
+                
+                tryNext();
+            }
+
+            // ===== CONTROL FUNCTIONS =====
+            function togglePlayPause() {
+                if (video.paused) {
+                    video.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = '';
+                } else {
+                    video.pause();
+                    playIcon.style.display = '';
+                    pauseIcon.style.display = 'none';
+                }
+                resetHideTimer();
+            }
+
+            function toggleMute() {
+                isMuted = !isMuted;
+                video.muted = isMuted;
+                volumeOn.style.display = isMuted ? 'none' : '';
+                volumeOff.style.display = isMuted ? '' : 'none';
+                resetHideTimer();
+            }
+
+            function toggleFullscreen() {
+                if (!isFullscreen) {
+                    if (player.requestFullscreen) {
+                        player.requestFullscreen();
+                    } else if (player.webkitRequestFullscreen) {
+                        player.webkitRequestFullscreen();
+                    } else if (player.msRequestFullscreen) {
+                        player.msRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+                resetHideTimer();
+            }
+
+            function updateFullscreenIcon() {
+                enterFullscreen.style.display = isFullscreen ? 'none' : '';
+                exitFullscreen.style.display = isFullscreen ? '' : 'none';
+            }
+
+            // ===== EVENT LISTENERS =====
+            qualitySelect.addEventListener('change', () => {
+                if (hls) {
+                    hls.currentLevel = qualitySelect.value === "auto" ? -1 : parseInt(qualitySelect.value);
+                }
+                resetHideTimer();
+            });
+
+            // Channel selection
+            channelItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    initPlayer(item.dataset.url, item.textContent);
+                    hideChannelPanel();
+                    resetHideTimer();
+                });
+            });
+
+            // Mouse/touch movement
+            player.addEventListener('mousemove', (e) => {
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                showUI();
+            });
+
+            player.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    lastMouseX = e.touches[0].clientX;
+                    lastMouseY = e.touches[0].clientY;
+                }
+                showUI();
+            });
+
+            // Show UI when hovering near right edge
+            player.addEventListener('mousemove', (e) => {
+                if (e.clientX > window.innerWidth - 50) {
+                    showChannelPanel();
+                }
+            });
+
+            // Hide panel when clicking outside
+            document.addEventListener('mousedown', (e) => {
+                if (panelVisible && !channelPanel.contains(e.target)) {
+                    hideChannelPanel();
+                }
+            });
+
+            // Control buttons
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            volumeBtn.addEventListener('click', toggleMute);
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+            // Video events
+            video.addEventListener('play', () => {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = '';
+            });
+            video.addEventListener('pause', () => {
+                playIcon.style.display = '';
+                pauseIcon.style.display = 'none';
+            });
+
+            // Fullscreen events
+            document.addEventListener('fullscreenchange', () => {
+                isFullscreen = !!document.fullscreenElement;
+                updateFullscreenIcon();
+            });
+            document.addEventListener('webkitfullscreenchange', () => {
+                isFullscreen = !!document.webkitFullscreenElement;
+                updateFullscreenIcon();
+            });
+            document.addEventListener('msfullscreenchange', () => {
+                isFullscreen = !!document.msFullscreenElement;
+                updateFullscreenIcon();
+            });
+
+            // ===== INITIALIZE =====
+            initPlayer(
+                "http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8",
+                "USA FS 1"
+            );
+            
+            // Force fullscreen viewport
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+            
+            // Set initial control states
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = '';
+            volumeOn.style.display = '';
+            volumeOff.style.display = 'none';
+            enterFullscreen.style.display = '';
+            exitFullscreen.style.display = 'none';
+
+            // Initial hide timer
+            resetHideTimer();
+        });
+    </script>
+</body>
+</html>

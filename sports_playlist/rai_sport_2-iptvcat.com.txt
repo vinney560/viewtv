@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="IT" tvg-logo="" group-title="Sport",Rai Sport 2
+http://originstream12.rai.it/italy/raisport2_1200/master.m3u8?checkedby:iptvcat.com

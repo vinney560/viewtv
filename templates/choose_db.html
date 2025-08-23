@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Selector</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00ffc8;
+      --primary-dark: #00cc9d;
+      --secondary: #6e44ff;
+      --dark-bg: #0d0d0d;
+      --card-bg: rgba(30, 30, 30, 0.7);
+      --glass-bg: rgba(40, 40, 40, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --success: #00ff88;
+      --error: #ff0040;
+      --warning: #ffaa00;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0d0d0d, #121212, #1a1a1a);
+      color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary), transparent);
+      opacity: 0.3;
+      animation: float 15s infinite linear;
+    }
+    
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        transform: translate(calc(100vw - 100px), calc(100vh - 100px)) rotate(360deg);
+      }
+    }
+    
+    .container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(0, 255, 170, 0.1),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, var(--primary), #6e44ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #6e44ff);
+      border-radius: 2px;
+    }
+    
+    .current-status {
+      background: rgba(0, 255, 200, 0.1);
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .current-status strong {
+      color: var(--primary);
+    }
+    
+    .db-options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .db-option {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 18px 20px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .db-option:hover {
+      transform: translateX(5px);
+      border-color: rgba(0, 255, 200, 0.3);
+    }
+    
+    .db-option.selected {
+      background: rgba(30, 30, 30, 0.9);
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.3);
+    }
+    
+    .db-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      margin-right: 15px;
+      font-size: 24px;
+      color: var(--primary);
+    }
+    
+    .db-content {
+      flex: 1;
+    }
+    
+    .db-name {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 5px;
+      color: #f0f0f0;
+    }
+    
+    .db-desc {
+      font-size: 14px;
+      color: #aaa;
+      font-weight: 300;
+    }
+    
+    .radio-morph {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #555;
+      transition: all 0.3s ease;
+      margin-left: 10px;
+    }
+    
+    .db-option.selected .radio-morph {
+      border-color: var(--primary);
+    }
+    
+    .db-option.selected .radio-morph::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border: none;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 18px;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 255, 200, 0.4);
+    }
+    
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    
+    .submit-btn .spinner {
+      display: none;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .flash {
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      font-weight: 500;
+      text-align: center;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .flash.success {
+      background: linear-gradient(90deg, rgba(0, 255, 136, 0.3), rgba(0, 200, 100, 0.3));
+      border: 1px solid rgba(0, 255, 136, 0.5);
+    }
+    
+    .flash.error {
+      background: linear-gradient(90deg, rgba(255, 0, 64, 0.3), rgba(180, 0, 45, 0.3));
+      border: 1px solid rgba(255, 0, 64, 0.5);
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 25px;
+        width: 95%;
+      }
+      
+      h2 {
+        font-size: 24px;
+      }
+      
+      .db-option {
+        padding: 15px;
+      }
+      
+      .db-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+      
+      .submit-btn {
+        padding: 14px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  
+  <div class="container">
+    <h2>Database Selector</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">
+            {% if category == 'success' %}
+              <i class="fas fa-check-circle"></i>
+            {% elif category == 'error' %}
+              <i class="fas fa-exclamation-circle"></i>
+            {% endif %}
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <div class="current-status">
+      <i class="fas fa-database"></i>
+      Current Database: <strong>{{ db_choice.upper() }}</strong>
+    </div>
+    
+    <form method="POST" id="dbForm">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      
+      <div class="db-options">
+        {% for db_key, db_uri in db_uris.items() %}
+          <div class="db-option {% if db_choice == db_key %}selected{% endif %}" 
+               onclick="selectOption(this, '{{ db_key }}')">
+            <div class="db-icon">
+              {% if db_key == 'old' %}
+                <i class="fas fa-database"></i>
+              {% elif db_key == 'new' %}
+                <i class="fas fa-server"></i>
+              {% else %}
+                <i class="fas fa-cloud-download-alt"></i>
+              {% endif %}
+            </div>
+            <div class="db-content">
+              <div class="db-name">
+                {% if db_key == 'old' %}Render Old DB
+                {% elif db_key == 'new' %}Render New DB
+                {% else %}SQLite (Fallback){% endif %}
+              </div>
+              <div class="db-desc">
+                {% if db_uri %}{{ db_uri|truncate(30, True) }}{% else %}Default local database{% endif %}
+              </div>
+            </div>
+            <div class="radio-morph"></div>
+            <input type="radio" name="db_choice" value="{{ db_key }}" 
+                   {% if db_choice == db_key %}checked{% endif %} hidden>
+          </div>
+        {% endfor %}
+      </div>
+      
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span id="btnText"><i class="fas fa-save"></i> Save Configuration</span>
+        <span class="spinner" id="spinner"><i class="fas fa-spinner"></i></span>
+      </button>
+    </form>
+  </div>
+
+  <script>
+    // Create animated background particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.width = `${Math.random() * 80 + 20}px`;
+        particle.style.height = particle.style.width;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.animationDuration = `${Math.random() * 20 + 10}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(particle);
+      }
+    }
+
+    // Database selection handler
+    function selectOption(element, dbKey) {
+      document.querySelectorAll('.db-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      element.classList.add('selected');
+      element.querySelector('input[type="radio"]').checked = true;
+    }
+
+    // Form submission with connection testing
+    document.getElementById('dbForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const form = e.target;
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('spinner');
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      btnText.innerHTML = '<i class="fas fa-plug"></i> Testing connection...';
+      spinner.style.display = 'inline-block';
+      
+      try {
+        // Test connection first
+        const formData = new FormData(form);
+        const response = await fetch('/admin/test-db-connection', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'X-CSRFToken': form.querySelector('[name="csrf_token"]').value
+          },
+          body: JSON.stringify({
+            db_choice: formData.get('db_choice')
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          // Submit form if connection test passed
+          form.submit();
+        } else {
+          alert(`Connection failed: ${result.error || 'Unknown error'}`);
+          resetButton();
+        }
+      } catch (error) {
+        alert('Network error during connection test');
+        resetButton();
+      }
+      
+      function resetButton() {
+        submitBtn.disabled = false;
+        btnText.innerHTML = '<i class="fas fa-save"></i> Save Configuration';
+        spinner.style.display = 'none';
+      }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createParticles();
+    });
+  </script>
+</body>
+</html>

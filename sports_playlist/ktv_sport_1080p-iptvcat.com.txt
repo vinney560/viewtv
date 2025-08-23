@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="KW" tvg-logo="https://i.imgur.com/R1hGX1d.png" group-title="Sport",KTV Sport (1080p)
+https://kwtspta.cdn.mangomolo.com/sp/smil:sp.stream.smil/chunklist.m3u8?checkedby:iptvcat.com

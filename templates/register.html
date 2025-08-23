@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register | View Tv</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:image" content="https://viewtv-p2s3.onrender.com/favicon.ico" />
+  <meta property="og:url" content="https://viewtv-p2s3.onrender.com" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #0f172a; /* slate-900 */
+      color: #e2e8f0; /* slate-200 */
+      font-family: 'Inter', sans-serif;
+    }
+
+    form {
+      background-color: #1e293b; /* slate-800 */
+      border: 1px solid #334155; /* slate-700 */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    label {
+      color: #cbd5e1; /* slate-300 */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      background-color: #334155; /* slate-700 */
+      border: 1px solid #475569; /* slate-600 */
+      color: #e2e8f0; /* slate-200 */
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #2dd4bf; /* teal-400 */
+      box-shadow: 0 0 6px #2dd4bf77;
+    }
+
+    /* Spinner */
+    .spinner {
+      border: 2px solid transparent;
+      border-top: 3px solid #2dd4bf; /* teal-400 */
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+      margin-left: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toggle styles */
+    .toggle-checkbox {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      width: 2.5rem;
+      height: 1.25rem;
+      background-color: #475569; /* slate-600 */
+      border-radius: 9999px;
+      position: relative;
+      transition: background-color 0.3s;
+      box-shadow: inset 0 0 5px #0008;
+    }
+    .toggle-thumb {
+      position: absolute;
+      top: 0.125rem;
+      left: 0.125rem;
+      width: 1rem;
+      height: 1rem;
+      background-color: #1e293b; /* slate-800 */
+      border-radius: 9999px;
+      transition: transform 0.3s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    }
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #0d9488; /* teal-600 */
+      box-shadow: 0 0 10px #2dd4bf77;
+    }
+    .toggle-checkbox:checked + .toggle-label .toggle-thumb {
+      transform: translateX(1.25rem);
+      background-color: #2dd4bf; /* teal-400 */
+      box-shadow: 0 0 8px #2dd4bfbb;
+    }
+
+    /* Flash message styles */
+    .flash-success {
+      background-color: #164e63; /* slate-700 */
+      color: #a5f3fc;            /* teal-200 */
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+    .flash-error {
+      background-color: #581c87; /* purple-800 */
+      color: #fcd34d;            /* yellow-300 */
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Password mismatch message */
+    #passwordMismatch {
+      color: #f87171; /* red-400 */
+    }
+
+    /* Terms link */
+    a {
+      color: #2dd4bf; /* teal-400 */
+      text-decoration: underline;
+    }
+    a:hover {
+      color: #0d9488; /* teal-600 */
+    }
+
+    /* Submit button */
+    button {
+      background-color: #0d9488; /* teal-600 */
+      transition: background-color 0.3s ease;
+    }
+    button:hover:not(:disabled) {
+      background-color: #2dd4bf; /* teal-400 */
+    }
+    button:disabled {
+      background-color: #134e4a; /* darker teal */
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+  <a href="javascript:history.back()" 
+     class="fixed top-4 left-4 flex items-center text-blue-400 hover:text-blue-300 transition duration-200 z-50">
+    <svg xmlns="http://www.w3.org/2000/svg" 
+         fill="none" 
+         viewBox="0 0 24 24" 
+         stroke-width="2" 
+         stroke="currentColor" 
+         class="w-6 h-6 mr-1">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+    <span class="text-base font-medium">Back</span>
+  </a>
+  <form method="POST" onsubmit="return handleSubmit(event)"
+    class="rounded-2xl p-6 w-full max-w-md space-y-6">
+
+    <h2 class="text-3xl font-bold text-center text-[#2dd4bf]">Create an Account</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Full Name -->
+    <div>
+      <label for="name" class="block font-semibold mb-1">Full Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        minlength="3"
+        maxlength="15"
+        value="{{ name }}"
+        required
+        autocomplete="name"
+        class="w-full rounded-md px-3 py-2"
+      />
+    </div>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <!-- Email -->
+    <div>
+      <label for="email" class="block font-semibold mb-1">Email Address</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value="{{ email }}"
+        minlength="8"
+        required
+        autocomplete="email"
+        class="w-full rounded-md px-3 py-2"
+      />
+    </div>
+
+    <!-- Password -->
+<div class="relative">
+  <label for="password" class="block font-semibold mb-1">Password</label>
+  <input
+    type="password"
+    id="password"
+    name="password"
+    minlength="4"
+    maxlength="10"
+    value="{{ password }}"
+    required
+    autocomplete="new-password"
+    class="w-full rounded-md px-3 py-2 pr-10"
+  />
+  <button
+    type="button"
+    aria-label="Toggle password visibility"
+    onclick="togglePassword1()"
+    class="absolute top-10 right-3 text-cyan-400 hover:text-cyan-200 transition"
+  >
+    <svg id="eyeIcon1" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+      viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7
+         -1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+  </button>
+</div>
+
+    <!-- Confirm Password -->
+<div class="relative">
+  <label for="confirm_password" class="block font-semibold mb-1">Confirm Password</label>
+  <input
+    type="password"
+    id="confirm_password"
+    name="confirm_password"
+    minlength="4"
+    maxlength="10"
+    value="{{ confirm_password }}"
+    required
+    autocomplete="new-password"
+    class="w-full rounded-md px-3 py-2 pr-10 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]"
+    oninput="checkPasswordMatch()"
+  />
+  <p id="passwordMismatch" class="text-sm mt-1 hidden">Passwords do not match</p>
+  <button
+    type="button"
+    aria-label="Toggle password visibility"
+    onclick="togglePassword2()"
+    class="absolute top-10 right-3 text-cyan-400 hover:text-cyan-200 transition"
+  >
+    <svg id="eyeIcon2" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+      viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7
+         -1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+  </button>
+</div>
+
+    <!-- Admin Secret Code Toggle -->
+    <div class="flex items-center space-x-3">
+      <input type="checkbox" id="adminToggle" class="toggle-checkbox" onchange="toggleSecretCode()" />
+      <label for="adminToggle" class="toggle-label" title="Register as Admin">
+        <span class="toggle-thumb"></span>
+      </label>
+      <label for="adminToggle" class="font-semibold select-none cursor-pointer text-slate-300">Go Full Plus Mode</label>
+    </div>
+
+    <!-- Admin Secret Code Input (hidden by default) -->
+    <div id="secretCodeDiv" class="hidden">
+      <label for="secret_code" class="block font-semibold mb-1">Promotiomal Code</label>
+      <input
+        type="text"
+        id="secret_code"
+        name="secret_code"
+        placeholder="Promotional Code"
+        class="w-full rounded-md px-3 py-2 bg-[#2c2c2c] border border-slate-700 text-slate-200"
+      />
+    </div>
+
+    <!-- Terms Checkbox -->
+    <div class="flex items-center space-x-2">
+      <input
+        type="checkbox"
+        id="terms"
+        name="terms"
+        required
+        class="h-4 w-4 text-[#2dd4bf] focus:ring-[#2dd4bf] border-slate-600 rounded"
+      />
+      <label for="terms" class="text-sm select-none">
+        I agree to the <a href="/terms" class="hover:text-[#0d9488]">Terms and Conditions</a>
+      </label>
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      id="submitBtn"
+      class="w-full bg-cyan-600 text-white font-semibold py-3 rounded-md flex justify-center items-center"
+    >
+      Register
+      <span class="spinner hidden" id="spinner"></span>
+    </button>
+    <p>Have an account? <a href='/login'><span class='text-blue-700'>Login</span></a></p>
+
+  </form>
+  
+
+  <script>
+    function toggleSecretCode() {
+      const toggle = document.getElementById('adminToggle');
+      const secretDiv = document.getElementById('secretCodeDiv');
+      if (toggle.checked) {
+        secretDiv.classList.remove('hidden');
+        document.getElementById('secret_code').setAttribute('required', 'required');
+      } else {
+        secretDiv.classList.add('hidden');
+        document.getElementById('secret_code').removeAttribute('required');
+      }
+    }
+
+    function checkPasswordMatch() {
+      const pwd = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm_password').value;
+      const mismatchMsg = document.getElementById('passwordMismatch');
+
+      if (confirm.length === 0) {
+        mismatchMsg.classList.add('hidden');
+        return;
+      }
+      if (pwd !== confirm) {
+        mismatchMsg.classList.remove('hidden');
+      } else {
+        mismatchMsg.classList.add('hidden');
+      }
+    }
+
+    function handleSubmit(event) {
+      const pwd = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm_password').value;
+      const terms = document.getElementById('terms').checked;
+      const mismatchMsg = document.getElementById('passwordMismatch');
+
+      if (pwd !== confirm) {
+        mismatchMsg.classList.remove('hidden');
+        event.preventDefault();
+        return false;
+      }
+      if (!terms) {
+        alert('You must agree to the terms and conditions');
+        event.preventDefault();
+        return false;
+      }
+      // Show spinner on submit
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('spinner').classList.remove('hidden');
+      return true;
+    }
+function togglePassword1() {
+  const input = document.getElementById('password');
+  const icon = document.getElementById('eyeIcon1');
+  const isVisible = input.type === 'text';
+  input.type = isVisible ? 'password' : 'text';
+  icon.innerHTML = isVisible
+    ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+         d="M2.458 12C3.732 7.943 7.523 5 12 5
+            c4.477 0 8.268 2.943 9.542 7
+           -1.274 4.057-5.065 7-9.542 7
+           -4.477 0-8.268-2.943-9.542-7z"/>`
+    : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+         d="M13.875 18.825A10.05 10.05 0 0112 19
+            c-4.478 0-8.27-2.944-9.544-7
+            a10.05 10.05 0 012.296-3.568m2.984-2.132
+            A9.974 9.974 0 0112 5c4.478 0 8.27 2.944 9.544 7
+            a9.958 9.958 0 01-4.299 5.134M15 12
+            a3 3 0 11-6 0 3 3 0 016 0z"/>
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+         d="M3 3l18 18"/>`;
+}
+
+function togglePassword2() {
+  const input = document.getElementById('confirm_password');
+  const icon = document.getElementById('eyeIcon2');
+  const isVisible = input.type === 'text';
+  input.type = isVisible ? 'password' : 'text';
+  icon.innerHTML = isVisible
+    ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+         d="M2.458 12C3.732 7.943 7.523 5 12 5
+            c4.477 0 8.268 2.943 9.542 7
+           -1.274 4.057-5.065 7-9.542 7
+           -4.477 0-8.268-2.943-9.542-7z"/>`
+    : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+         d="M13.875 18.825A10.05 10.05 0 0112 19
+            c-4.478 0-8.27-2.944-9.544-7
+            a10.05 10.05 0 012.296-3.568m2.984-2.132
+            A9.974 9.974 0 0112 5c4.478 0 8.27 2.944 9.544 7
+            a9.958 9.958 0 01-4.299 5.134M15 12
+            a3 3 0 11-6 0 3 3 0 016 0z"/>
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+         d="M3 3l18 18"/>`;
+}
+  </script><script>if("serviceWorker"in navigator){navigator.serviceWorker.register("/service-worker.js").then(()=>console.log("SW Registered")).catch(err=>console.log("SW failed:",err));}</script>
+</body>
+</html>

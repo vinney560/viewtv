@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sports Channels</title>
+</head>
+<body>
+    <h1>Available Sports Channels</h1>
+    <ul>
+        {% for ch in channels %}
+            <li>
+                {{ ch.name }} —
+                <a href="/hls/{{ ch.id }}.m3u8">Play</a> |
+                <a href="/log/{{ ch.id }}">Log</a> |
+                <a href="/reset/{{ ch.id }}">Reset</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

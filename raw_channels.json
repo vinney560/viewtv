@@ -1,0 +1,288 @@
+{
+  "t-sports": {
+    "name": "T sports",
+    "url": "http://163.172.59.25/crc1/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "tsports": {
+    "name": "T Sports",
+    "url": "http://163.172.59.25/crc1/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "eurosports2": {
+    "name": "EuroSports 2 HD",
+    "url": "http://178.217.72.66:8080/Eurosport_2_HD/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "tycsports": {
+    "name": "Tyc Sports",
+    "url": "http://38.7.204.232:8010/play/a2md/77575752.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "matchi": {
+    "name": "MatchI",
+    "url": "http://178.217.72.66:8080/Match_Arena_HD/video.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "matchifutbal2": {
+    "name": "MatchI Futbal 2",
+    "url": "http://178.217.72.66:8080/Match_Futbol_2_HD/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "matchifutbal3": {
+    "name": "MatchI Futbal 3",
+    "url": "http://178.217.72.66:8080/Match_Futbol_3_HD/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "matchihd": {
+    "name": "MatchI HD",
+    "url": "http://178.217.72.66:8080/Match_HD/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "all-sports-a": {
+    "name": "All Sports 2",
+    "url": "https://c1.frsports.info:443/frift1/tracks-v1/mono.m3u8?token=63884a500c7ba1e11da00b1c484bd75e14944253d7493af5578e8f0ae9b46c8b-4102444800-4102444790",
+    "logo": "https://viewtv.viewtv.gt.tc/uploads/streamtv.png",
+    "access": "paid",
+    "country": "Open in VLC",
+    "group-title": "Sports"
+  },
+  "infosport-fr": {
+    "name": "INFOSPORT",
+    "url": "http://212.102.60.80:80/Infosport/index.m3u8",
+    "country": "France",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "sports-tv-tr": {
+    "name": "SPORTS TV",
+    "url": "http://live.sportstv.com.tr:80/hls/low/sportstv_fhd/index.m3u8",
+    "country": "Turkey",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "x-sport-ru": {
+    "name": "X SPORT",
+    "url": "http://iptv.prosto.tv:7000/ch109/video.m3u8",
+    "country": "Russia",
+    "access": "free",
+    "group-title": "Sports",
+    "note": "Wrestling content"
+  },
+  "sport5-il": {
+    "name": "Sport5",
+    "url": "https://rgelive.akamaized.net:443/hls/live/2043151/radiolive/playlist.m3u8",
+    "country": "Israel",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "nova-sport-2-cz": {
+    "name": "NOVA Sport 2",
+    "url": "http://78.130.250.2:8023/play/a004/index.m3u8",
+    "country": "Czech Republic",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "fs1-sport-us": {
+    "name": "FS 1 SPORT",
+    "url": "http://212.102.60.10:80/FOX_Sports_1/index.m3u8",
+    "country": "United States",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "real-madrid-tv-es": {
+    "name": "REAL MADRID TV",
+    "url": "https://rmtv.akamaized.net:443/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8",
+    "country": "Spain",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "sky-sports-laliga-mx": {
+    "name": "SKY SPORTS LALIGA",
+    "url": "http://190.92.10.66:4000/play/a001/index.m3u8",
+    "country": "Mexico",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "tudn": {
+    "name": "TUDN",
+    "url": "http://190.92.10.66:4000/play/a002/index.m3u8",
+    "country": "Mexico",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "ten-sports-2-hd": {
+    "name": "Ten Sports 2 HD",
+    "url": "https://edge4-moblive.yuppcdn.net:443/trans1sd/smil:tensports2.smil/playlist.m3u8",
+    "country": "International",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "live-sports-football-laliga": {
+    "name": "Live Sports Football Laliga",
+    "url": "https://drjpy7suzu4c5.cloudfront.net:443/out/v1/0c06db0274c04e64ab6ae0450f5fbda8/index.m3u8",
+    "country": "International",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "fast-studios-womens-sports": {
+    "name": "Fast-Studios-Womens-Sports",
+    "url": "https://csm-e-eb.csm.tubi.video:443/csm/extlive/tubiprd01,Fast-Studios-Womens-Sports.m3u8",
+    "country": "International",
+    "access": "free",
+    "group-title": "Sports"
+  },
+  "star-sport": {
+    "name": "Star Sport",
+    "url": "http://41.205.93.154:80/STARSPORTS1/index.m3u8",
+    "country": "International",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "t-sports-2": {
+    "name": "T Sports 2",
+    "url": "http://103.15.140.138/tsports/tracks-v1a1/mono.ts.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "t-sports-sd": {
+    "name": "T Sports SD",
+    "url": "http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "fox-sports-2": {
+    "name": "Fox sports 2",
+    "access": "paid",
+    "url": "http://212.102.60.231/FOX_SPORTS_2/tracks-v1a1/mono.ts.m3u8",
+    "group-title": "Sports"
+  },
+  "usa-fs-1": {
+    "name": "USA FS 1",
+    "access": "paid",
+    "url": "http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8",
+    "group-title": "Sports"
+  },
+  "bein-1-hd": {
+    "name": "Bein 1 HD",
+    "url": "http://57.129.73.112:8480/701/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "bein-2": {
+    "name": "Bein 1",
+    "url": "http://125x.org:8080/bn1hd/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "bein-2-hd": {
+    "name": "Bein 2 HD",
+    "url": "http://125x.org:8080/bn2hd/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "bein-6": {
+    "name": "Bein 6",
+    "url": "http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "eurosports-1": {
+    "name": "Eurosports 1",
+    "url": "http://178.217.72.66:8080/Eurosport_HD/video.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "eurosports2": {
+    "name": "Eurosports2",
+    "url": "http://185.189.225.157/EuroSport2/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "all-sports-a": {
+    "name": "All Sports 7",
+    "url": "http://icdn.bdixsports.live:1935/live/live7.stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "all-sports-e": {
+    "name": "All Sports 8",
+    "url": "http://icdn.bdixsports.live:1935/live/live8.stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "all-sports-b": {
+    "name": "All Sports 9",
+    "url": "http://icdn.bdixsports.live:1935/live/live9.stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "all-sports-c": {
+    "name": "All Sports 10",
+    "url": "http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "all-sports-d": {
+    "name": "All Sports 11",
+    "url": "http://icdn.bdixsports.live:1935/live/live11.stream/playlist.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "star-sport": {
+    "name": "Star Sport",
+    "url": "http://41.205.93.154/STARSPORTS1/index.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "t-sports-sd-2": {
+    "name": "T Sports SD",
+    "url": "http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8",
+    "access": "paid",
+    "group-title": "Sports"
+  },
+  "fox-news-channel": {
+    "name": "Fox News Channel",
+    "url": "http://23.237.104.106:8080/USA_FOX_NEWS/index.m3u8",
+    "access": "paid",
+    "group-title": "News"
+  },
+  "cts-sports": {
+    "name": "Cts sports",
+    "access": "paid",
+    "url": "http://88.212.7.10/live/test_ctsport_25p/playlist.m3u8",
+    "group-title": "Sports"
+  },
+  "fite_wrestle": {
+    "name": "FITE [wrestling]",
+    "access": "paid",
+    "url": "https://d3d85c7qkywguj.cloudfront.net/scheduler/scheduleMaster/263.m3u8",
+    "group-title": "Wrestling"
+  },
+  "dazn_fight": {
+    "name": "Dazn Ringside",
+    "access": "paid",
+    "url": "https://aegis-cloudfront-1.tubi.video/adc77f33-ab7b-4553-b886-a31d73b5be93/playlist.m3u8",
+    "group-title": "Wrestling"
+  },
+  "glory_kickboxing": {
+    "name": "Glory Kickboxing",
+    "access": "paid",
+    "url": "https://6f972d29.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0dsb3J5S2lja2JveGluZ19ITFM/playlist.m3u8",
+    "group-title": "Wrestling"
+  },
+  "hard_knocks": {
+    "name": "Hard Knocks",
+    "access": "paid",
+    "url": "https://d3uyzhwvmemdyf.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/Hard-Knocks-DistroTV/109.m3u8",
+    "group-title": "Wrestling"
+  }
+}

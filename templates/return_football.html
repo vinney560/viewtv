@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium Sports | Stream TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .card-glass {
+      background: rgba(31, 41, 55, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin: auto;
+      width: 100%;
+      max-width: 900px;
+    }
+    .glow-hover {
+      transition: all 0.3s ease;
+    }
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+    }
+    .btn-glass {
+      background: rgba(31, 41, 55, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    .btn-glass:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      background: rgba(31, 41, 55, 0.8);
+    }
+    .pulse-text {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
+    }
+  </style>
+</head>
+<body class="text-white">
+
+  <div class="card-glass rounded-2xl shadow-xl p-6 text-center my-8">
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold mb-2 gradient-text">Premium Sports Streaming</h1>
+      <p class="text-sm text-gray-300">Experience the game like never before</p>
+    </div>
+
+    <!-- Button Grid - Updated to 4 columns -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <!-- Sports Playlist Button -->
+      <a href="/sports_playlist" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          <circle cx="12" cy="8" r="1" fill="currentColor"></circle>
+          <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
+          <circle cx="12" cy="16" r="1" fill="currentColor"></circle>
+        </svg>
+        <span class="text-lg font-medium">Sports Playlist</span>
+        <p class="text-xs text-gray-400 mt-1">Curated sports content</p>
+      </a>
+
+      <!-- Live Football Button -->
+      <a href="http://server1.bdixsports.live/all/appevent_football.php" target="_blank" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
+        </svg>
+        <span class="text-lg font-medium">Live Football</span>
+        <p class="text-xs text-gray-400 mt-1">Real-time matches</p>
+      </a>
+
+      <!-- Our StreamTVHD Button -->
+      <a href="/live-match" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+        <span class="text-lg font-medium">Stream Tv HD</span>
+        <p class="text-xs text-gray-400 mt-1">Real-time HD matches</p>
+      </a>
+
+      <!-- NEW: Live Football Matches Button -->
+      <a href="https://livetv860.me/enx/allupcomingsports/1/" target="_blank" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span class="text-lg font-medium">Live Football Matches</span>
+        <p class="text-xs text-gray-400 mt-1">Upcoming & Live</p>
+      </a>
+    </div>
+
+    <!-- Back Button -->
+    <button id="backBtn" class="inline-flex items-center px-5 py-2 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 transition transform hover:-translate-y-0.5 hover:shadow-lg mb-4 mx-auto">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back
+    </button>
+
+    <!-- Promise Text -->
+    <p class="text-xs md:text-sm text-gray-400 mt-3 pulse-text" id="promiseText">We're building the future of sports streaming — delivering crystal-clear, real-time feeds with unmatched reliability. Our mission is simple: to become your most trusted destination for live football coverage, replays, and upcoming matches — all in one place. **With this Version, you are advised to use an Ad Blocker</p>
+  </div>
+
+  <script>
+    // Back button functionality
+    document.getElementById('backBtn').addEventListener('click', function() {
+      window.history.back();
+    });
+
+    // Enhanced promise text animation
+    const promiseText = document.getElementById('promiseText');
+    let colors = ['text-cyan-400', 'text-emerald-400', 'text-purple-400', 'text-yellow-400'];
+    let currentColor = 0;
+    
+    setInterval(() => {
+      promiseText.classList.remove(colors[currentColor]);
+      currentColor = (currentColor + 1) % colors.length;
+      promiseText.classList.add(colors[currentColor]);
+    }, 2000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="TH" tvg-logo="" group-title="Sport",T Sports 7 (720p)
+https://edge6a.v2h-cdn.com/t_sport/t_sport.stream/playlist.m3u8?checkedby:iptvcat.com

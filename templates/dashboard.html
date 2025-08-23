@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | View Tv</title>
+  <meta name="robots" content="index, follow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: { 
+            glow: '0 0 15px rgba(0,255,255,0.6)',
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+          },
+          animation: { 
+            pop: 'pop 0.3s ease-out',
+            'fade-in': 'fadeIn 0.5s ease-in-out'
+          },
+          keyframes: {
+            pop: {
+              '0%': { transform: 'scale(1)', opacity: '1' },
+              '50%': { transform: 'scale(1.4)', opacity: '0.6' },
+              '100%': { transform: 'scale(1)', opacity: '1' },
+            },
+            fadeIn: {
+              from: { opacity: 0, transform: 'translateY(-5px)' },
+              to: { opacity: 1, transform: 'translateY(0)' }
+            }
+          },
+          backdropBlur: {
+            'glass': '12px'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-morph {
+      background: rgba(16, 18, 27, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+    .glow-hover:hover { 
+      box-shadow: 0 0 15px rgba(0,255,255,0.6); 
+      transform: translateY(-2px); 
+    }
+    .circular-progress {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(#3b82f6 var(--progress), #1e3a8a 0deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    }
+    .circular-progress::before {
+      content: "";
+      position: absolute;
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      background: rgba(16, 18, 27, 0.6);
+    }
+    .progress-value {
+      position: relative;
+      font-size: 24px;
+      font-weight: 700;
+      color: #60a5fa;
+      z-index: 1;
+    }
+    .ai-card {
+      transition: all 0.3s ease;
+      transform: perspective(1000px) rotateX(0deg);
+    }
+    .ai-card:hover {
+      transform: perspective(1000px) rotateX(5deg);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-black min-h-screen flex flex-col items-center p-6 text-white relative">
+
+  <!-- ✅ Flash Message Toasts -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div id="flash-toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
+        {% for category, message in messages %}
+          <div class="px-4 py-2 rounded shadow-lg text-sm text-white animate-fade-in
+                      {% if category == 'error' %}
+                        bg-red-600
+                      {% elif category == 'success' %}
+                        bg-green-600
+                      {% else %}
+                        bg-cyan-600
+                      {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- 🔔 30-Min Timer Toast -->
+  <div id="toast" class="hidden fixed top-4 right-4 bg-red-700 text-white px-4 py-2 rounded shadow-lg z-50 text-sm animate-fade-in">
+    ⏳ Less than 30 minutes remaining!
+  </div>
+
+  <div class="w-full max-w-6xl flex flex-col md:flex-row gap-6">
+
+    <!-- Profile Section -->
+    <div class="glass-morph p-6 rounded-2xl w-full md:w-1/3">
+      <div class="flex flex-col items-center">
+        <p class="text-sm text-gray-300 mb-4">Email: {{ user.email }}</p>
+
+        <!-- Countdown Timer -->
+        <div class="flex flex-col items-center w-full">
+          <!-- Days Progress Circle -->
+          <div class="mb-6">
+            <div class="circular-progress" id="days-progress">
+              <span class="progress-value" id="days-text">0</span>
+            </div>
+            <p class="text-center mt-2 text-cyan-300">Days</p>
+          </div>
+          
+          <div id="timer" class="flex gap-1 text-center items-center w-full justify-center">
+            <div class="flex flex-col items-center">
+              <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-16 mb-1" id="hours">00</div>
+              <span class="text-xs text-cyan-300">Hours</span>
+            </div>
+            <div class="text-xl font-bold text-cyan-300 px-1">:</div>
+            <div class="flex flex-col items-center">
+              <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-16 mb-1" id="minutes">00</div>
+              <span class="text-xs text-cyan-300">Minutes</span>
+            </div>
+            <div class="text-xl font-bold text-cyan-300 px-1">:</div>
+            <div class="flex flex-col items-center">
+              <div class="bg-black/40 p-2 rounded-lg text-cyan-400 text-lg font-bold w-16 mb-1" id="seconds">00</div>
+              <span class="text-xs text-cyan-300">Seconds</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Free Plus Button Logic -->
+        {% if user.plus_type == 'free' and time_remaining_seconds > 0 or user.plus_type=='paid' %}
+          <p class="text-green-400 mt-4 text-sm">Plus is currently active</p>
+        {% elif user.last_free_plus and (user.last_free_plus + timedelta(hours=24)) > now %}
+          <p class="text-gray-400 mt-4 text-sm">You've already used Free Plus today</p>
+        {% else %}
+          <a href="{{ url_for('claim_free_plus') }}"
+             class="mt-6 glow-hover bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold py-2 px-4 rounded-xl shadow-lg text-sm">
+            🎁 Try Free Plus (2hrs)
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Menu Section -->
+    <div class="glass-morph p-6 rounded-2xl w-full md:w-2/3">
+      <h2 class="text-2xl font-semibold mb-6 text-cyan-400">Dashboard Menu</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+
+        <a href="{{ url_for('home_2') if user.plus_type in ['paid', 'free'] else url_for('home_1') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3l8 7-8 7V3z"/></svg>
+          Watch Now
+        </a>
+
+        <a href="{{ url_for('services') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3h12v2H4zm0 4h12v2H4zm0 4h12v2H4z"/></svg>
+          Offered Services
+        </a>
+        
+        <a href="{{ url_for('user_messages') }}" class="glow-hover bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+          Message Support
+        </a>
+
+        <a href="{{ url_for('about') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 12h2v5H9zm0-6h2v4H9z"/></svg>
+          About Us
+        </a>
+
+        <a href="{{ url_for('copyright') }}" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4a8 8 0 100 16 8 8 0 000-16zm1 12h-2V8h2v8z"/></svg>
+          Copyright
+        </a>
+
+        <a href="more-channels" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M15 12H3m6-6v12m12-6l-4-4m4 4l-4 4"/></svg>
+          More Shows...
+        </a>
+
+        <a href="/account" class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 14a5 5 0 100-10 5 5 0 000 10zm0 2c-3.314 0-6 2.686-6 6h12c0-3.314-2.686-6-6-6z"/></svg>
+          Account Settings
+        </a>
+
+        <!-- Developer Button -->
+        <a href="/developer" class="glow-hover bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+          Developer
+        </a>
+
+        <!-- Assistance Button -->
+        <a href="/assistance" class="glow-hover bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+          </svg>
+          Assistance
+        </a>
+
+        <a href="{{ url_for('logout_current_user') }}" class="glow-hover bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 col-span-full">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10 9V5h9v14h-9v-4H8v5a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2H10a2 2 0 00-2 2v5h2z"/><path d="M6 13h5"/></svg>
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Recommendations Section -->
+  <div class="glass-morph p-6 rounded-2xl w-full max-w-6xl mt-6">
+    <h2 class="text-2xl font-semibold mb-4 text-cyan-400 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+      AI Recommendations
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+      <div class="ai-card bg-gradient-to-br from-cyan-900/40 to-blue-900/40 p-4 rounded-xl border border-cyan-500/30">
+        <div class="flex items-start">
+          <div class="bg-cyan-500/10 p-2 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-cyan-300">Top Pick For You</h3>
+            <p class="text-sm mt-1 text-gray-300">Based on your viewing history, we recommend "MurderBot" - 92% match</p>
+          </div>
+        </div>
+        <button class="glow-hover bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold py-1 px-3 rounded-lg mt-3">
+          <a href="https://moviebox.ph/detail/murderbot-kisrvxuyuK5?id=4825874483238043480&scene=&page_from=search_detail&type=/movie/detail&utm_source=">Watch Now</a>
+        </button>
+      </div>
+      
+      <div class="ai-card bg-gradient-to-br from-purple-900/40 to-indigo-900/40 p-4 rounded-xl border border-purple-500/30">
+        <div class="flex items-start">
+          <div class="bg-purple-500/10 p-2 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-purple-300">Trending Now</h3>
+            <p class="text-sm mt-1 text-gray-300">"Quantum Leaps" is trending in your region with 1.2M viewers</p>
+          </div>
+        </div>
+        <button class="glow-hover bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold py-1 px-3 rounded-lg mt-3">
+          <a href="https://moviebox.ph/detail/quantum-leap-0IKA6UCyG29?id=7590060695048573984&scene=&page_from=search_detail&type=/movie/detail&utm_source=">Join Stream</a>
+        </button>
+      </div>
+      
+      <div class="ai-card bg-gradient-to-br from-amber-900/40 to-orange-900/40 p-4 rounded-xl border border-amber-500/30">
+        <div class="flex items-start">
+          <div class="bg-amber-500/10 p-2 rounded-lg mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-300">New Episode Alert</h3>
+            <p class="text-sm mt-1 text-gray-300">New episode of "AI Chronicles" is available now - watch before spoilers!</p>
+          </div>
+        </div>
+        <button class="glow-hover bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold py-1 px-3 rounded-lg mt-3">
+          Start Episode
+        </button>
+      </div>
+    </div>
+    
+    <div class="mt-6 text-center">
+      <button class="glow-hover bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-semibold py-2 px-6 rounded-full text-sm flex items-center justify-center mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Refresh Recommendations
+      </button>
+    </div>
+  </div>
+
+  <!-- Countdown & Toast Script -->
+  <script>
+    const totalSeconds = {{ time_remaining_seconds | safe }};
+    let remaining = totalSeconds;
+    let toastShown = false;
+
+    function updateDigit(id, value) {
+      const el = document.getElementById(id);
+      if (el.textContent !== value) {
+        el.textContent = value;
+        el.classList.add('animate-pop');
+        setTimeout(() => el.classList.remove('animate-pop'), 300);
+      }
+    }
+
+    function updateTimerDisplay(days, hrs, mins, secs) {
+      updateDigit('days-text', days);
+      
+      // Update days progress circle
+      const daysProgress = document.getElementById('days-progress');
+      const progressPercent = days > 0 ? Math.min(100, (days / 7) * 100) : 0;
+      daysProgress.style.setProperty('--progress', `${progressPercent * 3.6}deg`);
+      
+      // Update time components
+      updateDigit('hours', hrs.toString().padStart(2, '0'));
+      updateDigit('minutes', mins.toString().padStart(2, '0'));
+      updateDigit('seconds', secs.toString().padStart(2, '0'));
+    }
+
+    function startCountdown() {
+      const timerInterval = setInterval(() => {
+        if (remaining <= 0) {
+          clearInterval(timerInterval);
+          updateTimerDisplay(0, 0, 0, 0);
+          return;
+        }
+
+        if (remaining <= 1800 && !toastShown) {
+          // Change timer to red
+          document.querySelectorAll('#timer > div > div').forEach(div => {
+            div.classList.remove('text-cyan-400', 'bg-black/40');
+            div.classList.add('text-red-400', 'bg-red-900/40');
+          });
+          // Also change the days circle
+          document.getElementById('days-progress').style.background = 
+            'conic-gradient(#ef4444 var(--progress), #7f1d1d 0deg)';
+          document.getElementById('days-text').classList.add('text-red-400');
+          
+          document.getElementById('toast').classList.remove('hidden');
+          toastShown = true;
+        }
+
+        const days = Math.floor(remaining / (3600 * 24));
+        const hrs = Math.floor((remaining % (3600 * 24)) / 3600);
+        const mins = Math.floor((remaining % 3600) / 60);
+        const secs = remaining % 60;
+
+        updateTimerDisplay(days, hrs, mins, secs);
+        remaining--;
+      }, 1000);
+    }
+
+    // Initialize with current time
+    const days = Math.floor(remaining / (3600 * 24));
+    const hrs = Math.floor((remaining % (3600 * 24)) / 3600);
+    const mins = Math.floor((remaining % 3600) / 60);
+    const secs = remaining % 60;
+    updateTimerDisplay(days, hrs, mins, secs);
+    
+    startCountdown();
+  </script>
+
+  <!-- Auto-hide flash toast -->
+  <script>
+    setTimeout(() => {
+      const toastBox = document.getElementById("flash-toast-container");
+      if (toastBox) toastBox.remove();
+    }, 4000);
+  </script>
+
+  {% if redirect_in_2min %}
+  <script>
+    setTimeout(() => {
+      window.location.href = "{{ url_for('home_1') }}";
+    }, 120000);
+  </script>
+  {% endif %}
+</body>
+</html>

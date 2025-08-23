@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="ES" tvg-logo="" group-title="Sport",Esport3 (1080p) [Geo-blocked]
+https://directes-tv-cat.ccma.cat/live-origin/esport3-hls/master.m3u8?checkedby:iptvcat.com

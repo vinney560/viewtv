@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="TJ" tvg-logo="" group-title="Sport",Futbol (1080p)
+https://live.teleradiocom.tj/8/3m.m3u8?checkedby:iptvcat.com

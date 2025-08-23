@@ -1,0 +1,87 @@
+<!-- templates/countries.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Select a Country</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Inter', sans-serif;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: #58a6ff;
+      margin-bottom: 20px;
+    }
+
+    .country-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .country-btn {
+      background: #161b22;
+      color: #58a6ff;
+      border: 1px solid #30363d;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .country-btn:hover {
+      background: #238636;
+      color: white;
+      border-color: #00ff88;
+      box-shadow: 0 0 10px #00ff88;
+    }
+  </style>
+</head>
+<body>
+  <h2>🌍 Choose a Country</h2>
+  <!-- Back Button + Search -->
+  <div style="width: 100%; max-width: 1000px; display: flex; align-items: center; gap: 16px; margin: 20px 0;">
+    <!-- Back Button -->
+    <a href="#" onclick="history.back(); return false;" title="Go Back" style="color: #58a6ff; text-decoration: none;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 12H5M12 19l-7-7 7-7" />
+      </svg>
+    </a>
+
+    <!-- Search Field -->
+    <input type="text" id="search" placeholder="Search countries..." style="flex-grow: 1; padding: 10px 14px; border-radius: 8px; background: #161b22; color: #c9d1d9; border: 1px solid #30363d; outline: none;" />
+  </div>  
+  <div class="country-grid">
+    {% for country in countries %}
+      <a class="country-btn" href="{{ url_for('fetch_country_channels', country_code=country.code) }}">
+        {{ country.name }}
+      </a>
+    {% endfor %}
+  </div>
+  <script>
+    const input = document.getElementById("search");
+    input.addEventListener("input", () => {
+      const term = input.value.toLowerCase();
+      const buttons = document.querySelectorAll(".country-btn");
+
+      buttons.forEach(btn => {
+        const label = btn.textContent.toLowerCase();
+        btn.style.display = label.includes(term) ? "inline-block" : "none";
+      });
+    });
+  </script>  
+</body>
+</html>

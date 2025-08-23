@@ -1,0 +1,152 @@
+{
+  "1": {
+    "name": "BEIN SPORTS 1 4K",
+    "url": "http://80.211.189.193/live/get.php?stream=27&username=76097116161695&password=76097116161695",
+    "quality": "4K"
+  },
+  "2": {
+    "name": "BEIN SPORTS 2 4K",
+    "url": "http://80.211.189.193/live/get.php?stream=28&username=76097116161695&password=76097116161695",
+    "quality": "4K"
+  },
+  "3": {
+    "name": "BEIN SPORTS 3 4K",
+    "url": "http://80.211.189.193/live/get.php?stream=29&username=76097116161695&password=76097116161695",
+    "quality": "4K"
+  },
+  "4": {
+    "name": "BEIN SPORTS 4 4K",
+    "url": "http://80.211.189.193/live/get.php?stream=30&username=76097116161695&password=76097116161695",
+    "quality": "4K"
+  },
+  "5": {
+    "name": "BEIN SPORTS 5 4K",
+    "url": "http://80.211.189.193/live/get.php?stream=31&username=76097116161695&password=76097116161695",
+    "quality": "4K"
+  },
+  "6": {
+    "name": "BEIN SPORTS 6 4K",
+    "url": "http://80.211.189.193/live/get.php?stream=32&username=76097116161695&password=76097116161695",
+    "quality": "4K"
+  },
+  "7": {
+    "name": "BEIN SPORTS 7 4K",
+    "url": "http://80.211.189.193/live/get.php?stream=33&username=76097116161695&password=76097116161695",
+    "quality": "4K"
+  },
+  "8": {
+    "name": "BEIN SPORTS 8 4K",
+    "url": "http://80.211.189.193/live/get.php?stream=34&username=76097116161695&password=76097116161695",
+    "quality": "4K"
+  },
+  "9": {
+    "name": "BEIN SPORTS 1 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=17&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "10": {
+    "name": "BEIN SPORTS 2 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=18&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "11": {
+    "name": "BEIN SPORTS 3 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=19&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "12": {
+    "name": "BEIN SPORTS 4 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=20&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "13": {
+    "name": "BEIN SPORTS 5 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=21&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "14": {
+    "name": "BEIN SPORTS 6 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=22&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "15": {
+    "name": "BEIN SPORTS 7 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=23&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "16": {
+    "name": "BEIN SPORTS 8 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=24&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "17": {
+    "name": "BEIN SPORTS 9 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=25&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "18": {
+    "name": "BEIN SPORTS 10 HD",
+    "url": "http://80.211.189.193/live/get.php?stream=26&username=76097116161695&password=76097116161695",
+    "quality": "HD"
+  },
+  "19": {
+    "name": "BEIN SPORTS 1 SD",
+    "url": "http://80.211.189.193/live/get.php?stream=9&username=76097116161695&password=76097116161695",
+    "quality": "SD"
+  },
+  "20": {
+    "name": "BEIN SPORTS 2 SD",
+    "url": "http://80.211.189.193/live/get.php?stream=10&username=76097116161695&password=76097116161695",
+    "quality": "SD"
+  },
+  "21": {
+    "name": "BEIN SPORTS 3 SD",
+    "url": "http://80.211.189.193/live/get.php?stream=11&username=76097116161695&password=76097116161695",
+    "quality": "SD"
+  },
+  "22": {
+    "name": "BEIN SPORTS 4 SD",
+    "url": "http://80.211.189.193/live/get.php?stream=12&username=76097116161695&password=76097116161695",
+    "quality": "SD"
+  },
+  "23": {
+    "name": "BEIN SPORTS 5 SD",
+    "url": "http://80.211.189.193/live/get.php?stream=13&username=76097116161695&password=76097116161695",
+    "quality": "SD"
+  },
+  "24": {
+    "name": "BEIN SPORTS 6 SD",
+    "url": "http://80.211.189.193/live/get.php?stream=14&username=76097116161695&password=76097116161695",
+    "quality": "SD"
+  },
+  "25": {
+    "name": "BEIN SPORTS 7 SD",
+    "url": "http://80.211.189.193/live/get.php?stream=15&username=76097116161695&password=76097116161695",
+    "quality": "SD"
+  },
+  "26": {
+    "name": "BEIN SPORTS 8 SD",
+    "url": "http://80.211.189.193/live/get.php?stream=16&username=76097116161695&password=76097116161695",
+    "quality": "SD"
+  },
+  "27": {
+    "name": "BEINSPORT 3 Low",
+    "url": "http://80.211.189.193/live/get.php?stream=38&username=76097116161695&password=76097116161695",
+    "quality": "Low"
+  },
+  "28": {
+    "name": "BEINSPORT 4 Low",
+    "url": "http://80.211.189.193/live/get.php?stream=48&username=76097116161695&password=76097116161695",
+    "quality": "Low"
+  },
+  "29": {
+    "name": "BEINSPORT 5 Low",
+    "url": "http://80.211.189.193/live/get.php?stream=58&username=76097116161695&password=76097116161695",
+    "quality": "Low"
+  },
+  "30": {
+    "name": "BEINSPORT 6 Low",
+    "url": "http://80.211.189.193/live/get.php?stream=68&username=76097116161695&password=76097116161695",
+    "quality": "Low"
+  }
+}

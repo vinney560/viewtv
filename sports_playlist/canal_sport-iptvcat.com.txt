@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="CZ" tvg-logo="" group-title="Sport",Canal+ Sport
+http://78.130.250.2:8023/play/a02v/index.m3u8?checkedby:iptvcat.com

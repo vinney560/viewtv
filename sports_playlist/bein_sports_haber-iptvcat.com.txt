@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="TR" tvg-logo="https://i.imgur.com/QWo0x7S.jpg" group-title="Sport",beIN Sports Haber
+https://canlitvulusal3.xyz/live/beinsportshaber/index.m3u8?checkedby:iptvcat.com

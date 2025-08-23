@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-900">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Live Sports | StreamTv</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .channel-card {
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .channel-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.2);
+    }
+    .channel-logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      margin: 0 auto 10px;
+    }
+    .search-container {
+      transition: all 0.3s ease;
+    }
+    .search-container:focus-within {
+      border-color: rgba(6, 182, 212, 0.5);
+    }
+    .dropdown-icon {
+      transition: transform 0.3s ease;
+    }
+    .dropdown-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .dropdown-content.show {
+      max-height: 500px;
+    }
+    .channel-option {
+      transition: background-color 0.2s ease;
+    }
+    .channel-option:hover {
+      background-color: rgba(31, 41, 55, 0.5);
+    }
+  </style>
+</head>
+<body class="flex flex-col h-full text-gray-100">
+  <header class="bg-gray-800/80 border-b border-gray-700 p-4 sticky top-0 z-10">
+    <div class="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+        Live Sports Channels
+      </h1>
+      
+      <div class="search-container relative max-w-md w-full border border-gray-700 rounded-lg overflow-hidden bg-gray-800/50">
+        <input type="text" id="searchInput" placeholder="Search channels..." 
+               class="w-full bg-transparent py-2 pl-10 pr-4 text-gray-200 focus:outline-none">
+        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 overflow-y-auto p-4">
+    <div class="container mx-auto">
+      <!-- Sports Channels Grid -->
+      <div id="channelsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <!-- Official YouTube Channels (from original template) -->
+        <!-- SportyTV -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-blue-500/50"
+             data-search="sportytv football highlights">
+          <a href="https://www.youtube.com/channel/UCwu87p766uwEyzG1p8dEMlg/live" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+              <img src="https://viewtv-p2s3.onrender.com/uploads/sporty.png" 
+                   alt="SportyTV Logo" class="channel-logo rounded-full">
+              <h3 class="font-medium">SportyTV</h3>
+              <p class="text-xs text-gray-400 mt-1">Football Highlights</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- FIFA -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="fifa world football">
+          <a href="https://www.youtube.com/c/fifatv/live" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+              <img src="https://viewtv-p2s3.onrender.com/uploads/fifa.png" 
+                   alt="FIFA Logo" class="channel-logo">
+              <h3 class="font-medium">FIFA</h3>
+              <p class="text-xs text-gray-400 mt-1">World Football</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Premier League -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="premier league english football">
+          <a href="https://www.youtube.com/c/premierleague/live" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+              <img src="https://viewtv-p2s3.onrender.com/uploads/premier.png" 
+                   alt="Premier League Logo" class="channel-logo">
+              <h3 class="font-medium">Premier League</h3>
+              <p class="text-xs text-gray-400 mt-1">English Football</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- UEFA Champions League -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="uefa champions league european football">
+          <a href="https://www.youtube.com/c/UEFA/live" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+              <img src="https://yt3.googleusercontent.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s176-c-k-c0x00ffffff-no-rj" 
+                   alt="UEFA Logo" class="channel-logo">
+              <h3 class="font-medium">UEFA Champions League</h3>
+              <p class="text-xs text-gray-400 mt-1">European Football</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- ESPN FC -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="espn fc football analysis">
+          <a href="https://www.youtube.com/c/ESPNFC/live" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+              <img src="https://viewtv-p2s3.onrender.com/uploads/espn.png" 
+                   alt="ESPN Logo" class="channel-logo">
+              <h3 class="font-medium">ESPN FC</h3>
+              <p class="text-xs text-gray-400 mt-1">Football Analysis</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- CBS Sports Golazo -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="cbs sports golazo football shows">
+          <a href="https://www.youtube.com/c/CBSSportsGolazo/live" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+              <img src="https://viewtv-p2s3.onrender.com/uploads/cbs.png" 
+                   alt="CBS Sports Logo" class="channel-logo">
+              <h3 class="font-medium">CBS Sports Golazo</h3>
+              <p class="text-xs text-gray-400 mt-1">Football Shows</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Sky Sports Football -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="sky sports football uk football">
+          <a href="https://www.youtube.com/c/skysportsfootball/live" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+              <img src="https://viewtv-p2s3.onrender.com/uploads/sky.png" 
+                   alt="Sky Sports Logo" class="channel-logo">
+              <h3 class="font-medium">Sky Sports Football</h3>
+              <p class="text-xs text-gray-400 mt-1">UK Football</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- BT Sport -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="bt sport uk sports">
+          <a href="https://www.youtube.com/c/BTSport/live" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <div class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full inline-block mb-2">OFFICIAL</div>
+              <img src="https://viewtv-p2s3.onrender.com/uploads/bt.png" 
+                   alt="BT Sport Logo" class="channel-logo">
+              <h3 class="font-medium">BT Sport</h3>
+              <p class="text-xs text-gray-400 mt-1">UK Sports</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- New M3U8 Channels (grouped) -->
+        
+        <!-- Ten Sports Cricket -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="ten sports cricket">
+          <a href="https://app.hughag.store/api/6b9c461155/playlist.m3u8" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" 
+                   alt="Ten Sports Logo" class="channel-logo">
+              <h3 class="font-medium">Ten Sports</h3>
+              <p class="text-xs text-gray-400 mt-1">Cricket</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- CTS Sports -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="cts sports">
+          <a href="http://88.212.7.10/live/test_ctsport_25p/playlist.m3u8" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" 
+                   alt="CTS Sports Logo" class="channel-logo">
+              <h3 class="font-medium">CTS Sports</h3>
+              <p class="text-xs text-gray-400 mt-1">Sports</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- T Sports Group -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="t sports sports">
+          <div class="cursor-pointer group-header p-4 text-center" onclick="toggleDropdown(this)">
+            <img src="https://viewtv-p2s3.onrender.com/uploads/t.png" 
+                 alt="T Sports Logo" class="channel-logo mx-auto">
+            <div class="flex items-center justify-center">
+              <h3 class="font-medium">T Sports</h3>
+              <i class="fas fa-chevron-down dropdown-icon ml-2 text-gray-400 text-sm"></i>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">4 Channels Available</p>
+          </div>
+          
+          <div class="dropdown-content bg-gray-900/50">
+            <!-- T Sports 1 -->
+            <a href="http://163.172.59.25/crc1/tracks-v1a1/mono.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/t.png" alt="Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">T Sports 1</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- T Sports 2 -->
+            <a href="http://103.15.140.138/tsports/tracks-v1a1/mono.ts.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/t.png" alt="logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">T Sports 2</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- T Sports SD -->
+            <a href="http://kst.moonplex.net:8080/CH2/tracks-v1a1/mono.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/t.png" alt="logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">T Sports SD</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- T Sports (YouTube) -->
+            <a href="https://www.youtube.com/c/TSportsbd/live" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/t.png" alt="logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">T Sports (YouTube)</h4>
+                  <p class="text-xs text-gray-400">Football Streaming</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Fox Sports Group -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="fox sports us sports">
+          <div class="cursor-pointer group-header p-4 text-center" onclick="toggleDropdown(this)">
+            <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" 
+                 alt="Fox Sports Logo" class="channel-logo mx-auto">
+            <div class="flex items-center justify-center">
+              <h3 class="font-medium">Fox Sports</h3>
+              <i class="fas fa-chevron-down dropdown-icon ml-2 text-gray-400 text-sm"></i>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">2 Channels Available</p>
+          </div>
+          
+          <div class="dropdown-content bg-gray-900/50">
+            <!-- Fox Sports 2 -->
+            <a href="http://212.102.60.231/FOX_SPORTS_2/tracks-v1a1/mono.ts.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" alt="Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">Fox Sports 2</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- USA FS 1 -->
+            <a href="http://23.237.104.106:8080/USA_FS1/tracks-v1a1/mono.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" alt="Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">USA FS 1</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- BeIN Sports Group (updated with additional links) -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="bein sports sports">
+          <div class="cursor-pointer group-header p-4 text-center" onclick="toggleDropdown(this)">
+            <img src="https://i.imgur.com/uJosqHh.png" 
+                 alt="BeIN Sports Logo" class="channel-logo mx-auto">
+            <div class="flex items-center justify-center">
+              <h3 class="font-medium">BeIN Sports</h3>
+              <i class="fas fa-chevron-down dropdown-icon ml-2 text-gray-400 text-sm"></i>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">6 Channels Available</p>
+          </div>
+          
+          <div class="dropdown-content bg-gray-900/50">
+            <!-- BeIN Sports 1 -->
+            <a href="http://57.129.73.112:8480/701/tracks-v1a1/mono.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://i.imgur.com/uJosqHh.png" alt="Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">BeIN Sports 1</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- BeIN Sports 2 -->
+            <a href="http://57.129.73.112:8480/702/tracks-v1a1/mono.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://i.imgur.com/uJosqHh.png" alt="logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">BeIN Sports 2</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- BeIN Sports 6 -->
+            <a href="http://125x.org:8080/bn6hd/tracks-v1a1/mono.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://i.imgur.com/uJosqHh.png" alt="logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">BeIN Sports 6</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- EuroSports Group (updated with additional links) -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="eurosport sports">
+          <div class="cursor-pointer group-header p-4 text-center" onclick="toggleDropdown(this)">
+            <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" 
+                 alt="EuroSport Logo" class="channel-logo mx-auto">
+            <div class="flex items-center justify-center">
+              <h3 class="font-medium">EuroSport</h3>
+              <i class="fas fa-chevron-down dropdown-icon ml-2 text-gray-400 text-sm"></i>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">2 Channels Available</p>
+          </div>
+          
+          <div class="dropdown-content bg-gray-900/50">
+            <!-- EuroSport 1 -->
+            <a href="http://178.217.72.66:8080/Eurosport_HD/video.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" alt="Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">EuroSport 1</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+            
+            <!-- EuroSport 2 -->
+            <a href="http://185.189.225.157/EuroSport2/tracks-v1a1/mono.m3u8" target="_blank" 
+               class="channel-option block py-3 px-4 border-t border-gray-700/50 hover:bg-gray-700/30">
+              <div class="flex items-center">
+                <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" alt="Logo" class="w-8 h-8 object-contain mr-3">
+                <div>
+                  <h4 class="text-sm font-medium">EuroSport 2</h4>
+                  <p class="text-xs text-gray-400">Sports</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Star Sports -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="star sports 1 sports">
+          <a href="http://41.205.93.154/STARSPORTS1/index.m3u8" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" 
+                   alt="Star Sports Logo" class="channel-logo">
+              <h3 class="font-medium">Star Sports 1</h3>
+              <p class="text-xs text-gray-400 mt-1">Sports</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- All Sports -->
+        <div class="channel-card bg-gray-800/80 rounded-lg overflow-hidden border border-gray-700/50 hover:border-cyan-400/30"
+             data-search="all sports sports">
+          <a href="http://icdn.bdixsports.live:1935/live/live10.stream/playlist.m3u8" target="_blank" class="block">
+            <div class="p-4 text-center">
+              <img src="https://viewtv-p2s3.onrender.com/uploads/exclusive_sports.png" 
+                   alt="All Sports Logo" class="channel-logo">
+              <h3 class="font-medium">All Sports</h3>
+              <p class="text-xs text-gray-400 mt-1">Sports</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800/50 border-t border-gray-700/30 p-3 text-center text-sm text-gray-500">
+    <div>Live Sports Channels - Click any to watch (when live streams are available)</div>
+    <div class="mt-1 text-xs">Note: Not all channels stream 24/7 - check their schedules</div>
+  </footer>
+
+  <script>
+    // Toggle dropdown functionality
+    function toggleDropdown(element) {
+      const card = element.closest('.channel-card');
+      const dropdown = card.querySelector('.dropdown-content');
+      const icon = card.querySelector('.dropdown-icon');
+      
+      dropdown.classList.toggle('show');
+      icon.classList.toggle('fa-chevron-down');
+      icon.classList.toggle('fa-chevron-up');
+    }
+
+    // Live search functionality
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const channelCards = document.querySelectorAll('.channel-card');
+      
+      channelCards.forEach(card => {
+        const searchText = card.getAttribute('data-search').toLowerCase();
+        
+        if (searchText.includes(searchTerm)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

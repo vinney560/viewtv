@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <title>View Tv | Moviepire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    header {
+      background: linear-gradient(90deg, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      z-index: 2;
+      position: relative;
+    }
+
+    iframe {
+      width: 100%;
+      height: calc(100% - 80px);
+      border: none;
+      position: absolute;
+      top: 80px;
+      left: 0;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        font-size: 1.8rem;
+        padding: 15px;
+      }
+
+      iframe {
+        top: 70px;
+        height: calc(100% - 70px);
+      }
+    }
+
+    #fullscreen-btn {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid #00c6ff;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+      z-index: 3;
+    }
+
+    #fullscreen-btn:hover {
+      background: rgba(0, 198, 255, 0.2);
+    }
+
+    #back-btn {
+      position: absolute;
+      top: 17px;
+      left: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #00c6ff;
+      padding: 5px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 3;
+      transition: background 0.3s;
+    }
+
+    #back-btn:hover {
+      background: rgba(0, 198, 255, 0.2);
+    }
+
+    #back-btn svg {
+      width: 24px;
+      height: 24px;
+      stroke: #00c6ff;
+    }
+  </style>
+</head>
+<body>
+  <header>View Tv | Moviepire</header>
+
+  <!-- Back Button -->
+  <button id="back-btn" onclick="javascript:history.back()" title="Go Back">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <!-- Movie Frame -->
+  <iframe 
+    id="movie-frame"
+    src="https://moviepire.net/" 
+    allowfullscreen>
+  </iframe>
+
+  <!-- Fullscreen Button -->
+  <button id="fullscreen-btn">Fullscreen</button>
+
+  <script>
+    const iframe = document.getElementById('movie-frame');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+    fullscreenBtn.onclick = () => {
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.webkitRequestFullscreen) {
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) {
+        iframe.msRequestFullscreen();
+      }
+    };
+  </script>
+</body>
+</html>

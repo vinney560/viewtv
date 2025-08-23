@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="IN" tvg-logo="" group-title="Sport",Sony Sports Ten 5 (1080p)
+https://dai.google.com/linear/hls/event/r-eLp41YTHWTagvQSXFtAQ/master.m3u8?checkedby:iptvcat.com

@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home | ViewTv</title>
+  <!-- PWA Configuration -->
+  <meta name="theme-color" content="#111827">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  <!-- Meta Tags -->
+  <meta name="description" content="ViewTV is your free and paid, all-in-one platform to watch live TV, sports matches, local channels like Citizen Tv, NTV, KTN Home, and global news. Stream FIFA, UEFA, and EPL matches in English—right on your phone, anywhere, anytime. Enjoy Distruction Free, Zero Ads, YouTube live integration, and smooth performance with ViewTV." />
+  <meta name="keywords" content="ViewTV, live TV, free live streaming, global TV, local channels, Kiswahili channels, English news, FIFA live, UEFA matches, EPL streaming online, Maisha Magic, PPP TV, mobile TV app, sports streaming, watch TV online, African shows, Kenya live TV, entertainment app, full-screen video, YouTube live, ViewTV app, view TV on mobile, WebView TV, global live channels, free IPTV alternative, local news live, ViewTV streaming, international channels, African streaming platform, movie box, movie streamer, watch live news, free movies, latest movies, stream online, live football, citizen live stream, cartoons, animation streamer, watch live, horror movies, latest movies online, watch now live, kenya live, nickelodean live tv, many channels, live tv online, View Tv, stream tv, youtube live channels, streaming platform, kids channels, live tvs, free tv online" />
+  <meta name="author" content="Vincent Kipngetich" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://viewstream-1.onrender.com" />
+  <link rel="icon" href="{{ url_for('uploaded_file', filename='favicon.ico') }}" />
+  <meta name="msvalidate.01" content="D06687A71C3ABB4C7B414D718375B902" />
+
+  <!-- Social Meta -->
+  <meta property="og:title" content="View Tv - Best Streamer" />
+  <meta property="og:description" content="Start streaming your favorite Movies, TV channels, Sports, Music, Kids shows worldwide instantly." />
+  <meta property="og:image" content="https://viewstream-1.onrender.com/favicon.ico" />
+  <meta property="og:url" content="https://viewstream-1.onrender.com" />
+  <meta name="twitter:card" content="summary_large_image" />
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #06b6d4;
+      --secondary: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+    }
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+      transform: translateY(-2px);
+    }
+    .nav-btn {
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+    }
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .card-glass {
+      background: rgba(31, 41, 55, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .toast-entry {
+      animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    .toast-exit {
+      animation: toast-out 0.5s ease forwards;
+    }
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    @keyframes toast-out {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+    }
+    .footer-wave {
+      background-image: url("data:image/svg+xml,%3Csvg width='1200' height='60' viewBox='0 0 1200 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,30 C150,60 450,0 600,30 C750,60 1050,0 1200,30 L1200,60 L0,60 Z' fill='rgba(31, 41, 55, 0.6)'/%3E%3C/svg%3E");
+      background-size: 1200px 60px;
+      height: 60px;
+      margin-top: -60px;
+    }
+    
+    /* Enhanced AI Assistant */
+    .ai-assistant {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.5);
+      transition: all 0.3s ease;
+    }
+    .ai-assistant:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.8);
+    }
+    .ai-assistant.listening {
+      animation: pulse 1.5s infinite;
+    }
+    .ai-panel {
+      position: fixed;
+      bottom: 160px;
+      right: 20px;
+      width: 320px;
+      background: rgba(31, 41, 55, 0.95);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 100;
+      padding: 15px;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .ai-panel.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .ai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .ai-content {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+    .ai-message {
+      background: rgba(6, 182, 212, 0.15);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .ai-message.user {
+      background: rgba(31, 41, 55, 0.8);
+      text-align: right;
+    }
+    .ai-message.error {
+      background: rgba(239, 68, 68, 0.15);
+    }
+    .ai-message.warning {
+      background: rgba(245, 158, 11, 0.15);
+    }
+    .ai-message.info {
+      background: rgba(59, 130, 246, 0.15);
+    }
+    .ai-message.success {
+      background: rgba(16, 185, 129, 0.15);
+    }
+    .ai-message.data {
+      background: rgba(139, 92, 246, 0.15);
+    }
+    .ai-input {
+      display: flex;
+      margin-top: 10px;
+    }
+    .ai-input input {
+      flex: 1;
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 8px 15px;
+      color: white;
+      outline: none;
+      font-size: 14px;
+    }
+    .ai-input button {
+      background: var(--primary);
+      border: none;
+      border-radius: 20px;
+      color: white;
+      padding: 8px 15px;
+      margin-left: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .ai-input button:hover {
+      background: #0891b2;
+    }
+    .install-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(31, 41, 55, 0.8);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      padding: 8px 15px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    .install-btn:hover {
+      background: rgba(6, 182, 212, 0.2);
+      transform: translateY(-2px);
+    }
+    .smart-recommendations {
+      background: rgba(31, 41, 55, 0.5);
+      border-radius: 15px;
+      padding: 15px;
+      margin-top: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .recommendation-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .recommendation-cards {
+      display: flex;
+      overflow-x: auto;
+      gap: 15px;
+      padding-bottom: 10px;
+      scrollbar-width: none;
+    }
+    .recommendation-cards::-webkit-scrollbar {
+      display: none;
+    }
+    .recommendation-card {
+      min-width: 120px;
+      background: rgba(31, 41, 55, 0.7);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .recommendation-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .recommendation-img {
+      height: 80px;
+      background: linear-gradient(45deg, #1e3a8a, #1e40af);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .recommendation-content {
+      padding: 10px;
+    }
+    .recommendation-content h4 {
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+    .recommendation-content p {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+    }
+    .voice-wave {
+      display: flex;
+      align-items: flex-end;
+      height: 30px;
+      gap: 2px;
+    }
+    .voice-bar {
+      width: 3px;
+      background: var(--primary);
+      border-radius: 2px;
+      animation: voiceWave 1.2s infinite ease-in-out;
+    }
+    .voice-bar:nth-child(2) { animation-delay: 0.1s; height: 8px; }
+    .voice-bar:nth-child(3) { animation-delay: 0.2s; height: 15px; }
+    .voice-bar:nth-child(4) { animation-delay: 0.3s; height: 20px; }
+    .voice-bar:nth-child(5) { animation-delay: 0.4s; height: 25px; }
+    .voice-bar:nth-child(6) { animation-delay: 0.5s; height: 20px; }
+    .voice-bar:nth-child(7) { animation-delay: 0.6s; height: 15px; }
+    .voice-bar:nth-child(8) { animation-delay: 0.7s; height: 8px; }
+    @keyframes voiceWave {
+      0%, 100% { height: 8px; }
+      50% { height: 25px; }
+    }
+    .ai-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .ai-action-btn {
+      flex: 1;
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ai-action-btn:hover {
+      background: rgba(6, 182, 212, 0.2);
+      transform: translateY(-2px);
+    }
+    .ai-web-search {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(31, 41, 55, 0.7);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .ai-web-search a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .ai-web-search a:hover {
+      text-decoration: underline;
+    }
+    .ai-data-analysis {
+      background: rgba(139, 92, 246, 0.15);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .chart-container {
+      position: relative;
+      height: 150px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .ai-data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .data-card {
+      background: rgba(31, 41, 55, 0.5);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .data-card h4 {
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #9ca3af;
+    }
+    .data-card p {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    /* Enhanced Toast */
+    .toast {
+      position: relative;
+      padding: 16px 24px 16px 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      background: rgba(31, 41, 55, 0.85);
+      border-left: 4px solid;
+      display: flex;
+      align-items: flex-start;
+      transform: translateX(100%);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .toast.hide {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    .toast-icon {
+      margin-right: 12px;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .toast-content {
+      flex: 1;
+    }
+    .toast-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .toast-message {
+      font-size: 14px;
+      color: #d1d5db;
+    }
+    .toast-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+    .toast-close:hover {
+      color: white;
+    }
+    .toast-success {
+      border-left-color: var(--success);
+    }
+    .toast-success .toast-icon {
+      color: var(--success);
+    }
+    .toast-error {
+      border-left-color: var(--danger);
+    }
+    .toast-error .toast-icon {
+      color: var(--danger);
+    }
+    .toast-warning {
+      border-left-color: var(--warning);
+    }
+    .toast-warning .toast-icon {
+      color: var(--warning);
+    }
+    .toast-info {
+      border-left-color: var(--primary);
+    }
+    .toast-info .toast-icon {
+      color: var(--primary);
+    }
+    
+    /* Responsive additions */
+    @media (max-width: 640px) {
+      .responsive-flex {
+        flex-direction: column;
+      }
+      .responsive-space {
+        margin-top: 1rem;
+        margin-left: 0;
+      }
+      .responsive-width {
+        width: 100%;
+      }
+      .responsive-padding {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .responsive-text {
+        font-size: 1rem;
+      }
+      .ai-panel {
+        width: 90%;
+        left: 5%;
+        right: auto;
+      }
+      .ai-assistant {
+        bottom: 80px;
+        right: 15px;
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+<body class="h-full min-h-screen text-white flex flex-col items-center p-4 responsive-padding">
+
+  <!-- Modern Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 max-w-md w-full"></div>
+
+  <!-- PWA Install Button -->
+  <div id="installBtn" class="install-btn hidden">
+    <i class="fas fa-download mr-2"></i>
+    <span>Install App</span>
+  </div>
+
+  <!-- Enhanced AI Assistant Panel -->
+  <div id="aiPanel" class="ai-panel">
+    <div class="ai-header">
+      <div class="flex items-center">
+        <i class="fas fa-robot text-cyan-400 mr-2"></i>
+        <h3 class="gradient-text font-bold">ViewTV Assistant</h3>
+      </div>
+      <button id="closeAiPanel">
+        <i class="fas fa-times text-gray-400 hover:text-white"></i>
+      </button>
+    </div>
+    <div class="ai-content" id="aiChat">
+      <div class="ai-message">
+        <p>Hi there! I'm your friendly ViewTV assistant. 😊 How can I help you today?</p>
+        <p class="text-xs text-cyan-300 mt-3">I can help with:</p>
+        <ul class="text-xs text-gray-300 list-disc pl-5 mt-1 space-y-1">
+          <li>Explaining errors like 404, 500, 502, etc.</li>
+          <li>Guiding you to the right content sections</li>
+          <li>Providing troubleshooting tips</li>
+          <li>Searching the web for answers</li>
+          <li>Answering questions about ViewTV</li>
+          <li>Checking server status</li>
+          <li>Finding content recommendations</li>
+          <li>Analyzing your viewing habits</li>
+        </ul>
+        <p class="text-xs text-cyan-300 mt-3">Try saying: "What does error 404 mean?" or "Analyze my viewing habits"</p>
+      </div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Ask me anything...">
+      <button id="sendAiMessage"><i class="fas fa-paper-plane"></i></button>
+    </div>
+    <div class="ai-actions">
+      <div class="ai-action-btn" id="voiceCommandBtn">
+        <i class="fas fa-microphone mr-1"></i> Voice
+      </div>
+      <div class="ai-action-btn" id="helpBtn">
+        <i class="fas fa-question-circle mr-1"></i> Help
+      </div>
+      <div class="ai-action-btn" id="clearChatBtn">
+        <i class="fas fa-trash mr-1"></i> Clear
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Assistant Button -->
+  <div id="aiAssistant" class="ai-assistant pulse">
+    <i class="fas fa-robot text-white text-2xl"></i>
+  </div>
+
+  <!-- Header -->
+  <header class="w-full max-w-4xl flex items-center justify-between p-4 card-glass rounded-2xl shadow-lg mb-6">
+    <!-- Dashboard Button -->
+    <a href="{{ url_for('dashboard') }}" class="nav-btn p-2 rounded-full hover:bg-cyan-600/30 transition flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12h18M3 6h18M3 18h18"/>
+      </svg>
+    </a>
+
+    <!-- Logo -->
+    <h1 class="text-xl font-bold gradient-text">ViewTV</h1>
+
+    <!-- Right Navigation -->
+    <div class="flex items-center space-x-3">
+      <!-- Plus Button -->
+      <a href="{{ url_for('get_plus') }}" class="nav-btn flex items-center space-x-2 px-4 py-2 rounded-xl bg-gray-700/60 hover:bg-cyan-600/50 transition border border-gray-600/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span class="text-sm font-medium text-cyan-200">Plus</span>
+      </a>
+
+      <!-- Account Button -->
+      <a href="{{ url_for('account') }}" class="nav-btn p-2 rounded-full hover:bg-blue-600/30 transition flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="w-full max-w-2xl flex flex-col items-center space-y-6 px-4 flex-grow mb-20">
+
+    <!-- Exclusive Sports -->
+    <a href="{{ url_for('return_football') }}" class="w-full group relative overflow-hidden py-5 flex items-center justify-center space-x-3 text-xl md:text-2xl font-bold rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-gray-900 glow-hover transition-all transform hover:-translate-y-1 hover:shadow-lg">
+      <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/20 to-emerald-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.657 0 3 1.343 3 3s-1.343 3-3 3m0 0c-1.657 0-3-1.343-3-3s1.343-3 3-3m0 0V4m0 10v6m-4-3h8" />
+      </svg>
+      <span class="relative">Exclusive Sports</span>
+    </a>
+
+    <!-- AI-Powered Recommendations -->
+    <div class="smart-recommendations w-full">
+      <div class="recommendation-title">
+        <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+        <h3 class="text-cyan-200 font-bold">Smart Recommendations For You</h3>
+      </div>
+      <div class="recommendation-cards" id="smartRecommendations">
+        <!-- Recommendations will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Category & Country Buttons -->
+    <div class="flex w-full space-x-4 responsive-flex">
+      <!-- Category -->
+      <a href="{{ url_for('categories') }}" class="w-1/2 responsive-width py-4 flex items-center justify-center space-x-2 bg-gray-800/60 hover:bg-cyan-700/50 text-cyan-300 font-semibold rounded-xl glow-hover transition-all border border-gray-700/30 hover:border-cyan-500/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+        </svg>
+        <span class="responsive-text">Category</span>
+      </a>
+
+      <!-- Country -->
+      <a href="{{ url_for('countries') }}" class="w-1/2 responsive-width responsive-space py-4 flex items-center justify-center space-x-2 bg-gray-800/60 hover:bg-cyan-700/50 text-cyan-300 font-semibold rounded-xl glow-hover transition-all border border-gray-700/30 hover:border-cyan-500/30">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="responsive-text">Country</span>
+      </a>
+    </div>
+
+    <!-- View TV Playlist -->
+    <a href="{{ url_for('custom_list') }}" class="w-full group relative overflow-hidden py-5 flex items-center justify-center space-x-3 text-xl md:text-2xl font-bold rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-gray-900 glow-hover transition-all transform hover:-translate-y-1 hover:shadow-lg">
+      <div class="absolute inset-0 bg-gradient-to-r from-cyan-600/20 to-emerald-600/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
+      </svg>
+      <span class="relative">View TV Channels</span>
+    </a>
+
+    <!-- Movies Row -->
+    <div class="flex w-full space-x-4 responsive-flex">
+      <!-- Plus Movies Button -->
+      <a href="{{ url_for('movieflix') }}" class="w-1/2 responsive-width py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+        </svg>
+        <span class="responsive-text">Plus Movies</span>
+      </a>
+
+      <!-- Moviepire Button -->
+      <a href="https://ww1.goojara.to/watch-movies" class="w-1/2 responsive-width responsive-space py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-red-600 to-pink-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
+        </svg>
+        <span class="responsive-text">Moviepire</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Footer with Wave Design -->
+  <div class="w-full max-w-4xl relative mt-auto">
+    <div class="footer-wave"></div>
+    <footer class="w-full p-6 card-glass rounded-t-2xl shadow-lg">
+      <div class="flex justify-center mb-4">
+        <div class="flex space-x-6">
+          <a href="#" class="text-gray-400 hover:text-cyan-400 transition">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+            </svg>
+          </a>
+          <a href="https://m.facebook.com/groups/1133498725276750/" class="text-gray-400 hover:text-blue-400 transition">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z" />
+            </svg>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-red-400 transition">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="flex justify-around">
+        <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center text-gray-300 hover:text-cyan-400 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <span class="text-xs mt-1">Dashboard</span>
+        </a>
+        <a href="{{ url_for('get_plus') }}" class="flex flex-col items-center text-gray-300 hover:text-green-400 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span class="text-xs mt-1">Plus</span>
+        </a>
+        <a href="{{ url_for('assistance') }}" class="flex flex-col items-center text-gray-300 hover:text-yellow-400 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-xs mt-1">Help</span>
+        </a>
+        <a href="{{ url_for('account') }}" class="flex flex-col items-center text-gray-300 hover:text-blue-400 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span class="text-xs mt-1">Account</span>
+        </a>
+      </div>
+      <div class="mt-4 pt-4 border-t border-gray-700/30 text-center">
+        <p class="text-xs text-gray-400">© 2025 ViewTV | StreamTv • All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // ================== Toast System ==================
+    class ToastSystem {
+      constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        this.toasts = [];
+      }
+      
+      showToast(type, title, message, duration = 5000) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        // Map types to icons
+        const icons = {
+          success: 'fa-circle-check',
+          error: 'fa-circle-exclamation',
+          warning: 'fa-triangle-exclamation',
+          info: 'fa-circle-info'
+        };
+        
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="fas ${icons[type] || 'fa-circle-info'}"></i>
+          </div>
+          <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+          </div>
+          <button class="toast-close">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        
+        this.container.appendChild(toast);
+        
+        // Trigger reflow to enable animation
+        void toast.offsetWidth;
+        
+        // Show toast
+        toast.classList.add('show');
+        
+        // Add close functionality
+        const closeBtn = toast.querySelector('.toast-close');
+        closeBtn.addEventListener('click', () => {
+          this.removeToast(toast);
+        });
+        
+        // Auto-dismiss
+        if (duration > 0) {
+          setTimeout(() => {
+            this.removeToast(toast);
+          }, duration);
+        }
+        
+        this.toasts.push(toast);
+        return toast;
+      }
+      
+      removeToast(toast) {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+          this.toasts = this.toasts.filter(t => t !== toast);
+        }, 300);
+      }
+      
+      clearAll() {
+        this.toasts.forEach(toast => {
+          this.removeToast(toast);
+        });
+      }
+    }
+    
+    // Initialize toast system
+    const toastSystem = new ToastSystem('toast-container');
+    
+    // Show server messages as toasts
+    function showServerToasts() {
+      const messages = [
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+          { type: "{{ category }}", message: "{{ message }}" }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ];
+      
+      messages.forEach(msg => {
+        toastSystem.showToast(
+          msg.type || 'info',
+          msg.type.charAt(0).toUpperCase() + msg.type.slice(1) + ' Message',
+          msg.message
+        );
+      });
+    }
+    
+    // ================== AI Assistant ==================
+    const aiAssistant = document.getElementById('aiAssistant');
+    const aiPanel = document.getElementById('aiPanel');
+    const closeAiPanel = document.getElementById('closeAiPanel');
+    const aiChat = document.getElementById('aiChat');
+    const aiInput = document.getElementById('aiInput');
+    const sendAiMessage = document.getElementById('sendAiMessage');
+    const voiceCommandBtn = document.getElementById('voiceCommandBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const clearChatBtn = document.getElementById('clearChatBtn');
+    let recognition;
+    let conversationContext = {};
+    let aiIsThinking = false;
+    
+    // Initialize speech recognition if available
+    function initSpeechRecognition() {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          aiInput.value = transcript;
+          processAiMessage(transcript);
+        };
+        
+        recognition.onerror = function(event) {
+          console.error('Speech recognition error', event.error);
+          addMessageToChat("Speech recognition error: " + event.error, 'ai', 'error');
+        };
+        
+        recognition.onend = function() {
+          aiAssistant.classList.remove('listening');
+        };
+      }
+    }
+    
+    // Enhanced typing indicator with animation
+    function showTypingIndicator() {
+      const typingIndicator = document.createElement('div');
+      typingIndicator.id = 'typing-indicator';
+      typingIndicator.className = 'typing-indicator';
+      typingIndicator.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      `;
+      aiChat.appendChild(typingIndicator);
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    function hideTypingIndicator() {
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) typingIndicator.remove();
+    }
+    
+    function addMessageToChat(message, sender, type = '', additionalData = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('ai-message');
+      
+      if (sender === 'user') messageDiv.classList.add('user');
+      if (type) messageDiv.classList.add(type);
+      
+      messageDiv.innerHTML = `<p>${message}</p>`;
+      aiChat.appendChild(messageDiv);
+      
+      // Add additional data if provided
+      if (additionalData) {
+        if (additionalData.type === 'chart') {
+          const chartContainer = document.createElement('div');
+          chartContainer.className = 'chart-container';
+          chartContainer.innerHTML = `<canvas id="${additionalData.id}"></canvas>`;
+          messageDiv.appendChild(chartContainer);
+        } else if (additionalData.type === 'data-grid') {
+          const dataGrid = document.createElement('div');
+          dataGrid.className = 'ai-data-grid';
+          
+          additionalData.items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'data-card';
+            card.innerHTML = `
+              <h4>${item.title}</h4>
+              <p>${item.value}</p>
+            `;
+            dataGrid.appendChild(card);
+          });
+          
+          messageDiv.appendChild(dataGrid);
+        }
+      }
+      
+      // Scroll to bottom
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    // Generate mock viewing habits data
+    function generateViewingHabits() {
+      const categories = ['Sports', 'Movies', 'News', 'Kids', 'Documentaries', 'Music'];
+      const data = {};
+      
+      categories.forEach(category => {
+        data[category] = Math.floor(Math.random() * 100) + 20;
+      });
+      
+      // Normalize to 100% total
+      const total = Object.values(data).reduce((sum, val) => sum + val, 0);
+      Object.keys(data).forEach(key => {
+        data[key] = Math.round((data[key] / total) * 100);
+      });
+      
+      return data;
+    }
+    
+    // Render chart for viewing habits
+    function renderViewingHabitsChart(canvasId, data) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+      
+      // Generate gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, 150);
+      gradient.addColorStop(0, 'rgba(6, 182, 212, 0.6)');
+      gradient.addColorStop(1, 'rgba(6, 182, 212, 0.1)');
+      
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            label: 'Viewing Time %',
+            data: Object.values(data),
+            backgroundColor: gradient,
+            borderColor: 'rgba(6, 182, 212, 1)',
+            borderWidth: 1,
+            borderRadius: 6,
+            barPercentage: 0.6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: '#9ca3af'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: '#9ca3af'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: 'rgba(31, 41, 55, 0.9)',
+              titleColor: '#f3f4f6',
+              bodyColor: '#d1d5db',
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+              borderWidth: 1,
+              padding: 10,
+              cornerRadius: 8
+            }
+          }
+        }
+      });
+    }
+    
+    // Generate mock user analytics
+    function generateUserAnalytics() {
+      return {
+        totalHours: Math.floor(Math.random() * 100) + 50,
+        favoriteCategory: ['Sports', 'Movies', 'News'][Math.floor(Math.random() * 3)],
+        peakHours: `${Math.floor(Math.random() * 6) + 6} PM - ${Math.floor(Math.random() * 6) + 8} PM`,
+        completionRate: Math.floor(Math.random() * 40) + 60,
+        devices: {
+          mobile: Math.floor(Math.random() * 60) + 20,
+          desktop: Math.floor(Math.random() * 30) + 10,
+          tv: Math.floor(Math.random() * 20) + 5
+        }
+      };
+    }
+    
+    // Enhanced AI response generation
+    function generateAiResponse(message) {
+      const lowerMessage = message.toLowerCase();
+      
+      // Handle error codes
+      const errorMatch = message.match(/\b(404|500|502|403|401|400)\b/);
+      if (errorMatch) {
+        return {
+          content: explainErrorCode(errorMatch[0]),
+          type: 'error',
+          webSearch: true
+        };
+      }
+      
+      // Handle server status
+      if (lowerMessage.includes('server status') || lowerMessage.includes('is server down') || lowerMessage.includes('server offline') || lowerMessage.includes('status of server') || lowerMessage.includes('is site down') || lowerMessage.includes('server not working') || lowerMessage.includes('site status') || lowerMessage.includes('website down') || /server.*status/.test(lowerMessage) || /status.*server/.test(lowerMessage)) {
+        return {
+          content: "I've checked our server status: 🟢 All systems are operational!\n\n" +
+                   "If you're experiencing issues, it might be a local connection problem. Try refreshing or checking your internet connection.",
+          type: 'info'
+        };
+      }
+      
+      // Handle viewing habits analysis
+      if (lowerMessage.includes('viewing habits') || lowerMessage.includes('watch history') || lowerMessage.includes('analytics') || lowerMessage.includes('view history') || lowerMessage.includes('watching patterns') || lowerMessage.includes('watch data') || lowerMessage.includes('watch stats') || lowerMessage.includes('watching analytics') || lowerMessage.includes('view stats') || /view.*history/.test(lowerMessage) || /watch.*history/.test(lowerMessage)) {
+        const viewingHabits = generateViewingHabits();
+        const analytics = generateUserAnalytics();
+        
+        const chartId = 'viewingHabitsChart-' + Date.now();
+        
+        setTimeout(() => {
+          renderViewingHabitsChart(chartId, viewingHabits);
+        }, 100);
+        
+        return {
+          content: "Here's an analysis of your viewing habits:\n\n" +
+                   `📊 Total viewing time: ${analytics.totalHours} hours\n` +
+                   `⭐ Favorite category: ${analytics.favoriteCategory}\n` +
+                   `⏰ Peak viewing hours: ${analytics.peakHours}\n` +
+                   `✅ Content completion rate: ${analytics.completionRate}%\n\n` +
+                   "Device usage distribution:",
+          type: 'data',
+          additionalData: {
+            type: 'chart',
+            id: chartId
+          }
+        };
+      }
+      
+      // Handle content recommendations
+      if (lowerMessage.includes('recommend') || lowerMessage.includes('suggest') || lowerMessage.includes('what to watch') || lowerMessage.includes('movie suggestions') || lowerMessage.includes('show recommendations') || lowerMessage.includes('suggestions') || lowerMessage.includes('recommendations') || lowerMessage.includes('what should I watch') || lowerMessage.includes('any good shows') || /recommend.*watch/.test(lowerMessage) || /suggest.*watch/.test(lowerMessage)) {
+        return {
+          content: "Based on your viewing habits, I recommend these:\n\n" +
+                   "🎬 Action Movies: 'The Last Stand' - 85% match\n" +
+                   "⚽ Live Sports: Premier League highlights\n" +
+                   "📺 Series: 'The Crown' Season 4\n" +
+                   "🎵 Music: Top Hits Playlist\n\n" +
+                   "Would you like me to add any to your watchlist?",
+          type: 'success',
+          action: 'update_recommendations'
+        };
+      }
+      
+      // Handle account analytics
+      if (lowerMessage.includes('account stats') || lowerMessage.includes('usage analytics') || lowerMessage.includes('account statistics') || lowerMessage.includes('usage stats') || lowerMessage.includes('account usage') || lowerMessage.includes('profile stats') || lowerMessage.includes('profile analytics') || lowerMessage.includes('user stats') || lowerMessage.includes('user analytics') || /account.*stats/.test(lowerMessage) || /usage.*analytics/.test(lowerMessage)) {
+        const analytics = generateUserAnalytics();
+        
+        return {
+          content: "Your account analytics:\n",
+          type: 'data',
+          additionalData: {
+            type: 'data-grid',
+            items: [
+              { title: "Total Hours", value: `${analytics.totalHours}h` },
+              { title: "Favorite Category", value: analytics.favoriteCategory },
+              { title: "Peak Hours", value: analytics.peakHours },
+              { title: "Completion Rate", value: `${analytics.completionRate}%` },
+              { title: "Mobile Usage", value: `${analytics.devices.mobile}%` },
+              { title: "Desktop Usage", value: `${analytics.devices.desktop}%` }
+            ]
+          }
+        };
+      }
+      
+      // Handle common issues
+      if (lowerMessage.includes('not working') || lowerMessage.includes('problem') || lowerMessage.includes('issue') || lowerMessage.includes('trouble') || lowerMessage.includes('error') || lowerMessage.includes('bug') || lowerMessage.includes('fail') || lowerMessage.includes('crash') || lowerMessage.includes('broken') || lowerMessage.includes('glitch') || /not.*working/.test(lowerMessage) || /having.*problem/.test(lowerMessage) || /error/.test(lowerMessage)) {
+        return {
+          content: "I'm sorry you're having trouble. Let me help you troubleshoot:\n\n" +
+                   "1. Try refreshing the page or restarting the app\n" +
+                   "2. Check your internet connection\n" +
+                   "3. Clear your browser cache\n" +
+                   "4. Try a different browser\n\n" +
+                   "If these don't help, I can search for more specific solutions.",
+          type: 'warning',
+          webSearch: true
+        };
+      }
+      
+      // Handle subscription questions
+      if (lowerMessage.includes('plus') || lowerMessage.includes('premium') || lowerMessage.includes('subscription') || lowerMessage.includes('upgrade') || lowerMessage.includes('subscribe') || lowerMessage.includes('plan') || lowerMessage.includes('membership') || lowerMessage.includes('paid account') || lowerMessage.includes('pro version') || lowerMessage.includes('billing') || /subscription.*plan/.test(lowerMessage) || /upgrade.*account/.test(lowerMessage)) {
+        return {
+          content: "ViewTV Plus offers:\n\n" +
+                   "✅ Ad-free experience\n" +
+                   "✅ Exclusive sports events\n" +
+                   "✅ Premium movie library\n" +
+                   "✅ HD streaming quality\n\n" +
+                   "You can upgrade from your account page or by visiting our Plus section.",
+          type: 'info',
+          action: 'navigate_plus'
+        };
+      }
+      
+      // Handle content navigation
+      if (lowerMessage.includes('sport') || lowerMessage.includes('football') || lowerMessage.includes('game') || lowerMessage.includes('match') || lowerMessage.includes('soccer') || lowerMessage.includes('basketball') || lowerMessage.includes('tennis') || lowerMessage.includes('cricket') || lowerMessage.includes('tournament') || lowerMessage.includes('player') || lowerMessage.includes('score') || lowerMessage.includes('team') || lowerMessage.includes('league') || lowerMessage.includes('goal')) {
+        return {
+          content: "Taking you to Sports content. You'll find live matches, highlights, and sports news there!",
+          type: 'info',
+          action: 'navigate_sports'
+        };
+      }
+      else if (lowerMessage.includes('movie') || lowerMessage.includes('film') || lowerMessage.includes('cinema') || lowerMessage.includes('actor') || lowerMessage.includes('actress') || lowerMessage.includes('director') || lowerMessage.includes('hollywood') || lowerMessage.includes('bollywood') || lowerMessage.includes('trailer') || lowerMessage.includes('screenplay') || lowerMessage.includes('blockbuster') || lowerMessage.includes('premiere') || lowerMessage.includes('documentary')) {
+        return {
+          content: "I've found some great movies for you. Taking you to our Movies section!",
+          type: 'info',
+          action: 'navigate_movies'
+        };
+      }
+      else if (lowerMessage.includes('category') || lowerMessage.includes('type') || lowerMessage.includes('genre') || lowerMessage.includes('class') || lowerMessage.includes('group') || lowerMessage.includes('kind') || lowerMessage.includes('sort') || lowerMessage.includes('section') || lowerMessage.includes('classification')) {
+        return {
+          content: "Let me show you our content categories. You can browse by genre, topic, or content type.",
+          type: 'info',
+          action: 'navigate_categories'
+        };
+      }
+      else if (lowerMessage.includes('country') || lowerMessage.includes('region') || lowerMessage.includes('local') || lowerMessage.includes('city') || lowerMessage.includes('state') || lowerMessage.includes('province') || lowerMessage.includes('area') || lowerMessage.includes('territory') || lowerMessage.includes('district') || lowerMessage.includes('nation')) {
+        return {
+          content: "You can browse content by country. I'll take you to our Countries section now.",
+          type: 'info',
+          action: 'navigate_countries'
+        };
+      }
+      else if (lowerMessage.includes('playlist') || lowerMessage.includes('channel') || lowerMessage.includes('favorites') || lowerMessage.includes('music') || lowerMessage.includes('songs') || lowerMessage.includes('album') || lowerMessage.includes('artist') || lowerMessage.includes('track') || lowerMessage.includes('stream') || lowerMessage.includes('radio') || lowerMessage.includes('podcast')) {
+        return {
+          content: "Our curated playlists are perfect for you! Taking you to View TV Playlists.",
+          type: 'info',
+          action: 'navigate_playlists'
+        };
+      }
+      else if (lowerMessage.includes('help') || lowerMessage.includes('support') || lowerMessage.includes('faq') || lowerMessage.includes('assist') || lowerMessage.includes('contact') || lowerMessage.includes('service') || lowerMessage.includes('customer') || lowerMessage.includes('problem') || lowerMessage.includes('issue') || lowerMessage.includes('guide') || lowerMessage.includes('manual')) {
+        return {
+          content: "You can find answers to common questions in our Help section. I'll take you there now.",
+          type: 'info',
+          action: 'navigate_help'
+        };
+      }
+      else if (lowerMessage.includes('account') || lowerMessage.includes('profile') || lowerMessage.includes('settings') || lowerMessage.includes('password') || lowerMessage.includes('login') || lowerMessage.includes('logout') || lowerMessage.includes('user') || lowerMessage.includes('security') || lowerMessage.includes('privacy') || lowerMessage.includes('preferences') || lowerMessage.includes('update')) {
+        return {
+          content: "Taking you to your account settings where you can manage your preferences and subscription.",
+          type: 'info',
+          action: 'navigate_account'
+        };
+      }
+      else if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('hey') || lowerMessage.includes('greetings') || lowerMessage.includes('howdy') || lowerMessage.includes('yo') || lowerMessage.includes('hiya') || lowerMessage.includes('good morning') || lowerMessage.includes('good afternoon') || lowerMessage.includes('good evening')) {
+        return {
+          content: "Hello there! 😊 I'm your ViewTV assistant. I can help you navigate the platform, troubleshoot issues, or find content. What can I do for you today?",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('thank') || lowerMessage.includes('thanks') || lowerMessage.includes('thank you') || lowerMessage.includes('thx') || lowerMessage.includes('appreciate') || lowerMessage.includes('grateful')) {
+        return {
+          content: "You're very welcome! 😊 I'm here whenever you need assistance with ViewTV. Enjoy your streaming!",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('feature') || lowerMessage.includes('new') || lowerMessage.includes('update') || lowerMessage.includes('upgrade') || lowerMessage.includes('improve') || lowerMessage.includes('enhancement') || lowerMessage.includes('release') || lowerMessage.includes('patch') || lowerMessage.includes('version') || lowerMessage.includes('fix')) {
+        return {
+          content: "We recently added these exciting features:\n\n" +
+                   "✨ Enhanced AI assistant (that's me!)\n" +
+                   "✨ Smart content recommendations\n" +
+                   "✨ Voice command support\n" +
+                   "✨ Improved streaming quality\n\n" +
+                   "Stay tuned for more updates!",
+          type: 'info'
+        };
+      }
+      else if (lowerMessage.includes('joke') || lowerMessage.includes('funny') || lowerMessage.includes('humor') || lowerMessage.includes('laugh') || lowerMessage.includes('comedian') || lowerMessage.includes('hilarious') || lowerMessage.includes('fun')) {
+        const jokes =["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!", "Why did the scarecrow win an award? Because he was outstanding in his field!", "Why don't skeletons fight each other? They don't have the guts.", "I told my computer I needed a break… now it won't stop sending me KitKat ads.", "Why was the math book sad? It had too many problems.", "What do you call cheese that isn't yours? Nacho cheese!", "Why did the golfer bring two pairs of pants? In case he got a hole in one.", "Why can't your nose be 12 inches long? Because then it would be a foot.", "Parallel lines have so much in common… it's a shame they'll never meet.", "Why did the bicycle fall over? It was two-tired.", "I asked the librarian if the library had books on paranoia… she whispered, 'They're right behind you.'", "Why did the computer go to the doctor? It caught a virus.", "Why did the tomato turn red? Because it saw the salad dressing.", "I told my phone a joke… now it autocorrects everything to LOL.", "Why do bees have sticky hair? Because they use honeycombs.", "What do you call a pile of cats? A meowtain.", "Why did the music teacher go to the principal's office? She found herself in treble.", "Why did the cookie go to the hospital? It felt crumby.", "What's brown and sticky? A stick."];
+        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+        return {
+          content: `Sure, here's a streaming joke for you:\n\n${randomJoke} 😄`,
+          type: 'info'
+        };
+      }
+      else {
+        return {
+          content: "I'm not entirely sure about that, but I can help you search the web for answers!\n\n" +
+                   "You can also ask me about:\n" +
+                   "- Streaming issues\n" +
+                   "- Content navigation\n" +
+                   "- Account settings\n" +
+                   "- ViewTV features",
+          type: 'info',
+          webSearch: true
+        };
+      }
+    }
+    
+    function explainErrorCode(code) {
+      const explanations = {
+        '400': "Bad Request: Oops! It seems your request was malformed or invalid. Please check your input and try again.",
+        '401': "Unauthorized: You need to be logged in to access this resource. Please sign in and try again.",
+        '403': "Forbidden: Sorry, you don't have permission to access this content. If you believe this is an error, contact support.",
+        '404': "Page Not Found: The content you're looking for doesn't exist or has been moved. Try checking the URL or navigating from our homepage.",
+        '500': "Internal Server Error: Something went wrong on our end. Our team has been notified and is working to fix it. Please try again later.",
+        '502': "Bad Gateway: Our servers are having trouble communicating. This is usually temporary - please try refreshing the page in a moment."
+      };
+      
+      return explanations[code] || `Error ${code}: This is a server error. Please try again later or contact support if the problem persists.`;
+    }
+    
+    function processAiMessage(message) {
+      if (aiIsThinking) return;
+      
+      // Add user message to chat
+      addMessageToChat(message, 'user');
+      
+      // Store message in context
+      conversationContext.lastMessage = message;
+      
+      // Show typing indicator
+      showTypingIndicator();
+      aiIsThinking = true;
+      
+      // Process the message and generate AI response
+      setTimeout(() => {
+        hideTypingIndicator();
+        const response = generateAiResponse(message);
+        addMessageToChat(response.content, 'ai', response.type, response.additionalData);
+        
+        // If response has web search, add it
+        if (response.webSearch) {
+          addWebSearchResult(message);
+        }
+        
+        // If response has action, perform it
+        if (response.action) {
+          performAction(response.action);
+        }
+        
+        aiIsThinking = false;
+      }, 1500);
+    }
+    
+    function addWebSearchResult(query) {
+      const webSearchDiv = document.createElement('div');
+      webSearchDiv.classList.add('ai-web-search');
+      webSearchDiv.innerHTML = `
+        <p class="text-sm">I searched the web for: <strong>${query}</strong></p>
+        <p class="text-xs mt-1">Here are some helpful links:</p>
+        <ul class="text-xs mt-1 space-y-1">
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent(query + ' site:viewstream-1.onrender.com')}" target="_blank">ViewTV Support</a></li>
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent('streaming ' + query)}" target="_blank">General Streaming Help</a></li>
+          <li><a href="https://www.google.com/search?q=${encodeURIComponent(query)}" target="_blank">Web Search Results</a></li>
+        </ul>
+      `;
+      aiChat.appendChild(webSearchDiv);
+      
+      // Scroll to bottom
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    function performAction(action) {
+      switch(action) {
+        case 'navigate_sports':
+          window.location.href = "{{ url_for('return_football') }}";
+          break;
+        case 'navigate_movies':
+          window.location.href = "{{ url_for('movieflix') }}";
+          break;
+        case 'navigate_categories':
+          window.location.href = "{{ url_for('categories') }}";
+          break;
+        case 'navigate_countries':
+          window.location.href = "{{ url_for('countries') }}";
+          break;
+        case 'navigate_playlists':
+          window.location.href = "{{ url_for('custom_list') }}";
+          break;
+        case 'navigate_help':
+          window.location.href = "{{ url_for('assistance') }}";
+          break;
+        case 'navigate_account':
+          window.location.href = "{{ url_for('account') }}";
+          break;
+        case 'navigate_plus':
+          window.location.href = "{{ url_for('get_plus') }}";
+          break;
+        case 'update_recommendations':
+          generateSmartRecommendations();
+          break;
+      }
+    }
+    
+    // Generate smart recommendations
+    function generateSmartRecommendations() {
+      const recommendations = [
+        { title: "Premier League", type: "Live Sports", icon: "fa-futbol" },
+        { title: "New Movies", type: "Action & Adventure", icon: "fa-film" },
+        { title: "Kenyan News", type: "Local Channels", icon: "fa-newspaper" },
+        { title: "Kids Cartoons", type: "Family Entertainment", icon: "fa-child" },
+        { title: "Documentaries", type: "Educational", icon: "fa-globe" },
+        { title: "Music Channels", type: "Entertainment", icon: "fa-music" }
+      ];
+      
+      const container = document.getElementById('smartRecommendations');
+      container.innerHTML = '';
+      
+      recommendations.forEach(rec => {
+        const card = document.createElement('div');
+        card.className = 'recommendation-card';
+        card.innerHTML = `
+          <div class="recommendation-img">
+            <i class="fas ${rec.icon} text-white text-2xl"></i>
+          </div>
+          <div class="recommendation-content">
+            <h4>${rec.title}</h4>
+            <p>${rec.type}</p>
+          </div>
+        `;
+        
+        // Add click event to navigate to the appropriate section
+        card.addEventListener('click', () => {
+          if (rec.type.includes('Sports')) {
+            window.location.href = "{{ url_for('return_football') }}";
+          } else if (rec.type.includes('Movies')) {
+            window.location.href = "{{ url_for('movieflix') }}";
+          } else if (rec.type.includes('Local')) {
+            window.location.href = "{{ url_for('countries') }}";
+          } else {
+            window.location.href = "{{ url_for('categories') }}";
+          }
+        });
+        
+        container.appendChild(card);
+      });
+    }
+    
+    // Initialize the AI assistant
+    function initAIAssistant() {
+      aiAssistant.addEventListener('click', () => {
+        aiPanel.classList.toggle('active');
+        
+        if (recognition && !aiPanel.classList.contains('active')) {
+          recognition.stop();
+        }
+      });
+      
+      closeAiPanel.addEventListener('click', () => {
+        aiPanel.classList.remove('active');
+      });
+      
+      sendAiMessage.addEventListener('click', () => {
+        if (aiInput.value.trim() !== '') {
+          processAiMessage(aiInput.value);
+          aiInput.value = '';
+        }
+      });
+      
+      aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && aiInput.value.trim() !== '') {
+          processAiMessage(aiInput.value);
+          aiInput.value = '';
+        }
+      });
+      
+      voiceCommandBtn.addEventListener('click', () => {
+        if (recognition) {
+          aiAssistant.classList.add('listening');
+          recognition.start();
+          addMessageToChat("Listening... Speak now", 'ai');
+        } else {
+          addMessageToChat("Voice commands not supported in your browser", 'ai');
+        }
+      });
+      
+      helpBtn.addEventListener('click', () => {
+        addMessageToChat("What can I help you with? Here are some ideas:\n- How do I watch Premier League?\n- Why am I getting error 404?\n- How do I upgrade to Plus?\n- Analyze my viewing habits", 'ai');
+      });
+      
+      clearChatBtn.addEventListener('click', () => {
+        aiChat.innerHTML = '';
+        conversationContext = {};
+        addMessageToChat("Hi there! I'm your friendly ViewTV assistant. 😊 How can I help you today?", 'ai');
+      });
+    }
+    
+    // PWA Install Prompt
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.classList.remove('hidden');
+    });
+    
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      console.log(`User response to the install prompt: ${outcome}`);
+      deferredPrompt = null;
+      installBtn.classList.add('hidden');
+    });
+    
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize toast system with server messages
+      showServerToasts();
+      
+      // Initialize AI assistant
+      initSpeechRecognition();
+      initAIAssistant();
+      
+      // Generate initial recommendations
+      generateSmartRecommendations();
+      
+      // Add sample analytics toast
+      toastSystem.showToast(
+        'info', 
+        'New Feature', 
+        'Try asking our AI assistant to "analyze my viewing habits" for personalized insights!',
+        8000
+      );
+    });
+  </script><script>if("serviceWorker"in navigator){navigator.serviceWorker.register("/service-worker.js").then(()=>console.log("SW Registered")).catch(err=>console.log("SW failed:",err));}</script>
+</body>
+</html>

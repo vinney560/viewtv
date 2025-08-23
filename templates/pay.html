@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plus Payment | View Tv</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-card {
+            background: rgba(39, 39, 42, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+        .glow-effect {
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+        }
+        .glow-effect:hover {
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-black to-gray-900 min-h-screen flex items-center justify-center p-4">
+
+<div class="glass-card text-white rounded-2xl p-8 w-full max-w-md relative overflow-hidden">
+    <!-- Decorative elements -->
+    <div class="absolute -top-20 -right-20 w-40 h-40 bg-green-500 rounded-full filter blur-3xl opacity-20"></div>
+    <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-cyan-500 rounded-full filter blur-3xl opacity-20"></div>
+    
+    <h2 class="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent">Premium Access</h2>
+    
+    <ul class="text-sm text-gray-300 space-y-3 mb-6">
+        <li class="flex items-center">
+            <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>1 Ksh = 1 hour of access</span>
+        </li>
+        <li class="flex items-center">
+            <svg class="w-4 h-4 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span>Maximum 96 Ksh (4 days)</span>
+        </li>
+        <li class="text-xs text-gray-400 mt-4">
+            Need help? <a href="/assistance" class="text-cyan-300 hover:text-cyan-200 transition">Visit assistance page</a>
+        </li>
+        <li class="text-xs text-gray-400 mt-4">
+            Step 1: Input you mobile number.
+        </li>
+        <li class="text-xs text-gray-400 mt-4">
+            Step 2: Enter Amount.
+        </li>
+        <li class="text-xs text-gray-400 mt-4">
+            Step 3: Click Pay.
+        </li>
+        <li class="text-xs text-gray-400 mt-4">
+            Step 4: Wait for the enter pin prompt.
+        </li>
+        <li class="text-xs text-gray-400 mt-4">
+            Step 5: Enter pin and refresh the page.
+        </li>
+    </ul>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="mb-6 p-3 rounded-lg text-center font-medium
+                            {% if category == 'success' %} bg-green-900/50 text-green-300 border border-green-700/50
+                            {% elif category == 'error' %} bg-red-900/50 text-red-300 border border-red-700/50
+                            {% else %} bg-blue-900/50 text-blue-300 border border-blue-700/50 {% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form id="paymentForm" method="POST" class="space-y-5">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <!-- Phone input -->
+        <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-300">Phone Number</label>
+            <div class="flex rounded-lg overflow-hidden border border-gray-700/50 bg-gray-800/30">
+                <span class="bg-gradient-to-r from-green-500 to-cyan-500 px-4 py-3 font-bold flex items-center">+254</span>
+                <input type="text" id="phone" name="phone"
+                       class="w-full px-4 py-3 bg-transparent text-white placeholder-gray-500 focus:outline-none"
+                       pattern="[17][0-9]{8}" maxlength="9" required placeholder="712345678">
+            </div>
+        </div>
+
+        <!-- Amount -->
+        <div class="space-y-2">
+            <label class="text-sm font-medium text-gray-300">Amount (KES)</label>
+            <input type="number" id="amount" name="amount" min="1" max="96" value="10" required
+                   class="w-full px-4 py-3 rounded-lg bg-gray-800/30 text-white border border-gray-700/50 focus:outline-none focus:ring-2 focus:ring-green-500/30 placeholder-gray-500">
+        </div>
+
+        <!-- Submit button -->
+        <button id="payBtn" type="submit"
+                class="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold rounded-lg transition-all duration-300 glow-effect disabled:opacity-50 disabled:cursor-not-allowed">
+            Pay Now
+        </button>
+    </form>
+
+    <!-- Spinner and status -->
+    <div id="processing" class="text-center text-sm mt-5 text-green-300 hidden">
+        <svg class="animate-spin h-6 w-6 mx-auto mb-2 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        Processing your request...
+    </div>
+</div>
+
+<script>
+document.getElementById("paymentForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const phoneInput = document.getElementById("phone");
+    const amountInput = document.getElementById("amount");
+    const csrfToken = document.querySelector("input[name='csrf_token']").value;
+    const payBtn = document.getElementById("payBtn");
+    const processing = document.getElementById("processing");
+
+    const phone = phoneInput.value.trim();
+    const amount = amountInput.value.trim();
+
+    if (!/^[17][0-9]{8}$/.test(phone)) {
+        alert("Enter a valid number starting with 7 or 1 (9 digits total).");
+        return;
+    }
+
+    const fullPhone = "254" + phone;
+
+    payBtn.disabled = true;
+    payBtn.innerHTML = `
+        <svg class="animate-spin h-5 w-5 mx-auto text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+    `;
+    processing.classList.remove("hidden");
+
+    try {
+        const res = await fetch("/api/pay", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ phone: fullPhone, amount: amount })
+        });
+
+        const result = await res.json();
+
+        if (result.success) {
+            alert("Payment initiated! Check your phone to complete.");
+        } else {
+            alert("Error: Payment request failed");
+        }
+    } catch (err) {
+        alert("Network or server error.");
+    }
+
+    payBtn.disabled = false;
+    payBtn.innerText = "Pay Now";
+    processing.classList.add("hidden");
+});
+</script>
+
+</body>
+</html>

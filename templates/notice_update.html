@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Update Flash Notice | ViewTV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .card-glass {
+      background: rgba(31, 41, 55, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .toast-entry {
+      animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    .toast-exit {
+      animation: toast-out 0.5s ease forwards;
+    }
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    @keyframes toast-out {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+    }
+  </style>
+</head>
+<body class="h-full min-h-screen text-white flex flex-col items-center p-4">
+
+  <!-- Modern Toast Notifications -->
+  <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4
+            {% if category == 'success' %} bg-gray-800 border-emerald-500
+            {% elif category == 'error' %} bg-gray-800 border-red-500
+            {% else %} bg-gray-800 border-cyan-500 {% endif %}">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 pt-0.5">
+                {% if category == 'success' %}
+                  <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% elif category == 'error' %}
+                  <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% else %}
+                  <svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% endif %}
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm">{{ message }}</p>
+              </div>
+              <button onclick="this.parentElement.parentElement.classList.add('toast-exit'); setTimeout(() => this.parentElement.parentElement.remove(), 500)" class="absolute top-3 right-3 text-gray-400 hover:text-white">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="w-full max-w-2xl card-glass rounded-2xl shadow-xl p-6 space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold gradient-text flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Update Flash Notice
+      </h1>
+    </div>
+
+    <!-- Current Notice -->
+    {% if active_notice %}
+      <div class="p-4 rounded-xl bg-gray-800/50 border-l-4 border-cyan-500">
+        <div class="flex items-start">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div class="ml-3">
+            <p class="font-medium text-white">Current Notice</p>
+            <p class="text-gray-300 mt-1">{{ active_notice.message|e }}</p>
+            <p class="text-xs text-gray-400 mt-2">Posted on: {{ active_notice.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Update Form -->
+    <form method="POST" action="{{ url_for('set_notice') }}" class="space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div>
+        <label class="block text-sm font-medium mb-2 text-cyan-300">New Notice Message</label>
+        <textarea name="message" rows="4" required placeholder="Enter new flash notice message..." 
+          class="w-full p-3 rounded-xl bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition"></textarea>
+      </div>
+      
+      <button type="submit" 
+              class="w-full bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Update Notice
+      </button>
+    </form>
+  </div>
+
+  <!-- Toast Auto Dismiss Script -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const toasts = document.querySelectorAll('.toast-entry');
+      toasts.forEach((toast) => {
+        setTimeout(() => {
+          toast.classList.add('toast-exit');
+          setTimeout(() => toast.remove(), 500);
+        }, 5000);
+        
+        const closeBtn = toast.querySelector('button');
+        if (closeBtn && !closeBtn.getAttribute('data-has-listener')) {
+          closeBtn.setAttribute('data-has-listener', 'true');
+          closeBtn.addEventListener('click', () => {
+            toast.classList.add('toast-exit');
+            setTimeout(() => toast.remove(), 500);
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

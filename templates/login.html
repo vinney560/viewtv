@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login | View TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          boxShadow: {
+            glow: '0 0 15px rgba(0, 255, 255, 0.6)',
+            'glow-sm': '0 0 8px rgba(0, 255, 255, 0.4)'
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'float': 'float 6s ease-in-out infinite',
+            'toast': 'toast 4s forwards',
+            'pulse': 'pulse 2s infinite',
+            'voice-wave': 'voiceWave 1.2s infinite ease-in-out'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            toast: {
+              '0%, 90%': { opacity: '1', transform: 'translateY(0)' },
+              '100%': { opacity: '0', transform: 'translateY(-20px)' }
+            },
+            pulse: {
+              '0%': { boxShadow: '0 0 0 0 rgba(6, 182, 212, 0.7)' },
+              '70%': { boxShadow: '0 0 0 10px rgba(6, 182, 212, 0)' },
+              '100%': { boxShadow: '0 0 0 0 rgba(6, 182, 212, 0)' }
+            },
+            voiceWave: {
+              '0%, 100%': { height: '8px' },
+              '50%': { height: '25px' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --primary: #06b6d4;
+      --secondary: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+    
+    .glass-card {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background-color: rgba(8, 51, 68, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+      transform: translateY(-2px);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, #00ffff, #00bfff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .bg-particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(0, 255, 255, 0.5);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    
+    /* AI Assistant Styles */
+    .ai-assistant {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.5);
+      transition: all 0.3s ease;
+    }
+    .ai-assistant:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.8);
+    }
+    .ai-assistant.listening {
+      animation: pulse 1.5s infinite;
+    }
+    .ai-panel {
+      position: fixed;
+      bottom: 110px;
+      right: 30px;
+      width: 350px;
+      background: rgba(8, 51, 68, 0.95);
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 100;
+      padding: 15px;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .ai-panel.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .ai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .ai-content {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+    .ai-message {
+      background: rgba(6, 182, 212, 0.15);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .ai-message.user {
+      background: rgba(31, 41, 55, 0.8);
+      text-align: right;
+    }
+    .ai-message.error {
+      background: rgba(239, 68, 68, 0.15);
+    }
+    .ai-message.warning {
+      background: rgba(245, 158, 11, 0.15);
+    }
+    .ai-message.info {
+      background: rgba(59, 130, 246, 0.15);
+    }
+    .ai-message.success {
+      background: rgba(16, 185, 129, 0.15);
+    }
+    .ai-message.data {
+      background: rgba(139, 92, 246, 0.15);
+    }
+    .ai-input {
+      display: flex;
+      margin-top: 10px;
+    }
+    .ai-input input {
+      flex: 1;
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 8px 15px;
+      color: white;
+      outline: none;
+      font-size: 14px;
+    }
+    .ai-input button {
+      background: var(--primary);
+      border: none;
+      border-radius: 20px;
+      color: white;
+      padding: 8px 15px;
+      margin-left: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .ai-input button:hover {
+      background: #0891b2;
+    }
+    .voice-wave {
+      display: flex;
+      align-items: flex-end;
+      height: 30px;
+      gap: 2px;
+    }
+    .voice-bar {
+      width: 3px;
+      background: var(--primary);
+      border-radius: 2px;
+      animation: voiceWave 1.2s infinite ease-in-out;
+    }
+    .voice-bar:nth-child(2) { animation-delay: 0.1s; height: 8px; }
+    .voice-bar:nth-child(3) { animation-delay: 0.2s; height: 15px; }
+    .voice-bar:nth-child(4) { animation-delay: 0.3s; height: 20px; }
+    .voice-bar:nth-child(5) { animation-delay: 0.4s; height: 25px; }
+    .voice-bar:nth-child(6) { animation-delay: 0.5s; height: 20px; }
+    .voice-bar:nth-child(7) { animation-delay: 0.6s; height: 15px; }
+    .voice-bar:nth-child(8) { animation-delay: 0.7s; height: 8px; }
+    .ai-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .ai-action-btn {
+      flex: 1;
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ai-action-btn:hover {
+      background: rgba(6, 182, 212, 0.2);
+      transform: translateY(-2px);
+    }
+    .ai-web-search {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(31, 41, 55, 0.7);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .ai-web-search a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .ai-web-search a:hover {
+      text-decoration: underline;
+    }
+    .ai-data-analysis {
+      background: rgba(139, 92, 246, 0.15);
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    .ai-data-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .data-card {
+      background: rgba(31, 41, 55, 0.5);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .data-card h4 {
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #9ca3af;
+    }
+    .data-card p {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+    
+    /* Responsive additions */
+    @media (max-width: 640px) {
+      .ai-panel {
+        width: 90%;
+        left: 5%;
+        right: auto;
+      }
+      .ai-assistant {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-900 text-white min-h-screen flex items-center justify-center p-4 overflow-hidden">
+
+  <!-- Animated Background Particles -->
+  <div id="particles" class="bg-particles"></div>
+
+  <!-- Enhanced AI Assistant Panel -->
+  <div id="aiPanel" class="ai-panel">
+    <div class="ai-header">
+      <div class="flex items-center">
+        <i class="fas fa-robot text-cyan-400 mr-2"></i>
+        <h3 class="gradient-text font-bold">Login Assistant</h3>
+      </div>
+      <button id="closeAiPanel">
+        <i class="fas fa-times text-gray-400 hover:text-white"></i>
+      </button>
+    </div>
+    <div class="ai-content" id="aiChat">
+      <div class="ai-message">
+        <p>Hi there! I'm your login assistant. 😊 How can I help you today?</p>
+        <p class="text-xs text-cyan-300 mt-3">I can help with:</p>
+        <ul class="text-xs text-gray-300 list-disc pl-5 mt-1 space-y-1">
+          <li>Troubleshooting login errors</li>
+          <li>Checking if your email is registered</li>
+          <li>Explaining account status (active, banned, etc.)</li>
+          <li>Guiding you through password recovery</li>
+          <li>Explaining error messages like CSRF token missing</li>
+          <li>Helping with server errors (500, 502, etc.)</li>
+        </ul>
+        <p class="text-xs text-cyan-300 mt-3">Try saying: "Why am I getting invalid credentials?" or "Check if my email is registered"</p>
+      </div>
+    </div>
+    <div class="ai-input">
+      <input type="text" id="aiInput" placeholder="Ask me about login issues...">
+      <button id="sendAiMessage"><i class="fas fa-paper-plane"></i></button>
+    </div>
+    <div class="ai-actions">
+      <div class="ai-action-btn" id="voiceCommandBtn">
+        <i class="fas fa-microphone mr-1"></i> Voice
+      </div>
+      <div class="ai-action-btn" id="helpBtn">
+        <i class="fas fa-question-circle mr-1"></i> Help
+      </div>
+      <div class="ai-action-btn" id="clearChatBtn">
+        <i class="fas fa-trash mr-1"></i> Clear
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Assistant Button -->
+  <div id="aiAssistant" class="ai-assistant pulse">
+    <i class="fas fa-robot text-white text-2xl"></i>
+  </div>
+
+  <div class="w-full max-w-md animate-fade-in">
+    <div class="glass-card rounded-3xl shadow-2xl p-10 relative overflow-hidden">
+      <!-- Floating decorative elements -->
+      <div class="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500 rounded-full opacity-10 animate-float"></div>
+      <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-cyan-400 rounded-full opacity-10 animate-float" style="animation-delay: 2s;"></div>
+      
+      <!-- Back Button -->
+      <a href="javascript:history.back()" 
+         class="absolute top-6 left-6 flex items-center text-cyan-300 hover:text-white transition-colors duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             fill="none" 
+             viewBox="0 0 24 24" 
+             stroke-width="2" 
+             stroke="currentColor" 
+             class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-5xl font-extrabold gradient-text mb-2">Welcome Back</h1>
+        <p class="text-cyan-200">Sign in to access your account</p>
+      </div>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div id="flash-message" class="mb-6 space-y-2">
+            {% for category, message in messages %}
+              <div class="animate-toast rounded-xl px-4 py-3 font-medium shadow-lg
+                {% if category == 'success' %}
+                  bg-green-600/90 border border-green-500
+                {% elif category == 'error' %}
+                  bg-red-600/90 border border-red-500
+                {% else %}
+                  bg-cyan-600/90 border border-cyan-500
+                {% endif %}">
+                <div class="flex items-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {% if category == 'success' %}
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    {% elif category == 'error' %}
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    {% else %}
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    {% endif %}
+                  </svg>
+                  {{ message }}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Login Form -->
+      <form action="/login" method="POST" class="space-y-6">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-cyan-200 font-medium mb-2">Email Address</label>
+          <div class="relative">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              value="{{ email }}"
+              class="w-full glass-card border border-cyan-700/50 placeholder-cyan-400/70 text-white px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition"
+            />
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-cyan-200 font-medium mb-2">Password</label>
+          <div class="relative">
+            <input
+              id="password"
+              name="password"
+              type="password" 
+              required
+              minlength="4"
+              placeholder="Enter your password"
+              value="{{ password }}"
+              class="w-full glass-card border border-cyan-700/50 placeholder-cyan-400/70 text-white px-5 py-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition pr-12"
+            />
+            <button
+              type="button"
+              aria-label="Toggle password visibility"
+              onclick="togglePassword()"
+              class="absolute top-1/2 right-3 -translate-y-1/2 text-cyan-400 hover:text-cyan-200 transition p-2"
+            >
+              <svg
+                id="eyeIcon"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+        <button
+          type="submit"
+          class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl glow-hover transition-all duration-300 shadow-lg"
+        >
+          Sign In
+        </button>
+
+        <!-- Footer Links -->
+        <div class="text-center text-sm text-cyan-300">
+          <p>Don't have an account? 
+            <a href="/register" class="text-white font-medium hover:text-cyan-200 transition">Sign Up</a>
+          </p>
+          <p class="mt-2">
+            <a href="/forgot_password" class="hover:text-cyan-200 transition">Forgot password?</a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Toggle password visibility
+    function togglePassword() {
+      const password = document.getElementById("password");
+      const eyeIcon = document.getElementById("eyeIcon");
+      const isHidden = password.type === "password";
+
+      password.type = isHidden ? "text" : "password";
+      eyeIcon.innerHTML = isHidden
+        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.965 9.965 0 012.181-3.316M6.8 6.8A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.106 5.154M15 12a3 3 0 11-6 0 3 3 0 016 0zM3 3l18 18" />`
+        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+    }
+
+    // Auto-hide flash message
+    setTimeout(() => {
+      const flash = document.getElementById("flash-message");
+      if (flash) {
+        flash.style.opacity = '0';
+        setTimeout(() => flash.remove(), 500);
+      }
+    }, 4000);
+
+    // Create animated particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const particleCount = Math.floor(window.innerWidth / 10);
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random size between 1px and 3px
+        const size = Math.random() * 2 + 1;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // Random position
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        
+        // Animation
+        const duration = Math.random() * 20 + 10;
+        particle.style.animation = `float ${duration}s infinite ${Math.random() * 5}s`;
+        
+        container.appendChild(particle);
+      }
+    }
+    
+    // Initialize particles when page loads
+    window.addEventListener('load', createParticles);
+    
+    // ================== AI Assistant Logic ==================
+    const aiAssistant = document.getElementById('aiAssistant');
+    const aiPanel = document.getElementById('aiPanel');
+    const closeAiPanel = document.getElementById('closeAiPanel');
+    const aiChat = document.getElementById('aiChat');
+    const aiInput = document.getElementById('aiInput');
+    const sendAiMessage = document.getElementById('sendAiMessage');
+    const voiceCommandBtn = document.getElementById('voiceCommandBtn');
+    const helpBtn = document.getElementById('helpBtn');
+    const clearChatBtn = document.getElementById('clearChatBtn');
+    let recognition;
+    let conversationContext = {};
+    let aiIsThinking = false;
+    
+    // Initialize speech recognition if available
+    function initSpeechRecognition() {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+        
+        recognition.onresult = function(event) {
+          const transcript = event.results[0][0].transcript;
+          aiInput.value = transcript;
+          processAiMessage(transcript);
+        };
+        
+        recognition.onerror = function(event) {
+          console.error('Speech recognition error', event.error);
+          addMessageToChat("Speech recognition error: " + event.error, 'ai', 'error');
+        };
+        
+        recognition.onend = function() {
+          aiAssistant.classList.remove('listening');
+        };
+      }
+    }
+    
+    // Enhanced typing indicator with animation
+    function showTypingIndicator() {
+      const typingIndicator = document.createElement('div');
+      typingIndicator.id = 'typing-indicator';
+      typingIndicator.className = 'typing-indicator';
+      typingIndicator.innerHTML = `
+        <div class="voice-wave">
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+        </div>
+      `;
+      aiChat.appendChild(typingIndicator);
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    function hideTypingIndicator() {
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) typingIndicator.remove();
+    }
+    
+    function addMessageToChat(message, sender, type = '', additionalData = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('ai-message');
+      
+      if (sender === 'user') messageDiv.classList.add('user');
+      if (type) messageDiv.classList.add(type);
+      
+      messageDiv.innerHTML = `<p>${message}</p>`;
+      aiChat.appendChild(messageDiv);
+      
+      // Add additional data if provided
+      if (additionalData) {
+        if (additionalData.type === 'data-grid') {
+          const dataGrid = document.createElement('div');
+          dataGrid.className = 'ai-data-grid';
+          
+          additionalData.items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'data-card';
+            card.innerHTML = `
+              <h4>${item.title}</h4>
+              <p>${item.value}</p>
+            `;
+            dataGrid.appendChild(card);
+          });
+          
+          messageDiv.appendChild(dataGrid);
+        }
+      }
+      
+      // Scroll to bottom
+      aiChat.scrollTop = aiChat.scrollHeight;
+    }
+    
+    // API call to check user email
+    async function checkUserEmail(email) {
+      try {
+        const response = await fetch('/api/check_user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({ email })
+        });
+        
+        if (!response.ok) {
+          throw new Error('API request failed');
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error('Error checking user email:', error);
+        return { error: 'Unable to check user information at this time' };
+      }
+    }
+    
+    // Enhanced AI response generation for login issues
+    function generateAiResponse(message) {
+      const lowerMessage = message.toLowerCase();
+      
+      // Handle error codes
+      const errorMatch = message.match(/\b(404|500|502|403|401|400)\b/);
+      if (errorMatch) {
+        return {
+          content: explainErrorCode(errorMatch[0]),
+          type: 'error',
+          webSearch: true
+        };
+      }
+      
+      // Handle invalid credentials
+      if (lowerMessage.includes('invalid credentials') || lowerMessage.includes('wrong password') || lowerMessage.includes('incorrect password') || lowerMessage.includes('invalid email') || lowerMessage.includes('can\'t login') || lowerMessage.includes('login failed') || lowerMessage.includes('invalid username') || lowerMessage.includes('wrong username') || lowerMessage.includes('incorrect username') || lowerMessage.includes('username not found') || lowerMessage.includes('password incorrect') || lowerMessage.includes('login error') || lowerMessage.includes('login not working') || lowerMessage.includes('user not found') || lowerMessage.includes('account not found') || lowerMessage.includes('bad credentials') || lowerMessage.includes('failed login') || lowerMessage.includes('login unsuccessful') || lowerMessage.includes('access denied') || lowerMessage.includes('invalid login') || lowerMessage.includes('incorrect login') || lowerMessage.includes('cannot login') || lowerMessage.includes('failed authentication') || lowerMessage.includes('invalid password') || lowerMessage.includes('wrong login') || lowerMessage.includes('login blocked') || lowerMessage.includes('account locked') || lowerMessage.includes('authentication error') || lowerMessage.includes('login refused') || lowerMessage.includes('user disabled') || lowerMessage.includes('invalid user') || lowerMessage.includes('bad login') || lowerMessage.includes('account disabled') || lowerMessage.includes('cannot access account') || lowerMessage.includes('login failed attempt') || lowerMessage.includes('incorrect credentials') || lowerMessage.includes('invalid sign in') || lowerMessage.includes('wrong credentials') || lowerMessage.includes('incorrect sign in') || lowerMessage.includes('unauthorized access') || lowerMessage.includes('sign in error') || lowerMessage.includes('failed sign in') || lowerMessage.includes('login denied') || lowerMessage.includes('user locked out') || lowerMessage.includes('account suspended') || lowerMessage.includes('sign in failed') || lowerMessage.includes('login credentials incorrect') || lowerMessage.includes('invalid user credentials') || lowerMessage.includes('failed user authentication') || lowerMessage.includes('bad username or password') || lowerMessage.includes('invalid account') || lowerMessage.includes('incorrect account') || lowerMessage.includes('unable to login') || lowerMessage.includes('access failure') || lowerMessage.includes('login credentials invalid') || lowerMessage.includes('password mismatch') || lowerMessage.includes('user not authorized') || lowerMessage.includes('invalid login attempt') || lowerMessage.includes('unauthorized login') || lowerMessage.includes('login unsuccessful attempt') || lowerMessage.includes('account login error') || lowerMessage.includes('login access denied') || lowerMessage.includes('account login failed') || lowerMessage.includes('user authentication failed') || lowerMessage.includes('login attempt failed') || lowerMessage.includes('login problem') || lowerMessage.includes('failed to login') || lowerMessage.includes('invalid sign in credentials') || lowerMessage.includes('incorrect login details')) {
+        return {
+          content: "I see you're having trouble with your credentials. Let me help:\n\n" +
+                   "1. Double-check your email address for typos\n" +
+                   "2. Make sure your Caps Lock is off\n" +
+                   "3. Try clicking 'Forgot password' to reset\n" +
+                   "4. If you just registered, check your email for verification\n\n" +
+                   "Would you like me to check if your email is registered? Enter your email address below to continue.",
+          type: 'warning',
+          action: 'prompt_email_check'
+        };
+      }
+      
+      // Handle email check
+      if (lowerMessage.includes('check email') || lowerMessage.includes('is my email registered') || lowerMessage.includes('check if registered') || lowerMessage.includes('verify email') || lowerMessage.includes('email verification') || lowerMessage.includes('email registered') || lowerMessage.includes('email exists') || lowerMessage.includes('email registered already') || lowerMessage.includes('check email registration') || lowerMessage.includes('is this email registered') || lowerMessage.includes('verify my email') || lowerMessage.includes('email confirmation') || lowerMessage.includes('email status') || lowerMessage.includes('email in system') || lowerMessage.includes('check if email exists') || lowerMessage.includes('check email status') || lowerMessage.includes('email check') || lowerMessage.includes('email found') || lowerMessage.includes('email not registered') || lowerMessage.includes('email is registered') || lowerMessage.includes('email verification status') || lowerMessage.includes('is email valid') || lowerMessage.includes('registered email') || lowerMessage.includes('check email address') || lowerMessage.includes('confirm email') || lowerMessage.includes('email registration check') || lowerMessage.includes('email is on file') || lowerMessage.includes('email verification needed') || lowerMessage.includes('check my email') || lowerMessage.includes('is email confirmed') || lowerMessage.includes('email verified') || lowerMessage.includes('email registered with you') || lowerMessage.includes('email present') || lowerMessage.includes('email associated') || lowerMessage.includes('email linked') || lowerMessage.includes('email in database') || lowerMessage.includes('email registered before') || lowerMessage.includes('check if email is registered') || lowerMessage.includes('email in records') || lowerMessage.includes('email exists in system') || lowerMessage.includes('check email account') || lowerMessage.includes('email is on record') || lowerMessage.includes('registered with email') || lowerMessage.includes('email address check') || lowerMessage.includes('check registered email') || lowerMessage.includes('email available') || lowerMessage.includes('email status check') || lowerMessage.includes('check email validity') || lowerMessage.includes('email registered status') || lowerMessage.includes('email not found') || lowerMessage.includes('email verified status') || lowerMessage.includes('confirm if email is registered') || lowerMessage.includes('email registered confirmation') || lowerMessage.includes('verify email address') || lowerMessage.includes('email presence') || lowerMessage.includes('email in system records') || lowerMessage.includes('email already registered') || lowerMessage.includes('check if email is confirmed') || lowerMessage.includes('email found in database') || lowerMessage.includes('email checked') || lowerMessage.includes('email confirmation status') || lowerMessage.includes('email verified before') || lowerMessage.includes('email exists in records') || lowerMessage.includes('email validation') || lowerMessage.includes('email is valid') || lowerMessage.includes('email registered check') || lowerMessage.includes('email status confirmed')) {
+        return {
+          content: "Sure, I can check if your email is registered with us. Please enter your email address below:",
+          type: 'info',
+          action: 'prompt_email_input'
+        };
+      }
+      
+      // Handle account status
+      if (lowerMessage.includes('account status') || lowerMessage.includes('is my account active') || lowerMessage.includes('am i banned') || lowerMessage.includes('account suspended') || lowerMessage.includes('account locked') || lowerMessage.includes('account disabled') || lowerMessage.includes('account deactivated') || lowerMessage.includes('is my account locked') || lowerMessage.includes('am i blocked') || lowerMessage.includes('account on hold') || lowerMessage.includes('account frozen') || lowerMessage.includes('account inactive') || lowerMessage.includes('account terminated') || lowerMessage.includes('account banned') || lowerMessage.includes('account restricted') || lowerMessage.includes('account status check') || lowerMessage.includes('account cancelled') || lowerMessage.includes('check account status') || lowerMessage.includes('is account active') || lowerMessage.includes('account suspended status') || lowerMessage.includes('account status update') || lowerMessage.includes('am i suspended') || lowerMessage.includes('account locked out') || lowerMessage.includes('account status inquiry') || lowerMessage.includes('account disabled status') || lowerMessage.includes('is my account disabled') || lowerMessage.includes('am i restricted') || lowerMessage.includes('account status verification') || lowerMessage.includes('am i deactivated') || lowerMessage.includes('account status checkup') || lowerMessage.includes('account suspended check') || lowerMessage.includes('account banned status') || lowerMessage.includes('is account suspended') || lowerMessage.includes('account locked status') || lowerMessage.includes('am i locked out') || lowerMessage.includes('account on hold status') || lowerMessage.includes('am i cancelled') || lowerMessage.includes('account status report') || lowerMessage.includes('am i frozen') || lowerMessage.includes('account inactive status') || lowerMessage.includes('account status info') || lowerMessage.includes('am i terminated') || lowerMessage.includes('account suspended inquiry') || lowerMessage.includes('check if account is active') || lowerMessage.includes('account status question') || lowerMessage.includes('am i banned status') || lowerMessage.includes('account disabled inquiry') || lowerMessage.includes('account status details') || lowerMessage.includes('am i on hold') || lowerMessage.includes('account banned inquiry') || lowerMessage.includes('account suspension status') || lowerMessage.includes('am i restricted status') || lowerMessage.includes('account locked inquiry') || lowerMessage.includes('is my account frozen') || lowerMessage.includes('am i locked') || lowerMessage.includes('account on hold inquiry') || lowerMessage.includes('account suspended report') || lowerMessage.includes('am i deactivated status') || lowerMessage.includes('account status check request') || lowerMessage.includes('am i cancelled status') || lowerMessage.includes('account inactive inquiry') || lowerMessage.includes('account status confirmation') || lowerMessage.includes('am i frozen status') || lowerMessage.includes('account banned check') || lowerMessage.includes('account suspended confirmation')) {
+        return {
+          content: "To check your account status, I'll need to verify your email. Please enter your email address:",
+          type: 'info',
+          action: 'prompt_email_input'
+        };
+      }
+      
+      // Handle password reset
+      if (lowerMessage.includes('forgot password') || lowerMessage.includes('reset password') || lowerMessage.includes('can\'t remember password') || lowerMessage.includes('password recovery') || lowerMessage.includes('password reset link') || lowerMessage.includes('change password') || lowerMessage.includes('update password') || lowerMessage.includes('lost password') || lowerMessage.includes('forgot my password') || lowerMessage.includes('password help') || lowerMessage.includes('reset my password') || lowerMessage.includes('forgot login') || lowerMessage.includes('password assistance') || lowerMessage.includes('recover password') || lowerMessage.includes('forgot pass') || lowerMessage.includes('reset pass') || lowerMessage.includes('password issue') || lowerMessage.includes('password problem') || lowerMessage.includes('password not working') || lowerMessage.includes('password change request') || lowerMessage.includes('send reset link') || lowerMessage.includes('password reset email') || lowerMessage.includes('password link') || lowerMessage.includes('reset credentials') || lowerMessage.includes('forgotten password') || lowerMessage.includes('password reset code') || lowerMessage.includes('cannot remember password') || lowerMessage.includes('need new password') || lowerMessage.includes('help with password') || lowerMessage.includes('password reset token') || lowerMessage.includes('password expired') || lowerMessage.includes('password locked') || lowerMessage.includes('password recovery email') || lowerMessage.includes('resetting password') || lowerMessage.includes('password reset failed') || lowerMessage.includes('reset password request') || lowerMessage.includes('change my password') || lowerMessage.includes('reset password link expired') || lowerMessage.includes('password reset instructions') || lowerMessage.includes('send password reset') || lowerMessage.includes('request password reset') || lowerMessage.includes('password reset confirmation') || lowerMessage.includes('password reset successful') || lowerMessage.includes('password recovery link') || lowerMessage.includes('reset password token') || lowerMessage.includes('forgot password email') || lowerMessage.includes('password reset process') || lowerMessage.includes('forgot password help') || lowerMessage.includes('password reset support') || lowerMessage.includes('forgot password link') || lowerMessage.includes('reset password email sent') || lowerMessage.includes('password reset email link') || lowerMessage.includes('password reset page') || lowerMessage.includes('password reset verification') || lowerMessage.includes('forgot my pass') || lowerMessage.includes('reset my pass') || lowerMessage.includes('password reset requested') || lowerMessage.includes('need password reset') || lowerMessage.includes('password assistance needed') || lowerMessage.includes('help resetting password') || lowerMessage.includes('forgot password token') || lowerMessage.includes('forgot password procedure') || lowerMessage.includes('password reset code sent') || lowerMessage.includes('forgot password notification') || lowerMessage.includes('password reset confirmation email') || lowerMessage.includes('reset password help') || lowerMessage.includes('forgot password recovery') || lowerMessage.includes('password reset instructions sent')) {
+        return {
+          content: "You can reset your password easily:\n\n" +
+                   "1. Click the 'Forgot password' link below the login form\n" +
+                   "2. Enter your email address\n" +
+                   "3. Check your inbox for a password reset link\n" +
+                   "4. Follow the instructions to create a new password\n\n" +
+                   "Would you like me to take you to the password reset page?",
+          type: 'success',
+          action: 'navigate_forgot_password'
+        };
+      }
+      
+      // Handle CSRF token issues
+      if (lowerMessage.includes('csrf') || lowerMessage.includes('token missing') || lowerMessage.includes('invalid token') || lowerMessage.includes('csrf token') || lowerMessage.includes('csrf error') || lowerMessage.includes('token expired') || lowerMessage.includes('missing token') || lowerMessage.includes('token invalid') || lowerMessage.includes('csrf protection') || lowerMessage.includes('csrf failed') || lowerMessage.includes('csrf attack') || lowerMessage.includes('csrf validation failed') || lowerMessage.includes('csrf token missing') || lowerMessage.includes('csrf token invalid') || lowerMessage.includes('csrf token expired') || lowerMessage.includes('invalid csrf') || lowerMessage.includes('csrf not valid') || lowerMessage.includes('csrf check failed') || lowerMessage.includes('token check failed') || lowerMessage.includes('csrf token check') || lowerMessage.includes('csrf validation error') || lowerMessage.includes('csrf token error') || lowerMessage.includes('missing csrf') || lowerMessage.includes('csrf token not found') || lowerMessage.includes('csrf token failure') || lowerMessage.includes('csrf token required') || lowerMessage.includes('invalid csrf token') || lowerMessage.includes('csrf error occurred') || lowerMessage.includes('csrf token incorrect') || lowerMessage.includes('csrf security error')) {
+        return {
+          content: "The CSRF token error usually occurs when:\n\n" +
+                   "• Your session has expired\n" +
+                   "• You have cookies disabled\n" +
+                   "• You're using an outdated browser\n\n" +
+                   "Try these solutions:\n" +
+                   "1. Refresh the page\n" +
+                   "2. Enable cookies in your browser\n" +
+                   "3. Clear your browser cache\n" +
+                   "4. Update your browser to the latest version",
+          type: 'warning'
+        };
+      }
+      
+      // Handle general login issues
+      if (lowerMessage.includes('trouble logging in') || lowerMessage.includes('login problem') || lowerMessage.includes('can\'t sign in') || lowerMessage.includes('login error') || lowerMessage.includes('unable to login') || lowerMessage.includes('forgot password') || lowerMessage.includes('reset password') || lowerMessage.includes('password not working') || lowerMessage.includes('account locked') || lowerMessage.includes('login failed') || lowerMessage.includes('sign in issue') || lowerMessage.includes('cannot access account') || lowerMessage.includes('login help') || lowerMessage.includes('access problem') || lowerMessage.includes('authentication failed') || lowerMessage.includes('user not found') || lowerMessage.includes('invalid password') || lowerMessage.includes('password reset') || lowerMessage.includes('can\'t log in') || lowerMessage.includes('login blocked') || lowerMessage.includes('account disabled') || lowerMessage.includes('login timeout') || lowerMessage.includes('session expired') || lowerMessage.includes('two factor failed') || lowerMessage.includes('forgot username') || lowerMessage.includes('account recovery') || lowerMessage.includes('unlock account') || lowerMessage.includes('reset login') || lowerMessage.includes('sign in error') || lowerMessage.includes('login assistance') || lowerMessage.includes('can\'t access account') || lowerMessage.includes('login not working') || lowerMessage.includes('login unsuccessful') || lowerMessage.includes('login issue') || lowerMessage.includes('password issue') || lowerMessage.includes('forgot login') || lowerMessage.includes('can\'t remember password') || lowerMessage.includes('account access problem') || lowerMessage.includes('login credentials problem') || lowerMessage.includes('failed to login') || lowerMessage.includes('login blocked') || lowerMessage.includes('unable to sign in') || lowerMessage.includes('sign in failed') || lowerMessage.includes('authentication error') || lowerMessage.includes('account locked out') || lowerMessage.includes('login problems') || lowerMessage.includes('can\'t login') || lowerMessage.includes('password problems') || lowerMessage.includes('reset credentials') || lowerMessage.includes('login screen issue') || lowerMessage.includes('sign in blocked') || lowerMessage.includes('user locked out') || lowerMessage.includes('forgot my password') || lowerMessage.includes('account sign in error') || lowerMessage.includes('failed sign in') || lowerMessage.includes('locked account') || lowerMessage.includes('password reset link') || lowerMessage.includes('unable to sign in') || lowerMessage.includes('login failed error')) {
+        return {
+          content: "I'm sorry you're having trouble logging in. Here are some things to try:\n\n" +
+                   "1. Make sure you're connected to the internet\n" +
+                   "2. Check that your email and password are correct\n" +
+                   "3. Try resetting your password\n" +
+                   "4. Clear your browser cache and cookies\n" +
+                   "5. Try using a different browser\n\n" +
+                   "Would you like me to check if your email is registered? Enter your email address below.",
+          type: 'info',
+          action: 'prompt_email_check'
+        };
+      }
+      
+      // Handle account verification
+      if (lowerMessage.includes('verify account') || lowerMessage.includes('email not verified') || lowerMessage.includes('account not activated') || lowerMessage.includes('confirm email') || lowerMessage.includes('activate account') || lowerMessage.includes('verification email') || lowerMessage.includes('account verification') || lowerMessage.includes('resend verification') || lowerMessage.includes('email confirmation') || lowerMessage.includes('verify your email') || lowerMessage.includes('activate your account') || lowerMessage.includes('email pending') || lowerMessage.includes('not verified') || lowerMessage.includes('pending verification') || lowerMessage.includes('email activation') || lowerMessage.includes('confirm your account') || lowerMessage.includes('verification required') || lowerMessage.includes('account not verified') || lowerMessage.includes('verify now') || lowerMessage.includes('verification failed')) {
+        return {
+          content: "Account verification is important for security. Here's what to do:\n\n" +
+                   "1. Check your email inbox (and spam folder) for a verification email\n" +
+                   "2. Click the verification link in that email\n" +
+                   "3. If you can't find it, we can resend the verification email\n\n" +
+                   "Would you like me to resend the verification email?",
+          type: 'info',
+          action: 'prompt_email_resend_verification'
+        };
+      }
+      
+      // Handle general questions
+      if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('how are you') || lowerMessage.includes('what’s your name') || lowerMessage.includes('how old are you') || lowerMessage.includes('where are you from') || lowerMessage.includes('what can you do') || lowerMessage.includes('how do you work') || lowerMessage.includes('can you help me') || lowerMessage.includes('what is the time') || lowerMessage.includes('what is the date') || lowerMessage.includes('tell me a joke') || lowerMessage.includes('how is the weather') || lowerMessage.includes('help') || lowerMessage.includes('support') || lowerMessage.includes('good morning') || lowerMessage.includes('good afternoon') || lowerMessage.includes('good evening') || lowerMessage.includes('thank you') || lowerMessage.includes('thanks') || lowerMessage.includes('bye') || lowerMessage.includes('goodbye') || lowerMessage.includes('see you') || lowerMessage.includes('what can you tell me') || lowerMessage.includes('who are you') || lowerMessage.includes('are you real') || lowerMessage.includes('what is your purpose') || lowerMessage.includes('what do you know') || lowerMessage.includes('can you talk') || lowerMessage.includes('do you learn') || lowerMessage.includes('are you smart') || lowerMessage.includes('what is ai') || lowerMessage.includes('what is machine learning') || lowerMessage.includes('can you help') || lowerMessage.includes('tell me something') || lowerMessage.includes('are you a bot') || lowerMessage.includes('do you sleep') || lowerMessage.includes('can you sing') || lowerMessage.includes('can you dance') || lowerMessage.includes('what is your name') || lowerMessage.includes('how do i use you') || lowerMessage.includes('can you answer questions') || lowerMessage.includes('what languages do you speak') || lowerMessage.includes('do you understand me') || lowerMessage.includes('can you write code') || lowerMessage.includes('tell me a story') || lowerMessage.includes('what is your favorite color') || lowerMessage.includes('do you have feelings') || lowerMessage.includes('can you learn new things') || lowerMessage.includes('are you alive') || lowerMessage.includes('can you joke')) {
+        return {
+          content: "Hello! I'm your ViewTv | login assistant. I only respond to specific queries. 😊 I can help with:\n\n" +
+                   "• Login errors and troubleshooting\n" +
+                   "• Password reset assistance\n" +
+                   "• Account status checks\n" +
+                   "• Email verification issues\n\n" +
+                   "What can I help you with today?",
+          type: 'info'
+        };
+      }
+      else {
+        return {
+          content: "I'm not entirely sure about that, but I can help you with login issues!\n\n" +
+                   "You can ask me about:\n" +
+                   "- Why you're getting 'invalid credentials'\n" +
+                   "- How to reset your password\n" +
+                   "- Checking if your email is registered\n" +
+                   "- Account status (active, banned, etc.)\n" +
+                   "- CSRF token errors\n" +
+                   "- Server errors (500, 502, etc.)",
+          type: 'info'
+        };
+      }
+    }
+    
+    function explainErrorCode(code) {
+      const explanations = {
+        '400': "Bad Request: Oops! It seems your request was malformed or invalid. Please check your input and try again.",
+        '401': "Unauthorized: You need to be logged in to access this resource. Please sign in and try again.",
+        '403': "Forbidden: Sorry, you don't have permission to access this content. If you believe this is an error, contact support.",
+        '404': "Page Not Found: The content you're looking for doesn't exist or has been moved. Try checking the URL or navigating from our homepage.",
+        '500': "Internal Server Error: Something went wrong on our end. Our team has been notified and is working to fix it. Please try again later.",
+        '502': "Bad Gateway: Our servers are having trouble communicating. This is usually temporary - please try refreshing the page in a moment."
+      };
+      
+      return explanations[code] || `Error ${code}: This is a server error. Please try again later or contact support if the problem persists.`;
+    }
+    
+    async function processAiMessage(message) {
+      if (aiIsThinking) return;
+      
+      // Add user message to chat
+      addMessageToChat(message, 'user');
+      
+      // Store message in context
+      conversationContext.lastMessage = message;
+      
+      // Show typing indicator
+      showTypingIndicator();
+      aiIsThinking = true;
+      
+      // Process the message and generate AI response
+      setTimeout(async () => {
+        hideTypingIndicator();
+        let response;
+        
+        // Handle specific actions
+        if (conversationContext.awaitingEmail) {
+          // Validate email format
+          const emailRegex = /^[^\s@]{6,}@(gmail\.com|yahoo\.com)$/;
+          if (!emailRegex.test(message)) {
+            response = {
+              content: "That doesn't look like a valid email address. Please enter a valid email:",
+              type: 'error',
+              action: 'prompt_email_input'
+            };
+          } else {
+            // Show checking message
+            addMessageToChat(`Checking email: ${message} <svg id="waveDots" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:24px;vertical-align:middle;" viewBox="0 0 80 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0s,0s"/>
+  <circle cx="40" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0.2s,0.2s"/>
+  <circle cx="68" cy="12" r="5" style="animation:blink 3s infinite, updown 1s infinite alternate;animation-delay:0.4s,0.4s"/>
+</svg>`, 'ai', 'info'); document.head.insertAdjacentHTML('beforeend', `<style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}@keyframes updown{0%{transform:translateY(0)}100%{transform:translateY(-5px)}}</style>`); setTimeout(() => {document.querySelectorAll('#waveDots circle').forEach(c => c.style.animation = 'none');}, 7000);
+            
+            // Simulate API call delay
+            setTimeout(async () => {
+              // Check user email via API
+              const userData = await checkUserEmail(message);
+              
+              if (userData.error) {
+                addMessageToChat("Sorry, we couldn't check your email at this time. Please try again later.", 'ai', 'error');
+              } else if (userData.exists) {
+                let accountStatus = "Active";
+                let statusClass = "success";
+                
+                if (userData.status === "Banned") {
+                  accountStatus = "Banned";
+                  statusClass = "error";
+                } else if (userData.status === "pending") {
+                  accountStatus = "Pending Verification";
+                  statusClass = "warning";
+                }
+                
+                addMessageToChat(
+                  `Account found for: ${userData.email} • \n\n` +
+                  `Name: ${userData.name} • \n` +
+                  `Status: ${accountStatus}\n\n` +
+                  (userData.status === "Banned" 
+                    ? "Your account has been banned. Contact support for assistance." 
+                    : userData.status === "pending"
+                      ? "Your account is pending verification. Check your email for a verification link."
+                      : "Your account is active and ready to use."),
+                  'ai',
+                  statusClass
+                );
+                
+                // Add account actions
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'ai-actions mt-3';
+                actionsDiv.innerHTML = `
+                  <div class="ai-action-btn" data-action="reset_password">
+                    <i class="fas fa-key mr-1"></i> Reset Password
+                  </div>
+                  <div class="ai-action-btn" data-action="contact_support">
+                    <i class="fas fa-headset mr-1"></i> Contact Support
+                  </div>
+                `;
+                aiChat.appendChild(actionsDiv);
+                
+                // Add event listeners to action buttons
+                actionsDiv.querySelector('[data-action="reset_password"]').addEventListener('click', () => {
+                  window.location.href = "/forgot_password";
+                });
+                
+                actionsDiv.querySelector('[data-action="contact_support"]').addEventListener('click', () => {
+                  addMessageToChat("You can contact our support team at vincentkipngetich479@gmail.com or call +254112167195 | ViewTv", 'ai');
+                });
+              } else {
+                addMessageToChat(
+                  `Sorry, the email "${message}" is not registered with us.\n\n` +
+                  "Possible reasons:\n" +
+                  "• You may have used a different email\n" +
+                  "• Your account might have been deleted\n" +
+                  "• There could be a typo in the email\n\n" +
+                  "Would you like to create a new account?",
+                  'ai',
+                  'error'
+                );
+                
+                // Add sign up action
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'ai-actions mt-3';
+                actionsDiv.innerHTML = `
+                  <div class="ai-action-btn" data-action="sign_up">
+                    <i class="fas fa-user-plus mr-1"></i> Sign Up
+                  </div>
+                `;
+                aiChat.appendChild(actionsDiv);
+                
+                actionsDiv.querySelector('[data-action="sign_up"]').addEventListener('click', () => {
+                  window.location.href = "/register";
+                });
+              }
+            }, 1500);
+            
+            conversationContext.awaitingEmail = false;
+            aiIsThinking = false;
+            return;
+          }
+        } else {
+          response = generateAiResponse(message);
+        }
+        
+        if (response) {
+          addMessageToChat(response.content, 'ai', response.type, response.additionalData);
+          
+          // Set context for follow-up actions
+          if (response.action === 'prompt_email_input' || response.action === 'prompt_email_check') {
+            conversationContext.awaitingEmail = true;
+          }
+          
+          // If response has action, perform it
+          if (response.action && response.action.startsWith('navigate')) {
+            performAction(response.action);
+          }
+        }
+        
+        aiIsThinking = false;
+      }, 1500);
+    }
+    
+    function performAction(action) {
+      switch(action) {
+        case 'navigate_forgot_password':
+          window.location.href = "/forgot_password";
+          break;
+      }
+    }
+    
+    // Initialize the AI assistant
+    function initAIAssistant() {
+      aiAssistant.addEventListener('click', () => {
+        aiPanel.classList.toggle('active');
+        
+        if (recognition && !aiPanel.classList.contains('active')) {
+          recognition.stop();
+        }
+      });
+      
+      closeAiPanel.addEventListener('click', () => {
+        aiPanel.classList.remove('active');
+      });
+      
+      sendAiMessage.addEventListener('click', () => {
+        if (aiInput.value.trim() !== '') {
+          processAiMessage(aiInput.value);
+          aiInput.value = '';
+        }
+      });
+      
+      aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && aiInput.value.trim() !== '') {
+          processAiMessage(aiInput.value);
+          aiInput.value = '';
+        }
+      });
+      
+      voiceCommandBtn.addEventListener('click', () => {
+        if (recognition) {
+          aiAssistant.classList.add('listening');
+          recognition.start();
+          addMessageToChat("Listening... Speak now", 'ai');
+        } else {
+          addMessageToChat("Voice commands not supported in your browser", 'ai');
+        }
+      });
+      
+      helpBtn.addEventListener('click', () => {
+        addMessageToChat("What can I help you with? Here are some ideas:\n- Why am I getting invalid credentials?\n- Check if my email is registered\n- How do I reset my password?\n- Why is my account banned?\n- What does CSRF token missing mean?", 'ai');
+      });
+      
+      clearChatBtn.addEventListener('click', () => {
+        aiChat.innerHTML = '';
+        conversationContext = {};
+        addMessageToChat("Hi there! I'm your ViewTV | login assistant. 😊 How can I help you today?", 'ai');
+      });
+    }
+    
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize AI assistant
+      initSpeechRecognition();
+      initAIAssistant();
+    });
+  </script>
+  
+  <!-- Font Awesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+</body>
+</html>

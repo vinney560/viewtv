@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="US" tvg-logo="" group-title="Sport",FOX Sports [Geo-blocked]
+https://amg02855-foxsports-amg02855c1-xumo-us-1755.playouts.now.amagi.tv/Fox-Sports-AmazonNews/playlist.m3u8?checkedby:iptvcat.com

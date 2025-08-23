@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural IPTV Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #c7d2fe;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --gray-light: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --radius-sm: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1.25rem 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header h1 {
+            font-weight: 600;
+            font-size: 1.375rem;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.025em;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.875rem;
+            font-weight: 400;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            scroll-behavior: smooth;
+            overscroll-behavior: contain;
+            padding-bottom: 6rem;
+        }
+
+        .message {
+            max-width: min(85%, 48rem);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            line-height: 1.6;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+            font-size: 0.9375rem;
+            box-shadow: var(--shadow-sm);
+            word-wrap: break-word;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(0.5rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: white;
+            color: var(--dark);
+            border-bottom-right-radius: var(--radius-sm);
+            border: 1px solid var(--gray-light);
+            margin-left: auto;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: white;
+            border-bottom-left-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--primary);
+            margin-right: auto;
+        }
+
+        .message-time {
+            font-size: 0.6875rem;
+            color: var(--gray);
+            margin-top: 0.75rem;
+            text-align: right;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+
+        .input-area {
+            display: flex;
+            padding: 1rem;
+            background-color: white;
+            border-top: 1px solid var(--gray-light);
+            position: sticky;
+            bottom: 0;
+            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+            z-index: 40;
+        }
+
+        #query {
+            flex: 1;
+            padding: 0.875rem 1.25rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-lg);
+            outline: none;
+            font-size: 0.9375rem;
+            transition: var(--transition);
+            background-color: #f8fafc;
+            color: var(--dark);
+        }
+
+        #query:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+            background-color: white;
+        }
+
+        #query::placeholder {
+            color: var(--gray);
+            opacity: 0.7;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: 0 1.5rem;
+            margin-left: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 3rem;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+            background-color: var(--primary-dark);
+        }
+
+        .typing-indicator {
+            display: flex;
+            padding: 1rem 1.25rem;
+            background-color: white;
+            border-radius: var(--radius-md);
+            align-self: flex-start;
+            margin-bottom: 0.5rem;
+            box-shadow: var(--shadow-sm);
+            width: fit-content;
+            gap: 0.5rem;
+        }
+
+        .typing-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            background-color: var(--gray);
+            border-radius: 50%;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+            30% { transform: translateY(-0.25rem); opacity: 1; }
+        }
+
+        .status-online {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-offline {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .status-dead {
+            color: var(--error);
+            font-weight: 600;
+        }
+
+        .channel-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: var(--radius-md);
+            padding: 1.125rem;
+            margin: 0.75rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .channel-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.625rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .channel-card p {
+            font-size: 0.875rem;
+            color: var(--dark);
+            margin-bottom: 0.375rem;
+            line-height: 1.5;
+        }
+
+        .logo-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .logo-card {
+            background-color: white;
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .logo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.75rem;
+            aspect-ratio: 16/9;
+            object-fit: contain;
+            background-color: #f8fafc;
+        }
+
+        .logo-card p {
+            font-size: 0.8125rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        /* Modern scrollbar */
+        ::-webkit-scrollbar {
+            width: 0.5rem;
+            height: 0.5rem;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 0.25rem;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a5b4fc;
+        }
+
+        /* Assistant message styles */
+        .assistant-tip {
+            background-color: rgba(99, 102, 241, 0.08);
+            border-left: 4px solid var(--primary);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            margin: 0.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .assistant-tip-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .assistant-tip-content {
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .message {
+                max-width: 90%;
+                font-size: 0.9375rem;
+                padding: 0.875rem;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.25rem;
+            }
+            
+            .chat-container {
+                padding: 1rem;
+                gap: 0.875rem;
+                padding-bottom: 5rem;
+            }
+
+            #query {
+                padding: 0.75rem 1rem;
+            }
+
+            button {
+                padding: 0 1.25rem;
+            }
+            
+            .logo-container {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>View Tv Assistant</h1>
+        <p>Your intelligent streaming companion</p>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+        {% for timestamp, user_msg, bot_msg in history %}
+            <div class="message user-message">
+                {{ user_msg }}
+                <div class="message-time">{{ timestamp }}</div>
+            </div>
+            <div class="message bot-message">
+                {{ bot_msg|replace('\n', '<br>')|safe }}
+                <div class="message-time">{{ timestamp }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    
+    <form method="POST" class="input-area">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="text" id="query" name="query" placeholder="Ask about channels (e.g., 'Is ESPN online?')" autocomplete="off" required>
+        <button type="submit" aria-label="Send message">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+        </button>
+    </form>
+
+    <script>
+        // Enhanced scroll management
+        const chatContainer = document.getElementById('chatContainer');
+        let isAtBottom = true;
+        const scrollThreshold = 100; // pixels from bottom to consider "at bottom"
+        let lastScrollHeight = chatContainer.scrollHeight;
+        
+        // Check if user is at/near bottom
+        function checkAtBottom() {
+            const scrollBottom = chatContainer.scrollTop + chatContainer.clientHeight;
+            isAtBottom = (chatContainer.scrollHeight - scrollBottom) <= scrollThreshold;
+            return isAtBottom;
+        }
+        
+        // Smart scroll function
+        function smartScroll(force = false) {
+            if (force || isAtBottom) {
+                // Use requestAnimationFrame for smoother scrolling
+                requestAnimationFrame(() => {
+                    chatContainer.scrollTo({
+                        top: chatContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        }
+        
+        // Track scroll position
+        chatContainer.addEventListener('scroll', () => {
+            isAtBottom = checkAtBottom();
+        });
+        
+        // Form submission handler
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            // Add typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="typing-dot" style="animation-delay: 0s"></div>
+                <div class="typing-dot" style="animation-delay: 0.2s"></div>
+                <div class="typing-dot" style="animation-delay: 0.4s"></div>
+            `;
+            chatContainer.appendChild(typingIndicator);
+            
+            // Always scroll to bottom when sending new message
+            smartScroll(true);
+        });
+        
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('query').focus();
+            checkAtBottom(); // Set initial scroll state
+            
+            // Scroll to bottom only if no preserved position and not scrolled up
+            if (!sessionStorage.getItem('chatScrollPos') && isAtBottom) {
+                setTimeout(() => smartScroll(true), 100);
+            }
+        });
+        
+        // MutationObserver for new messages
+        const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.addedNodes.length) {
+                    // Remove any typing indicators
+                    const typingIndicators = document.querySelectorAll('.typing-indicator');
+                    typingIndicators.forEach(indicator => indicator.remove());
+                    
+                    // Process new messages if they contain special elements
+                    processNewMessages(mutation.addedNodes);
+                    
+                    // Smart scroll only if user was at bottom
+                    if (isAtBottom) {
+                        smartScroll();
+                    }
+                }
+            }
+        });
+        
+        observer.observe(chatContainer, { 
+            childList: true,
+            subtree: true
+        });
+        
+        // Process new messages for cards, status indicators, etc.
+        function processNewMessages(nodes) {
+            nodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('bot-message')) {
+                    processChannelCards(node);
+                }
+            });
+        }
+        
+        // Process channel cards and other special content
+        function processChannelCards(container = document) {
+            const botMessages = container.querySelectorAll ? 
+                container.querySelectorAll('.bot-message') : 
+                [container];
+                
+            botMessages.forEach(message => {
+                const content = message.innerHTML;
+                
+                // Process status indicators
+                message.innerHTML = content
+                    .replace(/✅/g, '<span class="status-online">✅</span>')
+                    .replace(/⚠️/g, '<span class="status-offline">⚠️</span>')
+                    .replace(/❌/g, '<span class="status-dead">❌</span>');
+                
+                // Process channel cards
+                if (content.includes('ℹ️') || content.includes('🔍')) {
+                    const cardContent = content.split('ℹ️').pop() || content.split('🔍').pop();
+                    message.innerHTML = content.replace(cardContent, `<div class="channel-card">${cardContent}</div>`);
+                }
+                
+                // Process logo containers
+                if (content.includes('<img')) {
+                    message.innerHTML = content
+                        .replace(/<img/g, '<div class="logo-container"><div class="logo-card"><img')
+                        .replace(/width="120">/g, 'width="120"><p>Channel Logo</p></div></div>');
+                }
+                
+                // Process assistant tips
+                if (content.includes('💡')) {
+                    const tipContent = content.split('💡').pop();
+                    message.innerHTML = content.replace(tipContent, `
+                        <div class="assistant-tip">
+                            <div class="assistant-tip-header">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                Assistant Tip
+                            </div>
+                            <div class="assistant-tip-content">${tipContent}</div>
+                        </div>
+                    `);
+                }
+            });
+        }
+        
+        // Preserve scroll position on page refresh
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.setItem('chatScrollPos', chatContainer.scrollTop);
+        });
+        
+        // Restore scroll position if available
+        if (sessionStorage.getItem('chatScrollPos')) {
+            chatContainer.scrollTop = sessionStorage.getItem('chatScrollPos');
+            sessionStorage.removeItem('chatScrollPos');
+        }
+        
+        // Initialize card processing
+        document.addEventListener('DOMContentLoaded', () => {
+            processChannelCards();
+        });
+    </script>
+</body>
+</html>

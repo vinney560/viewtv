@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="US" tvg-logo="https://i.imgur.com/auR0Mi6.png" group-title="Sport",TVS Classic Sports (360p)
+https://bozztv.com/gusa/gusa-tvs/index.m3u8?checkedby:iptvcat.com

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="View TV offers easy, ad-free streaming of local and global channels. Watch live sports, news, entertainment, and more — all in one place, anytime, anywhere.">
+  <title>Developer | View TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glow-text { text-shadow: 0 0 10px rgba(0,255,255,0.5); }
+    .fade-in { animation: fadeIn 0.4s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-6">
+
+  <div class="max-w-4xl mx-auto space-y-10 fade-in">
+
+    <!-- Header -->
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-cyan-400 glow-text mb-2">Meet the Developer</h1>
+      <p class="text-gray-300 text-sm">The creative force behind View TV.</p>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 flex flex-col md:flex-row items-center gap-6">
+      <img src="{{ url_for('uploaded_file', filename='developer_logo.png') }}"
+           alt="Developer Image"
+           class="w-40 h-40 rounded-full object-cover border-4 border-cyan-400 shadow-md"/>
+
+      <div class="text-left space-y-2 text-sm">
+        <p><span class="font-semibold text-white">Name:</span> Vincent Kipngetich</p>
+        <p><span class="font-semibold text-white">Year:</span> 2025</p>
+        <p><span class="font-semibold text-white">Role:</span> Fullstack Developer</p>
+        <p><span class="font-semibold text-white">Tech Stack:</span> Python, Flask, TailwindCSS, SQLite, JavaScript</p>
+        <p><span class="font-semibold text-white">Focus:</span> Secure, fast, responsive systems with smooth UX</p>
+        <p><span class="font-semibold text-white">Project:</span> Founder & Lead Developer of <span class="text-cyan-400">View TV</span></p>
+      </div>
+    </div>
+
+    <!-- Vision -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 space-y-4">
+      <h2 class="text-xl font-semibold text-cyan-300">Vision & Philosophy</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+        View TV is not just a platform — it's a vision to provide a seamless, lightweight, and intuitive viewing experience.
+        I created this platform to give users access to categorized live streams, both local and global, with secure access control.
+      </p>
+    </div>
+
+    <!-- Channel Source Details -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 space-y-4">
+      <h2 class="text-xl font-semibold text-cyan-300">Channel Sources</h2>
+      <p class="text-sm text-gray-300">We use publicly accessible, legal streaming URLs. Examples include:</p>
+      <ul class="list-disc pl-6 text-sm text-gray-300 space-y-1">
+        <li>Free-to-air Kenyan and regional stations</li>
+        <li>Manually added streams from M3U8/HLS URLs</li>
+        <li>Admin-controlled <code>custom_list</code> entries</li>
+        <li>Plus-protected streams via secure token access</li>
+      </ul>
+      <p class="text-xs text-gray-400 pt-2">
+        View TV does not host or rebroadcast any copyrighted content. Our goal is to aggregate safe, viewable, categorized public content.
+      </p>
+    </div>
+
+    <!-- Technologies Used -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 space-y-4">
+      <h2 class="text-xl font-semibold text-cyan-300">Technologies Used</h2>
+      <ul class="list-disc pl-6 text-sm text-gray-300 space-y-1">
+        <li><strong>Backend:</strong> Flask (Python), Jinja2, JWT, WTForms, SQLite</li>
+        <li><strong>Frontend:</strong> TailwindCSS, responsive UI, SVG icons, glow effects</li>
+        <li><strong>Authentication:</strong> Flask-Login, password hashing, role-based access</li>
+        <li><strong>Security:</strong> CSRF protection, rate limiting, session control</li>
+        <li><strong>Deployment:</strong> Hosted on Render, SEO with sitemap.xml and robots.txt</li>
+      </ul>
+    </div>
+
+    <!-- Future Plans -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 space-y-3">
+      <h2 class="text-xl font-semibold text-cyan-300">What’s Next</h2>
+      <ul class="list-disc pl-6 text-sm text-gray-300 space-y-1">
+        <li>Native mobile apps (Android first)</li>
+        <li>Live chat & reactions on streaming pages</li>
+        <li>Scheduled programs and EPG integration</li>
+        <li>Better content moderation and auto-channel rotation</li>
+        <li>Dynamic streaming options and subscription modes</li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700 space-y-4">
+      <h2 class="text-xl font-semibold text-cyan-300">Contact Developer</h2>
+      <ul class="text-sm text-gray-300 space-y-2">
+        <li class="flex items-center gap-2">
+          <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4e7.svg" class="w-5 h-5" alt="email">
+          Email: <a href="mailto:vincentkipngetich479@gmail.com" class="text-cyan-400 underline">vincentkipngetich479@gmail.com</a>
+        </li>
+        <li class="flex items-center gap-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111728.png" class="w-5 h-5" alt="whatsapp">
+          WhatsApp: <a href="https://wa.me/254740694312" class="text-cyan-400 underline">+254 740 694 312</a>
+        </li>
+        <li class="flex items-center gap-2">
+          <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="w-5 h-5" alt="telegram">
+          Telegram: <a href="https://t.me/+254740694312" class="text-cyan-400 underline">Message on Telegram</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center text-gray-500 text-xs mt-10">
+      Built by Vincent Kipngetich &copy; {{ current_year }}. View TV, built for viewers.
+    </div>
+
+  </div>
+
+</body>
+</html>

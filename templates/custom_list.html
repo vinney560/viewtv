@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curated Playlist | ViewTv</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+        }
+        .card-glass {
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .channel-card {
+            transition: all 0.3s ease;
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(8px);
+        }
+        .channel-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.3);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .channels-container {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .search-box:focus {
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
+        }
+        .toast-entry {
+            animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .toast-exit {
+            animation: toast-out 0.5s ease forwards;
+        }
+        @keyframes toast-in {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toast-out {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+        .dropdown-content {
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .category-pill {
+            transition: all 0.2s ease;
+        }
+        .category-pill:hover {
+            background: rgba(6, 182, 212, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .invalid-channel {
+            opacity: 0.7;
+            filter: grayscale(80%);
+        }
+        /* New styles */
+        .recommended-section {
+            margin-bottom: 2rem;
+        }
+        .recommended-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 1rem;
+            gap: 1rem;
+        }
+        .recommended-container::-webkit-scrollbar {
+            display: none;
+        }
+        .recommended-card {
+            flex: 0 0 auto;
+            width: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .recommended-card:hover {
+            transform: scale(1.03);
+        }
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(31, 41, 55, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .scroll-btn.left {
+            left: 10px;
+        }
+        .scroll-btn.right {
+            right: 10px;
+        }
+        .recommended-section:hover .scroll-btn {
+            opacity: 1;
+        }
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(6, 182, 212, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover {
+            transform: scale(1.1);
+            background: rgba(6, 182, 212, 1);
+        }
+        .highlight-pulse {
+            animation: highlightPulse 2s infinite;
+        }
+        @keyframes highlightPulse {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #06b6d4;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-white flex flex-col min-h-screen">
+
+    <!-- Modern Toast Notifications -->
+    <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4
+                        {% if category == 'success' %} bg-gray-800 border-emerald-500
+                        {% elif category == 'error' %} bg-gray-800 border-red-500
+                        {% else %} bg-gray-800 border-cyan-500 {% endif %}">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 pt-0.5">
+                                {% if category == 'success' %}
+                                    <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                {% elif category == 'error' %}
+                                    <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                {% else %}
+                                    <svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                {% endif %}
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <p class="text-sm">{{ message }}</p>
+                            </div>
+                            <button onclick="this.parentElement.parentElement.classList.add('toast-exit'); setTimeout(() => this.parentElement.parentElement.remove(), 500)" class="absolute top-3 right-3 text-gray-400 hover:text-white">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Header -->
+    <header class="card-glass border-b border-gray-700/30 p-4 sticky top-0 z-40">
+        <div class="container mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <svg class="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
+                </svg>
+                <h1 class="text-2xl font-bold gradient-text">Curated Playlist | ViewTV</h1>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <!-- Category Dropdown -->
+                <div class="dropdown relative">
+                    <button class="flex items-center space-x-2 px-4 py-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30">
+                        <i class="fas fa-tag text-cyan-300"></i>
+                        <span class="text-sm font-medium text-cyan-200">Categories</span>
+                        <i class="fas fa-chevron-down text-xs text-cyan-300"></i>
+                    </button>
+                    <div class="dropdown-content fixed top-30 right-6 w-56 max-h-72 overflow-y-auto bg-gray-800/90 rounded-xl shadow-lg z-50 border border-gray-700/50 py-2">
+                        {% for group_title, _ in categorized_channels.items() %}
+                        <a href="#{{ group_title | lower | replace(' ', '-') }}" 
+                           class="block px-4 py-2 text-sm text-gray-300 hover:bg-cyan-600/20 transition category-pill">
+                           <i class="fas fa-arrow-right mr-2 text-cyan-400/70"></i>
+                           {{ group_title or 'Uncategorized' }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Search Box -->
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Search channels..."
+                        class="search-box w-full bg-gray-800/80 border border-gray-700/50 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
+                    <i class="fas fa-search absolute left-3 top-2.5 text-gray-500"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="channels-container flex-grow">
+        <div class="container mx-auto px-4 py-6">
+            <!-- Recommended Section -->
+            <section class="recommended-section mb-10">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
+                        <i class="fas fa-star mr-3 text-yellow-400"></i>
+                        Recommended For You
+                    </h2>
+                    <button id="refresh-recommended" class="text-xs bg-cyan-900/30 text-cyan-300 px-3 py-1 rounded-full hover:bg-cyan-800/50 transition flex items-center">
+                        <span id="refresh-text">Refresh</span>
+                        <span id="refresh-icon" class="ml-1"></span>
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <div class="recommended-container" id="recommendedChannels">
+                        <!-- Recommended channels will be injected here by JavaScript -->
+                    </div>
+                    <button class="scroll-btn left" onclick="scrollRecommended(-300)">
+                        <i class="fas fa-chevron-left text-white"></i>
+                    </button>
+                    <button class="scroll-btn right" onclick="scrollRecommended(300)">
+                        <i class="fas fa-chevron-right text-white"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Regular Channel Categories -->
+            {% for group_title, group_channels in categorized_channels.items() %}
+            <section class="mb-10 channel-group" id="{{ group_title | lower | replace(' ', '-') }}" data-category="{{ group_title | lower }}">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
+                        <i class="fas fa-tag mr-3 text-cyan-400"></i>
+                        {{ group_title or 'Uncategorized' }}
+                    </h2>
+                    <span class="text-xs bg-cyan-900/30 text-cyan-300 px-3 py-1 rounded-full">
+                        {{ group_channels|length }} channels
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    {% for channel in group_channels %}
+                    {% set channel_url = channel.get('url', '') %}
+                    {% set channel_name = channel.get('name', '') %}
+                    {% set channel_token = channel.get('token', '') %}
+                    
+                    <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30
+                        {% if not channel_url %} invalid-channel {% endif %}"
+                         data-name="{{ channel_name | lower }}"
+                         data-access="{{ channel.get('access', 'free') | lower }}">
+                        
+                        {% if channel_url %}
+                            {% set url_parts = channel_url.split('://') %}
+                            {% if url_parts|length > 1 %}
+                                {% set domain_port = url_parts[1].split('/')[0] %}
+                                {% set domain = domain_port.split(':')[0] %}
+                                {% set is_ip = domain.replace('.', '').isdigit() %}
+                                {% set has_port = ':' in domain_port %}
+                                
+                                {% if is_ip or has_port %}
+                                    <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
+                                {% else %}
+                                    <a href="{{ url_for('plus_play', key=channel.key) }}">
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" class="block h-full">
+                            {% endif %}
+                        {% else %}
+                            <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">
+                                <i class="fas fa-unlink text-xl mb-2"></i>
+                                <p class="text-xs">No URL provided</p>
+                            </div>
+                        {% endif %}
+                        
+                            <div class="relative pt-[56.25%] bg-gray-900/20">
+                                {% if channel.get('logo') %}
+                                <img src="{{ channel.logo }}" alt="{{ channel_name }}"
+                                     class="absolute inset-0 w-full h-full object-contain p-4">
+                                {% else %}
+                                <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
+                                    <i class="fas fa-tv text-5xl"></i>
+                                </div>
+                                {% endif %}
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                                    <span class="text-xs font-medium text-cyan-400">
+                                        {{ channel.get('access', 'Free') }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
+                                <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
+                            </div>
+                        
+                        {% if channel_url %}</a>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="card-glass border-t border-gray-700/30 py-4 mt-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <a href="#" class="text-gray-400 hover:text-cyan-400 transition">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://m.facebook.com/groups/1133498725276750/" class="text-gray-400 hover:text-blue-400 transition">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-red-400 transition">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+                <p class="text-xs text-gray-400 text-center md:text-right">
+                    © 2025 ViewTV | StreamTV • All channels are provided for streaming <span class="text-red-400">ONLY</span>.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <div class="back-btn" id="backToTop" title="Back to Top">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const channelGroups = document.querySelectorAll('.channel-group');
+
+            channelGroups.forEach(group => {
+                const category = group.getAttribute('data-category');
+                let matchFoundInGroup = false;
+
+                const cards = group.querySelectorAll('.channel-card');
+                cards.forEach(card => {
+                    const name = card.getAttribute('data-name');
+                    const access = card.getAttribute('data-access');
+
+                    const match = name.includes(searchTerm) || access.includes(searchTerm) || category.includes(searchTerm);
+                    card.style.display = match ? 'block' : 'none';
+
+                    if (match) matchFoundInGroup = true;
+                });
+
+                group.style.display = matchFoundInGroup ? 'block' : 'none';
+            });
+        });
+
+        // Auto-dismiss toasts
+        document.addEventListener('DOMContentLoaded', () => {
+            const toasts = document.querySelectorAll('.toast-entry');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    toast.classList.add('toast-exit');
+                    setTimeout(() => toast.remove(), 500);
+                }, 5000);
+                
+                // Add click handler to close button if not already present
+                const closeBtn = toast.querySelector('button');
+                if (closeBtn && !closeBtn.getAttribute('data-has-listener')) {
+                    closeBtn.setAttribute('data-has-listener', 'true');
+                    closeBtn.addEventListener('click', () => {
+                        toast.classList.add('toast-exit');
+                        setTimeout(() => toast.remove(), 500);
+                    });
+                }
+            });
+
+            // Initialize recommended channels
+            generateRecommendedChannels();
+
+            // Set up back to top button
+            const backButton = document.getElementById('backToTop');
+            backButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Show/hide back button based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backButton.style.display = 'flex';
+                } else {
+                    backButton.style.display = 'none';
+                }
+            });
+
+            // Set up refresh recommended button
+            document.getElementById('refresh-recommended').addEventListener('click', function() {
+                const icon = document.getElementById('refresh-icon');
+                const text = document.getElementById('refresh-text');
+                
+                // Show loading spinner
+                icon.innerHTML = '<div class="loading-spinner"></div>';
+                text.textContent = 'Refreshing';
+                
+                // Generate new recommendations after a short delay
+                setTimeout(() => {
+                    generateRecommendedChannels();
+                    icon.innerHTML = '';
+                    text.textContent = 'Refreshed!';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        text.textContent = 'Refresh';
+                    }, 2000);
+                }, 800);
+            });
+        });
+
+        // Function to show new toasts
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const colors = {
+                success: 'bg-gray-800 border-emerald-500',
+                error: 'bg-gray-800 border-red-500',
+                info: 'bg-gray-800 border-cyan-500'
+            };
+            const icons = {
+                success: `<svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>`,
+                error: `<svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>`,
+                info: `<svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>`
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 ${colors[type]}`;
+            toast.innerHTML = `
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 pt-0.5">
+                        ${icons[type]}
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                    <button class="absolute top-3 right-3 text-gray-400 hover:text-white">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('toast-exit');
+                setTimeout(() => toast.remove(), 500);
+            }, 5000);
+
+            // Add click handler to close button
+            toast.querySelector('button').addEventListener('click', () => {
+                toast.classList.add('toast-exit');
+                setTimeout(() => toast.remove(), 500);
+            });
+        }
+
+        // Validate direct IP links before opening
+        function validateLink(event, url) {
+            try {
+                // Basic URL validation
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    showToast('Invalid URL format', 'error');
+                    event.preventDefault();
+                    return false;
+                }
+
+                // Additional checks can be added here if needed
+                return true;
+            } catch (e) {
+                showToast('Error opening channel', 'error');
+                event.preventDefault();
+                return false;
+            }
+        }
+
+        // Generate recommended channels
+        function generateRecommendedChannels() {
+            const container = document.getElementById('recommendedChannels');
+            container.innerHTML = '';
+            
+            // Get all channels
+            const allChannels = [];
+            document.querySelectorAll('.channel-card').forEach(card => {
+                if (!card.classList.contains('invalid-channel')) {
+                    allChannels.push({
+                        name: card.dataset.name,
+                        element: card.cloneNode(true)
+                    });
+                }
+            });
+            
+            // Shuffle array and pick 10 random channels
+            const shuffled = allChannels.sort(() => 0.5 - Math.random());
+            const recommended = shuffled.slice(0, 10);
+            
+            // Add to container with highlight effect
+            recommended.forEach((channel, index) => {
+                const card = channel.element;
+                card.classList.add('recommended-card');
+                card.classList.add('highlight-pulse');
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                // Remove highlight after animation completes
+                setTimeout(() => {
+                    card.classList.remove('highlight-pulse');
+                }, 2000 + (index * 100));
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Scroll recommended channels horizontally
+        function scrollRecommended(amount) {
+            const container = document.getElementById('recommendedChannels');
+            container.scrollBy({
+                left: amount,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>

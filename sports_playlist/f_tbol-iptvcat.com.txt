@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="US" tvg-logo="" group-title="Sport",Fútbol
+https://dai.google.com/linear/hls/event/JgYgVMW8Szinkmm7dchlmQ/master.m3u8?checkedby:iptvcat.com

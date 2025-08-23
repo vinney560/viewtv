@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Welcome | View Tv</title>
+    <style>
+        body {
+            background: #0a0c12;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .welcome-message {
+            font-size: 2rem;
+            font-weight: bold;
+            opacity: 0;
+            position: absolute;
+            top: 40%;
+            animation: fadeInOut 4s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            30% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-message">Welcome to View Tv</div>
+
+    <script>
+        function speakMessage() {
+            const msg = new SpeechSynthesisUtterance("Welcome to View Tv");
+            msg.lang = "en-US";  
+            msg.rate = 1;        
+            msg.pitch = 1.2;     
+            window.speechSynthesis.speak(msg);
+        }
+
+        function redirectUser() {
+            const userRole = "{{ role }}";
+
+            if (["admin1", "admin2", "admin3", "superadmin"].includes(userRole)) {
+                window.location.href = "/home_admin";
+            } else {
+                window.location.href = "/home_2";
+            }
+        }
+
+        window.onload = function () {
+            speakMessage();
+            setTimeout(redirectUser, 4500);
+        };
+    </script>
+
+</body>
+</html> 

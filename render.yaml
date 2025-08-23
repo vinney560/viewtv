@@ -1,0 +1,5 @@
+services:
+  - type: web
+    name: viewtv-p2s3
+    env: docker
+    plan: free

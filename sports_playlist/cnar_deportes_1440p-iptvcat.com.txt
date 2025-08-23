@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="AR" tvg-logo="" group-title="Sport",CnAr Deportes (1440p)
+https://stmv1.cnarlatam.com/cnardeportes2/cnardeportes2/playlist.m3u8?checkedby:iptvcat.com

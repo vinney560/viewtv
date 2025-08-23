@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="AM" tvg-logo="" group-title="Sport",Viju Sport (480p)
+http://ott-cdn.ucom.am/s38/index.m3u8?checkedby:iptvcat.com

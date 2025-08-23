@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plus Movies | ViewTv</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+        }
+        
+        .genre-section {
+            margin-bottom: 3rem;
+        }
+        
+        .genre-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .movie-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: #334155 #1e293b;
+        }
+        
+        .movie-row::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .movie-row::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+        
+        .movie-row::-webkit-scrollbar-thumb {
+            background-color: #334155;
+            border-radius: 10px;
+        }
+        
+        .movie-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 0 0 auto;
+            width: 220px;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .movie-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 40%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+        
+        .movie-card:hover::before {
+            opacity: 1;
+        }
+        
+        .movie-poster {
+            transition: transform 0.5s ease;
+            height: 330px;
+            width: 100%;
+        }
+        
+        .movie-card:hover .movie-poster {
+            transform: scale(1.05);
+        }
+        
+        .movie-info {
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            opacity: 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            z-index: 2;
+        }
+        
+        .movie-card:hover .movie-info {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .torrent-btn {
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .torrent-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        
+        .rating-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid;
+        }
+        
+        .rating-high {
+            border-color: #4ade80;
+            color: #4ade80;
+        }
+        
+        .rating-medium {
+            border-color: #fbbf24;
+            color: #fbbf24;
+        }
+        
+        .rating-low {
+            border-color: #f87171;
+            color: #f87171;
+        }
+        
+        .search-results-title {
+            transition: all 0.3s ease;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+
+        .poster-loading {
+            background: linear-gradient(110deg, #1e293b 8%, #334155 18%, #1e293b 33%);
+            background-size: 200% 100%;
+            animation: 1.5s shine linear infinite;
+            height: 330px;
+            width: 100%;
+        }
+
+        @keyframes shine {
+            to {
+                background-position-x: -200%;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-100">
+    <header class="bg-gray-900 py-6 shadow-xl sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="fas fa-film text-blue-400 text-3xl mr-3"></i>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+                        Plus Movies <span class="text-white">|</span> <span class="text-blue-300">ViewTv</span>
+                    </h1>
+                </div>
+                <div class="w-full md:w-1/3">
+                    <div class="relative">
+                        <input type="text" id="liveSearch" 
+                               class="w-full py-2 px-4 rounded-full bg-gray-800 text-white focus:outline-none search-input border border-gray-700 focus:border-blue-500" 
+                               placeholder="Search movies...">
+                        <button class="absolute right-3 top-2 text-gray-400 hover:text-blue-400 transition-colors">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="searchResultsHeader" class="mb-8 hidden">
+            <h2 class="text-2xl font-semibold">Search Results for <span id="searchQueryText" class="text-blue-400">""</span></h2>
+            <button id="clearSearch" class="mt-2 flex items-center text-blue-400 hover:text-blue-300 transition-colors">
+                <i class="fas fa-times mr-2"></i> Clear search
+            </button>
+        </div>
+
+        <div id="genreContainer">
+            <!-- This will be populated by JavaScript -->
+            {% for genre, movies_in_genre in movies|groupby('genre') %}
+            <div class="genre-section">
+                <h3 class="genre-title">{{ genre }}</h3>
+                <div class="movie-row">
+                    {% for movie in movies_in_genre %}
+                    <div class="movie-card group h-full" data-title="{{ movie.title|lower }}" data-year="{{ movie.year }}" data-genre="{{ movie.genre|lower if movie.genre else '' }}" data-rating="{{ movie.rating }}">
+                        <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="block h-full">
+                            <div class="relative overflow-hidden h-full">
+                                <!-- Rating Badge -->
+                                <div class="rating-circle 
+                                    {% if movie.rating >= 7.5 %}rating-high
+                                    {% elif movie.rating >= 5 %}rating-medium
+                                    {% else %}rating-low
+                                    {% endif %}">
+                                    {{ movie.rating|round(1) if movie.rating else 'N/A' }}
+                                </div>
+                                
+                                <!-- Movie Poster with Loading State -->
+                                <div class="movie-poster h-full w-full poster-loading">
+                                    <img src="{{ movie.poster }}" alt="{{ movie.title }}" 
+                                         class="h-full w-full object-cover"
+                                         loading="lazy"
+                                         onload="this.parentElement.classList.remove('poster-loading')">
+                                </div>
+                                
+                                <!-- Movie Info (shown on hover) -->
+                                <div class="movie-info">
+                                    <h3 class="font-bold text-xl mb-1">{{ movie.title }}</h3>
+                                    <div class="flex items-center text-gray-300 mb-3">
+                                        <span class="mr-3">{{ movie.year }}</span>
+                                        {% if movie.runtime and movie.runtime != 'N/A' %}
+                                        <span><i class="fas fa-clock mr-1"></i> {{ movie.runtime }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    {% if movie.genre and movie.genre != 'N/A' %}
+                                    <div class="flex flex-wrap gap-2 mb-3">
+                                        {% for genre in movie.genre.split(',')[:3] %}
+                                        <span class="text-xs bg-gray-700 bg-opacity-80 px-2 py-1 rounded-full">
+                                            {{ genre }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="flex flex-wrap gap-2">
+                                        {% if movie.torrents %}
+                                            {% for t in movie.torrents|sort(attribute='quality') %}
+                                                <span class="torrent-btn inline-block 
+                                                    {% if t.quality == '4K' %}bg-purple-600 hover:bg-purple-500
+                                                    {% elif t.quality == '1080p' %}bg-blue-600 hover:bg-blue-500
+                                                    {% elif t.quality == '720p' %}bg-green-600 hover:bg-green-500
+                                                    {% else %}bg-gray-600 hover:bg-gray-500{% endif %} 
+                                                    text-white text-xs font-semibold py-1 px-3 rounded-full">
+                                                    {{ t.quality }}
+                                                </span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="text-gray-400 text-sm">No torrents available</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="noResults" class="text-center py-20 hidden">
+            <div class="inline-block p-6 bg-gray-800 rounded-full mb-6">
+                <i class="fas fa-film fa-5x text-gray-600"></i>
+            </div>
+            <h3 class="text-3xl font-semibold mb-2">No movies found</h3>
+            <p class="text-lg text-gray-400 max-w-md mx-auto">We couldn't find any matches for "<span id="noResultsQuery"></span>". Try a different search term.</p>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 py-8 mt-16 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h2 class="text-xl font-bold text-blue-400 mb-2">
+                        <i class="fas fa-film mr-2"></i>Plus Movies | ViewTv
+                    </h2>
+                    <p class="text-gray-400 text-sm">Your ultimate movie streaming experience</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-github fa-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-twitter fa-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                        <i class="fab fa-discord fa-lg"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-gray-800 text-center text-gray-500 text-sm">
+                <p>© 2025 Plus Movies | ViewTv. All rights reserved.</p>
+                <p class="mt-2">Data provided by TMDB, OMDB, and YTS.</p>
+                <p class="mt-1">This site is for viewing and streaming purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const liveSearch = document.getElementById('liveSearch');
+            const movieCards = document.querySelectorAll('.movie-card');
+            const searchResultsHeader = document.getElementById('searchResultsHeader');
+            const searchQueryText = document.getElementById('searchQueryText');
+            const noResults = document.getElementById('noResults');
+            const noResultsQuery = document.getElementById('noResultsQuery');
+            const clearSearch = document.getElementById('clearSearch');
+            const genreContainer = document.getElementById('genreContainer');
+            
+            // Live search functionality
+            liveSearch.addEventListener('input', function() {
+                const searchTerm = this.value.trim().toLowerCase();
+                
+                if (searchTerm.length > 0) {
+                    searchQueryText.textContent = `"${this.value}"`;
+                    noResultsQuery.textContent = this.value;
+                    searchResultsHeader.classList.remove('hidden');
+                    
+                    let hasResults = false;
+                    
+                    movieCards.forEach(card => {
+                        const title = card.dataset.title;
+                        const year = card.dataset.year;
+                        const genre = card.dataset.genre;
+                        
+                        if (title.includes(searchTerm) || 
+                            year.includes(searchTerm) || 
+                            (genre && genre.includes(searchTerm))) {
+                            card.classList.remove('hidden');
+                            hasResults = true;
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                    
+                    // Hide empty genre sections
+                    document.querySelectorAll('.genre-section').forEach(section => {
+                        const visibleCards = section.querySelectorAll('.movie-card:not(.hidden)');
+                        if (visibleCards.length === 0) {
+                            section.classList.add('hidden');
+                        } else {
+                            section.classList.remove('hidden');
+                        }
+                    });
+                    
+                    if (hasResults) {
+                        noResults.classList.add('hidden');
+                    } else {
+                        noResults.classList.remove('hidden');
+                    }
+                } else {
+                    // If search is empty, show all movies
+                    searchResultsHeader.classList.add('hidden');
+                    noResults.classList.add('hidden');
+                    document.querySelectorAll('.movie-card, .genre-section').forEach(el => {
+                        el.classList.remove('hidden');
+                    });
+                }
+            });
+            
+            // Clear search functionality
+            clearSearch.addEventListener('click', function() {
+                liveSearch.value = '';
+                searchResultsHeader.classList.add('hidden');
+                noResults.classList.add('hidden');
+                document.querySelectorAll('.movie-card, .genre-section').forEach(el => {
+                    el.classList.remove('hidden');
+                });
+                liveSearch.focus();
+            });
+            
+            // Add slight delay to search to improve performance on large collections
+            let searchTimeout;
+            liveSearch.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const event = new Event('input');
+                    this.dispatchEvent(event);
+                }, 200);
+            });
+
+            // Lazy load images with Intersection Observer
+            if ('IntersectionObserver' in window) {
+                const lazyImageObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+
+                document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+                    img.dataset.src = img.src;
+                    img.src = '';
+                    lazyImageObserver.observe(img);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

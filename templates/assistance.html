@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Assistance Center | View TV</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="View TV offers easy, ad-free streaming of local and global channels. Watch live sports, news, entertainment, and more — all in one place, anytime, anywhere.">
+  <meta name="robots" content="index, follow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(10px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+    }
+    .error-card {
+      transition: all 0.3s ease;
+      transform-origin: top center;
+      backdrop-filter: blur(8px);
+    }
+    .error-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+    }
+    .glow-hover {
+      transition: all 0.3s ease;
+    }
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen p-4 md:p-6 flex flex-col items-center justify-start">
+
+  <div class="max-w-4xl w-full space-y-8 animate-fade-in">
+    <!-- Header -->
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center bg-cyan-900/20 border border-cyan-400/30 rounded-full px-6 py-2 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <span class="text-sm font-medium text-cyan-300">ASSISTANCE CENTER</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">We're Here to Help</h1>
+      <p class="mt-3 text-gray-400 max-w-lg mx-auto">Common issues and solutions for your View TV experience</p>
+    </div>
+
+    <!-- Error Sections -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up">
+      <!-- 500 -->
+      <div class="error-card bg-gradient-to-br from-red-900/30 to-red-900/10 border border-red-500/30 p-5 rounded-xl">
+        <div class="flex items-start">
+          <div class="bg-red-500/20 p-2 rounded-lg mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-red-400">500 - Server Error</h2>
+            <p class="text-gray-300 mt-1 text-sm">Our servers are having trouble.</p>
+            <div class="mt-3 space-y-2">
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">Server is under maintenance or overloaded</span>
+              </div>
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">Temporary bug or code issue</span>
+              </div>
+            </div>
+            <button class="mt-4 text-xs bg-red-900/50 hover:bg-red-800/50 text-red-200 px-3 py-1.5 rounded-lg transition-colors">
+              Refresh Page
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 404 -->
+      <div class="error-card bg-gradient-to-br from-yellow-900/30 to-yellow-900/10 border border-yellow-500/30 p-5 rounded-xl">
+        <div class="flex items-start">
+          <div class="bg-yellow-500/20 p-2 rounded-lg mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-yellow-400">404 - Page Missing</h2>
+            <p class="text-gray-300 mt-1 text-sm">This page doesn't exist anymore.</p>
+            <div class="mt-3 space-y-2">
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-yellow-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">The URL might be incorrect</span>
+              </div>
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-yellow-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">Page was removed or renamed</span>
+              </div>
+            </div>
+            <button class="mt-4 text-xs bg-yellow-900/50 hover:bg-yellow-800/50 text-yellow-200 px-3 py-1.5 rounded-lg transition-colors">
+              Back to Safety
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 403 -->
+      <div class="error-card bg-gradient-to-br from-orange-900/30 to-orange-900/10 border border-orange-500/30 p-5 rounded-xl">
+        <div class="flex items-start">
+          <div class="bg-orange-500/20 p-2 rounded-lg mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-orange-400">403 - Access Denied</h2>
+            <p class="text-gray-300 mt-1 text-sm">You don't have permission here.</p>
+            <div class="mt-3 space-y-2">
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-orange-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">You're not logged in or your role is restricted</span>
+              </div>
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-orange-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">Trying to access admin-only features</span>
+              </div>
+            </div>
+            <button class="mt-4 text-xs bg-orange-900/50 hover:bg-orange-800/50 text-orange-200 px-3 py-1.5 rounded-lg transition-colors">
+              Login Again
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Free Plus -->
+      <div class="error-card bg-gradient-to-br from-cyan-900/30 to-cyan-900/10 border border-cyan-500/30 p-5 rounded-xl">
+        <div class="flex items-start">
+          <div class="bg-cyan-500/20 p-2 rounded-lg mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-cyan-400">Free Plus Claim Failed</h2>
+            <p class="text-gray-300 mt-1 text-sm">Daily limit reached.</p>
+            <div class="mt-3 space-y-2">
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">Free Plus is limited to once every 24 hours</span>
+              </div>
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">System clock mismatch or session error</span>
+              </div>
+            </div>
+            <button class="mt-4 text-xs bg-cyan-900/50 hover:bg-cyan-800/50 text-cyan-200 px-3 py-1.5 rounded-lg transition-colors">
+              Upgrade to Pro
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Failure -->
+      <div class="error-card md:col-span-2 bg-gradient-to-br from-purple-900/30 to-purple-900/10 border border-purple-500/30 p-5 rounded-xl">
+        <div class="flex items-start">
+          <div class="bg-purple-500/20 p-2 rounded-lg mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-lg font-semibold text-purple-400">Payment Not Processed</h2>
+            <p class="text-gray-300 mt-1 text-sm">Transaction couldn't be completed.</p>
+            <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-purple-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">Incorrect phone number or M-Pesa delay</span>
+              </div>
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-purple-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">Low balance or network issues</span>
+              </div>
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-purple-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">Payment was not confirmed in time</span>
+              </div>
+              <div class="flex items-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-0.5 mr-2 text-purple-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs text-gray-400">If deducted, contact support immediately</span>
+              </div>
+            </div>
+            <div class="mt-4 flex flex-col sm:flex-row gap-3">
+              <button onclick="window.location.href='tel: +254740694312'" class="text-xs bg-purple-900/50 hover:bg-purple-800/50 text-purple-200 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                Call Support
+              </button>
+              <button onclick="window.location.href=' mailto:vincentkipngetich479@gmail.com'" class="text-xs bg-gray-800/50 hover:bg-gray-700/50 text-gray-200 px-3 py-1.5 rounded-lg transition-colors flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Email Support
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Home -->
+    <div class="text-center pt-6">
+      <a href="#" onclick="history.back(); return false;" class="glow-hover inline-flex items-center bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 px-8 py-3 rounded-xl shadow-lg font-bold text-white transition-all transform hover:-translate-y-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        Back
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>

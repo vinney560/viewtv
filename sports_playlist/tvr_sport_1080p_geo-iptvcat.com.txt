@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="RO" tvg-logo="" group-title="Sport",TVR Sport (1080p) [Geo-blocked]
+https://tvr-tvrsport.cdn.zitec.com/live/tvrsport/main.m3u8?checkedby:iptvcat.com

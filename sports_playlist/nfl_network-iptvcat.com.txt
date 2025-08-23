@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="US" tvg-logo="" group-title="Sport",NFL Network
+http://fl2.moveonjoy.com/NFL_NETWORK/index.m3u8?checkedby:iptvcat.com

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Settings | View TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+    }
+    .toggle-btn { 
+      cursor: pointer; 
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+    .toggle-btn:hover {
+      opacity: 0.8;
+    }
+    .card-glass {
+      background: rgba(31, 41, 55, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .toast-entry {
+      animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    .toast-exit {
+      animation: toast-out 0.5s ease forwards;
+    }
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    @keyframes toast-out {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+    }
+  </style>
+</head>
+<body class="h-full min-h-screen text-white flex flex-col items-center p-4">
+
+  <!-- Modern Toast Notifications -->
+  <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4
+            {% if category == 'success' %} bg-gray-800 border-emerald-500
+            {% elif category == 'error' %} bg-gray-800 border-red-500
+            {% else %} bg-gray-800 border-cyan-500 {% endif %}">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 pt-0.5">
+                {% if category == 'success' %}
+                  <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% elif category == 'error' %}
+                  <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% else %}
+                  <svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                {% endif %}
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm">{{ message }}</p>
+              </div>
+              <button onclick="this.parentElement.parentElement.classList.add('toast-exit'); setTimeout(() => this.parentElement.parentElement.remove(), 500)" class="absolute top-3 right-3 text-gray-400 hover:text-white">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Back Button -->
+  <div class="w-full max-w-xl flex justify-start mb-4">
+    <a href="#" onclick="history.back(); return false;" class="flex items-center text-cyan-400 hover:text-cyan-300 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span class="ml-1">Back</span>
+    </a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="w-full max-w-xl card-glass p-6 rounded-2xl shadow-xl space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold gradient-text flex items-center gap-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 14a5 5 0 100-10 5 5 0 000 10zm0 2c-3.3 0-6 2.7-6 6h12c0-3.3-2.7-6-6-6z"/>
+        </svg>
+        Account Settings
+      </h2>
+    </div>
+
+    <!-- User Info -->
+    <div class="text-sm space-y-2 text-center text-gray-300 p-4 rounded-lg bg-gray-800/50">
+      <p>Email: <span class="text-white font-medium">{{ user.email }}</span></p>
+      <p>Role: <span class="text-white font-medium">{{ user.role }}</span></p>
+      {% if user.plus_type %}
+        <p>Plus: <span class="text-green-400 font-semibold">{{ user.plus_type }}</span></p>
+        {% if time_remaining_seconds > 0 %}
+          <p class="text-xs text-gray-400">Remaining: {{ (time_remaining_seconds // 3600)|int }}h {{ ((time_remaining_seconds % 3600) // 60)|int }}m</p>
+        {% endif %}
+      {% else %}
+        <p>Plus: <span class="text-red-400">None</span></p>
+      {% endif %}
+    </div>
+
+    <!-- Update Name -->
+    <form method="POST" action="{{ url_for('account') }}" class="space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="form_type" value="update_name">
+      
+      <div>
+        <label class="block text-sm font-medium mb-2 text-cyan-300">New Name:</label>
+        <input type="text" name="new_name" value="{{ user.name }}" minlength="3" required placeholder="Enter new name"
+               class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition">
+      </div>
+      
+      <button type="submit"
+              class="w-full bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h16v2H4V4zm0 4h16v2H4V8zm0 4h10v2H4v-2z"/></svg>
+        Update Name
+      </button>
+    </form>
+
+    <!-- Change Password -->
+    <form method="POST" action="{{ url_for('account') }}" id="passwordForm" class="space-y-4">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="form_type" value="change_password">
+
+      <div>
+        <label class="block text-sm font-medium mb-2 text-cyan-300">Current Password:</label>
+        <div class="relative">
+          <input type="password" name="current_password" required maxlength="10" minlength="4" id="current_password"
+                 class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition pr-10">
+          <span class="absolute right-3 top-3 text-gray-400 toggle-btn" onclick="togglePass('current_password')">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-2 text-cyan-300">New Password:</label>
+        <div class="relative">
+          <input type="password" name="new_password" required maxlength="10" minlength="4" id="new_password"
+                 class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition pr-10">
+          <span class="absolute right-3 top-3 text-gray-400 toggle-btn" onclick="togglePass('new_password')">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-2 text-cyan-300">Confirm New Password:</label>
+        <div class="relative">
+          <input type="password" name="confirm_new_password" required maxlength="10" minlength="4" id="confirm_new_password"
+                 class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition pr-10">
+          <span class="absolute right-3 top-3 text-gray-400 toggle-btn" onclick="togglePass('confirm_new_password')">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/></svg>
+          </span>
+        </div>
+        <p id="passwordError" class="text-xs text-red-400 mt-1 hidden">Passwords do not match</p>
+      </div>
+
+      <button type="submit"
+              class="w-full bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Change Password
+      </button>
+    </form>
+
+    <!-- Delete Account -->
+    <form method="POST" action="{{ url_for('account') }}"
+          onsubmit="return confirm('Are you absolutely sure you want to delete your account? This action cannot be undone and all your data will be permanently lost.')">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="form_type" value="delete_account">
+      
+      <div>
+        <label class="block text-sm font-medium mb-2 text-red-400">Confirm Password to Delete:</label>
+        <div class="relative">
+          <input type="password" name="confirm_password" required id="confirm_password"
+                 class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-transparent transition pr-10">
+          <span class="absolute right-3 top-3 text-gray-400 toggle-btn" onclick="togglePass('confirm_password')">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <button type="submit"
+              class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 mt-4">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        Delete Account
+      </button>
+    </form>
+  </div>
+
+  <script>
+    // Password visibility toggle
+    function togglePass(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    // Password match validation
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+      const newPassword = document.getElementById('new_password').value;
+      const confirmPassword = document.getElementById('confirm_new_password').value;
+      const errorElement = document.getElementById('passwordError');
+      
+      if (newPassword !== confirmPassword) {
+        e.preventDefault();
+        errorElement.classList.remove('hidden');
+        document.getElementById('confirm_new_password').classList.add('border-red-500');
+      } else {
+        errorElement.classList.add('hidden');
+        document.getElementById('confirm_new_password').classList.remove('border-red-500');
+      }
+    });
+
+    // Toast auto-dismiss
+    window.addEventListener('DOMContentLoaded', () => {
+      const toasts = document.querySelectorAll('.toast-entry');
+      toasts.forEach((toast) => {
+        setTimeout(() => {
+          toast.classList.add('toast-exit');
+          setTimeout(() => toast.remove(), 500);
+        }, 5000);
+        
+        const closeBtn = toast.querySelector('button');
+        if (closeBtn && !closeBtn.getAttribute('data-has-listener')) {
+          closeBtn.setAttribute('data-has-listener', 'true');
+          closeBtn.addEventListener('click', () => {
+            toast.classList.add('toast-exit');
+            setTimeout(() => toast.remove(), 500);
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

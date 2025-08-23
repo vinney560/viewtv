@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verify Your Email | ViewTV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .card-glass {
+      background: rgba(31, 41, 55, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glow-hover {
+      transition: all 0.3s ease;
+    }
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+    }
+    .toast-entry {
+      animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="h-full min-h-screen text-white flex flex-col items-center justify-center p-4">
+
+  <!-- Toast Notification -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80">
+        {% for category, message in messages %}
+          <div class="toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4
+            {% if category == 'success' %} bg-gray-800 border-emerald-500
+            {% elif category == 'error' %} bg-gray-800 border-red-500
+            {% else %} bg-gray-800 border-cyan-500 {% endif %}">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 pt-0.5">
+                <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="ml-3 flex-1">
+                <p class="text-sm">{{ message }}</p>
+              </div>
+              <button onclick="this.parentElement.parentElement.remove()" class="absolute top-3 right-3 text-gray-400 hover:text-white">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="w-full max-w-md card-glass rounded-2xl shadow-xl p-8 text-center">
+    <!-- Email Icon -->
+    <div class="mx-auto w-24 h-24 rounded-full bg-cyan-900/30 flex items-center justify-center mb-6 glow-hover">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-4 gradient-text">Verify Your Email</h1>
+    
+    <!-- Message -->
+    <div class="text-left mb-6 space-y-4">
+      <p class="text-gray-300">We've sent a verification email to:</p>
+      <div class="p-4 bg-gray-800/50 rounded-lg">
+        <p class="font-medium text-cyan-300">{{ new_user.email }}</p>
+      </div>
+      <p class="text-sm text-gray-400">Please check your inbox and click the verification link to complete your registration as <span class="font-medium text-white">{{ new_user.role }}</span>.</p>
+      
+      <div class="p-3 bg-amber-900/20 rounded-lg border border-amber-800/50">
+        <p class="text-sm text-amber-300">⚠️ The verification link will expire in <span class="font-bold">30 minutes</span>.</p>
+      </div>
+    </div>
+
+    <!-- Support Notice -->
+    <div class="text-left text-sm text-gray-400 mb-6 p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
+      <p>If you don't see the email in your inbox, please check your spam folder.</p>
+      <p class="mt-2">If you entered the wrong email address, please contact support immediately:</p>
+      <a href="mailto:vincentkipngetich479@gmail.com" class="inline-block mt-2 text-cyan-400 hover:text-cyan-300 underline">vincentkipngetich479@gmail.com</a>
+    </div>
+     
+      <a href="{{ url_for('home') }}" class="text-sm text-gray-400 hover:text-cyan-400 transition">
+        Return to Home Page
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Auto-dismiss toast after 5 seconds
+    window.addEventListener('DOMContentLoaded', () => {
+      const toast = document.querySelector('.toast-entry');
+      if (toast) {
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+          setTimeout(() => toast.remove(), 300);
+        }, 5000);
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="US" tvg-logo="" group-title="Sport",Fox Sports 1
+http://fl2.moveonjoy.com/FOX_Sports_1/index.m3u8?checkedby:iptvcat.com

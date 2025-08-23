@@ -1,0 +1,230 @@
+{
+  "channel_synonyms": {
+    "ESPN": [
+      "ESPN network",
+      "ESPN channel",
+      "ESPN sports",
+      "watch ESPN",
+      "ESPN live",
+      "ESPN HD",
+      "the ESPN network",
+      "ESPN streaming"
+    ],
+    "HBO": [
+      "HBO Max",
+      "HBO channel",
+      "HBO television",
+      "HBO movies",
+      "HBO premium",
+      "HBO streaming",
+      "Home Box Office",
+      "HBO signal"
+    ],
+    "CNN": [
+      "CNN news",
+      "CNN channel",
+      "Cable News Network",
+      "CNN live",
+      "CNN broadcast",
+      "CNN HD",
+      "watch CNN",
+      "CNN International"
+    ]
+  },
+  "technical_terms": {
+    "buffering": [
+      "freezing",
+      "stuttering",
+      "loading",
+      "lagging",
+      "pausing",
+      "interruptions",
+      "video problems",
+      "stream issues"
+    ],
+    "4K": [
+      "Ultra HD",
+      "UHD",
+      "2160p",
+      "four K",
+      "4K resolution",
+      "high resolution",
+      "4K quality",
+      "ultra high definition"
+    ],
+    "HDR": [
+      "high dynamic range",
+      "better contrast",
+      "wider colors",
+      "HDR10",
+      "Dolby Vision",
+      "enhanced colors",
+      "vivid picture",
+      "brightness range"
+    ]
+  },
+  "action_phrases": {
+    "check": [
+      "verify",
+      "look up",
+      "confirm",
+      "see if",
+      "find out",
+      "determine",
+      "validate",
+      "inspect"
+    ],
+    "recommend": [
+      "suggest",
+      "propose",
+      "advise",
+      "offer",
+      "put forward",
+      "mention",
+      "highlight",
+      "point out"
+    ],
+    "fix": [
+      "repair",
+      "solve",
+      "resolve",
+      "correct",
+      "troubleshoot",
+      "address",
+      "rectify",
+      "deal with"
+    ]
+  },
+  "device_types": {
+    "receiver": [
+      "set-top box",
+      "cable box",
+      "satellite receiver",
+      "TV box",
+      "decoder",
+      "tuner",
+      "media box",
+      "entertainment system"
+    ],
+    "remote": [
+      "clicker",
+      "controller",
+      "TV remote",
+      "channel changer",
+      "zapper",
+      "RCU",
+      "remote control unit",
+      "clicker device"
+    ]
+  },
+  "content_types": {
+    "movie": [
+      "film",
+      "feature",
+      "picture",
+      "flick",
+      "cinema",
+      "motion picture",
+      "show",
+      "production"
+    ],
+    "sports": [
+      "athletics",
+      "games",
+      "matches",
+      "competitions",
+      "tournaments",
+      "contests",
+      "events",
+      "fixtures"
+    ]
+  },
+  "time_references": {
+    "now": [
+      "currently",
+      "at the moment",
+      "right now",
+      "presently",
+      "at present",
+      "at this time",
+      "currently showing",
+      "on now"
+    ],
+    "tonight": [
+      "this evening",
+      "later today",
+      "after dark",
+      "prime time",
+      "nighttime",
+      "later",
+      "today night",
+      "this night"
+    ]
+  },
+  "status_terms": {
+    "not working": [
+      "down",
+      "offline",
+      "broken",
+      "malfunctioning",
+      "not responding",
+      "out",
+      "unavailable",
+      "having issues"
+    ],
+    "working": [
+      "up",
+      "online",
+      "functioning",
+      "operational",
+      "running",
+      "available",
+      "active",
+      "live"
+    ]
+  },
+  "subscription_terms": {
+    "package": [
+      "plan",
+      "tier",
+      "bundle",
+      "subscription",
+      "service",
+      "deal",
+      "offer",
+      "programming"
+    ],
+    "premium": [
+      "extra",
+      "exclusive",
+      "additional",
+      "special",
+      "enhanced",
+      "deluxe",
+      "top-tier",
+      "paid"
+    ]
+  },
+  "parental_terms": {
+    "block": [
+      "restrict",
+      "ban",
+      "filter",
+      "prohibit",
+      "disable",
+      "lock",
+      "prevent",
+      "blacklist"
+    ],
+    "kids": [
+      "children",
+      "minors",
+      "young ones",
+      "family",
+      "youth",
+      "little ones",
+      "child-friendly",
+      "family-safe"
+    ]
+  }
+}

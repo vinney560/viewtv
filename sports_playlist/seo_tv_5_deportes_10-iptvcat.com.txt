@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="AR;BO;CL;CO;PA;PE" tvg-logo="https://i.imgur.com/N56B7si.png" group-title="Sport",SEO TV 5 Deportes (1080p) [Not 24/7]
+https://seo.tv.bo/tv/SEOtv_5sd.m3u8?checkedby:iptvcat.com

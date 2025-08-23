@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black text-white">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Playlist | StreamTv</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+    }
+    .channel-card {
+      transition: all 0.3s ease;
+      background: rgba(31, 41, 55, 0.5);
+      border: 1px solid rgba(74, 222, 128, 0.1);
+    }
+    .channel-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(34, 211, 238, 0.3);
+      box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.3);
+    }
+    .live-btn {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .back-btn {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(6, 182, 212, 0.8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 20;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+      transition: all 0.3s ease;
+      display: none;
+    }
+    .back-btn:hover {
+      transform: scale(1.1);
+      background: rgba(6, 182, 212, 1);
+    }
+    .header-glass {
+      background: rgba(31, 41, 55, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .invalid-channel {
+      opacity: 0.7;
+      filter: grayscale(80%);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- Header -->
+  <header class="header-glass p-4 sticky top-0 z-40">
+    <div class="container mx-auto flex items-center justify-between">
+      <a href="javascript:history.back()" class="text-cyan-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </a>
+      <h1 class="text-2xl font-bold gradient-text">Sports | StreamTv</h1>
+      <div class="flex space-x-4">
+        <!-- Football Matches Button -->
+        <a href="/football_matches" class="text-white hover:text-cyan-400 transition-colors relative group">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v9m-7-9H5a2 2 0 00-2 2v5a2 2 0 002 2h2a2 2 0 002-2v-5a2 2 0 00-2-2z"></path>
+          </svg>
+          <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Football</span>
+        </a>
+        
+        <!-- Live Matches Button -->
+        <a href="/live_matches" class="text-white hover:text-cyan-400 transition-colors relative group bg-cyan-600/20 px-2 py-1 rounded-lg">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+          </svg>
+          <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full live-btn"></span>
+          <span class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Live Matches</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <div class="px-4 mb-6 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-4">
+    <div class="relative flex-1">
+      <input id="searchInput" type="text" placeholder="Search channels..." class="w-full p-3 pl-10 rounded-lg bg-gray-800/50 text-white placeholder-gray-500 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all">
+      <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <select id="groupFilter" class="p-3 rounded-lg bg-gray-800/50 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition-all">
+      <option value="">All Groups</option>
+      {% for label in channels_by_group.keys() %}
+      <option value="{{ label }}">{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Channel Sections - Original Data Structure -->
+  <main class="flex-grow overflow-y-auto px-4 space-y-8 pb-28">
+    {% for group, channels in channels_by_group.items() %}
+      <section class="channel-section" data-group="{{ group }}">
+        <h2 class="text-xl font-semibold text-cyan-300 mb-4 border-l-4 border-cyan-400 pl-3 flex items-center">
+          <i class="fas fa-tag mr-2 text-cyan-400"></i>
+          {{ group }}
+          <span class="ml-2 text-sm font-normal text-cyan-400/70">({{ channels|length }} channels)</span>
+        </h2>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {% for ch in channels %}
+          <div class="channel-card rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3 min-w-0">
+              <img src="{{ ch.logo }}" alt="{{ ch.name }}" class="h-12 w-12 rounded bg-gray-700/50 object-contain flex-shrink-0" onerror="this.src='{{ url_for('uploaded_file', filename='default_tv_icon.png') }}'">
+              <div class="min-w-0">
+                <p class="font-semibold channel-name truncate">{{ ch.name }}</p>
+                <p class="text-xs text-gray-400 truncate">{{ ch.country }}</p>
+              </div>
+            </div>
+            
+            <!-- Play button with IP detection -->
+            {% if ch.url %}
+              {% set url_parts = ch.url.split('://') %}
+              {% if url_parts|length > 1 %}
+                {% set domain_port = url_parts[1].split('/')[0] %}
+                {% set domain = domain_port.split(':')[0] %}
+                {% set is_ip = domain.replace('.', '').isdigit() %}
+                {% set has_port = ':' in domain_port %}
+                
+                {% if is_ip or has_port %}
+                  <a href="{{ ch.url }}" 
+                    target="_blank" 
+                    class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors"
+                    onclick="return validateLink(event, '{{ ch.url }}')">▶ Play</a>
+                {% else %}
+                  <a href="{{ url_for('plus_player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" 
+                    target="_blank" 
+                    class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors">▶ Play</a>
+                {% endif %}
+              {% else %}
+                <a href="{{ url_for('plus_player') }}?{{ {'url': ch.url, 'token': ch.token}|urlencode }}" 
+                  target="_blank" 
+                  class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition-colors">▶ Play</a>
+              {% endif %}
+            {% else %}
+              <span class="bg-gray-600 text-gray-300 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap cursor-not-allowed">No URL</span>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% else %}
+      <div class="text-center py-12">
+        <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p class="text-gray-500">No channels found.</p>
+      </div>
+    {% endfor %}
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-gray-900/80 backdrop-blur-sm border-t border-gray-700 text-white flex justify-around items-center h-16 z-50">
+    <a href="{{ url_for('dashboard') }}" class="flex flex-col items-center text-xs hover:text-cyan-400 transition-colors px-2">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"/>
+      </svg>
+      Dashboard
+    </a>
+    <a href="{{ url_for('get_plus') }}" class="flex flex-col items-center text-xs hover:text-cyan-400 transition-colors px-2">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path d="M12 4v16m8-8H4"/>
+      </svg>
+      Plus
+    </a>
+    <a href="{{ url_for('account') }}" class="flex flex-col items-center text-xs hover:text-cyan-400 transition-colors px-2">
+      <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path d="M5.121 17.804A9 9 0 1118.88 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Account
+    </a>
+  </nav>
+
+  <!-- Back to Top Button -->
+  <div class="back-btn" id="backToTop" title="Back to Top">
+    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+    </svg>
+  </div>
+
+  <!-- Footer -->
+  <footer class="w-full text-center text-gray-500 text-sm py-4">
+    &copy; {{ current_year }} Stream Tv. All rights reserved.
+  </footer>
+
+  <script>
+    // DOM Elements
+    const input = document.getElementById('searchInput');
+    const groupFilter = document.getElementById('groupFilter');
+    const backButton = document.getElementById('backToTop');
+
+    // Event Listeners
+    input.addEventListener('input', filter);
+    groupFilter.addEventListener('change', filter);
+    
+    backButton.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    window.addEventListener('scroll', () => {
+      backButton.style.display = window.pageYOffset > 300 ? 'flex' : 'none';
+    });
+
+    // Filter function
+    function filter() {
+      const term = input.value.toLowerCase();
+      const selectedGroup = groupFilter.value;
+      
+      document.querySelectorAll('.channel-section').forEach(section => {
+        const group = section.dataset.group;
+        let visible = false;
+
+        section.querySelectorAll('.channel-card').forEach(card => {
+          const name = card.querySelector('.channel-name').textContent.toLowerCase();
+          const match = name.includes(term) && (selectedGroup === '' || selectedGroup === group);
+          card.style.display = match ? 'flex' : 'none';
+          if (match) visible = true;
+        });
+
+        section.style.display = visible ? 'block' : 'none';
+      });
+    }
+
+    // Validate direct IP links before opening
+    function validateLink(event, url) {
+      try {
+        // Basic URL validation
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          alert('Invalid URL format. Please use http:// or https://');
+          event.preventDefault();
+          return false;
+        }
+
+        // Additional checks can be added here if needed
+        return confirm(`You are about to open a direct IP link:\nStreamTv Channel Source\n\nAre you sure you want to proceed?`);
+      } catch (e) {
+        alert('Error opening channel');
+        event.preventDefault();
+        return false;
+      }
+    }
+  </script>
+</body>
+</html>

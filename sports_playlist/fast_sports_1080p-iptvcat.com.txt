@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="AM" tvg-logo="https://i.imgur.com/VmaYUcq.png" group-title="Sport",Fast Sports (1080p)
+http://stream01.vnet.am/Channel_131/index.m3u8?checkedby:iptvcat.com

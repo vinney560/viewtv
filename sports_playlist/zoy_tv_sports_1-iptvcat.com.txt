@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:0 tvg-country="BO" tvg-logo="" group-title="Sport",Zoy TV Sports 1
+https://fl1004.bozztv.com/ssh101/zoytvsports/index.m3u8?checkedby:iptvcat.com

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies | ViewTv</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        slideIn: 'slideIn 0.3s ease-out forwards',
+                        fadeOut: 'fadeOut 0.5s ease-in forwards',
+                        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
+                    keyframes: {
+                        slideIn: {
+                            'from': { transform: 'translateX(100%)', opacity: '0' },
+                            'to': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        fadeOut: {
+                            'to': { opacity: '0', transform: 'translateY(-20px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Optimized inlined icons */
+        .icon {
+            display: inline-block;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .icon-tv { 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'%3E%3Cpath fill='%2322d3ee' d='M512 448H127.1C110.3 448 96 462.3 96 479.1S110.3 512 127.1 512h384C529.7 512 544 497.7 544 480S529.7 448 512 448zM592 0h-544C21.5 0 0 21.5 0 48v320C0 394.5 21.5 416 48 416h544c26.5 0 48-21.5 48-48v-320C640 21.5 618.5 0 592 0zM576 352H64v-288h512V352z'/%3E%3C/svg%3E"); 
+        }
+        .icon-search { 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23164e63' d='M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z'/%3E%3C/svg%3E"); 
+        }
+        .icon-tag { 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'%3E%3Cpath fill='%2322d3ee' d='M497.941 225.941L286.059 14.059A48 48 0 0 0 252.118 0H48C21.49 0 0 21.49 0 48v204.118a48 48 0 0 0 14.059 33.941l211.882 211.882c18.744 18.745 49.136 18.746 67.882 0l204.118-204.118c18.745-18.745 18.745-49.137 0-67.882zM112 160c-26.51 0-48-21.49-48-48s21.49-48 48-48 48 21.49 48 48-21.49 48-48 48z'/%3E%3C/svg%3E"); 
+        }
+        
+        /* Channel card hover effect */
+        .channel-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            min-height: 200px;
+        }
+        .channel-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 255, 255, 0.1);
+            border-color: rgba(34, 211, 238, 0.5);
+        }
+        
+        /* Category header fixes */
+        .category-header {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .category-count {
+            font-size: 0.875rem;
+            color: rgba(34, 211, 238, 0.7);
+            white-space: nowrap;
+        }
+        
+        /* Image loading improvements */
+        .channel-logo {
+            background-color: rgba(31, 41, 55, 0.3);
+            background-image: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
+        
+        /* Responsive grid */
+        @media (max-width: 640px) {
+            .channel-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 640px) {
+            .channel-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 768px) {
+            .channel-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1024px) {
+            .channel-grid {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1280px) {
+            .channel-grid {
+                grid-template-columns: repeat(6, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col min-h-screen">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2 w-full max-w-xs"></div>
+
+    <!-- Header -->
+    <header class="bg-gray-950 border-b border-cyan-900/20 p-4 sticky top-0 z-40">
+        <div class="container mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="icon icon-tv w-6 h-6"></span>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">Movies | ViewTv</h1>
+            </div>
+            <div class="relative w-full max-w-xs">
+                <label for="searchInput" class="sr-only">Search movies</label>
+                <input type="text" id="searchInput" placeholder="Search movies..."
+                    class="w-full bg-gray-800/80 border border-cyan-900/30 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200"
+                    aria-label="Search movies">
+                <span class="icon icon-search w-4 h-4 absolute left-3 top-2.5"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto">
+        <div id="categories-container" class="container mx-auto px-4 py-4">
+            <!-- Initial loading state -->
+            <div id="initial-loading" class="flex flex-col items-center justify-center py-12 space-y-4">
+                <div class="animate-pulse rounded-full h-12 w-12 bg-cyan-400/20"></div>
+                <p class="text-cyan-100">Loading movie catalog...</p>
+            </div>
+            
+            <!-- Error state (hidden by default) -->
+            <div id="error-state" class="hidden flex-col items-center justify-center py-12 space-y-4 text-center">
+                <span class="icon icon-error w-12 h-12 text-red-400"></span>
+                <h2 class="text-xl font-bold text-red-400">Failed to load movies</h2>
+                <p class="text-gray-400 max-w-md">We couldn't load the movie catalog. Please try refreshing the page.</p>
+                <button id="retry-button" class="mt-4 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg transition-colors">
+                    Retry
+                </button>
+            </div>
+            
+            <!-- Empty state (hidden by default) -->
+            <div id="empty-state" class="hidden flex-col items-center justify-center py-12 space-y-4 text-center">
+                <span class="icon icon-tv w-12 h-12 text-cyan-400/30"></span>
+                <h2 class="text-xl font-bold text-cyan-100">No movies found</h2>
+                <p class="text-gray-400 max-w-md">Try adjusting your search or check back later.</p>
+            </div>
+            
+            <!-- Categories will be injected here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/50 border-t border-cyan-900/20 py-3 mt-auto">
+        <div class="container mx-auto px-4 text-center text-gray-400 text-xs">
+            <p>© 2025 ViewTv | StreamTV • All movies are provided for streaming <span class='text-red-500'>ONLY</span>.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced configuration
+        const config = {
+            itemsPerPage: 48,
+            prefetchThreshold: 300,
+            maxSimultaneousRequests: 4,
+            debounceTime: 250,
+            retryDelay: 3000,
+            maxRetries: 3
+        };
+
+        // Enhanced state management
+        const state = {
+            loadedCategories: new Map(),
+            pendingRequests: 0,
+            activeRequests: new Set(),
+            searchTerm: '',
+            retryCount: 0,
+            categories: [],
+            totalMovies: 0
+        };
+
+        // DOM Elements
+        const elements = {
+            container: document.getElementById('categories-container'),
+            loadingIndicator: document.getElementById('initial-loading'),
+            errorState: document.getElementById('error-state'),
+            emptyState: document.getElementById('empty-state'),
+            searchInput: document.getElementById('searchInput'),
+            retryButton: document.getElementById('retry-button')
+        };
+
+        // Initialize Intersection Observers
+        const observers = {
+            category: new IntersectionObserver(handleCategoryIntersection, { 
+                threshold: 0.1,
+                rootMargin: '200px'
+            }),
+            sentinel: new IntersectionObserver(handleSentinelIntersection, {
+                threshold: 0.1
+            })
+        };
+
+        // Initialize the application
+        async function init() {
+            setupEventListeners();
+            await loadInitialData();
+        }
+
+        function setupEventListeners() {
+            elements.searchInput.addEventListener('input', debounce(handleSearch, config.debounceTime));
+            elements.retryButton.addEventListener('click', handleRetry);
+        }
+
+        async function loadInitialData() {
+            try {
+                state.categories = await fetchWithRetry('/api/categories');
+                state.totalMovies = await fetchTotalCount();
+                
+                if (state.categories.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+                
+                renderCategorySkeletons(state.categories);
+                loadInitialCategories();
+                
+            } catch (error) {
+                console.error("Initial load failed:", error);
+                showErrorState();
+            } finally {
+                elements.loadingIndicator.classList.add('hidden');
+            }
+        }
+
+        async function fetchWithRetry(url, retries = config.maxRetries) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, config.retryDelay));
+                    return fetchWithRetry(url, retries - 1);
+                }
+                throw error;
+            }
+        }
+
+        async function fetchTotalCount() {
+            try {
+                const response = await fetch('/api/movies/count');
+                const data = await response.json();
+                return data.count || 0;
+            } catch {
+                return 0;
+            }
+        }
+
+        function renderCategorySkeletons(categories) {
+            elements.container.innerHTML = categories.map(category => `
+                <section class="mb-10" data-category="${category.id}">
+                    <div class="border-l-4 border-cyan-400 pl-4 py-2 mb-4">
+                        <div class="category-header">
+                            <h2 class="text-lg md:text-xl font-bold text-cyan-100 flex items-center">
+                                <span class="icon icon-tag w-4 h-4 mr-2"></span>
+                                ${category.name}
+                            </h2>
+                            <span class="category-count">(Loading...)</span>
+                        </div>
+                    </div>
+                    <div class="channel-grid grid gap-4" id="movie-grid-${category.id}">
+                        ${Array(12).fill().map(() => `
+                            <div class="channel-card bg-gray-800/50 rounded-xl h-64 animate-pulse"></div>
+                        `).join('')}
+                    </div>
+                </section>
+            `).join('');
+            
+            // Observe all categories for lazy loading
+            document.querySelectorAll('[data-category]').forEach(el => {
+                observers.category.observe(el);
+            });
+        }
+
+        function loadInitialCategories() {
+            // Load first 2 categories immediately
+            state.categories.slice(0, 2).forEach(category => {
+                if (!state.loadedCategories.has(category.id)) {
+                    loadCategoryMovies(category.id);
+                }
+            });
+        }
+
+        async function loadCategoryMovies(categoryId, page = 1) {
+            if (state.pendingRequests >= config.maxSimultaneousRequests) return;
+            
+            const requestId = `${categoryId}-${page}`;
+            if (state.activeRequests.has(requestId)) return;
+            
+            state.pendingRequests++;
+            state.activeRequests.add(requestId);
+            
+            try {
+                const url = `/api/movies?category=${categoryId}&page=${page}&limit=${config.itemsPerPage}`;
+                const { movies, hasMore } = await fetchWithRetry(url);
+                
+                renderMovies(categoryId, movies);
+                updateCategoryHeader(categoryId, movies.length);
+                
+                if (hasMore) {
+                    setupInfiniteScroll(categoryId, page);
+                }
+                
+                // Track loaded pages
+                if (!state.loadedCategories.has(categoryId)) {
+                    state.loadedCategories.set(categoryId, new Set());
+                }
+                state.loadedCategories.get(categoryId).add(page);
+                
+            } catch (error) {
+                console.error(`Failed to load category ${categoryId}:`, error);
+                showToast(`Failed to load ${categoryId} movies`, 'error');
+            } finally {
+                state.pendingRequests--;
+                state.activeRequests.delete(requestId);
+                checkAllContentLoaded();
+            }
+        }
+
+        function renderMovies(categoryId, movies) {
+            const grid = document.getElementById(`movie-grid-${categoryId}`);
+            if (!grid) return;
+            
+            // Clear loading skeletons
+            grid.querySelectorAll('.animate-pulse').forEach(el => el.remove());
+            
+            if (movies.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-8 text-gray-400">
+                        No movies found in this category
+                    </div>
+                `;
+                return;
+            }
+            
+            movies.forEach(movie => {
+                const movieEl = document.createElement('div');
+                movieEl.className = 'channel-card bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700/50 h-64';
+                movieEl.dataset.name = movie.name.toLowerCase();
+                movieEl.dataset.access = movie.access.toLowerCase();
+                movieEl.innerHTML = `
+                    <a href="${movie.url}" target="_blank" class="block h-full group" 
+                       aria-label="Watch ${movie.name} (${movie.access} access)">
+                        <div class="relative h-full w-full channel-logo">
+                            ${movie.logo ? `
+                                <img src="${movie.logo}" alt="${movie.name}" 
+                                     class="absolute inset-0 w-full h-full object-contain transition-opacity duration-300"
+                                     loading="lazy"
+                                     onload="this.style.opacity=1"
+                                     onerror="this.style.display='none'"
+                                     style="opacity:0">
+                            ` : `
+                                <div class="absolute inset-0 flex items-center justify-center text-cyan-400/30">
+                                    <span class="icon icon-tv w-12 h-12"></span>
+                                </div>
+                            `}
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                                <span class="text-xs font-medium ${movie.access === 'paid' ? 'text-yellow-400' : 'text-cyan-400'}">
+                                    ${movie.access.toUpperCase()}
+                                </span>
+                                <h3 class="font-semibold text-sm truncate mt-1">${movie.name}</h3>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                grid.appendChild(movieEl);
+                
+                // Preload image
+                if (movie.logo) {
+                    const img = new Image();
+                    img.src = movie.logo;
+                }
+            });
+        }
+
+        function updateCategoryHeader(categoryId, count) {
+            const countElement = document.querySelector(`[data-category="${categoryId}"] .category-count`);
+            if (countElement) {
+                countElement.textContent = `(${count} movies)`;
+            }
+        }
+
+        function setupInfiniteScroll(categoryId, currentPage) {
+            const grid = document.getElementById(`movie-grid-${categoryId}`);
+            if (!grid) return;
+            
+            const sentinel = document.createElement('div');
+            sentinel.className = 'load-more-sentinel h-1';
+            sentinel.dataset.category = categoryId;
+            sentinel.dataset.page = currentPage + 1;
+            grid.appendChild(sentinel);
+            
+            observers.sentinel.observe(sentinel);
+        }
+
+        function handleCategoryIntersection(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const categoryId = entry.target.dataset.category;
+                    if (!state.loadedCategories.has(categoryId)) {
+                        loadCategoryMovies(categoryId);
+                    }
+                }
+            });
+        }
+
+        function handleSentinelIntersection(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const { category, page } = entry.target.dataset;
+                    observers.sentinel.unobserve(entry.target);
+                    entry.target.remove();
+                    loadCategoryMovies(category, parseInt(page));
+                }
+            });
+        }
+
+        function handleSearch() {
+            state.searchTerm = this.value.trim().toLowerCase();
+            
+            if (state.searchTerm === '') {
+                // Show all when search is empty
+                document.querySelectorAll('[data-category]').forEach(el => {
+                    el.style.display = 'block';
+                    const grid = el.querySelector('.channel-grid');
+                    if (grid) {
+                        grid.querySelectorAll('.channel-card').forEach(card => {
+                            card.style.display = 'block';
+                        });
+                    }
+                });
+                return;
+            }
+            
+            let hasMatches = false;
+            document.querySelectorAll('[data-category]').forEach(categoryEl => {
+                const categoryId = categoryEl.dataset.category.toLowerCase();
+                const grid = categoryEl.querySelector('.channel-grid');
+                let categoryHasMatches = false;
+                
+                if (grid) {
+                    grid.querySelectorAll('.channel-card').forEach(card => {
+                        const matches = card.dataset.name.includes(state.searchTerm) || 
+                                      card.dataset.access.includes(state.searchTerm) ||
+                                      categoryId.includes(state.searchTerm);
+                        
+                        card.style.display = matches ? 'block' : 'none';
+                        if (matches) {
+                            categoryHasMatches = true;
+                            hasMatches = true;
+                        }
+                    });
+                }
+                
+                categoryEl.style.display = categoryHasMatches ? 'block' : 'none';
+            });
+            
+            // Show empty state if no matches
+            if (!hasMatches) {
+                elements.emptyState.classList.remove('hidden');
+            } else {
+                elements.emptyState.classList.add('hidden');
+            }
+        }
+
+        function checkAllContentLoaded() {
+            if (state.pendingRequests === 0 && state.loadedCategories.size === state.categories.length) {
+                // All content loaded
+                document.querySelectorAll('.channel-grid').forEach(grid => {
+                    if (grid.children.length === 0) {
+                        grid.innerHTML = `
+                            <div class="col-span-full text-center py-8 text-gray-400">
+                                No movies found in this category
+                            </div>
+                        `;
+                    }
+                });
+            }
+        }
+
+        function showErrorState() {
+            elements.errorState.classList.remove('hidden');
+            elements.emptyState.classList.add('hidden');
+            elements.loadingIndicator.classList.add('hidden');
+        }
+
+        function showEmptyState() {
+            elements.emptyState.classList.remove('hidden');
+            elements.errorState.classList.add('hidden');
+            elements.loadingIndicator.classList.add('hidden');
+        }
+
+        function handleRetry() {
+            elements.errorState.classList.add('hidden');
+            elements.loadingIndicator.classList.remove('hidden');
+            state.retryCount++;
+            init();
+        }
+
+        // Utility functions
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            
+            const colors = {
+                success: 'bg-green-600',
+                error: 'bg-red-600',
+                warning: 'bg-yellow-600',
+                info: 'bg-blue-600'
+            };
+            
+            const icons = {
+                success: '✓',
+                error: '⚠',
+                warning: '⚠',
+                info: 'ℹ'
+            };
+            
+            const toast = document.createElement('div');
+            toast.className = `toast px-4 py-3 rounded-lg shadow-lg text-sm font-medium text-white ${colors[type]}`;
+            toast.style.animation = 'slideIn 0.3s ease-out forwards';
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <span class="mr-2 font-bold">${icons[type]}</span>
+                    ${message}
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.5s ease-in forwards';
+                setTimeout(() => toast.remove(), 500);
+            }, 3500);
+        }
+
+        // Start the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -170,10 +170,7 @@ jwt = JWTManager(app)
 login_manager = LoginManager(app)
 mail = Mail(app)
 csrf = CustomCSRFProtect(app)
-limiter = Limiter(
-    app,
-    key_func=lambda: session.get('user_id', request.remote_addr)  # fallback to IP if no session
-)
+limiter = Limiter(key_func=lambda: session.get('user_id', request.remote_addr))
 limiter.init_app(app)
 Session(app)
 Compress(app)

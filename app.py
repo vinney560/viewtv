@@ -170,7 +170,10 @@ jwt = JWTManager(app)
 login_manager = LoginManager(app)
 mail = Mail(app)
 csrf = CustomCSRFProtect(app)
-limiter = Limiter(key_func=get_remote_address)
+limiter = Limiter(
+    app,
+    key_func=lambda: session.get('user_id', request.remote_addr)  # fallback to IP if no session
+)
 limiter.init_app(app)
 Session(app)
 Compress(app)
@@ -1883,7 +1886,7 @@ LOGIN_M3U8 = "https://viewtv.viewtv.gt.tc/uploads/login-required.m3u8"
 
 SECRET_KEY = b"aJ3HZM4CHHcTtORaZWBTksbddgf"
 
-def generate_token(user_id, username, expiry_seconds=300):
+def generate_token(user_id, username, expiry_seconds=60):
     expiry = datetime.utcnow() + timedelta(seconds=expiry_seconds)
     timestamp = int(expiry.timestamp())
     msg = f"{user_id}:{username}:{timestamp}".encode()
@@ -1891,6 +1894,7 @@ def generate_token(user_id, username, expiry_seconds=300):
     return f"{token_hash}:{timestamp}"
 
 @app.route("/plus-channel/<key>")
+@limiter.limit("15 per 30 seconds")
 def plus_play(key):
     try:
         with open('channels.json') as f:
@@ -1940,7 +1944,9 @@ def plus_play(key):
     except json.JSONDecodeError:
         return "Channel database corrupted", 500
 
+
 @app.route('/api/plus_channels')
+@limiter.limit("7 per 10 seconds")
 @login_required
 @plus_required
 def api_plus_channels():
@@ -5076,6 +5082,11 @@ def handle_csrf_error(e):
         return redirect(referrer), 400
     else:
         return redirect(url_for('home')), 400
+
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    logging.warning(f"Rate limit exceeded: {request.remote_addr} / user {session.get('user_id')}")
+    return "Too Many Requests", 429
 #========================================
 if __name__ == '__main__':
     if not os.path.exists(CONFIG["CACHE_FILE"]):

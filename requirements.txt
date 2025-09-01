@@ -4,11 +4,6 @@ Flask-Login>=0.6
 Flask-SQLAlchemy>=2.5
 Flask-JWT-Extended>=4.0
 Flask-WTF>=1.0
-
-torch
-transformers
-sentencepiece
-
 Flask-Cors>=3.0
 Flask-Limiter>=2.0
 flask-session>=0.4.0

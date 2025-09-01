@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0d0d0d;
+    color: #eee;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+}
+h1 {
+    text-align: center;
+    color: #00ffea;
+    margin-bottom: 20px;
+}
+#chat-box {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    height: 500px;
+    overflow-y: scroll;
+    box-shadow: 0 0 10px #00ffea33;
+}
+.message {
+    padding: 8px 12px;
+    margin: 8px 0;
+    border-radius: 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+.user-msg {
+    background: #00ffea33;
+    color: #000;
+    margin-left: auto;
+    text-align: right;
+}
+.ai-msg {
+    background: #222;
+    border: 1px solid #00ffea;
+    color: #00ffea;
+    margin-right: auto;
+    text-align: left;
+}
+input, button {
+    padding: 12px;
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+}
+input {
+    background: #222;
+    color: #eee;
+}
+button {
+    background: #00ffea;
+    color: #000;
+    cursor: pointer;
+    transition: 0.3s;
+}
+button:hover {
+    background: #00ffd0;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>AI Assistant</h1>
+    <div id="chat-box"></div>
+    <input type="text" id="message" placeholder="Ask anything..." autocomplete="off">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+const chatBox = document.getElementById("chat-box");
+const input = document.getElementById("message");
+
+function appendMessage(text, className) {
+    const msg = document.createElement("div");
+    msg.className = `message ${className}`;
+    msg.innerHTML = text;
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function sendMessage() {
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    appendMessage(msg, "user-msg");
+
+    fetch("/advance-chat-ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "message=" + encodeURIComponent(msg)
+    })
+    .then(res => res.json())
+    .then(data => {
+        appendMessage(data.response, "ai-msg");
+    })
+    .catch(err => {
+        appendMessage("Error: " + err, "ai-msg");
+    });
+
+    input.value = "";
+    input.focus();
+}
+
+// Enter key sends message
+input.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") sendMessage();
+});
+</script>
+</body>
+</html>

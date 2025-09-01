@@ -59,8 +59,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 
 
 #=============================
-#  ML 🤖 Imports 
-#=============================
+
 import os
 import json
 import time
@@ -95,7 +94,7 @@ load_dotenv()
 #======================================
 def choose_db_uri():
     supabase_uri = os.getenv('DATABASE_URL')  # Old Render DB (primary)
-    render_uri = os.getenv('DATABASE_URL_2')   # New Render DB (secondary)
+    render_uri = os.getenv('DATABASE_URL_2')      # Render DB (secondary)
 
     # Try Render Old DB first
     if supabase_uri:
@@ -110,7 +109,7 @@ def choose_db_uri():
             print(f"📋 Error: {e}")
             traceback.print_exc()
 
-    # Try Render New DB next
+    # Try Render DB next
     if render_uri:
         print("🔍 Trying Render New DB (DATABASE_URL)...")
         try:
@@ -158,7 +157,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 
 class CustomCSRFProtect(CSRFProtect):
     def _get_token(self):
-        # Try header first (used by fetch in api)
+        # Try header first (used by fetch)
         token = request.headers.get("X-CSRF-Token")
         if token:
             return token
@@ -439,7 +438,7 @@ def force_logout_banned_users():
         if user and user.status.lower() == "banned":
             logout_user()  # <-- no arguments
             flash("Your account has been banned. You have been logged out.", "error")
-            return redirect(url_for('home'))
+            return redirect(url_for('login'))
 #-----------------------------------------------------------------------
 def generate_email_token(user):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
@@ -694,6 +693,92 @@ def notice_register():
     user_id = request.args.get('user_id')
     new_user = User.query.get(user_id)
     return render_template("notice_register.html", new_user=new_user)
+
+#====================================
+#====================================
+from llama_cpp import Llama
+
+# ---------------------- Channels ----------------------
+CHANNEL_FILE = "channels.json"
+if os.path.exists(CHANNEL_FILE):
+    with open(CHANNEL_FILE) as f:
+        channels = json.load(f)
+else:
+    channels = {}
+
+# ---------------------- Small AI Model ----------------------
+MODEL_NAME = "ggml-gpt4all-j-v1.3-groovy-small.bin"  # smaller version
+
+if not os.path.exists(MODEL_NAME):
+    import urllib.request
+    print("⬇️ Downloading small AI model (~100MB)...")
+    urllib.request.urlretrieve(
+        "https://huggingface.co/ggml-org/models/resolve/main/ggml-gpt4all-j-v1.3-groovy-small.bin",
+        MODEL_NAME
+    )
+    print("✅ Model downloaded!")
+
+print("⏳ Loading AI model...")
+llm = Llama(model_path=MODEL_NAME)
+print("✅ AI model loaded!")
+
+# ---------------------- Render Frontend ----------------------
+@app.route("/advance-chat-ai", methods=["GET"])
+def render_advance_chat():
+    return render_template("advance_chat_ai.html")
+
+# ---------------------- AI Chat Route ----------------------
+@app.route("/advance-chat-ai", methods=["POST"])
+def advance_chat_ai():
+    user_input = request.form.get("message", "").strip()
+    if not user_input:
+        return jsonify({"response": "Please provide a message."})
+
+    # ---------------------- Prepare context ----------------------
+    users_list = [
+        {"email": u.email, "role": u.role, "plus": u.is_plus, "status": u.status}
+        for u in User.query.all()
+    ]
+
+    payments_list = [
+        {"user_email": User.query.get(p.user_id).email if User.query.get(p.user_id) else "Unknown",
+         "amount": p.amount,
+         "status": p.status,
+         "timestamp": p.timestamp.strftime("%Y-%m-%d %H:%M:%S")}
+        for p in Payment.query.all()
+    ]
+
+    channels_list = [
+        {"name": c["name"], "access": c.get("access", "free"), "country": c.get("country", ""),
+         "logo": c.get("logo", ""), "url": c.get("url", "")}
+        for c in channels.values()
+    ]
+
+    # ---------------------- Construct AI prompt ----------------------
+    prompt = f"""
+You are a smart assistant for a streaming app.
+
+Channels (read-only): {channels_list}
+Users: {users_list}
+Payments: {payments_list}
+
+Rules:
+- Channels: Only read status, do not alter.
+- Users: Can be managed by admins (superadmin/admin1) only with correct password.
+- Payments: Can be managed by admins (superadmin/admin1) only with correct password.
+- Always respond clearly and politely.
+- For general questions, answer normally.
+
+User input: {user_input}
+Assistant:
+"""
+
+    # ---------------------- Generate AI response ----------------------
+    response = llm(prompt, max_tokens=150, echo=False)
+    answer = response["choices"][0]["text"].strip()
+
+    return jsonify({"response": answer})
+
 
 #----------------------------------------------------------------------
 @app.route('/local-player')

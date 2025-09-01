@@ -696,7 +696,10 @@ def notice_register():
 
 #====================================
 #====================================
-from llama_cpp import Llama
+
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
 
 # ---------------------- Channels ----------------------
 CHANNEL_FILE = "channels.json"
@@ -706,21 +709,14 @@ if os.path.exists(CHANNEL_FILE):
 else:
     channels = {}
 
-# ---------------------- Small AI Model ----------------------
-MODEL_NAME = "ggml-gpt4all-j-v1.3-groovy-small.bin"  # smaller version
+# ---------------------- Load Small Offline Model ----------------------
+MODEL_NAME = "distilgpt2"  # very small GPT2 variant
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
 
-if not os.path.exists(MODEL_NAME):
-    import urllib.request
-    print("⬇️ Downloading small AI model (~100MB)...")
-    urllib.request.urlretrieve(
-        "https://huggingface.co/ggml-org/models/resolve/main/ggml-gpt4all-j-v1.3-groovy-small.bin",
-        MODEL_NAME
-    )
-    print("✅ Model downloaded!")
-
-print("⏳ Loading AI model...")
-llm = Llama(model_path=MODEL_NAME)
-print("✅ AI model loaded!")
+# Make sure it runs on CPU (low RAM)
+device = torch.device("cpu")
+model.to(device)
 
 # ---------------------- Render Frontend ----------------------
 @app.route("/advance-chat-ai", methods=["GET"])
@@ -755,30 +751,23 @@ def advance_chat_ai():
     ]
 
     # ---------------------- Construct AI prompt ----------------------
-    prompt = f"""
-You are a smart assistant for a streaming app.
-
+    context_text = f"""
 Channels (read-only): {channels_list}
 Users: {users_list}
 Payments: {payments_list}
-
-Rules:
-- Channels: Only read status, do not alter.
-- Users: Can be managed by admins (superadmin/admin1) only with correct password.
-- Payments: Can be managed by admins (superadmin/admin1) only with correct password.
-- Always respond clearly and politely.
-- For general questions, answer normally.
-
 User input: {user_input}
 Assistant:
 """
 
     # ---------------------- Generate AI response ----------------------
-    response = llm(prompt, max_tokens=150, echo=False)
-    answer = response["choices"][0]["text"].strip()
+    inputs = tokenizer.encode(context_text, return_tensors="pt").to(device)
+    outputs = model.generate(inputs, max_length=150, do_sample=True, top_p=0.95, top_k=50)
+    answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    
+    # Strip the input part from output
+    answer = answer.replace(context_text, "").strip()
 
     return jsonify({"response": answer})
-
 
 #----------------------------------------------------------------------
 @app.route('/local-player')

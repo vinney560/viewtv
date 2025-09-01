@@ -30,7 +30,7 @@ REASONING_DEPTH = 4
 CONVERSATION_MEMORY = 3
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 10  # Learn after every 10 interactions
-MIN_UPDATE_SAMPLES = 3
+MIN_UPDATE_SAMPLES = 3        # Minimum samples before updating model
 
 # Generative model config
 GENERATIVE_MODEL_NAME = "gpt2"

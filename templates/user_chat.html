@@ -458,7 +458,7 @@
         .typing-indicator {
             display: flex;
             align-items: center;
-            padding:  16px;
+            padding: 8px 16px;
             background: rgba(30, 41, 59, 0.6);
             border-radius: 20px;
             width: fit-content;
@@ -476,7 +476,7 @@
             animation: bounce 1.3s linear infinite;
         }
         
-        . span:nth-child(2) {
+        .typing-indicator span:nth-child(2) {
             animation-delay: 0.15s;
         }
         
@@ -486,7 +486,7 @@
         
         @keyframes bounce {
             0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5); }
+            30% { transform: translateY(-5px); }
         }
         
         .message-reactions {
@@ -497,7 +497,7 @@
         }
         
         .reaction {
-            background: rgba(30, 41, 59, .5);
+            background: rgba(30, 41, 59, 0.5);
             border-radius: 12px;
             padding: 2px 6px;
             font-size: 12px;
@@ -528,7 +528,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-           : 8px;
+            gap: 8px;
             transition: all 0.2s ease;
         }
         
@@ -542,7 +542,7 @@
             background: var(--primary);
             color: white;
             width: 20px;
-            height: 20;
+            height: 20px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -606,7 +606,7 @@
         }
         
         .notification-content {
-            flex: ;
+            flex: 1;
             max-width: 250px;
         }
         
@@ -650,7 +650,7 @@
             fill: rgba(79, 70, 229, 0.1);
         }
         
-        /* Enhanced Voice Call Styles from Admin */
+        /* Voice Call Styles */
         .call-modal {
             position: fixed;
             top: 0;
@@ -680,7 +680,7 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
-            border: 1 solid var(--glass-border);
+            border: 1px solid var(--glass-border);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         
@@ -751,7 +751,7 @@
         .reject-call {
             background: var(--error);
             color: white;
-            box-shadow: 0 0 20 rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
         }
         
         .reject-call:hover {
@@ -777,21 +777,32 @@
             font-weight: 600;
         }
         
-        .audio-visualizer {
-            width: 100%;
-            height: 60px;
+        .calling-animation {
             display: flex;
-            align-items: flex-end;
             justify-content: center;
-            gap: 2px;
             margin: 20px 0;
         }
         
-        .visualizer-bar {
-            width: 4px;
+        .calling-dot {
+            width: 10px;
+            height: 10px;
             background: var(--primary-light);
-            border-radius: 2px;
-            transition: height 0.1s ease;
+            border-radius: 50%;
+            margin: 0 5px;
+            animation: pulse-dot 1.5s infinite ease-in-out;
+        }
+        
+        .calling-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .calling-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
         }
         
         .call-controls {
@@ -829,7 +840,7 @@
     
     <button class="back-button" onclick="location.href='{{ url_for('user_messages') }}'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5M12 19l-7-7 -7"/>
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
         </svg>
     </button>
     
@@ -843,14 +854,14 @@
             <div class="header-actions">
                 <div class="header-btn" id="voice-call-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 -6-6 19.79 19.79 0 0 1-3.07-8.67A2  0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 极速加速器 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                     </svg>
                 </div>
                 <div class="header-btn">
                     <i class="fas fa-video"></i>
                 </div>
                 <div class="header-btn">
-                    <i class="fas fa-ellipsis-v"></>
+                    <i class="fas fa-ellipsis-v"></i>
                 </div>
             </div>
         </div>
@@ -887,7 +898,7 @@
         </div>
         
         <div class="wave-divider">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox=" 1200 120" preserveAspectRatio="none">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
             </svg>
         </div>
@@ -902,7 +913,7 @@
                 </div>
                 <div class="input-btn">
                     <i class="fas fa-smile"></i>
-                </>
+                </div>
             </div>
             
             <div class="message-input-container">
@@ -919,7 +930,7 @@
         </div>
     </div>
 
-    <!-- Enhanced Voice Call Modal from Admin -->
+    <!-- Voice Call Modal -->
     <div class="call-modal" id="call-modal">
         <div class="call-container">
             <div class="call-header">
@@ -930,17 +941,10 @@
                 </div>
             </div>
             
-            <div class="audio-visualizer" id="audio-visualizer">
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
-                <div class="visualizer-bar"></div>
+            <div class="calling-animation">
+                <div class="calling-dot"></div>
+                <div class="calling-dot"></div>
+                <div class="calling-dot"></div>
             </div>
             
             <div class="call-timer" id="call-timer">00:00</div>
@@ -1006,20 +1010,25 @@
             particlesContainer.appendChild(particle);
         }
 
-        // Character counter for message input
+        // Auto-resize textarea
         const messageInput = document.getElementById('message-input');
         const charCount = document.getElementById('char-count');
         
-        messageInput.addEventListener('input', () => {
-            charCount.textContent = messageInput.value.length;
+        messageInput.addEventListener('input', function() {
+            // Auto-resize
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
             
-            if (messageInput.value.length > 400) {
+            // Character counter
+            charCount.textContent = this.value.length;
+            
+            if (this.value.length > 800) {
                 charCount.style.color = 'var(--warning)';
             } else {
-                charCount.style.color = 'var(--gray)';
+                charCount.style.color = 'var(--text-secondary)';
             }
             
-            if (messageInput.value.length > 450) {
+            if (this.value.length > 950) {
                 charCount.style.color = 'var(--error)';
             }
         });
@@ -1032,7 +1041,7 @@
             message.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
                 contextMenu.style.display = 'block';
-                context.style.left = `${e.pageX}px`;
+                contextMenu.style.left = `${e.pageX}px`;
                 contextMenu.style.top = `${e.pageY}px`;
             });
         });
@@ -1051,6 +1060,23 @@
                 notification.classList.remove('show');
             }, 3000);
         }
+
+        // User info panel toggle
+        const infoPanel = document.getElementById('user-info-panel');
+        const infoToggleBtn = document.getElementById('info-toggle-btn');
+        const infoPanelToggle = document.getElementById('info-panel-toggle');
+        
+        infoToggleBtn.addEventListener('click', () => {
+            infoPanel.classList.toggle('open');
+            infoPanelToggle.innerHTML = infoPanel.classList.contains('open') ? 
+                '<i class="fas fa-chevron-right"></i>' : '<i class="fas fa-chevron-left"></i>';
+        });
+        
+        infoPanelToggle.addEventListener('click', () => {
+            infoPanel.classList.toggle('open');
+            infoPanelToggle.innerHTML = infoPanel.classList.contains('open') ? 
+                '<i class="fas fa-chevron-right"></i>' : '<i class="fas fa-chevron-left"></i>';
+        });
 
         // Simulate typing indicator
         let typingTimeout;
@@ -1072,7 +1098,7 @@
             }, 2000);
         });
 
-        // Enhanced WebRTC implementation for voice calls from admin version
+        // WebRTC implementation for voice calls
         const callModal = document.getElementById('call-modal');
         const voiceCallBtn = document.getElementById('voice-call-btn');
         const acceptCallBtn = document.getElementById('accept-call');
@@ -1100,12 +1126,12 @@
         voiceCallBtn.addEventListener('click', () => {
             // Emit call request to the server
             socket.emit('voice_call_request', {
-                receiver_id: adminId
+                receiver_id: userId
             });
             
             // Show calling UI
             callStatus.textContent = 'Calling...';
-            callerName.textContent = 'Support Team';
+            callerName.textContent = '{{ other_user.name }}';
             acceptCallBtn.style.display = 'none';
             endCallBtn.style.display = 'block';
             callControls.style.display = 'none';
@@ -1121,7 +1147,7 @@
                 socket.emit('end_call', {
                     call_id: currentCallId
                 });
-            } else if (currentId) {
+            } else if (currentCallId) {
                 // Cancel outgoing call
                 socket.emit('end_call', {
                     call_id: currentCallId
@@ -1185,7 +1211,7 @@
                 analyser = audioContext.createAnalyser();
                 const source = audioContext.createMediaStreamSource(localStream);
                 source.connect(analyser);
-                analyser.fft = 32;
+                analyser.fftSize = 32;
                 
                 // Start visualizer
                 startAudioVisualizer();
@@ -1244,7 +1270,7 @@
                 if (event.candidate) {
                     socket.emit('webrtc_ice_candidate', {
                         candidate: event.candidate,
-                        call_id: currentCall
+                        call_id: currentCallId
                     });
                 }
             };
@@ -1321,16 +1347,13 @@
         // Original socket.io functionality remains exactly the same
         const socket = io();
         const currentUserId = {{ current_user.id }};
-        const adminId = {{ other_user.id }};
+        const userId = {{ other_user.id }};
         
-        // Create conversation room ID
-        const user_ids = [currentUserId, adminId].sort((a, b) => a - b);
+        const user_ids = [currentUserId, userId].sort((a, b) => a - b);
         const roomId = `conversation_${user_ids[0]}_${user_ids[1]}`;
         
-        // Join conversation room
-        socket.emit('join_conversation', { user_id: adminId });
+        socket.emit('join_conversation', { user_id: userId });
         
-        // Scroll to bottom on load
         window.onload = function() {
             const messagesDiv = document.getElementById('messages');
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -1359,6 +1382,9 @@
             
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Reset textarea height
+            messageInput.style.height = 'auto';
         });
         
         socket.on('typing', function(data) {
@@ -1445,8 +1471,9 @@
         });
         
         document.getElementById('send-button').addEventListener('click', sendMessage);
-        document.getElementById('message-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+        document.getElementById('message-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 sendMessage();
             }
         });
@@ -1457,13 +1484,14 @@
             
             if (content) {
                 socket.emit('send_message', {
-                    receiver_id: adminId,
+                    receiver_id: userId,
                     content: content
                 });
                 
                 input.value = '';
+                input.style.height = 'auto';
                 charCount.textContent = '0';
-                charCount.style.color = 'var(--gray)';
+                charCount.style.color = 'var(--text-secondary)';
             }
         }
     </script>

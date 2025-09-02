@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curated Channels | ViewTv</title>
+    <title>Curated Playlist | ViewTv</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -344,6 +344,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
+        /* Always visible buttons */
         .detail-btn {
             position: absolute;
             top: 8px;
@@ -357,13 +358,9 @@
             justify-content: center;
             color: white;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s, background 0.3s, transform 0.3s;
             z-index: 5;
-        }
-        
-        .channel-card:hover .detail-btn {
-            opacity: 1;
+            transition: background 0.3s, transform 0.3s;
+            opacity: 1 !important;
         }
         
         .detail-btn:hover {
@@ -371,7 +368,7 @@
             transform: scale(1.1);
         }
         
-        /* Favorite button */
+        /* Favorite button - always visible */
         .favorite-btn {
             position: absolute;
             top: 8px;
@@ -385,13 +382,9 @@
             justify-content: center;
             color: white;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.3s, background 0.3s, transform 0.3s;
             z-index: 5;
-        }
-        
-        .channel-card:hover .favorite-btn {
-            opacity: 1;
+            transition: background 0.3s, transform 0.3s;
+            opacity: 1 !important;
         }
         
         .favorite-btn:hover {
@@ -401,7 +394,6 @@
         
         .favorite-btn.active {
             color: #ef4444;
-            opacity: 1;
         }
         
         /* View modes */
@@ -438,16 +430,29 @@
         .list-view .channel-card {
             display: flex;
             height: auto;
+            padding: 0.75rem;
         }
         
         .list-view .channel-card .channel-image {
             width: 160px;
             flex-shrink: 0;
+            position: relative;
         }
         
         .list-view .channel-card .channel-info {
             flex: 1;
-            padding: 1rem;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .list-view .channel-card .channel-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0 0.5rem;
         }
         
         /* Filter section */
@@ -613,11 +618,74 @@
             cursor: pointer;
             transition: all 0.3s;
             z-index: 5;
+            opacity: 1 !important;
         }
         
         .modal-back-btn:hover {
             background: rgba(6, 182, 212, 0.7);
             transform: scale(1.1);
+        }
+        
+        /* Search suggestions */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(31, 41, 55, 0.95);
+            border-radius: 0 0 12px 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-top: none;
+        }
+        
+        .search-suggestion {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-suggestion:hover {
+            background: rgba(6, 182, 212, 0.2);
+        }
+        
+        .search-suggestion i {
+            margin-right: 0.75rem;
+            color: var(--primary);
+        }
+        
+        /* Extended search bar */
+        .search-container {
+            position: relative;
+            min-width: 250px;
+            width: 350px;
+            transition: width 0.3s;
+        }
+        
+        .search-container:focus-within {
+            width: 400px;
+        }
+        
+        /* List view specific styles */
+        .list-view .detail-btn,
+        .list-view .favorite-btn {
+            position: relative;
+            top: auto;
+            left: auto;
+            right: auto;
+            margin: 0.25rem;
+        }
+        
+        .list-view .channel-actions {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
         }
     </style>
 </head>
@@ -739,9 +807,9 @@
         <div class="container mx-auto flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
                 <svg class="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 h16M4 10h10M4 14h6" />
                 </svg>
-                <h1 class="text-2xl font-bold gradient-text">Curated Channels | ViewTV</h1>
+                <h1 class="text-2xl font-bold gradient-text">Curated Playlist | ViewTV</h1>
             </div>
             
             <div class="flex items-center space-x-4">
@@ -749,11 +817,11 @@
                 <div class="flex items-center space-x-2 bg-gray-800/50 rounded-xl p-1">
                     <button id="gridViewBtn" class="view-mode-btn active tooltip" data-tooltip="Grid View">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2  0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2  01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                         </svg>
                     </button>
                     <button id="listViewBtn" class="view-mode-btn tooltip" data-tooltip="List View">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox=" 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                         </svg>
                     </button>
@@ -777,11 +845,12 @@
                     </div>
                 </div>
                 
-                <!-- Search Box -->
-                <div class="relative">
+                <!-- Search Box with Suggestions -->
+                <div class="search-container relative">
                     <input type="text" id="searchInput" placeholder="Search channels..."
                         class="search-box w-full bg-gray-800/80 border border-gray-700/50 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
                     <i class="fas fa-search absolute left-3 top-2.5 text-gray-500"></i>
+                    <div id="searchSuggestions" class="search-suggestions"></div>
                 </div>
                 
                 <!-- Filter Button -->
@@ -880,7 +949,7 @@
                         </span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:-grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                         {% for channel in group_channels %}
                         {% set channel_url = channel.get('url', '') %}
                         {% set channel_name = channel.get('name', '') %}
@@ -897,12 +966,12 @@
                              data-url="{{ channel_url }}"
                              data-status="live">
                             
-                            <!-- Details button -->
+                            <!-- Details button - always visible -->
                             <button class="detail-btn tooltip" data-tooltip="View Details" onclick="showChannelDetails(this.closest('.channel-card'))">
                                 <i class="fas fa-info-circle text-sm"></i>
                             </button>
                             
-                            <!-- Favorite button -->
+                            <!-- Favorite button - always visible -->
                             <button class="favorite-btn tooltip" data-tooltip="Add to Favorites" onclick="toggleFavorite(this, '{{ channel.key }}')">
                                 <i class="fas fa-heart text-sm"></i>
                             </button>
@@ -1003,13 +1072,15 @@
                 status: [],
                 favorites: false
             },
-            viewMode: 'grid' // 'grid' or 'list'
+            viewMode: 'grid', // 'grid' or 'list'
+            allChannels: []
         };
 
-        // Search functionality
+        // Search functionality with suggestions
         document.getElementById('searchInput').addEventListener('input', function () {
             const searchTerm = this.value.toLowerCase();
             filterChannels();
+            showSearchSuggestions(searchTerm);
         });
 
         // Toggle filter section
@@ -1078,10 +1149,73 @@
                 channelsView.className = 'grid-view';
                 gridViewBtn.classList.add('active');
                 listViewBtn.classList.remove('active');
+                
+                // Convert list view back to grid view
+                document.querySelectorAll('.channel-card').forEach(card => {
+                    if (card.classList.contains('list-view-card')) {
+                        card.classList.remove('list-view-card');
+                        card.classList.remove('flex');
+                        card.querySelector('.channel-image').remove();
+                        card.querySelector('.channel-info').remove();
+                        card.querySelector('.channel-actions').remove();
+                        
+                        // Restore original content
+                        const originalContent = card.getAttribute('data-original-content');
+                        if (originalContent) {
+                            card.innerHTML = originalContent;
+                        }
+                    }
+                });
             } else {
                 channelsView.className = 'list-view';
                 gridViewBtn.classList.remove('active');
                 listViewBtn.classList.add('active');
+                
+                // Convert grid view to list view
+                document.querySelectorAll('.channel-card').forEach(card => {
+                    if (!card.classList.contains('list-view-card')) {
+                        // Save original content
+                        card.setAttribute('data-original-content', card.innerHTML);
+                        
+                        const name = card.getAttribute('data-name');
+                        const access = card.getAttribute('data-access');
+                        const country = card.getAttribute('data-country');
+                        const logo = card.getAttribute('data-logo');
+                        const key = card.getAttribute('data-key');
+                        const isFavorite = state.favorites.includes(key);
+                        
+                        card.classList.add('list-view-card', 'flex');
+                        
+                        // Create list view structure
+                        card.innerHTML = `
+                            <div class="channel-image">
+                                ${logo ? `<img src="${logo}" alt="${name}" class="w-full h-full object-contain">` : 
+                                `<div class="w-full h-full flex items-center justify-center text-cyan-400/20">
+                                    <i class="fas fa-tv text-3xl"></i>
+                                </div>`}
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                                    <span class="text-xs font-medium text-cyan-400">${access}</span>
+                                </div>
+                            </div>
+                            <div class="channel-info">
+                                <h3 class="font-medium">${name}</h3>
+                                <p class="text-xs text-gray-400 mt-1">${country}</p>
+                                <div class="flex items-center mt-2">
+                                    <span class="status-badge status-live text-xs">Live</span>
+                                    <span class="ml-2 text-xs text-gray-500">HD</span>
+                                </div>
+                            </div>
+                            <div class="channel-actions">
+                                <button class="favorite-btn tooltip ${isFavorite ? 'active' : ''}" data-tooltip="Add to Favorites" onclick="toggleFavorite(this, '${key}')">
+                                    <i class="fas fa-heart text-sm"></i>
+                                </button>
+                                <button class="detail-btn tooltip" data-tooltip="View Details" onclick="showChannelDetails(this.closest('.channel-card'))">
+                                    <i class="fas fa-info-circle text-sm"></i>
+                                </button>
+                            </div>
+                        `;
+                    }
+                });
             }
             
             // Save to localStorage
@@ -1124,6 +1258,53 @@
                 group.style.display = matchFoundInGroup ? 'block' : 'none';
             });
         }
+
+        // Show search suggestions
+        function showSearchSuggestions(searchTerm) {
+            const suggestionsContainer = document.getElementById('searchSuggestions');
+            
+            if (searchTerm.length < 2) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+            
+            // Collect all channel names
+            const channelNames = [];
+            document.querySelectorAll('.channel-card').forEach(card => {
+                channelNames.push(card.getAttribute('data-name'));
+            });
+            
+            // Filter matching names
+            const matches = [...new Set(channelNames)].filter(name => 
+                name.toLowerCase().includes(searchTerm)
+            ).slice(0, 5);
+            
+            if (matches.length > 0) {
+                suggestionsContainer.innerHTML = matches.map(name => `
+                    <div class="search-suggestion" onclick="setSearchTerm('${name}')">
+                        <i class="fas fa-search"></i>
+                        <span>${name}</span>
+                    </div>
+                `).join('');
+                suggestionsContainer.style.display = 'block';
+            } else {
+                suggestionsContainer.style.display = 'none';
+            }
+        }
+
+        // Set search term from suggestion
+        function setSearchTerm(term) {
+            document.getElementById('searchInput').value = term;
+            filterChannels();
+            document.getElementById('searchSuggestions').style.display = 'none';
+        }
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('searchSuggestions').style.display = 'none';
+            }
+        });
 
         // Toggle favorite
         function toggleFavorite(button, key) {
@@ -1240,6 +1421,16 @@
                     setTimeout(() => {
                         ripple.remove();
                     }, 600);
+                });
+            });
+            
+            // Collect all channels for search
+            state.allChannels = [];
+            document.querySelectorAll('.channel-card').forEach(card => {
+                state.allChannels.push({
+                    name: card.getAttribute('data-name'),
+                    access: card.getAttribute('data-access'),
+                    category: card.closest('.channel-group').getAttribute('data-category')
                 });
             });
         });

@@ -380,7 +380,7 @@
         .detail-btn {
             position: absolute;
             top: 16px;
-            right: 2px;
+            right: 1px;
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -664,6 +664,12 @@
         .view-transition {
             transition: all 0.3s ease;
         }
+        
+        /* Focus effect for channel cards */
+        .channel-card:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
     </style>
 </head>
 <body class="text-white flex flex-col min-h-screen">
@@ -797,6 +803,12 @@
                     </div>
                 </div>
                 
+                <!-- Filter Button -->
+                <button id="filterToggle" class="flex items-center space-x-2 px-4 py-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30">
+                    <i class="fas fa-filter text-cyan-300"></i>
+                    <span class="text-sm font-medium text-cyan-200">Filters</span>
+                </button>
+                
                 <!-- Search Box -->
                 <div class="search-container">
                     <div class="relative">
@@ -806,11 +818,6 @@
                     </div>
                     <div id="searchSuggestions" class="search-suggestions"></div>
                 </div>
-                
-                <!-- Filter Button -->
-                <button id="filterToggle" class="p-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30 tooltip" data-tooltip="Filters">
-                    <i class="fas fa-filter text-cyan-300"></i>
-                </button>
             </div>
         </div>
         
@@ -918,7 +925,8 @@
                              data-country="{{ channel.get('country', '') }}"
                              data-logo="{{ channel.get('logo', '') }}"
                              data-url="{{ channel_url }}"
-                             data-status="live">
+                             data-status="live"
+                             id="channel-{{ channel.key }}">
                             
                             <!-- Details button -->
                             <button class="detail-btn tooltip" data-tooltip="View Details" onclick="showChannelDetails(this.closest('.channel-card'))">
@@ -1037,7 +1045,8 @@
             channelsView: document.getElementById('channelsView'),
             clearFilters: document.getElementById('clearFilters'),
             refreshRecommended: document.getElementById('refresh-recommended'),
-            backToTop: document.getElementById('backToTop')
+            backToTop: document.getElementById('backToTop'),
+            filterToggle: document.getElementById('filterToggle')
         };
 
         // Pre-cache all channel data for search
@@ -1132,23 +1141,7 @@
                 domCache.searchSuggestions.querySelectorAll('.search-suggestion').forEach(suggestion => {
                     suggestion.addEventListener('click', function() {
                         const key = this.getAttribute('data-key');
-                        const channelElement = document.querySelector(`.channel-card[data-key="${key}"]`);
-                        
-                        if (channelElement) {
-                            // Scroll to the channel
-                            channelElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            
-                            // Highlight the channel
-                            channelElement.classList.add('highlight-pulse');
-                            setTimeout(() => {
-                                channelElement.classList.remove('highlight-pulse');
-                            }, 2000);
-                            
-                            // Clear search and suggestions
-                            domCache.searchInput.value = '';
-                            domCache.searchSuggestions.style.display = 'none';
-                            filterChannels();
-                        }
+                        navigateToChannel(key);
                     });
                     
                     // Add hover effect
@@ -1166,6 +1159,36 @@
             }
         }
 
+        // Navigate to and focus on a specific channel
+        function navigateToChannel(key) {
+            const channelElement = document.getElementById(`channel-${key}`);
+            
+            if (channelElement) {
+                // Scroll to the channel with smooth animation
+                channelElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'nearest'
+                });
+                
+                // Highlight the channel with a pulse effect
+                channelElement.classList.add('highlight-pulse');
+                
+                // Add focus for accessibility
+                channelElement.focus({ preventScroll: true });
+                
+                // Remove the highlight after 2 seconds
+                setTimeout(() => {
+                    channelElement.classList.remove('highlight-pulse');
+                }, 2000);
+                
+                // Clear search and suggestions
+                domCache.searchInput.value = '';
+                domCache.searchSuggestions.style.display = 'none';
+                filterChannels();
+            }
+        }
+
         // Debounce function for performance
         function debounce(func, wait) {
             let timeout;
@@ -1180,8 +1203,23 @@
         }
 
         // Toggle filter section
-        document.getElementById('filterToggle').addEventListener('click', function() {
+        domCache.filterToggle.addEventListener('click', function() {
             domCache.filterSection.classList.toggle('hidden');
+            
+            // Add animation for smoother transition
+            if (!domCache.filterSection.classList.contains('hidden')) {
+                domCache.filterSection.style.display = 'block';
+                setTimeout(() => {
+                    domCache.filterSection.style.opacity = 1;
+                    domCache.filterSection.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                domCache.filterSection.style.opacity = 0;
+                domCache.filterSection.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    domCache.filterSection.style.display = 'none';
+                }, 300);
+            }
         });
 
         // Setup custom checkboxes
@@ -1223,6 +1261,9 @@
             };
             
             filterChannels();
+            
+            // Show notification
+            showToast('All filters cleared', 'success');
         });
 
         // Filter channels based on search and filters
@@ -1376,6 +1417,25 @@
                         ripple.remove();
                     }, 600);
                 });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                // Close category dropdown
+                const dropdown = document.querySelector('.dropdown');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    document.querySelector('.dropdown-content').style.display = 'none';
+                }
+                
+                // Close search suggestions
+                if (!domCache.searchInput.contains(e.target) && !domCache.searchSuggestions.contains(e.target)) {
+                    domCache.searchSuggestions.style.display = 'none';
+                }
+                
+                // Close filter section when clicking outside
+                if (!domCache.filterToggle.contains(e.target) && !domCache.filterSection.contains(e.target)) {
+                    domCache.filterSection.classList.add('hidden');
+                }
             });
         });
 
@@ -1558,7 +1618,7 @@
                     showToast('Removed from favorites');
                     modalFavoriteBtn.innerHTML = `
                         <svg class="w-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 极 00-6.364 0z" />
                         </svg>
                         Favorite
                     `;
@@ -1567,8 +1627,8 @@
                     state.favorites.push(key);
                     showToast('Added to favorites');
                     modalFavoriteBtn.innerHTML = `
-                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        <svg class="w-5 h-5 mr-极" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-极.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                         Favorited
                     `;

@@ -458,7 +458,7 @@
         .typing-indicator {
             display: flex;
             align-items: center;
-            padding: 8px 16px;
+            padding:  16px;
             background: rgba(30, 41, 59, 0.6);
             border-radius: 20px;
             width: fit-content;
@@ -476,7 +476,7 @@
             animation: bounce 1.3s linear infinite;
         }
         
-        .typing-indicator span:nth-child(2) {
+        . span:nth-child(2) {
             animation-delay: 0.15s;
         }
         
@@ -486,7 +486,7 @@
         
         @keyframes bounce {
             0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
+            30% { transform: translateY(-5); }
         }
         
         .message-reactions {
@@ -497,7 +497,7 @@
         }
         
         .reaction {
-            background: rgba(30, 41, 59, 0.5);
+            background: rgba(30, 41, 59, .5);
             border-radius: 12px;
             padding: 2px 6px;
             font-size: 12px;
@@ -528,7 +528,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+           : 8px;
             transition: all 0.2s ease;
         }
         
@@ -542,7 +542,7 @@
             background: var(--primary);
             color: white;
             width: 20px;
-            height: 20px;
+            height: 20;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -606,7 +606,7 @@
         }
         
         .notification-content {
-            flex: 1;
+            flex: ;
             max-width: 250px;
         }
         
@@ -650,7 +650,7 @@
             fill: rgba(79, 70, 229, 0.1);
         }
         
-        /* Voice Call Styles */
+        /* Enhanced Voice Call Styles from Admin */
         .call-modal {
             position: fixed;
             top: 0;
@@ -680,7 +680,7 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
-            border: 1px solid var(--glass-border);
+            border: 1 solid var(--glass-border);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         
@@ -751,7 +751,7 @@
         .reject-call {
             background: var(--error);
             color: white;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 20 rgba(239, 68, 68, 0.3);
         }
         
         .reject-call:hover {
@@ -777,32 +777,21 @@
             font-weight: 600;
         }
         
-        .calling-animation {
+        .audio-visualizer {
+            width: 100%;
+            height: 60px;
             display: flex;
+            align-items: flex-end;
             justify-content: center;
+            gap: 2px;
             margin: 20px 0;
         }
         
-        .calling-dot {
-            width: 10px;
-            height: 10px;
+        .visualizer-bar {
+            width: 4px;
             background: var(--primary-light);
-            border-radius: 50%;
-            margin: 0 5px;
-            animation: pulse-dot 1.5s infinite ease-in-out;
-        }
-        
-        .calling-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .calling-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.7; }
+            border-radius: 2px;
+            transition: height 0.1s ease;
         }
         
         .call-controls {
@@ -840,7 +829,7 @@
     
     <button class="back-button" onclick="location.href='{{ url_for('user_messages') }}'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
+            <path d="M19 12H5M12 19l-7-7 -7"/>
         </svg>
     </button>
     
@@ -854,14 +843,14 @@
             <div class="header-actions">
                 <div class="header-btn" id="voice-call-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 极速加速器 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 -6-6 19.79 19.79 0 0 1-3.07-8.67A2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                     </svg>
                 </div>
                 <div class="header-btn">
                     <i class="fas fa-video"></i>
                 </div>
                 <div class="header-btn">
-                    <i class="fas fa-ellipsis-v"></i>
+                    <i class="fas fa-ellipsis-v"></>
                 </div>
             </div>
         </div>
@@ -898,7 +887,7 @@
         </div>
         
         <div class="wave-divider">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox=" 1200 120" preserveAspectRatio="none">
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
             </svg>
         </div>
@@ -913,7 +902,7 @@
                 </div>
                 <div class="input-btn">
                     <i class="fas fa-smile"></i>
-                </div>
+                </>
             </div>
             
             <div class="message-input-container">
@@ -930,7 +919,7 @@
         </div>
     </div>
 
-    <!-- Voice Call Modal -->
+    <!-- Enhanced Voice Call Modal from Admin -->
     <div class="call-modal" id="call-modal">
         <div class="call-container">
             <div class="call-header">
@@ -941,10 +930,17 @@
                 </div>
             </div>
             
-            <div class="calling-animation">
-                <div class="calling-dot"></div>
-                <div class="calling-dot"></div>
-                <div class="calling-dot"></div>
+            <div class="audio-visualizer" id="audio-visualizer">
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
             </div>
             
             <div class="call-timer" id="call-timer">00:00</div>
@@ -1036,7 +1032,7 @@
             message.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
                 contextMenu.style.display = 'block';
-                contextMenu.style.left = `${e.pageX}px`;
+                context.style.left = `${e.pageX}px`;
                 contextMenu.style.top = `${e.pageY}px`;
             });
         });
@@ -1076,7 +1072,7 @@
             }, 2000);
         });
 
-        // Voice call functionality
+        // Enhanced WebRTC implementation for voice calls from admin version
         const callModal = document.getElementById('call-modal');
         const voiceCallBtn = document.getElementById('voice-call-btn');
         const acceptCallBtn = document.getElementById('accept-call');
@@ -1087,11 +1083,18 @@
         const callControls = document.getElementById('call-controls');
         const muteBtn = document.getElementById('mute-btn');
         const speakerBtn = document.getElementById('speaker-btn');
+        const audioVisualizer = document.getElementById('audio-visualizer');
+        const visualizerBars = audioVisualizer.querySelectorAll('.visualizer-bar');
         
         let callDuration = 0;
         let callInterval;
         let currentCallId = null;
         let isCallActive = false;
+        let localStream = null;
+        let peerConnection = null;
+        let audioContext = null;
+        let analyser = null;
+        let audioVisualizerInterval = null;
         
         // Initialize call button
         voiceCallBtn.addEventListener('click', () => {
@@ -1107,6 +1110,7 @@
             endCallBtn.style.display = 'block';
             callControls.style.display = 'none';
             callTimer.style.display = 'none';
+            audioVisualizer.style.display = 'none';
             callModal.classList.add('active');
         });
         
@@ -1117,7 +1121,7 @@
                 socket.emit('end_call', {
                     call_id: currentCallId
                 });
-            } else if (currentCallId) {
+            } else if (currentId) {
                 // Cancel outgoing call
                 socket.emit('end_call', {
                     call_id: currentCallId
@@ -1141,21 +1145,136 @@
             callStatus.textContent = 'Connected';
             acceptCallBtn.style.display = 'none';
             callControls.style.display = 'flex';
+            audioVisualizer.style.display = 'flex';
             startCallTimer();
             isCallActive = true;
+            
+            // Initialize audio for the call
+            initializeAudio();
         });
         
         // Mute button
         muteBtn.addEventListener('click', () => {
             muteBtn.classList.toggle('active');
-            // Implement mute functionality
+            if (localStream) {
+                const audioTracks = localStream.getAudioTracks();
+                audioTracks.forEach(track => {
+                    track.enabled = !track.enabled;
+                });
+            }
         });
         
         // Speaker button
         speakerBtn.addEventListener('click', () => {
             speakerBtn.classList.toggle('active');
-            // Implement speaker toggle functionality
+            // This would typically control audio routing on mobile devices
+            // For desktop browsers, this is handled by the user's system
         });
+        
+        // Initialize audio for WebRTC call
+        async function initializeAudio() {
+            try {
+                // Get user media
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: true, 
+                    video: false 
+                });
+                
+                // Create audio context for visualization
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(localStream);
+                source.connect(analyser);
+                analyser.fft = 32;
+                
+                // Start visualizer
+                startAudioVisualizer();
+                
+                // Create peer connection
+                createPeerConnection();
+                
+                // Add local stream to connection
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+                
+                // Create offer if we initiated the call
+                if (acceptCallBtn.style.display === 'none') {
+                    const offer = await peerConnection.createOffer();
+                    await peerConnection.setLocalDescription(offer);
+                    
+                    socket.emit('webrtc_offer', {
+                        offer: offer,
+                        call_id: currentCallId
+                    });
+                }
+            } catch (error) {
+                console.error('Error initializing audio:', error);
+                callStatus.textContent = 'Error accessing microphone';
+                setTimeout(resetCallUI, 2000);
+            }
+        }
+        
+        // Create peer connection
+        function createPeerConnection() {
+            const configuration = {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' }
+                ]
+            };
+            
+            peerConnection = new RTCPeerConnection(configuration);
+            
+            // Handle remote stream
+            peerConnection.ontrack = (event) => {
+                const remoteAudio = new Audio();
+                remoteAudio.srcObject = event.streams[0];
+                remoteAudio.play();
+                
+                // Visualize remote audio
+                if (audioContext) {
+                    const remoteSource = audioContext.createMediaStreamSource(event.streams[0]);
+                    remoteSource.connect(analyser);
+                }
+            };
+            
+            // Handle ICE candidates
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit('webrtc_ice_candidate', {
+                        candidate: event.candidate,
+                        call_id: currentCall
+                    });
+                }
+            };
+            
+            // Handle connection state changes
+            peerConnection.onconnectionstatechange = () => {
+                if (peerConnection.connectionState === 'connected') {
+                    callStatus.textContent = 'Connected';
+                } else if (peerConnection.connectionState === 'disconnected' || 
+                           peerConnection.connectionState === 'failed') {
+                    callStatus.textContent = 'Call ended';
+                    setTimeout(resetCallUI, 2000);
+                }
+            };
+        }
+        
+        // Audio visualizer
+        function startAudioVisualizer() {
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            
+            audioVisualizerInterval = setInterval(() => {
+                analyser.getByteFrequencyData(dataArray);
+                
+                visualizerBars.forEach((bar, index) => {
+                    const value = dataArray[index] || 0;
+                    const height = Math.max(2, (value / 255) * 60);
+                    bar.style.height = `${height}px`;
+                });
+            }, 100);
+        }
         
         function startCallTimer() {
             callDuration = 0;
@@ -1174,11 +1293,29 @@
         function resetCallUI() {
             callModal.classList.remove('active');
             clearInterval(callInterval);
+            clearInterval(audioVisualizerInterval);
             callDuration = 0;
             currentCallId = null;
             isCallActive = false;
             callTimer.style.display = 'none';
             callControls.style.display = 'none';
+            audioVisualizer.style.display = 'none';
+            
+            // Stop all tracks and close peer connection
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
         }
         
         // Original socket.io functionality remains exactly the same
@@ -1243,6 +1380,8 @@
             acceptCallBtn.style.display = 'block';
             endCallBtn.style.display = 'block';
             callControls.style.display = 'none';
+            callTimer.style.display = 'none';
+            audioVisualizer.style.display = 'none';
             callModal.classList.add('active');
             
             // Play ringtone
@@ -1253,12 +1392,16 @@
             currentCallId = data.call_id;
         });
         
-        socket.on('call_accepted', function(data) {
+        socket.on('call_accepted', async function(data) {
             callStatus.textContent = 'Connected';
             acceptCallBtn.style.display = 'none';
             callControls.style.display = 'flex';
+            audioVisualizer.style.display = 'flex';
             startCallTimer();
             isCallActive = true;
+            
+            // Initialize audio for the call
+            await initializeAudio();
             
             // Stop ringtone if playing
         });
@@ -1275,6 +1418,30 @@
             setTimeout(() => {
                 resetCallUI();
             }, 2000);
+        });
+        
+        // WebRTC signaling handlers
+        socket.on('webrtc_offer', async function(data) {
+            if (!peerConnection) {
+                await initializeAudio();
+            }
+            
+            await peerConnection.setRemoteDescription(data.offer);
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            
+            socket.emit('webrtc_answer', {
+                answer: answer,
+                call_id: currentCallId
+            });
+        });
+        
+        socket.on('webrtc_answer', async function(data) {
+            await peerConnection.setRemoteDescription(data.answer);
+        });
+        
+        socket.on('webrtc_ice_candidate', async function(data) {
+            await peerConnection.addIceCandidate(data.candidate);
         });
         
         document.getElementById('send-button').addEventListener('click', sendMessage);

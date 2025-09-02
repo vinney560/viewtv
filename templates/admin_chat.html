@@ -242,7 +242,7 @@
             position: relative;
             background: 
                 radial-gradient(circle at 20% 20%, rgba(30, 41, 59, 0.5) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(30, 41, 59, 0.5) 0%, transparent 40%);
+                radial-gradient(circle at 80% 80%, rgba(30, 41, 59,  0.5) 0%, transparent 40%);
         }
         
         .message {
@@ -262,7 +262,7 @@
         
         .message:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 16px rgba( 0, 0, 0, 0.2);
         }
         
         @keyframes fadeIn {
@@ -300,11 +300,11 @@
         
         .message-status {
             font-size: 10px;
-           color: var(--primary-light);
+            color: var(--primary-light);
         }
         
         .chat-input-area {
-            display:flex;
+            display: flex;
             padding: 16px;
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(10px);
@@ -711,7 +711,7 @@
             transform: translateY(-50%);
             width: 40px;
             height: 40px;
-           background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--glass-border);
             border-right: none;
             border-radius: 8px 0 0 8px;
@@ -954,6 +954,23 @@
         .control-btn:hover {
             transform: scale(1.1);
         }
+        
+        .audio-visualizer {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+            margin: 20px 0;
+        }
+        
+        .visualizer-bar {
+            width: 4px;
+            background: var(--primary-light);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+        }
     </style>
 </head>
 <body>
@@ -1004,7 +1021,7 @@
                 <div class="message-reactions">
                     <span class="reaction">👍</span>
                     <span class="reaction">❤️</span>
-                   <span class="reaction">😮</span>
+                    <span class="reaction">😮</span>
                 </div>
                 {% endif %}
             </div>
@@ -1069,10 +1086,17 @@
                 </div>
             </div>
             
-            <div class="calling-animation">
-                <div class="calling-dot"></div>
-                <div class="calling-dot"></div>
-                <div class="calling-dot"></div>
+            <div class="audio-visualizer" id="audio-visualizer">
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
+                <div class="visualizer-bar"></div>
             </div>
             
             <div class="call-timer" id="call-timer">00:00</div>
@@ -1273,7 +1297,7 @@
             }, 2000);
         });
 
-        // Voice call functionality
+        // WebRTC implementation for voice calls
         const callModal = document.getElementById('call-modal');
         const voiceCallBtn = document.getElementById('voice-call-btn');
         const acceptCallBtn = document.getElementById('accept-call');
@@ -1284,11 +1308,18 @@
         const callControls = document.getElementById('call-controls');
         const muteBtn = document.getElementById('mute-btn');
         const speakerBtn = document.getElementById('speaker-btn');
+        const audioVisualizer = document.getElementById('audio-visualizer');
+        const visualizerBars = audioVisualizer.querySelectorAll('.visualizer-bar');
         
         let callDuration = 0;
         let callInterval;
         let currentCallId = null;
         let isCallActive = false;
+        let localStream = null;
+        let peerConnection = null;
+        let audioContext = null;
+        let analyser = null;
+        let audioVisualizerInterval = null;
         
         // Initialize call button
         voiceCallBtn.addEventListener('click', () => {
@@ -1304,6 +1335,7 @@
             endCallBtn.style.display = 'block';
             callControls.style.display = 'none';
             callTimer.style.display = 'none';
+            audioVisualizer.style.display = 'none';
             callModal.classList.add('active');
         });
         
@@ -1338,21 +1370,136 @@
             callStatus.textContent = 'Connected';
             acceptCallBtn.style.display = 'none';
             callControls.style.display = 'flex';
+            audioVisualizer.style.display = 'flex';
             startCallTimer();
             isCallActive = true;
+            
+            // Initialize audio for the call
+            initializeAudio();
         });
         
         // Mute button
         muteBtn.addEventListener('click', () => {
             muteBtn.classList.toggle('active');
-            // Implement mute functionality
+            if (localStream) {
+                const audioTracks = localStream.getAudioTracks();
+                audioTracks.forEach(track => {
+                    track.enabled = !track.enabled;
+                });
+            }
         });
         
         // Speaker button
         speakerBtn.addEventListener('click', () => {
             speakerBtn.classList.toggle('active');
-            // Implement speaker toggle functionality
+            // This would typically control audio routing on mobile devices
+            // For desktop browsers, this is handled by the user's system
         });
+        
+        // Initialize audio for WebRTC call
+        async function initializeAudio() {
+            try {
+                // Get user media
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: true, 
+                    video: false 
+                });
+                
+                // Create audio context for visualization
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(localStream);
+                source.connect(analyser);
+                analyser.fftSize = 32;
+                
+                // Start visualizer
+                startAudioVisualizer();
+                
+                // Create peer connection
+                createPeerConnection();
+                
+                // Add local stream to connection
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+                
+                // Create offer if we initiated the call
+                if (acceptCallBtn.style.display === 'none') {
+                    const offer = await peerConnection.createOffer();
+                    await peerConnection.setLocalDescription(offer);
+                    
+                    socket.emit('webrtc_offer', {
+                        offer: offer,
+                        call_id: currentCallId
+                    });
+                }
+            } catch (error) {
+                console.error('Error initializing audio:', error);
+                callStatus.textContent = 'Error accessing microphone';
+                setTimeout(resetCallUI, 2000);
+            }
+        }
+        
+        // Create peer connection
+        function createPeerConnection() {
+            const configuration = {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:stun1.l.google.com:19302' }
+                ]
+            };
+            
+            peerConnection = new RTCPeerConnection(configuration);
+            
+            // Handle remote stream
+            peerConnection.ontrack = (event) => {
+                const remoteAudio = new Audio();
+                remoteAudio.srcObject = event.streams[0];
+                remoteAudio.play();
+                
+                // Visualize remote audio
+                if (audioContext) {
+                    const remoteSource = audioContext.createMediaStreamSource(event.streams[0]);
+                    remoteSource.connect(analyser);
+                }
+            };
+            
+            // Handle ICE candidates
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    socket.emit('webrtc_ice_candidate', {
+                        candidate: event.candidate,
+                        call_id: currentCallId
+                    });
+                }
+            };
+            
+            // Handle connection state changes
+            peerConnection.onconnectionstatechange = () => {
+                if (peerConnection.connectionState === 'connected') {
+                    callStatus.textContent = 'Connected';
+                } else if (peerConnection.connectionState === 'disconnected' || 
+                           peerConnection.connectionState === 'failed') {
+                    callStatus.textContent = 'Call ended';
+                    setTimeout(resetCallUI, 2000);
+                }
+            };
+        }
+        
+        // Audio visualizer
+        function startAudioVisualizer() {
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            
+            audioVisualizerInterval = setInterval(() => {
+                analyser.getByteFrequencyData(dataArray);
+                
+                visualizerBars.forEach((bar, index) => {
+                    const value = dataArray[index] || 0;
+                    const height = Math.max(2, (value / 255) * 60);
+                    bar.style.height = `${height}px`;
+                });
+            }, 100);
+        }
         
         function startCallTimer() {
             callDuration = 0;
@@ -1371,11 +1518,29 @@
         function resetCallUI() {
             callModal.classList.remove('active');
             clearInterval(callInterval);
+            clearInterval(audioVisualizerInterval);
             callDuration = 0;
             currentCallId = null;
             isCallActive = false;
             callTimer.style.display = 'none';
             callControls.style.display = 'none';
+            audioVisualizer.style.display = 'none';
+            
+            // Stop all tracks and close peer connection
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
         }
         
         // Original socket.io functionality remains exactly the same
@@ -1440,6 +1605,8 @@
             acceptCallBtn.style.display = 'block';
             endCallBtn.style.display = 'block';
             callControls.style.display = 'none';
+            callTimer.style.display = 'none';
+            audioVisualizer.style.display = 'none';
             callModal.classList.add('active');
             
             // Play ringtone
@@ -1450,12 +1617,16 @@
             currentCallId = data.call_id;
         });
         
-        socket.on('call_accepted', function(data) {
+        socket.on('call_accepted', async function(data) {
             callStatus.textContent = 'Connected';
             acceptCallBtn.style.display = 'none';
             callControls.style.display = 'flex';
+            audioVisualizer.style.display = 'flex';
             startCallTimer();
             isCallActive = true;
+            
+            // Initialize audio for the call
+            await initializeAudio();
             
             // Stop ringtone if playing
         });
@@ -1472,6 +1643,30 @@
             setTimeout(() => {
                 resetCallUI();
             }, 2000);
+        });
+        
+        // WebRTC signaling handlers
+        socket.on('webrtc_offer', async function(data) {
+            if (!peerConnection) {
+                await initializeAudio();
+            }
+            
+            await peerConnection.setRemoteDescription(data.offer);
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            
+            socket.emit('webrtc_answer', {
+                answer: answer,
+                call_id: currentCallId
+            });
+        });
+        
+        socket.on('webrtc_answer', async function(data) {
+            await peerConnection.setRemoteDescription(data.answer);
+        });
+        
+        socket.on('webrtc_ice_candidate', async function(data) {
+            await peerConnection.addIceCandidate(data.candidate);
         });
         
         document.getElementById('send-button').addEventListener('click', sendMessage);

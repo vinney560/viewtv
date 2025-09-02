@@ -653,6 +653,23 @@
                 width: 95%;
                 margin: 10px;
             }
+            
+            /* Improved mobile layout for category dropdown and filter button */
+            .header-controls {
+                gap: 0.5rem;
+            }
+            
+            .header-controls > .dropdown,
+            .header-controls > #filterToggle {
+                margin-top: 0;
+                order: 1;
+                flex: 1;
+            }
+            
+            .header-controls > .search-container {
+                order: 2;
+                margin-top: 0.5rem;
+            }
         }
         
         /* Improved search suggestions */
@@ -669,6 +686,124 @@
         .channel-card:focus {
             outline: 2px solid var(--primary);
             outline-offset: 2px;
+        }
+        
+        /* New: Recently Viewed Section */
+        .recently-viewed-section {
+            margin-bottom: 2rem;
+        }
+        
+        /* New: Channel Count Badge */
+        .channel-count {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* New: Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 20;
+        }
+        
+        .quick-action-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            background: rgba(31, 41, 55, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .quick-action-btn:hover {
+            transform: scale(1.1);
+            background: rgba(6, 182, 212, 0.8);
+        }
+        
+        /* New: View Toggle */
+        .view-toggle {
+            display: flex;
+            align-items: center;
+            background: rgba(31, 41, 55, 0.5);
+            border-radius: 12px;
+            padding: 0.25rem;
+            margin-left: auto;
+        }
+        
+        .view-toggle-btn {
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .view-toggle-btn.active {
+            background: rgba(6, 182, 212, 0.3);
+        }
+        
+        /* New: List View Styles */
+        .list-view .channel-group {
+            margin-bottom: 2rem;
+        }
+        
+        .list-view .channel-card {
+            display: flex;
+            width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .list-view .channel-card .channel-image {
+            width: 120px;
+            min-width: 120px;
+            height: 80px;
+        }
+        
+        .list-view .channel-card .channel-info {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* New: Dark Mode Toggle */
+        .theme-toggle {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: rgba(31, 41, 55, 0.7);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle-handle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle.dark .theme-toggle-handle {
+            left: calc(100% - 22px);
         }
     </style>
 </head>
@@ -809,6 +944,16 @@
                     <span class="text-sm font-medium text-cyan-200">Filters</span>
                 </button>
                 
+                <!-- View Toggle -->
+                <div class="view-toggle">
+                    <button class="view-toggle-btn grid-view-btn active" data-view="grid" title="Grid View">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="view-toggle-btn list-view-btn" data-view="list" title="List View">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+                
                 <!-- Search Box -->
                 <div class="search-container">
                     <div class="relative">
@@ -860,6 +1005,20 @@
                     </label>
                 </div>
                 
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-300">Quality:</span>
+                    <div class="flex space-x-2">
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <div class="custom-checkbox" data-filter="quality" data-value="hd"></div>
+                            <span class="text-sm text-gray-300">HD</span>
+                        </label>
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <div class="custom-checkbox" data-filter="quality" data-value="sd"></div>
+                            <span class="text-sm text-gray-300">SD</span>
+                        </label>
+                    </div>
+                </div>
+                
                 <button id="clearFilters" class="ml-auto text-sm text-cyan-400 hover:text-cyan-300 transition">
                     Clear All Filters
                 </button>
@@ -870,6 +1029,31 @@
     <!-- Main Content -->
     <main class="channels-container flex-grow">
         <div class="container mx-auto px-4 py-6">
+            <!-- Recently Viewed Section -->
+            <section class="recently-viewed-section mb-10 hidden" id="recentlyViewedSection">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
+                        <i class="fas fa-history mr-3 text-purple-400"></i>
+                        Recently Viewed
+                    </h2>
+                    <button id="clear-recent" class="text-xs bg-purple-900/30 text-purple-300 px-3 py-1 rounded-full hover:bg-purple-800/50 transition">
+                        Clear History
+                    </button>
+                </div>
+
+                <div class="relative">
+                    <div class="recommended-container" id="recentlyViewedChannels">
+                        <!-- Recently viewed channels will be injected here by JavaScript -->
+                    </div>
+                    <button class="scroll-btn left" onclick="scrollRecent(-300)">
+                        <i class="fas fa-chevron-left text-white"></i>
+                    </button>
+                    <button class="scroll-btn right" onclick="scrollRecent(300)">
+                        <i class="fas fa-chevron-right text-white"></i>
+                    </button>
+                </div>
+            </section>
+
             <!-- Recommended Section -->
             <section class="recommended-section mb-10">
                 <div class="flex items-center justify-between mb-4">
@@ -905,7 +1089,7 @@
                             <i class="fas fa-tag mr-3 text-cyan-400"></i>
                             {{ group_title or 'Uncategorized' }}
                         </h2>
-                        <span class="text-xs bg-cyan-900/30 text-cyan-300 px-3 py-1 rounded-full">
+                        <span class="channel-count">
                             {{ group_channels|length }} channels
                         </span>
                     </div>
@@ -925,6 +1109,7 @@
                              data-country="{{ channel.get('country', '') }}"
                              data-logo="{{ channel.get('logo', '') }}"
                              data-url="{{ channel_url }}"
+                             data-quality="{{ channel.get('quality', 'hd') }}"
                              data-status="live"
                              id="channel-{{ channel.key }}">
                             
@@ -961,7 +1146,7 @@
                                 </div>
                             {% endif %}
                             
-                                <div class="relative pt-[56.25%] bg-gray-900/20">
+                                <div class="relative pt-[56.25%] bg-gray-900/20 channel-image">
                                     {% if channel.get('logo') %}
                                     <img src="{{ channel.logo }}" alt="{{ channel_name }}"
                                          class="absolute inset-0 w-full h-full object-contain p-4">
@@ -974,14 +1159,17 @@
                                         <span class="text-xs font-medium text-cyan-400">
                                             {{ channel.get('access', 'Free') }}
                                         </span>
+                                        <span class="text-xs font-medium text-purple-400 ml-2">
+                                            {{ channel.get('quality', 'HD') }}
+                                        </span>
                                     </div>
                                 </div>
-                                <div class="p-3">
+                                <div class="p-3 channel-info">
                                     <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
                                     <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
                                     <div class="flex items-center mt-2">
                                         <span class="status-badge status-live text-xs">Live</span>
-                                        <span class="ml-2 text-xs text-gray-500">HD</span>
+                                        <span class="ml-2 text-xs text-gray-500">{{ channel.get('quality', 'HD') }}</span>
                                     </div>
                                 </div>
                             
@@ -1024,17 +1212,34 @@
         </svg>
     </div>
 
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <button class="quick-action-btn" title="Scroll to Top" id="quickToTop">
+            <i class="fas fa-arrow-up text-white"></i>
+        </button>
+        <button class="quick-action-btn" title="Scroll to Bottom" id="quickToBottom">
+            <i class="fas fa-arrow-down text-white"></i>
+        </button>
+        <button class="quick-action-btn" title="Toggle Dark Mode" id="toggleDarkMode">
+            <i class="fas fa-moon text-white"></i>
+        </button>
+    </div>
+
     <!-- JavaScript -->
     <script>
         // Initialize state
         const state = {
             favorites: JSON.parse(localStorage.getItem('channelFavorites')) || [],
+            recentlyViewed: JSON.parse(localStorage.getItem('recentlyViewed')) || [],
             filters: {
                 access: [],
                 status: [],
-                favorites: false
+                favorites: false,
+                quality: []
             },
-            allChannels: []
+            allChannels: [],
+            currentView: 'grid', // 'grid' or 'list'
+            darkMode: localStorage.getItem('darkMode') === 'true'
         };
 
         // Cache DOM elements for performance
@@ -1046,8 +1251,255 @@
             clearFilters: document.getElementById('clearFilters'),
             refreshRecommended: document.getElementById('refresh-recommended'),
             backToTop: document.getElementById('backToTop'),
-            filterToggle: document.getElementById('filterToggle')
+            filterToggle: document.getElementById('filterToggle'),
+            recentlyViewedSection: document.getElementById('recentlyViewedSection'),
+            clearRecent: document.getElementById('clear-recent'),
+            gridViewBtn: document.querySelector('.grid-view-btn'),
+            listViewBtn: document.querySelector('.list-view-btn'),
+            quickToTop: document.getElementById('quickToTop'),
+            quickToBottom: document.getElementById('quickToBottom'),
+            toggleDarkMode: document.getElementById('toggleDarkMode')
         };
+
+        // Initialize the page
+        function initPage() {
+            // Cache channels for search
+            cacheChannels();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Initialize recommended channels
+            generateRecommendedChannels();
+            
+            // Initialize recently viewed channels
+            updateRecentlyViewed();
+            
+            // Initialize view mode
+            updateViewMode();
+            
+            // Initialize dark mode
+            updateDarkMode();
+            
+            // Set up back to top button
+            setupBackToTop();
+            
+            // Mark favorite channels
+            markFavorites();
+            
+            // Add ripple effect to buttons
+            setupRippleEffect();
+            
+            // Set up auto-dismiss for toasts
+            setupToasts();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search functionality with suggestions
+            domCache.searchInput.addEventListener('input', debounce(function () {
+                const searchTerm = this.value.toLowerCase().trim();
+                filterChannels();
+                
+                // Show/hide suggestions
+                if (searchTerm.length > 1) {
+                    showSearchSuggestions(searchTerm);
+                } else {
+                    domCache.searchSuggestions.style.display = 'none';
+                }
+            }, 300));
+
+            // Handle search input focus
+            domCache.searchInput.addEventListener('focus', function() {
+                this.style.width = '350px';
+                if (this.value.length > 1) {
+                    domCache.searchSuggestions.style.display = 'block';
+                }
+            });
+
+            // Handle search input blur
+            domCache.searchInput.addEventListener('blur', function() {
+                setTimeout(() => {
+                    this.style.width = '';
+                    domCache.searchSuggestions.style.display = 'none';
+                }, 200);
+            });
+
+            // Toggle filter section
+            domCache.filterToggle.addEventListener('click', function() {
+                domCache.filterSection.classList.toggle('hidden');
+                
+                // Add animation for smoother transition
+                if (!domCache.filterSection.classList.contains('hidden')) {
+                    domCache.filterSection.style.display = 'block';
+                    setTimeout(() => {
+                        domCache.filterSection.style.opacity = 1;
+                        domCache.filterSection.style.transform = 'translateY(0)';
+                    }, 10);
+                } else {
+                    domCache.filterSection.style.opacity = 0;
+                    domCache.filterSection.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        domCache.filterSection.style.display = 'none';
+                    }, 300);
+                }
+            });
+
+            // Setup custom checkboxes
+            document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    
+                    const filterType = this.dataset.filter;
+                    const value = this.dataset.value;
+                    
+                    if (filterType === 'favorites') {
+                        state.filters.favorites = this.classList.contains('checked');
+                    } else {
+                        if (this.classList.contains('checked')) {
+                            if (!state.filters[filterType].includes(value)) {
+                                state.filters[filterType].push(value);
+                            }
+                        } else {
+                            state.filters[filterType] = state.filters[filterType].filter(v => v !== value);
+                        }
+                    }
+                    
+                    filterChannels();
+                });
+            });
+
+            // Clear filters
+            domCache.clearFilters.addEventListener('click', function() {
+                // Reset UI
+                document.querySelectorAll('.custom-checkbox').forEach(cb => {
+                    cb.classList.remove('checked');
+                });
+                
+                // Reset state
+                state.filters = {
+                    access: [],
+                    status: [],
+                    favorites: false,
+                    quality: []
+                };
+                
+                filterChannels();
+                
+                // Show notification
+                showToast('All filters cleared', 'success');
+            });
+
+            // Set up refresh recommended button
+            domCache.refreshRecommended.addEventListener('click', function() {
+                const icon = document.getElementById('refresh-icon');
+                const text = document.getElementById('refresh-text');
+                
+                // Show loading spinner
+                icon.innerHTML = '<div class="loading-spinner"></div>';
+                text.textContent = 'Refreshing';
+                
+                // Generate new recommendations after a short delay
+                setTimeout(() => {
+                    generateRecommendedChannels();
+                    icon.innerHTML = '';
+                    text.textContent = 'Refreshed!';
+                    
+                    // Reset after 2 seconds
+                    setTimeout(() => {
+                        text.textContent = 'Refresh';
+                    }, 2000);
+                }, 800);
+            });
+
+            // Set up clear recent button
+            if (domCache.clearRecent) {
+                domCache.clearRecent.addEventListener('click', function() {
+                    state.recentlyViewed = [];
+                    localStorage.setItem('recentlyViewed', JSON.stringify(state.recentlyViewed));
+                    updateRecentlyViewed();
+                    showToast('Recently viewed cleared', 'success');
+                });
+            }
+
+            // Set up view toggle buttons
+            if (domCache.gridViewBtn && domCache.listViewBtn) {
+                domCache.gridViewBtn.addEventListener('click', function() {
+                    state.currentView = 'grid';
+                    updateViewMode();
+                });
+                
+                domCache.listViewBtn.addEventListener('click', function() {
+                    state.currentView = 'list';
+                    updateViewMode();
+                });
+            }
+
+            // Set up quick actions
+            if (domCache.quickToTop) {
+                domCache.quickToTop.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            if (domCache.quickToBottom) {
+                domCache.quickToBottom.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: document.body.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+            
+            if (domCache.toggleDarkMode) {
+                domCache.toggleDarkMode.addEventListener('click', function() {
+                    state.darkMode = !state.darkMode;
+                    localStorage.setItem('darkMode', state.darkMode);
+                    updateDarkMode();
+                });
+            }
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                // Close category dropdown
+                const dropdown = document.querySelector('.dropdown');
+                if (dropdown && !dropdown.contains(e.target)) {
+                    document.querySelector('.dropdown-content').style.display = 'none';
+                }
+                
+                // Close search suggestions
+                if (domCache.searchSuggestions && !domCache.searchInput.contains(e.target) && !domCache.searchSuggestions.contains(e.target)) {
+                    domCache.searchSuggestions.style.display = 'none';
+                }
+                
+                // Close filter section when clicking outside
+                if (domCache.filterSection && !domCache.filterToggle.contains(e.target) && !domCache.filterSection.contains(e.target)) {
+                    domCache.filterSection.classList.add('hidden');
+                }
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + K to focus search
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    domCache.searchInput.focus();
+                }
+                
+                // Escape to clear search and close modals
+                if (e.key === 'Escape') {
+                    if (domCache.searchInput.value) {
+                        domCache.searchInput.value = '';
+                        filterChannels();
+                    } else {
+                        closeModal();
+                    }
+                }
+            });
+        }
 
         // Pre-cache all channel data for search
         function cacheChannels() {
@@ -1058,38 +1510,10 @@
                 key: card.getAttribute('data-key'),
                 group: card.getAttribute('data-group'),
                 country: card.getAttribute('data-country'),
+                quality: card.getAttribute('data-quality'),
                 element: card
             }));
         }
-
-        // Search functionality with suggestions
-        domCache.searchInput.addEventListener('input', debounce(function () {
-            const searchTerm = this.value.toLowerCase().trim();
-            filterChannels();
-            
-            // Show/hide suggestions
-            if (searchTerm.length > 1) {
-                showSearchSuggestions(searchTerm);
-            } else {
-                domCache.searchSuggestions.style.display = 'none';
-            }
-        }, 300));
-
-        // Handle search input focus
-        domCache.searchInput.addEventListener('focus', function() {
-            this.style.width = '350px';
-            if (this.value.length > 1) {
-                domCache.searchSuggestions.style.display = 'block';
-            }
-        });
-
-        // Handle search input blur
-        domCache.searchInput.addEventListener('blur', function() {
-            setTimeout(() => {
-                this.style.width = '';
-                domCache.searchSuggestions.style.display = 'none';
-            }, 200);
-        });
 
         // Show search suggestions with fuzzy matching
         function showSearchSuggestions(searchTerm) {
@@ -1164,6 +1588,9 @@
             const channelElement = document.getElementById(`channel-${key}`);
             
             if (channelElement) {
+                // Add to recently viewed
+                addToRecentlyViewed(key);
+                
                 // Scroll to the channel with smooth animation
                 channelElement.scrollIntoView({ 
                     behavior: 'smooth', 
@@ -1189,6 +1616,78 @@
             }
         }
 
+        // Add channel to recently viewed
+        function addToRecentlyViewed(key) {
+            // Remove if already exists
+            state.recentlyViewed = state.recentlyViewed.filter(k => k !== key);
+            
+            // Add to beginning
+            state.recentlyViewed.unshift(key);
+            
+            // Keep only the last 10
+            if (state.recentlyViewed.length > 10) {
+                state.recentlyViewed = state.recentlyViewed.slice(0, 10);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('recentlyViewed', JSON.stringify(state.recentlyViewed));
+            
+            // Update UI
+            updateRecentlyViewed();
+        }
+
+        // Update recently viewed section
+        function updateRecentlyViewed() {
+            const container = document.getElementById('recentlyViewedChannels');
+            
+            if (!container) return;
+            
+            if (state.recentlyViewed.length > 0) {
+                domCache.recentlyViewedSection.classList.remove('hidden');
+                container.innerHTML = '';
+                
+                // Get recently viewed channels
+                const recentChannels = state.recentlyViewed.map(key => {
+                    const element = document.getElementById(`channel-${key}`);
+                    if (element) {
+                        return {
+                            name: element.getAttribute('data-name'),
+                            element: element.cloneNode(true)
+                        };
+                    }
+                    return null;
+                }).filter(channel => channel !== null);
+                
+                // Add to container
+                recentChannels.forEach((channel, index) => {
+                    const card = channel.element;
+                    card.classList.add('recommended-card');
+                    card.classList.add('highlight-pulse');
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    
+                    // Remove highlight after animation completes
+                    setTimeout(() => {
+                        card.classList.remove('highlight-pulse');
+                    }, 2000 + (index * 100));
+                    
+                    container.appendChild(card);
+                });
+            } else {
+                domCache.recentlyViewedSection.classList.add('hidden');
+            }
+        }
+
+        // Scroll recently viewed channels horizontally
+        function scrollRecent(amount) {
+            const container = document.getElementById('recentlyViewedChannels');
+            if (container) {
+                container.scrollBy({
+                    left: amount,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
         // Debounce function for performance
         function debounce(func, wait) {
             let timeout;
@@ -1201,70 +1700,6 @@
                 timeout = setTimeout(later, wait);
             };
         }
-
-        // Toggle filter section
-        domCache.filterToggle.addEventListener('click', function() {
-            domCache.filterSection.classList.toggle('hidden');
-            
-            // Add animation for smoother transition
-            if (!domCache.filterSection.classList.contains('hidden')) {
-                domCache.filterSection.style.display = 'block';
-                setTimeout(() => {
-                    domCache.filterSection.style.opacity = 1;
-                    domCache.filterSection.style.transform = 'translateY(0)';
-                }, 10);
-            } else {
-                domCache.filterSection.style.opacity = 0;
-                domCache.filterSection.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    domCache.filterSection.style.display = 'none';
-                }, 300);
-            }
-        });
-
-        // Setup custom checkboxes
-        document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('click', function() {
-                this.classList.toggle('checked');
-                
-                const filterType = this.dataset.filter;
-                const value = this.dataset.value;
-                
-                if (filterType === 'favorites') {
-                    state.filters.favorites = this.classList.contains('checked');
-                } else {
-                    if (this.classList.contains('checked')) {
-                        if (!state.filters[filterType].includes(value)) {
-                            state.filters[filterType].push(value);
-                        }
-                    } else {
-                        state.filters[filterType] = state.filters[filterType].filter(v => v !== value);
-                    }
-                }
-                
-                filterChannels();
-            });
-        });
-
-        // Clear filters
-        domCache.clearFilters.addEventListener('click', function() {
-            // Reset UI
-            document.querySelectorAll('.custom-checkbox').forEach(cb => {
-                cb.classList.remove('checked');
-            });
-            
-            // Reset state
-            state.filters = {
-                access: [],
-                status: [],
-                favorites: false
-            };
-            
-            filterChannels();
-            
-            // Show notification
-            showToast('All filters cleared', 'success');
-        });
 
         // Filter channels based on search and filters
         function filterChannels() {
@@ -1280,20 +1715,23 @@
                     const name = card.getAttribute('data-name');
                     const access = card.getAttribute('data-access');
                     const status = card.getAttribute('data-status');
+                    const quality = card.getAttribute('data-quality');
                     const key = card.getAttribute('data-key');
                     const isFavorite = state.favorites.includes(key);
                     
                     // Check search term
                     const searchMatch = name.includes(searchTerm) || 
                                        access.includes(searchTerm) || 
-                                       category.includes(searchTerm);
+                                       category.includes(searchTerm) ||
+                                       quality.includes(searchTerm);
                     
                     // Check filters
                     const accessMatch = state.filters.access.length === 0 || state.filters.access.includes(access);
                     const statusMatch = state.filters.status.length === 0 || state.filters.status.includes(status);
+                    const qualityMatch = state.filters.quality.length === 0 || state.filters.quality.includes(quality);
                     const favoriteMatch = !state.filters.favorites || isFavorite;
                     
-                    const match = searchMatch && accessMatch && statusMatch && favoriteMatch;
+                    const match = searchMatch && accessMatch && statusMatch && favoriteMatch && qualityMatch;
                     card.style.display = match ? 'block' : 'none';
 
                     if (match) matchFoundInGroup = true;
@@ -1324,72 +1762,8 @@
             }
         }
 
-        // Auto-dismiss toasts
-        document.addEventListener('DOMContentLoaded', () => {
-            // Cache channels for search
-            cacheChannels();
-            
-            const toasts = document.querySelectorAll('.toast-entry');
-            toasts.forEach(toast => {
-                setTimeout(() => {
-                    toast.classList.add('toast-exit');
-                    setTimeout(() => toast.remove(), 500);
-                }, 5000);
-                
-                // Add click handler to close button if not already present
-                const closeBtn = toast.querySelector('button');
-                if (closeBtn && !closeBtn.getAttribute('data-has-listener')) {
-                    closeBtn.setAttribute('data-has-listener', 'true');
-                    closeBtn.addEventListener('click', () => {
-                        toast.classList.add('toast-exit');
-                        setTimeout(() => toast.remove(), 500);
-                    });
-                }
-            });
-
-            // Initialize recommended channels
-            generateRecommendedChannels();
-
-            // Set up back to top button
-            domCache.backToTop.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-
-            // Show/hide back button based on scroll position
-            window.addEventListener('scroll', () => {
-                if (window.pageYOffset > 300) {
-                    domCache.backToTop.style.display = 'flex';
-                } else {
-                    domCache.backToTop.style.display = 'none';
-                }
-            });
-
-            // Set up refresh recommended button
-            domCache.refreshRecommended.addEventListener('click', function() {
-                const icon = document.getElementById('refresh-icon');
-                const text = document.getElementById('refresh-text');
-                
-                // Show loading spinner
-                icon.innerHTML = '<div class="loading-spinner"></div>';
-                text.textContent = 'Refreshing';
-                
-                // Generate new recommendations after a short delay
-                setTimeout(() => {
-                    generateRecommendedChannels();
-                    icon.innerHTML = '';
-                    text.textContent = 'Refreshed!';
-                    
-                    // Reset after 2 seconds
-                    setTimeout(() => {
-                        text.textContent = 'Refresh';
-                    }, 2000);
-                }, 800);
-            });
-            
-            // Mark favorite channels
+        // Mark favorite channels
+        function markFavorites() {
             document.querySelectorAll('.channel-card').forEach(card => {
                 const key = card.getAttribute('data-key');
                 if (state.favorites.includes(key)) {
@@ -1399,8 +1773,60 @@
                     }
                 }
             });
+        }
+
+        // Update view mode (grid/list)
+        function updateViewMode() {
+            if (state.currentView === 'grid') {
+                domCache.channelsView.classList.remove('list-view');
+                domCache.channelsView.classList.add('grid-view');
+                domCache.gridViewBtn.classList.add('active');
+                domCache.listViewBtn.classList.remove('active');
+            } else {
+                domCache.channelsView.classList.remove('grid-view');
+                domCache.channelsView.classList.add('list-view');
+                domCache.gridViewBtn.classList.remove('active');
+                domCache.listViewBtn.classList.add('active');
+            }
             
-            // Add ripple effect to buttons
+            // Save to localStorage
+            localStorage.setItem('viewMode', state.currentView);
+        }
+
+        // Update dark mode
+        function updateDarkMode() {
+            if (state.darkMode) {
+                document.documentElement.classList.add('dark');
+                domCache.toggleDarkMode.innerHTML = '<i class="fas fa-sun text-white"></i>';
+                domCache.toggleDarkMode.setAttribute('title', 'Switch to Light Mode');
+            } else {
+                document.documentElement.classList.remove('dark');
+                domCache.toggleDarkMode.innerHTML = '<i class="fas fa-moon text-white"></i>';
+                domCache.toggleDarkMode.setAttribute('title', 'Switch to Dark Mode');
+            }
+        }
+
+        // Set up back to top button
+        function setupBackToTop() {
+            // Show/hide back button based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    domCache.backToTop.style.display = 'flex';
+                } else {
+                    domCache.backToTop.style.display = 'none';
+                }
+            });
+
+            domCache.backToTop.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Set up ripple effect
+        function setupRippleEffect() {
             document.querySelectorAll('button, a').forEach(button => {
                 button.addEventListener('click', function(e) {
                     const x = e.clientX - e.target.getBoundingClientRect().left;
@@ -1418,26 +1844,28 @@
                     }, 600);
                 });
             });
-            
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e) {
-                // Close category dropdown
-                const dropdown = document.querySelector('.dropdown');
-                if (dropdown && !dropdown.contains(e.target)) {
-                    document.querySelector('.dropdown-content').style.display = 'none';
-                }
+        }
+
+        // Set up auto-dismiss for toasts
+        function setupToasts() {
+            const toasts = document.querySelectorAll('.toast-entry');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    toast.classList.add('toast-exit');
+                    setTimeout(() => toast.remove(), 500);
+                }, 5000);
                 
-                // Close search suggestions
-                if (!domCache.searchInput.contains(e.target) && !domCache.searchSuggestions.contains(e.target)) {
-                    domCache.searchSuggestions.style.display = 'none';
-                }
-                
-                // Close filter section when clicking outside
-                if (!domCache.filterToggle.contains(e.target) && !domCache.filterSection.contains(e.target)) {
-                    domCache.filterSection.classList.add('hidden');
+                // Add click handler to close button if not already present
+                const closeBtn = toast.querySelector('button');
+                if (closeBtn && !closeBtn.getAttribute('data-has-listener')) {
+                    closeBtn.setAttribute('data-has-listener', 'true');
+                    closeBtn.addEventListener('click', () => {
+                        toast.classList.add('toast-exit');
+                        setTimeout(() => toast.remove(), 500);
+                    });
                 }
             });
-        });
+        }
 
         // Function to show new toasts
         function showToast(message, type = 'info') {
@@ -1567,6 +1995,7 @@
             const modalStatus = document.getElementById('modalStatus');
             const modalPlayBtn = document.getElementById('modalPlayBtn');
             const modalFavoriteBtn = document.getElementById('modalFavoriteBtn');
+            const modalQuality = document.getElementById('modalQuality');
             
             // Get channel data from card attributes
             const name = card.getAttribute('data-name');
@@ -1576,7 +2005,11 @@
             const logo = card.getAttribute('data-logo');
             const url = card.getAttribute('data-url');
             const key = card.getAttribute('data-key');
+            const quality = card.getAttribute('data-quality');
             const isFavorite = state.favorites.includes(key);
+            
+            // Add to recently viewed
+            addToRecentlyViewed(key);
             
             // Set modal content
             modalTitle.textContent = name;
@@ -1584,6 +2017,7 @@
             modalAccess.textContent = access.charAt(0).toUpperCase() + access.slice(1);
             modalCountry.textContent = country || 'Not specified';
             modalCategory.textContent = category;
+            modalQuality.textContent = quality.toUpperCase();
             
             if (logo) {
                 modalLogo.src = logo;
@@ -1618,7 +2052,7 @@
                     showToast('Removed from favorites');
                     modalFavoriteBtn.innerHTML = `
                         <svg class="w-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 极 00-6.364 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 1 00-6.364 0z" />
                         </svg>
                         Favorite
                     `;
@@ -1627,8 +2061,8 @@
                     state.favorites.push(key);
                     showToast('Added to favorites');
                     modalFavoriteBtn.innerHTML = `
-                        <svg class="w-5 h-5 mr-极" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-极.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-0.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                         Favorited
                     `;
@@ -1725,6 +2159,9 @@
                 closeModal();
             }
         });
+
+        // Initialize the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initPage);
     </script>
 </body>
 </html>

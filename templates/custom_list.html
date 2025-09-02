@@ -173,6 +173,118 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: rgba(31, 41, 55, 0.95);
+            border-radius: 16px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.25);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(-20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-live {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        .status-offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        .status-checking {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.75rem 1rem;
+        }
+        .info-label {
+            color: #9ca3af;
+            font-weight: 500;
+        }
+        .info-value {
+            color: #f3f4f6;
+            word-break: break-all;
+        }
+        .channel-logo-modal {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin: 0 auto 1rem;
+            display: block;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem;
+        }
+        .detail-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s, background 0.3s;
+            z-index: 5;
+        }
+        .channel-card:hover .detail-btn {
+            opacity: 1;
+        }
+        .detail-btn:hover {
+            background: rgba(6, 182, 212, 0.8);
+        }
     </style>
 </head>
 <body class="text-white flex flex-col min-h-screen">
@@ -215,6 +327,54 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+    </div>
+
+    <!-- Channel Details Modal -->
+    <div id="channelModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-cyan-100" id="modalTitle">Channel Details</h3>
+                <button class="text-gray-400 hover:text-white transition" onclick="closeModal()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="modalLogo" src="" alt="Channel Logo" class="channel-logo-modal">
+                <div class="info-grid">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value font-medium" id="modalName"></span>
+                    
+                    <span class="info-label">Status:</span>
+                    <span class="status-badge status-checking" id="modalStatus">Checking...</span>
+                    
+                    <span class="info-label">Access:</span>
+                    <span class="info-value" id="modalAccess"></span>
+                    
+                    <span class="info-label">Country:</span>
+                    <span class="info-value" id="modalCountry"></span>
+                    
+                    <span class="info-label">Category:</span>
+                    <span class="info-value" id="modalCategory"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition flex items-center" onclick="closeModal()">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Close
+                </button>
+                <button id="modalPlayBtn" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Play Channel
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Header -->
@@ -307,7 +467,17 @@
                     <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30
                         {% if not channel_url %} invalid-channel {% endif %}"
                          data-name="{{ channel_name | lower }}"
-                         data-access="{{ channel.get('access', 'free') | lower }}">
+                         data-access="{{ channel.get('access', 'free') | lower }}"
+                         data-key="{{ channel.key }}"
+                         data-group="{{ group_title }}"
+                         data-country="{{ channel.get('country', '') }}"
+                         data-logo="{{ channel.get('logo', '') }}"
+                         data-url="{{ channel_url }}">
+                        
+                        <!-- Details button -->
+                        <button class="detail-btn" onclick="showChannelDetails(this.closest('.channel-card'))">
+                            <i class="fas fa-info-circle text-sm"></i>
+                        </button>
                         
                         {% if channel_url %}
                             {% set url_parts = channel_url.split('://') %}
@@ -595,6 +765,126 @@
                 behavior: 'smooth'
             });
         }
+
+        // Show channel details modal
+        function showChannelDetails(card) {
+            const modal = document.getElementById('channelModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalName = document.getElementById('modalName');
+            const modalAccess = document.getElementById('modalAccess');
+            const modalCountry = document.getElementById('modalCountry');
+            const modalCategory = document.getElementById('modalCategory');
+            const modalLogo = document.getElementById('modalLogo');
+            const modalStatus = document.getElementById('modalStatus');
+            const modalPlayBtn = document.getElementById('modalPlayBtn');
+            
+            // Get channel data from card attributes
+            const name = card.getAttribute('data-name');
+            const access = card.getAttribute('data-access');
+            const country = card.getAttribute('data-country');
+            const category = card.getAttribute('data-group');
+            const url = card.getAttribute('data-url');
+            const logo = card.getAttribute('data-logo');
+            const key = card.getAttribute('data-key');
+            
+            // Set modal content
+            modalTitle.textContent = name;
+            modalName.textContent = name;
+            modalAccess.textContent = access.charAt(0).toUpperCase() + access.slice(1);
+            modalCountry.textContent = country || 'Not specified';
+            modalCategory.textContent = category;
+            
+            if (logo) {
+                modalLogo.src = logo;
+                modalLogo.style.display = 'block';
+            } else {
+                modalLogo.style.display = 'none';
+            }
+            
+            // Set play button action
+            if (url) {
+                modalPlayBtn.style.display = 'flex';
+                modalPlayBtn.onclick = function() {
+                    // Determine the correct URL format
+                    const urlParts = url.split('://');
+                    if (urlParts.length > 1) {
+                        const domainPort = urlParts[1].split('/')[0];
+                        const domain = domainPort.split(':')[0];
+                        const isIp = domain.replace('.', '').isdigit();
+                        const hasPort = domainPort.includes(':');
+                        
+                        if (isIp || hasPort) {
+                            window.open(url, '_blank');
+                        } else {
+                            window.location.href = `/plus-play/${key}`;
+                        }
+                    } else {
+                        window.location.href = `/plus-player?${new URLSearchParams({url: url, token: card.getAttribute('data-token') || ''})}`;
+                    }
+                    closeModal();
+                };
+            } else {
+                modalPlayBtn.style.display = 'none';
+            }
+            
+            // Check channel status
+            checkChannelStatus(url, modalStatus);
+            
+            // Show modal
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('channelModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Check channel status (ping)
+        function checkChannelStatus(url, statusElement) {
+            if (!url) {
+                statusElement.textContent = 'No URL';
+                statusElement.className = 'status-badge status-offline';
+                return;
+            }
+            
+            statusElement.textContent = 'Checking...';
+            statusElement.className = 'status-badge status-checking';
+            
+            // Send request to server to check channel status
+            fetch(`/check-channel-status?url=${encodeURIComponent(url)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'live') {
+                        statusElement.textContent = 'Live';
+                        statusElement.className = 'status-badge status-live';
+                    } else {
+                        statusElement.textContent = 'Offline';
+                        statusElement.className = 'status-badge status-offline';
+                    }
+                })
+                .catch(error => {
+                    statusElement.textContent = 'Error checking';
+                    statusElement.className = 'status-badge status-offline';
+                    console.error('Error checking channel status:', error);
+                });
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('channelModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>

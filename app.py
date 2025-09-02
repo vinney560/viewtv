@@ -1872,6 +1872,72 @@ def custom_list():
     categorized_channels = dict(sorted(grouped.items(), key=lambda x: x[0]))
 
     return render_template('custom_list.html', categorized_channels=categorized_channels)
+
+from urllib.parse import urlparse
+import socket
+
+@app.route('/check-channel-status')
+@login_required
+@plus_required
+def check_channel_status():
+    url = request.args.get('url')
+    if not url:
+        return jsonify({'status': 'error', 'message': 'No URL provided'})
+    
+    try:
+        # Validate URL format
+        parsed = urlparse(url)
+        if not parsed.scheme or not parsed.netloc:
+            return jsonify({'status': 'offline'})
+        
+        # For HTTP/HTTPS URLs
+        if parsed.scheme in ['http', 'https']:
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            }
+            
+            # Set a timeout to avoid hanging
+            response = requests.head(url, headers=headers, timeout=5, allow_redirects=True)
+            
+            if response.status_code == 200:
+                return jsonify({'status': 'live'})
+            else:
+                # Try with GET request for the first byte for streams that don't support HEAD
+                response = requests.get(url, headers=headers, timeout=5, stream=True)
+                if response.status_code == 200:
+                    return jsonify({'status': 'live'})
+                else:
+                    return jsonify({'status': 'offline'})
+                    
+        # For UDP/TCP streams (limited checking)
+        elif parsed.scheme in ['udp', 'rtp', 'rtsp', 'rtmp']:
+            # Extract host and port
+            host = parsed.hostname
+            port = parsed.port or (1935 if parsed.scheme == 'rtmp' else 554)
+            
+            # Try to establish a basic connection
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(3)
+            result = sock.connect_ex((host, port))
+            sock.close()
+            
+            if result == 0:
+                return jsonify({'status': 'live'})
+            else:
+                return jsonify({'status': 'offline'})
+                
+        else:
+            return jsonify({'status': 'unknown'})
+            
+    except requests.exceptions.RequestException:
+        return jsonify({'status': 'offline'})
+    except socket.gaierror:
+        return jsonify({'status': 'offline'})
+    except socket.timeout:
+        return jsonify({'status': 'offline'})
+    except Exception as e:
+        print(f"Error checking channel status: {e}")
+        return jsonify({'status': 'error'})
 #--------------------------------------------------------------------------
 import logging
 import hmac

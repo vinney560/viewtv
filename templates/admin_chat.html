@@ -300,11 +300,11 @@
         
         .message-status {
             font-size: 10px;
-            color: var(--primary-light);
+           color: var(--primary-light);
         }
         
         .chat-input-area {
-            display: flex;
+            display:flex;
             padding: 16px;
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(10px);
@@ -642,18 +642,25 @@
         
         .notification-content {
             flex: 1;
+            max-width: 250px;
         }
         
         .notification-content h4 {
             margin: 0;
             font-size: 14px;
             font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .notification-content p {
             margin: 4px 0 0;
             font-size: 12px;
             color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .wave-divider {
@@ -704,7 +711,7 @@
             transform: translateY(-50%);
             width: 40px;
             height: 40px;
-            background: rgba(15, 23, 42, 0.8);
+           background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--glass-border);
             border-right: none;
             border-radius: 8px 0 0 8px;
@@ -763,6 +770,190 @@
         .user-action-btn.warning:hover {
             background: rgba(239, 68, 68, 0.2);
         }
+        
+        /* Voice Call Styles */
+        .call-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .call-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .call-container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .call-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .caller-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 600;
+            font-size: 32px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(74, 108, 247, 0.5);
+        }
+        
+        .caller-info h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        
+        .call-status {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .call-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .call-action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .accept-call {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .accept-call:hover {
+            background: #0da271;
+            transform: scale(1.1);
+        }
+        
+        .reject-call {
+            background: var(--error);
+            color: white;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .reject-call:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .end-call {
+            background: var(--error);
+            color: white;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .end-call:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .call-timer {
+            font-size: 24px;
+            margin-top: 20px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .calling-animation {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .calling-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            margin: 0 5px;
+            animation: pulse-dot 1.5s infinite ease-in-out;
+        }
+        
+        .calling-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .calling-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+        }
+        
+        .call-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn.active {
+            background: var(--primary);
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -782,8 +973,10 @@
                 <p>{{ other_user.email }} • Active now</p>
             </div>
             <div class="header-actions">
-                <div class="header-btn">
-                    <i class="fas fa-phone"></i>
+                <div class="header-btn" id="voice-call-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
                 </div>
                 <div class="header-btn">
                     <i class="fas fa-video"></i>
@@ -811,7 +1004,7 @@
                 <div class="message-reactions">
                     <span class="reaction">👍</span>
                     <span class="reaction">❤️</span>
-                    <span class="reaction">😮</span>
+                   <span class="reaction">😮</span>
                 </div>
                 {% endif %}
             </div>
@@ -827,7 +1020,7 @@
         
         <div class="wave-divider">
             <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21, 0,0,0,321.39,56.44Z" class="shape-fill"></path>
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
             </svg>
         </div>
         
@@ -862,6 +1055,45 @@
                     <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                 </svg>
             </button>
+        </div>
+    </div>
+
+    <!-- Voice Call Modal -->
+    <div class="call-modal" id="call-modal">
+        <div class="call-container">
+            <div class="call-header">
+                <div class="caller-avatar">{{ other_user.name[0] }}</div>
+                <div class="caller-info">
+                    <h3 id="caller-name">{{ other_user.name }}</h3>
+                    <p class="call-status" id="call-status">Calling...</p>
+                </div>
+            </div>
+            
+            <div class="calling-animation">
+                <div class="calling-dot"></div>
+                <div class="calling-dot"></div>
+                <div class="calling-dot"></div>
+            </div>
+            
+            <div class="call-timer" id="call-timer">00:00</div>
+            
+            <div class="call-actions">
+                <button class="call-action-btn accept-call" id="accept-call" style="display: none;">
+                    <i class="fas fa-phone"></i>
+                </button>
+                <button class="call-action-btn end-call" id="end-call">
+                    <i class="fas fa-phone-slash"></i>
+                </button>
+            </div>
+            
+            <div class="call-controls" id="call-controls" style="display: none;">
+                <button class="control-btn" id="mute-btn">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="control-btn" id="speaker-btn">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1041,6 +1273,111 @@
             }, 2000);
         });
 
+        // Voice call functionality
+        const callModal = document.getElementById('call-modal');
+        const voiceCallBtn = document.getElementById('voice-call-btn');
+        const acceptCallBtn = document.getElementById('accept-call');
+        const endCallBtn = document.getElementById('end-call');
+        const callStatus = document.getElementById('call-status');
+        const callTimer = document.getElementById('call-timer');
+        const callerName = document.getElementById('caller-name');
+        const callControls = document.getElementById('call-controls');
+        const muteBtn = document.getElementById('mute-btn');
+        const speakerBtn = document.getElementById('speaker-btn');
+        
+        let callDuration = 0;
+        let callInterval;
+        let currentCallId = null;
+        let isCallActive = false;
+        
+        // Initialize call button
+        voiceCallBtn.addEventListener('click', () => {
+            // Emit call request to the server
+            socket.emit('voice_call_request', {
+                receiver_id: userId
+            });
+            
+            // Show calling UI
+            callStatus.textContent = 'Calling...';
+            callerName.textContent = '{{ other_user.name }}';
+            acceptCallBtn.style.display = 'none';
+            endCallBtn.style.display = 'block';
+            callControls.style.display = 'none';
+            callTimer.style.display = 'none';
+            callModal.classList.add('active');
+        });
+        
+        // End call button
+        endCallBtn.addEventListener('click', () => {
+            if (isCallActive) {
+                // End active call
+                socket.emit('end_call', {
+                    call_id: currentCallId
+                });
+            } else if (currentCallId) {
+                // Cancel outgoing call
+                socket.emit('end_call', {
+                    call_id: currentCallId
+                });
+            } else {
+                // Reject incoming call
+                socket.emit('reject_call', {
+                    call_id: currentCallId
+                });
+            }
+            
+            resetCallUI();
+        });
+        
+        // Accept call button
+        acceptCallBtn.addEventListener('click', () => {
+            socket.emit('accept_call', {
+                call_id: currentCallId
+            });
+            
+            callStatus.textContent = 'Connected';
+            acceptCallBtn.style.display = 'none';
+            callControls.style.display = 'flex';
+            startCallTimer();
+            isCallActive = true;
+        });
+        
+        // Mute button
+        muteBtn.addEventListener('click', () => {
+            muteBtn.classList.toggle('active');
+            // Implement mute functionality
+        });
+        
+        // Speaker button
+        speakerBtn.addEventListener('click', () => {
+            speakerBtn.classList.toggle('active');
+            // Implement speaker toggle functionality
+        });
+        
+        function startCallTimer() {
+            callDuration = 0;
+            callTimer.style.display = 'block';
+            callTimer.textContent = '00:00';
+            
+            clearInterval(callInterval);
+            callInterval = setInterval(() => {
+                callDuration++;
+                const minutes = Math.floor(callDuration / 60);
+                const seconds = callDuration % 60;
+                callTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        function resetCallUI() {
+            callModal.classList.remove('active');
+            clearInterval(callInterval);
+            callDuration = 0;
+            currentCallId = null;
+            isCallActive = false;
+            callTimer.style.display = 'none';
+            callControls.style.display = 'none';
+        }
+        
         // Original socket.io functionality remains exactly the same
         const socket = io();
         const currentUserId = {{ current_user.id }};
@@ -1093,6 +1430,48 @@
             } else {
                 typingIndicator.style.display = 'none';
             }
+        });
+        
+        // Voice call event handlers
+        socket.on('incoming_call', function(data) {
+            currentCallId = data.call_id;
+            callStatus.textContent = 'Incoming Call';
+            callerName.textContent = data.caller_name;
+            acceptCallBtn.style.display = 'block';
+            endCallBtn.style.display = 'block';
+            callControls.style.display = 'none';
+            callModal.classList.add('active');
+            
+            // Play ringtone
+            // You would implement this with an audio element
+        });
+        
+        socket.on('call_initiated', function(data) {
+            currentCallId = data.call_id;
+        });
+        
+        socket.on('call_accepted', function(data) {
+            callStatus.textContent = 'Connected';
+            acceptCallBtn.style.display = 'none';
+            callControls.style.display = 'flex';
+            startCallTimer();
+            isCallActive = true;
+            
+            // Stop ringtone if playing
+        });
+        
+        socket.on('call_rejected', function(data) {
+            callStatus.textContent = 'Call Rejected';
+            setTimeout(() => {
+                resetCallUI();
+            }, 2000);
+        });
+        
+        socket.on('call_ended', function(data) {
+            callStatus.textContent = 'Call Ended';
+            setTimeout(() => {
+                resetCallUI();
+            }, 2000);
         });
         
         document.getElementById('send-button').addEventListener('click', sendMessage);

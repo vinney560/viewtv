@@ -5104,6 +5104,132 @@ def handle_send_message(data):
             'sender_name': current_user.name,
             'content': content[:50] + '...' if len(content) > 50 else content
         }, room='admin_room')
+
+# Add to imports at top
+import uuid
+from datetime import datetime
+
+# Voice call tracking (in-memory for simplicity, consider Redis for production)
+active_calls = {}
+
+@socketio.on('voice_call_request')
+def handle_voice_call_request(data):
+    """Handle incoming voice call request"""
+    caller_id = current_user.id
+    receiver_id = data['receiver_id']
+    
+    # Generate unique call ID
+    call_id = str(uuid.uuid4())
+    
+    # Store call information
+    active_calls[call_id] = {
+        'caller_id': caller_id,
+        'receiver_id': receiver_id,
+        'status': 'ringing',
+        'timestamp': datetime.utcnow()
+    }
+    
+    # Notify receiver
+    emit('incoming_call', {
+        'call_id': call_id,
+        'caller_id': caller_id,
+        'caller_name': current_user.name
+    }, room=f'user_{receiver_id}')
+    
+    # Send confirmation to caller
+    emit('call_initiated', {'call_id': call_id})
+
+@socketio.on('accept_call')
+def handle_accept_call(data):
+    """Handle call acceptance"""
+    call_id = data['call_id']
+    
+    if call_id in active_calls:
+        call = active_calls[call_id]
+        call['status'] = 'active'
+        
+        # Notify caller that call was accepted
+        emit('call_accepted', {
+            'call_id': call_id,
+            'acceptor_id': current_user.id
+        }, room=f'user_{call["caller_id"]}')
+        
+        # Create WebRTC signaling room for this call
+        join_room(f'call_{call_id}')
+
+@socketio.on('reject_call')
+def handle_reject_call(data):
+    """Handle call rejection"""
+    call_id = data['call_id']
+    
+    if call_id in active_calls:
+        call = active_calls[call_id]
+        
+        # Notify caller that call was rejected
+        emit('call_rejected', {
+            'call_id': call_id,
+            'rejector_id': current_user.id
+        }, room=f'user_{call["caller_id"]}')
+        
+        # Clean up call
+        del active_calls[call_id]
+
+@socketio.on('end_call')
+def handle_end_call(data):
+    """Handle call termination"""
+    call_id = data['call_id']
+    
+    if call_id in active_calls:
+        call = active_calls[call_id]
+        
+        # Notify other participant
+        other_user_id = call['caller_id'] if current_user.id == call['receiver_id'] else call['receiver_id']
+        emit('call_ended', {
+            'call_id': call_id,
+            'ender_id': current_user.id
+        }, room=f'user_{other_user_id}')
+        
+        # Clean up call
+        del active_calls[call_id]
+
+@socketio.on('webrtc_offer')
+def handle_webrtc_offer(data):
+    """Relay WebRTC offer to other participant"""
+    call_id = data['call_id']
+    if call_id in active_calls:
+        call = active_calls[call_id]
+        other_user_id = call['caller_id'] if current_user.id == call['receiver_id'] else call['receiver_id']
+        
+        emit('webrtc_offer', {
+            'offer': data['offer'],
+            'call_id': call_id
+        }, room=f'user_{other_user_id}')
+
+@socketio.on('webrtc_answer')
+def handle_webrtc_answer(data):
+    """Relay WebRTC answer to other participant"""
+    call_id = data['call_id']
+    if call_id in active_calls:
+        call = active_calls[call_id]
+        other_user_id = call['caller_id'] if current_user.id == call['receiver_id'] else call['receiver_id']
+        
+        emit('webrtc_answer', {
+            'answer': data['answer'],
+            'call_id': call_id
+        }, room=f'user_{other_user_id}')
+
+@socketio.on('webrtc_ice_candidate')
+def handle_webrtc_ice_candidate(data):
+    """Relay ICE candidate to other participant"""
+    call_id = data['call_id']
+    if call_id in active_calls:
+        call = active_calls[call_id]
+        other_user_id = call['caller_id'] if current_user.id == call['receiver_id'] else call['receiver_id']
+        
+        emit('webrtc_ice_candidate', {
+            'candidate': data['candidate'],
+            'call_id': call_id
+        }, room=f'user_{other_user_id}')
 #========================================
 @app.context_processor
 def inject_csrf_token():

@@ -346,8 +346,8 @@
         
         .detail-btn {
             position: absolute;
-            top: 8px;
-            right: 10px;
+            top: 10px;
+            right: 12px;
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -374,8 +374,8 @@
         /* Favorite button */
         .favorite-btn {
             position: absolute;
-            top: 8px;
-            left: 8px;
+            top: 10px;
+            left: 10px;
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -428,7 +428,7 @@
             height: 100%;
         }
         
-        /* List view */
+        /* List view - NEW STYLES */
         .list-view {
             display: flex;
             flex-direction: column;
@@ -437,17 +437,57 @@
         
         .list-view .channel-card {
             display: flex;
-            height: auto;
+            flex-direction: row;
+            height: 120px;
+            border-radius: 12px;
+            overflow: hidden;
         }
         
         .list-view .channel-card .channel-image {
             width: 160px;
             flex-shrink: 0;
+            position: relative;
         }
         
         .list-view .channel-card .channel-info {
             flex: 1;
             padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .list-view .channel-card .channel-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .list-view .channel-card .channel-info p {
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+        
+        .list-view .channel-card .channel-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+        
+        .list-view .channel-card .detail-btn,
+        .list-view .channel-card .favorite-btn {
+            position: relative;
+            top: unset;
+            right: unset;
+            left: unset;
+            margin: 0 5px;
+        }
+        
+        .list-view .channel-card .action-buttons {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
         }
         
         /* Filter section */
@@ -597,7 +637,7 @@
             visibility: visible;
         }
         
-        /* Back button in modal */
+        /* Modal back button */
         .modal-back-btn {
             position: absolute;
             top: 1.3rem;
@@ -618,6 +658,62 @@
         .modal-back-btn:hover {
             background: rgba(6, 182, 212, 0.7);
             transform: scale(1.1);
+        }
+        
+        /* Search suggestions */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(31, 41, 55, 0.95);
+            border-radius: 0 0 12px 12px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-top: none;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-suggestion {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-suggestion:hover {
+            background: rgba(6, 182, 212, 0.2);
+        }
+        
+        .search-suggestion i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        /* Search container for flexible width */
+        .search-container {
+            position: relative;
+            transition: all 0.3s ease;
+            max-width: 300px;
+        }
+        
+        .search-container.expanded {
+            max-width: 400px;
+        }
+        
+        @media (max-width: 768px) {
+            .search-container {
+                max-width: 200px;
+            }
+            
+            .search-container.expanded {
+                max-width: 300px;
+            }
         }
     </style>
 </head>
@@ -766,11 +862,14 @@
                     </div>
                 </div>
                 
-                <!-- Search Box -->
-                <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Search channels..."
-                        class="search-box w-full bg-gray-800/80 border border-gray-700/50 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
-                    <i class="fas fa-search absolute left-3 top-2.5 text-gray-500"></i>
+                <!-- Search Box with Suggestions -->
+                <div class="search-container" id="searchContainer">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Search channels..."
+                            class="search-box w-full bg-gray-800/80 border border-gray-700/50 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
+                        <i class="fas fa-search absolute left-3 top-2.5 text-gray-500"></i>
+                    </div>
+                    <div class="search-suggestions" id="searchSuggestions"></div>
                 </div>
                 
                 <!-- Filter Button -->
@@ -992,19 +1091,122 @@
                 status: [],
                 favorites: false
             },
-            viewMode: 'grid' // 'grid' or 'list'
+            viewMode: 'grid', // 'grid' or 'list'
+            allChannelNames: []
         };
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchTerm = this.value.toLowerCase();
-            filterChannels();
+        // Cache DOM elements for better performance
+        const domCache = {
+            searchInput: document.getElementById('searchInput'),
+            searchContainer: document.getElementById('searchContainer'),
+            searchSuggestions: document.getElementById('searchSuggestions'),
+            filterSection: document.getElementById('filterSection'),
+            channelsView: document.getElementById('channelsView'),
+            gridViewBtn: document.getElementById('gridViewBtn'),
+            listViewBtn: document.getElementById('listViewBtn'),
+            clearFilters: document.getElementById('clearFilters'),
+            filterToggle: document.getElementById('filterToggle'),
+            refreshRecommended: document.getElementById('refresh-recommended'),
+            backToTop: document.getElementById('backToTop')
+        };
+
+        // Pre-cache all channel names for search suggestions
+        document.querySelectorAll('.channel-card').forEach(card => {
+            state.allChannelNames.push(card.getAttribute('data-name'));
         });
 
+        // Search functionality with suggestions
+        domCache.searchInput.addEventListener('input', debounce(function () {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            // Expand search container when typing
+            if (searchTerm.length > 0) {
+                domCache.searchContainer.classList.add('expanded');
+            } else {
+                domCache.searchContainer.classList.remove('expanded');
+                domCache.searchSuggestions.style.display = 'none';
+                filterChannels();
+                return;
+            }
+            
+            // Show suggestions
+            showSearchSuggestions(searchTerm);
+            filterChannels();
+        }, 300));
+
+        // Handle search input focus
+        domCache.searchInput.addEventListener('focus', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            if (searchTerm.length > 0) {
+                domCache.searchContainer.classList.add('expanded');
+                showSearchSuggestions(searchTerm);
+            }
+        });
+
+        // Handle search input blur
+        domCache.searchInput.addEventListener('blur', function() {
+            // Hide suggestions after a short delay to allow click
+            setTimeout(() => {
+                domCache.searchSuggestions.style.display = 'none';
+                domCache.searchContainer.classList.remove('expanded');
+            }, 200);
+        });
+
+        // Show search suggestions
+        function showSearchSuggestions(searchTerm) {
+            if (searchTerm.length < 2) {
+                domCache.searchSuggestions.style.display = 'none';
+                return;
+            }
+            
+            // Find matching channel names
+            const matches = state.allChannelNames.filter(name => 
+                name.includes(searchTerm)
+            ).slice(0, 5); // Limit to 5 suggestions
+            
+            if (matches.length === 0) {
+                domCache.searchSuggestions.style.display = 'none';
+                return;
+            }
+            
+            // Build suggestions HTML
+            domCache.searchSuggestions.innerHTML = matches.map(name => `
+                <div class="search-suggestion" data-name="${name}">
+                    <i class="fas fa-tv"></i>
+                    <span>${name}</span>
+                </div>
+            `).join('');
+            
+            // Add click handlers to suggestions
+            domCache.searchSuggestions.querySelectorAll('.search-suggestion').forEach(suggestion => {
+                suggestion.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    const name = this.getAttribute('data-name');
+                    domCache.searchInput.value = name;
+                    filterChannels();
+                    domCache.searchSuggestions.style.display = 'none';
+                });
+            });
+            
+            domCache.searchSuggestions.style.display = 'block';
+        }
+
+        // Debounce function for performance
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func.apply(this, args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         // Toggle filter section
-        document.getElementById('filterToggle').addEventListener('click', function() {
-            const filterSection = document.getElementById('filterSection');
-            filterSection.classList.toggle('hidden');
+        domCache.filterToggle.addEventListener('click', function() {
+            domCache.filterSection.classList.toggle('hidden');
         });
 
         // Setup custom checkboxes
@@ -1032,7 +1234,7 @@
         });
 
         // Clear filters
-        document.getElementById('clearFilters').addEventListener('click', function() {
+        domCache.clearFilters.addEventListener('click', function() {
             // Reset UI
             document.querySelectorAll('.custom-checkbox').forEach(cb => {
                 cb.classList.remove('checked');
@@ -1049,37 +1251,109 @@
         });
 
         // View mode toggle
-        document.getElementById('gridViewBtn').addEventListener('click', function() {
+        domCache.gridViewBtn.addEventListener('click', function() {
             setViewMode('grid');
         });
 
-        document.getElementById('listViewBtn').addEventListener('click', function() {
+        domCache.listViewBtn.addEventListener('click', function() {
             setViewMode('list');
         });
 
         function setViewMode(mode) {
             state.viewMode = mode;
-            const channelsView = document.getElementById('channelsView');
-            const gridViewBtn = document.getElementById('gridViewBtn');
-            const listViewBtn = document.getElementById('listViewBtn');
             
             if (mode === 'grid') {
-                channelsView.className = 'grid-view';
-                gridViewBtn.classList.add('active');
-                listViewBtn.classList.remove('active');
+                domCache.channelsView.className = 'grid-view';
+                domCache.gridViewBtn.classList.add('active');
+                domCache.listViewBtn.classList.remove('active');
             } else {
-                channelsView.className = 'list-view';
-                gridViewBtn.classList.remove('active');
-                listViewBtn.classList.add('active');
+                domCache.channelsView.className = 'list-view';
+                domCache.gridViewBtn.classList.remove('active');
+                domCache.listViewBtn.classList.add('active');
+                
+                // Convert cards to list view
+                document.querySelectorAll('.channel-group').forEach(group => {
+                    const cards = group.querySelectorAll('.channel-card');
+                    cards.forEach(card => {
+                        convertToListItem(card);
+                    });
+                });
             }
             
             // Save to localStorage
             localStorage.setItem('viewMode', mode);
         }
 
+        // Convert card to list item
+        function convertToListItem(card) {
+            if (card.classList.contains('list-item-converted')) return;
+            
+            const name = card.querySelector('h3').textContent;
+            const country = card.querySelector('p').textContent;
+            const status = card.querySelector('.status-badge').textContent;
+            const access = card.querySelector('.text-xs.font-medium').textContent;
+            const logo = card.querySelector('img') ? card.querySelector('img').src : '';
+            
+            // Create list item structure
+            const listItemHTML = `
+                <div class="channel-image">
+                    ${logo ? `<img src="${logo}" alt="${name}" class="w-full h-full object-contain p-3">` : 
+                    `<div class="w-full h-full flex items-center justify-center text-cyan-400/20">
+                        <i class="fas fa-tv text-3xl"></i>
+                    </div>`}
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                        <span class="text-xs font-medium text-cyan-400">${access}</span>
+                    </div>
+                </div>
+                <div class="channel-info">
+                    <h3 class="font-medium">${name}</h3>
+                    <p class="text-gray-400">${country}</p>
+                    <div class="channel-meta">
+                        <span class="status-badge status-live text-xs">${status}</span>
+                        <span class="text-xs text-gray-500">HD</span>
+                    </div>
+                    <div class="action-buttons">
+                        ${card.querySelector('.favorite-btn').outerHTML}
+                        ${card.querySelector('.detail-btn').outerHTML}
+                    </div>
+                </div>
+            `;
+            
+            // Preserve original attributes and URL
+            const originalAttributes = {};
+            for (let attr of card.attributes) {
+                if (attr.name.startsWith('data-')) {
+                    originalAttributes[attr.name] = attr.value;
+                }
+            }
+            
+            const originalLink = card.querySelector('a');
+            if (originalLink) {
+                card.innerHTML = `<a href="${originalLink.href}" class="flex h-full w-full">${listItemHTML}</a>`;
+            } else {
+                card.innerHTML = listItemHTML;
+            }
+            
+            // Restore attributes
+            for (let attr in originalAttributes) {
+                card.setAttribute(attr, originalAttributes[attr]);
+            }
+            
+            // Add event listeners to buttons
+            const favoriteBtn = card.querySelector('.favorite-btn');
+            const detailBtn = card.querySelector('.detail-btn');
+            const key = card.getAttribute('data-key');
+            
+            favoriteBtn.onclick = () => toggleFavorite(favoriteBtn, key);
+            detailBtn.onclick = () => showChannelDetails(card);
+            
+            // Mark as converted
+            card.classList.add('list-item-converted');
+        }
+
         // Filter channels based on search and filters
         function filterChannels() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchTerm = domCache.searchInput.value.toLowerCase();
             const channelGroups = document.querySelectorAll('.channel-group');
 
             channelGroups.forEach(group => {
@@ -1105,12 +1379,12 @@
                     const favoriteMatch = !state.filters.favorites || isFavorite;
                     
                     const match = searchMatch && accessMatch && statusMatch && favoriteMatch;
-                    card.style.display = match ? 'block' : 'none';
+                    card.style.display = match ? '' : 'none';
 
                     if (match) matchFoundInGroup = true;
                 });
 
-                group.style.display = matchFoundInGroup ? 'block' : 'none';
+                group.style.display = matchFoundInGroup ? '' : 'none';
             });
         }
 
@@ -1159,8 +1433,7 @@
             generateRecommendedChannels();
 
             // Set up back to top button
-            const backButton = document.getElementById('backToTop');
-            backButton.addEventListener('click', () => {
+            domCache.backToTop.addEventListener('click', () => {
                 window.scrollTo({
                     top: 0,
                     behavior: 'smooth'
@@ -1170,14 +1443,14 @@
             // Show/hide back button based on scroll position
             window.addEventListener('scroll', () => {
                 if (window.pageYOffset > 300) {
-                    backButton.style.display = 'flex';
+                    domCache.backToTop.style.display = 'flex';
                 } else {
-                    backButton.style.display = 'none';
+                    domCache.backToTop.style.display = 'none';
                 }
             });
 
             // Set up refresh recommended button
-            document.getElementById('refresh-recommended').addEventListener('click', function() {
+            domCache.refreshRecommended.addEventListener('click', function() {
                 const icon = document.getElementById('refresh-icon');
                 const text = document.getElementById('refresh-text');
                 

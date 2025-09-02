@@ -13,12 +13,21 @@
             --secondary: #10b981;
             --dark: #111827;
             --darker: #030712;
+            --light-bg: #f3f4f6;
+            --light-text: #1f2937;
+            --light-border: #e5e7eb;
         }
         
         body {
             font-family: 'Inter', sans-serif;
             background: radial-gradient(ellipse at center, var(--dark) 0%, var(--darker) 100%);
             overflow-x: hidden;
+            transition: background 0.3s ease;
+        }
+        
+        body.light-mode {
+            background: radial-gradient(ellipse at center, var(--light-bg) 0%, #d1d5db 100%);
+            color: var(--light-text);
         }
         
         .card-glass {
@@ -26,6 +35,11 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .light-mode .card-glass {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
         
         .channel-card {
@@ -36,10 +50,19 @@
             overflow: hidden;
         }
         
+        .light-mode .channel-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--light-border);
+        }
+        
         .channel-card:hover {
             transform: translateY(-5px) scale(1.02);
             box-shadow: 0 15px 30px -10px rgba(6, 182, 212, 0.4);
             border-color: rgba(6, 182, 212, 0.5);
+        }
+        
+        .light-mode .channel-card:hover {
+            box-shadow: 0 15px 30px -10px rgba(6, 182, 212, 0.3);
         }
         
         .channel-card::before {
@@ -82,6 +105,12 @@
             width: 350px;
         }
         
+        .light-mode .search-box {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--light-text);
+            border-color: var(--light-border);
+        }
+        
         .search-suggestions {
             position: absolute;
             top: 100%;
@@ -97,6 +126,12 @@
             display: none;
         }
         
+        .light-mode .search-suggestions {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--light-text);
+        }
+        
         .search-suggestion {
             padding: 10px 15px;
             cursor: pointer;
@@ -105,6 +140,10 @@
         
         .search-suggestion:hover {
             background: rgba(6, 182, 212, 0.2);
+        }
+        
+        .light-mode .search-suggestion:hover {
+            background: rgba(6, 182, 212, 0.1);
         }
         
         .toast-entry {
@@ -145,6 +184,10 @@
         
         .category-pill:hover {
             background: rgba(6, 182, 212, 0.2);
+        }
+        
+        .light-mode .category-pill:hover {
+            background: rgba(6, 182, 212, 0.1);
         }
         
         .gradient-text {
@@ -209,6 +252,11 @@
             transition: opacity 0.3s;
         }
         
+        .light-mode .scroll-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
         .scroll-btn.left {
             left: 10px;
         }
@@ -263,6 +311,11 @@
             animation: spin 1s ease-in-out infinite;
         }
         
+        .light-mode .loading-spinner {
+            border: 3px solid rgba(0,0,0,.1);
+            border-top-color: var(--primary);
+        }
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -296,6 +349,12 @@
             position: relative;
         }
         
+        .light-mode .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--light-text);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+        }
+        
         @keyframes modalFadeIn {
             from { opacity: 0; transform: scale(0.9) translateY(-20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
@@ -311,6 +370,11 @@
             border-radius: 20px 20px 0 0;
         }
         
+        .light-mode .modal-header {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(6, 182, 212, 0.05);
+        }
+        
         .modal-body {
             padding: 1.5rem;
         }
@@ -321,6 +385,10 @@
             display: flex;
             justify-content: flex-end;
             gap: 0.75rem;
+        }
+        
+        .light-mode .modal-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         .status-badge {
@@ -359,10 +427,18 @@
             font-size: 0.9rem;
         }
         
+        .light-mode .info-label {
+            color: #6b7280;
+        }
+        
         .info-value {
             color: #f3f4f6;
             word-break: break-word;
             font-size: 0.95rem;
+        }
+        
+        .light-mode .info-value {
+            color: var(--light-text);
         }
         
         .channel-logo-modal {
@@ -375,6 +451,10 @@
             background: rgba(0, 0, 0, 0.2);
             padding: 0.75rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .light-mode .channel-logo-modal {
+            background: rgba(0, 0, 0, 0.05);
         }
         
         .detail-btn {
@@ -445,6 +525,10 @@
             margin-bottom: 1.5rem;
         }
         
+        .light-mode .filter-section {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -454,6 +538,10 @@
         ::-webkit-scrollbar-track {
             background: rgba(31, 41, 55, 0.3);
             border-radius: 10px;
+        }
+        
+        .light-mode ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
         }
         
         ::-webkit-scrollbar-thumb {
@@ -503,6 +591,10 @@
             animation: ripple 0.6s linear;
         }
         
+        .light-mode .ripple {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
         @keyframes ripple {
             to {
                 transform: scale(2.5);
@@ -516,6 +608,10 @@
             background-size: 200% 100%;
             animation: skeletonLoading 1.5s infinite;
             border-radius: 8px;
+        }
+        
+        .light-mode .skeleton {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.05) 25%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.05) 75%);
         }
         
         @keyframes skeletonLoading {
@@ -537,6 +633,11 @@
             border: 1px solid rgba(6, 182, 212, 0.3);
             border-radius: 4px;
             transition: all 0.3s;
+        }
+        
+        .light-mode .custom-checkbox {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(6, 182, 212, 0.5);
         }
         
         .custom-checkbox.checked {
@@ -579,6 +680,12 @@
             z-index: 100;
         }
         
+        .light-mode .tooltip::before {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--light-text);
+            border: 1px solid var(--light-border);
+        }
+        
         .tooltip:hover::before {
             opacity: 1;
             visibility: visible;
@@ -600,6 +707,11 @@
             cursor: pointer;
             transition: all 0.3s;
             z-index: 5;
+        }
+        
+        .light-mode .modal-back-btn {
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--light-text);
         }
         
         .modal-back-btn:hover {
@@ -677,6 +789,10 @@
             background: rgba(6, 182, 212, 0.3);
         }
         
+        .light-mode .search-suggestion.highlight {
+            background: rgba(6, 182, 212, 0.2);
+        }
+        
         /* View transition for smoother changes */
         .view-transition {
             transition: all 0.3s ease;
@@ -701,6 +817,10 @@
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 600;
+        }
+        
+        .light-mode .channel-count {
+            background: rgba(6, 182, 212, 0.1);
         }
         
         /* New: Quick Actions */
@@ -728,6 +848,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
+        .light-mode .quick-action-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
         .quick-action-btn:hover {
             transform: scale(1.1);
             background: rgba(6, 182, 212, 0.8);
@@ -743,6 +868,10 @@
             margin-left: auto;
         }
         
+        .light-mode .view-toggle {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
         .view-toggle-btn {
             padding: 0.5rem;
             border-radius: 8px;
@@ -752,6 +881,10 @@
         
         .view-toggle-btn.active {
             background: rgba(6, 182, 212, 0.3);
+        }
+        
+        .light-mode .view-toggle-btn.active {
+            background: rgba(6, 182, 212, 0.2);
         }
         
         /* New: List View Styles */
@@ -791,6 +924,10 @@
             transition: all 0.3s;
         }
         
+        .light-mode .theme-toggle {
+            background: rgba(209, 213, 219, 0.7);
+        }
+        
         .theme-toggle-handle {
             position: absolute;
             top: 2px;
@@ -811,42 +948,7 @@
 
     <!-- Modern Toast Notifications -->
     <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4
-                        {% if category == 'success' %} bg-gray-800 border-emerald-500
-                        {% elif category == 'error' %} bg-gray-800 border-red-500
-                        {% else %} bg-gray-800 border-cyan-500 {% endif %}">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 pt-0.5">
-                                {% if category == 'success' %}
-                                    <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                {% elif category == 'error' %}
-                                    <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                {% else %}
-                                    <svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                {% endif %}
-                            </div>
-                            <div class="ml-3 flex-1">
-                                <p class="text-sm">{{ message }}</p>
-                            </div>
-                            <button onclick="this.parentElement.parentElement.classList.add('toast-exit'); setTimeout(() => this.parentElement.parentElement.remove(), 500)" class="absolute top-3 right-3 text-gray-400 hover:text-white">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        <!-- Toasts will be added dynamically -->
     </div>
 
     <!-- Channel Details Modal -->
@@ -920,6 +1022,11 @@
             </div>
             
             <div class="header-controls flex items-center space-x-4">
+                <!-- Theme Toggle -->
+                <div class="theme-toggle dark" id="themeToggle">
+                    <div class="theme-toggle-handle"></div>
+                </div>
+                
                 <!-- Category Dropdown -->
                 <div class="dropdown relative">
                     <button class="flex items-center space-x-2 px-4 py-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30">
@@ -927,14 +1034,8 @@
                         <span class="text-sm font-medium text-cyan-200">Categories</span>
                         <i class="fas fa-chevron-down text-xs text-cyan-300"></i>
                     </button>
-                    <div class="dropdown-content fixed top-30 right-6 w-56 max-h-72 overflow-y-auto bg-gray-800/90 rounded-xl shadow-lg z-50 border border-gray-700/50 py-2">
-                        {% for group_title, _ in categorized_channels.items() %}
-                        <a href="#{{ group_title | lower | replace(' ', '-') }}" 
-                           class="block px-4 py-2 text-sm text-gray-300 hover:bg-cyan-600/20 transition category-pill">
-                           <i class="fas fa-arrow-right mr-2 text-cyan-400/70"></i>
-                           {{ group_title or 'Uncategorized' }}
-                        </a>
-                        {% endfor %}
+                    <div class="dropdown-content fixed top-30 right-6 w-56 max-h-72 overflow-y-auto bg-gray-800/90 rounded-xl shadow-lg z-50 border border-gray-700/50 py-2" id="categoriesDropdown">
+                        <!-- Categories will be populated by JavaScript -->
                     </div>
                 </div>
                 
@@ -1082,103 +1183,7 @@
 
             <!-- Regular Channel Categories -->
             <div id="channelsView" class="grid-view view-transition">
-                {% for group_title, group_channels in categorized_channels.items() %}
-                <section class="mb-10 channel-group" id="{{ group_title | lower | replace(' ', '-') }}" data-category="{{ group_title | lower }}">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-cyan-100 flex items-center">
-                            <i class="fas fa-tag mr-3 text-cyan-400"></i>
-                            {{ group_title or 'Uncategorized' }}
-                        </h2>
-                        <span class="channel-count">
-                            {{ group_channels|length }} channels
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                        {% for channel in group_channels %}
-                        {% set channel_url = channel.get('url', '') %}
-                        {% set channel_name = channel.get('name', '') %}
-                        {% set channel_token = channel.get('token', '') %}
-                        
-                        <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30
-                            {% if not channel_url %} invalid-channel {% endif %}"
-                             data-name="{{ channel_name | lower }}"
-                             data-access="{{ channel.get('access', 'free') | lower }}"
-                             data-key="{{ channel.key }}"
-                             data-group="{{ group_title }}"
-                             data-country="{{ channel.get('country', '') }}"
-                             data-logo="{{ channel.get('logo', '') }}"
-                             data-url="{{ channel_url }}"
-                             data-quality="{{ channel.get('quality', 'hd') }}"
-                             data-status="live"
-                             id="channel-{{ channel.key }}">
-                            
-                            <!-- Details button -->
-                            <button class="detail-btn tooltip" data-tooltip="View Details" onclick="showChannelDetails(this.closest('.channel-card'))">
-                                <i class="fas fa-info-circle text-sm"></i>
-                            </button>
-                            
-                            <!-- Favorite button -->
-                            <button class="favorite-btn tooltip" data-tooltip="Add to Favorites" onclick="toggleFavorite(this, '{{ channel.key }}')">
-                                <i class="fas fa-heart text-sm"></i>
-                            </button>
-                            
-                            {% if channel_url %}
-                                {% set url_parts = channel_url.split('://') %}
-                                {% if url_parts|length > 1 %}
-                                    {% set domain_port = url_parts[1].split('/')[0] %}
-                                    {% set domain = domain_port.split(':')[0] %}
-                                    {% set is_ip = domain.replace('.', '').isdigit() %}
-                                    {% set has_port = ':' in domain_port %}
-                                    
-                                    {% if is_ip or has_port %}
-                                        <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
-                                    {% else %}
-                                        <a href="{{ url_for('plus_play', key=channel.key) }}">
-                                    {% endif %}
-                                {% else %}
-                                    <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" class="block h-full">
-                                {% endif %}
-                            {% else %}
-                                <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">
-                                    <i class="fas fa-unlink text-xl mb-2"></i>
-                                    <p class="text-xs">No URL provided</p>
-                                </div>
-                            {% endif %}
-                            
-                                <div class="relative pt-[56.25%] bg-gray-900/20 channel-image">
-                                    {% if channel.get('logo') %}
-                                    <img src="{{ channel.logo }}" alt="{{ channel_name }}"
-                                         class="absolute inset-0 w-full h-full object-contain p-4">
-                                    {% else %}
-                                    <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
-                                        <i class="fas fa-tv text-5xl"></i>
-                                    </div>
-                                    {% endif %}
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                                        <span class="text-xs font-medium text-cyan-400">
-                                            {{ channel.get('access', 'Free') }}
-                                        </span>
-                                        <span class="text-xs font-medium text-purple-400 ml-2">
-                                            {{ channel.get('quality', 'HD') }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="p-3 channel-info">
-                                    <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
-                                    <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
-                                    <div class="flex items-center mt-2">
-                                        <span class="status-badge status-live text-xs">Live</span>
-                                        <span class="ml-2 text-xs text-gray-500">{{ channel.get('quality', 'HD') }}</span>
-                                    </div>
-                                </div>
-                            
-                            {% if channel_url %}</a>{% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </section>
-                {% endfor %}
+                <!-- Channels will be populated by JavaScript -->
             </div>
         </div>
     </main>
@@ -1227,6 +1232,106 @@
 
     <!-- JavaScript -->
     <script>
+        // Sample channel data - in a real app, this would come from an API
+        const channelData = {
+            "Sports": [
+                {
+                    key: "espn-1",
+                    name: "ESPN",
+                    url: "https://example.com/espn",
+                    logo: "https://logo.clearbit.com/espn.com",
+                    access: "Free",
+                    quality: "HD",
+                    country: "USA",
+                    language: "English",
+                    description: "The worldwide leader in sports."
+                },
+                {
+                    key: "fox-sports-1",
+                    name: "Fox Sports",
+                    url: "https://example.com/foxsports",
+                    logo: "https://logo.clearbit.com/foxsports.com",
+                    access: "Free",
+                    quality: "HD",
+                    country: "USA",
+                    language: "English",
+                    description: "Live sports coverage and analysis."
+                }
+            ],
+            "News": [
+                {
+                    key: "cnn-1",
+                    name: "CNN",
+                    url: "https://example.com/cnn",
+                    logo: "https://logo.clearbit.com/cnn.com",
+                    access: "Free",
+                    quality: "HD",
+                    country: "USA",
+                    language: "English",
+                    description: "Breaking news and current events."
+                },
+                {
+                    key: "bbc-news-1",
+                    name: "BBC News",
+                    url: "https://example.com/bbcnews",
+                    logo: "https://logo.clearbit.com/bbc.com",
+                    access: "Free",
+                    quality: "SD",
+                    country: "UK",
+                    language: "English",
+                    description: "Trusted news from the British Broadcasting Corporation."
+                }
+            ],
+            "Entertainment": [
+                {
+                    key: "hbo-1",
+                    name: "HBO",
+                    url: "https://example.com/hbo",
+                    logo: "https://logo.clearbit.com/hbo.com",
+                    access: "Paid",
+                    quality: "HD",
+                    country: "USA",
+                    language: "English",
+                    description: "Home of premium original programming."
+                },
+                {
+                    key: "netflix-1",
+                    name: "Netflix",
+                    url: "https://example.com/netflix",
+                    logo: "https://logo.clearbit.com/netflix.com",
+                    access: "Paid",
+                    quality: "4K",
+                    country: "USA",
+                    language: "Multi",
+                    description: "Streaming service with original content and movies."
+                }
+            ],
+            "Movies": [
+                {
+                    key: "amc-1",
+                    name: "AMC",
+                    url: "https://example.com/amc",
+                    logo: "https://logo.clearbit.com/amctv.com",
+                    access: "Paid",
+                    quality: "HD",
+                    country: "USA",
+                    language: "English",
+                    description: "Movie channel with popular films and series."
+                },
+                {
+                    key: "tcm-1",
+                    name: "Turner Classic Movies",
+                    url: "https://example.com/tcm",
+                    logo: "https://logo.clearbit.com/turnerclassicmovies.com",
+                    access: "Paid",
+                    quality: "HD",
+                    country: "USA",
+                    language: "English",
+                    description: "Classic films from the golden age of Hollywood."
+                }
+            ]
+        };
+
         // Initialize state
         const state = {
             favorites: JSON.parse(localStorage.getItem('channelFavorites')) || [],
@@ -1238,7 +1343,7 @@
                 quality: []
             },
             allChannels: [],
-            currentView: 'grid', // 'grid' or 'list'
+            currentView: localStorage.getItem('viewMode') || 'grid',
             darkMode: localStorage.getItem('darkMode') === 'true'
         };
 
@@ -1258,13 +1363,15 @@
             listViewBtn: document.querySelector('.list-view-btn'),
             quickToTop: document.getElementById('quickToTop'),
             quickToBottom: document.getElementById('quickToBottom'),
-            toggleDarkMode: document.getElementById('toggleDarkMode')
+            toggleDarkMode: document.getElementById('toggleDarkMode'),
+            themeToggle: document.getElementById('themeToggle'),
+            categoriesDropdown: document.getElementById('categoriesDropdown')
         };
 
         // Initialize the page
         function initPage() {
-            // Cache channels for search
-            cacheChannels();
+            // Populate channels
+            populateChannels();
             
             // Set up event listeners
             setupEventListeners();
@@ -1284,18 +1391,150 @@
             // Set up back to top button
             setupBackToTop();
             
-            // Mark favorite channels
-            markFavorites();
-            
             // Add ripple effect to buttons
             setupRippleEffect();
             
             // Set up auto-dismiss for toasts
             setupToasts();
+            
+            // Populate categories dropdown
+            populateCategoriesDropdown();
+        }
+
+        // Populate channels from data
+        function populateChannels() {
+            const channelsView = document.getElementById('channelsView');
+            channelsView.innerHTML = '';
+            
+            for (const [category, channels] of Object.entries(channelData)) {
+                const categorySection = document.createElement('section');
+                categorySection.className = 'mb-10 channel-group';
+                categorySection.id = category.toLowerCase().replace(' ', '-');
+                categorySection.setAttribute('data-category', category.toLowerCase());
+                
+                const categoryHeader = `
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-cyan-100 flex items-center">
+                            <i class="fas fa-tag mr-3 text-cyan-400"></i>
+                            ${category}
+                        </h2>
+                        <span class="channel-count">
+                            ${channels.length} channels
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                `;
+                
+                let categoryChannels = '';
+                
+                channels.forEach(channel => {
+                    const channelUrl = channel.url || '';
+                    const channelName = channel.name || '';
+                    
+                    categoryChannels += `
+                        <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30
+                            ${!channelUrl ? 'invalid-channel' : ''}"
+                             data-name="${channelName.toLowerCase()}"
+                             data-access="${(channel.access || 'free').toLowerCase()}"
+                             data-key="${channel.key}"
+                             data-group="${category}"
+                             data-country="${channel.country || ''}"
+                             data-logo="${channel.logo || ''}"
+                             data-url="${channelUrl}"
+                             data-quality="${(channel.quality || 'hd').toLowerCase()}"
+                             data-status="live"
+                             id="channel-${channel.key}">
+                            
+                            <!-- Details button -->
+                            <button class="detail-btn tooltip" data-tooltip="View Details" onclick="showChannelDetails(this.closest('.channel-card'))">
+                                <i class="fas fa-info-circle text-sm"></i>
+                            </button>
+                            
+                            <!-- Favorite button -->
+                            <button class="favorite-btn tooltip" data-tooltip="Add to Favorites" onclick="toggleFavorite(this, '${channel.key}')">
+                                <i class="fas fa-heart text-sm"></i>
+                            </button>
+                            
+                            ${channelUrl ? `
+                                ${channelUrl.includes('://') ? `
+                                    <a href="${channelUrl}" class="block h-full" onclick="return validateLink(event, '${channelUrl}')">
+                                ` : `
+                                    <a href="/plus-channel/${channel.key}" class="block h-full">
+                                `}
+                            ` : `
+                                <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-unlink text-xl mb-2"></i>
+                                    <p class="text-xs">No URL provided</p>
+                                </div>
+                            `}
+                            
+                                <div class="relative pt-[56.25%] bg-gray-900/20 channel-image">
+                                    ${channel.logo ? `
+                                    <img src="${channel.logo}" alt="${channelName}"
+                                         class="absolute inset-0 w-full h-full object-contain p-4">
+                                    ` : `
+                                    <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
+                                        <i class="fas fa-tv text-5xl"></i>
+                                    </div>
+                                    `}
+                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                                        <span class="text-xs font-medium text-cyan-400">
+                                            ${channel.access || 'Free'}
+                                        </span>
+                                        <span class="text-xs font-medium text-purple-400 ml-2">
+                                            ${channel.quality || 'HD'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-3 channel-info">
+                                    <h3 class="font-medium text-sm truncate">${channelName}</h3>
+                                    <p class="text-xs text-gray-400 mt-1 truncate">${channel.country || ''}</p>
+                                    <div class="flex items-center mt-2">
+                                        <span class="status-badge status-live text-xs">Live</span>
+                                        <span class="ml-2 text-xs text-gray-500">${channel.quality || 'HD'}</span>
+                                    </div>
+                                </div>
+                            
+                            ${channelUrl ? '</a>' : ''}
+                        </div>
+                    `;
+                });
+                
+                categorySection.innerHTML = categoryHeader + categoryChannels + '</div>';
+                channelsView.appendChild(categorySection);
+            }
+            
+            // Cache channels for search
+            cacheChannels();
+            
+            // Mark favorite channels
+            markFavorites();
+        }
+
+        // Populate categories dropdown
+        function populateCategoriesDropdown() {
+            const categoriesDropdown = document.getElementById('categoriesDropdown');
+            categoriesDropdown.innerHTML = '';
+            
+            for (const category of Object.keys(channelData)) {
+                const categoryLink = document.createElement('a');
+                categoryLink.href = `#${category.toLowerCase().replace(' ', '-')}`;
+                categoryLink.className = 'block px-4 py-2 text-sm text-gray-300 hover:bg-cyan-600/20 transition category-pill';
+                categoryLink.innerHTML = `<i class="fas fa-arrow-right mr-2 text-cyan-400/70"></i>${category}`;
+                
+                categoriesDropdown.appendChild(categoryLink);
+            }
         }
 
         // Set up event listeners
         function setupEventListeners() {
+            // Theme toggle
+            domCache.themeToggle.addEventListener('click', function() {
+                state.darkMode = !state.darkMode;
+                localStorage.setItem('darkMode', state.darkMode);
+                updateDarkMode();
+            });
+
             // Search functionality with suggestions
             domCache.searchInput.addEventListener('input', debounce(function () {
                 const searchTerm = this.value.toLowerCase().trim();
@@ -1506,6 +1745,7 @@
             const channelElements = document.querySelectorAll('.channel-card');
             state.allChannels = Array.from(channelElements).map(card => ({
                 name: card.getAttribute('data-name'),
+                displayName: card.querySelector('h3').textContent,
                 access: card.getAttribute('data-access'),
                 key: card.getAttribute('data-key'),
                 group: card.getAttribute('data-group'),
@@ -1519,7 +1759,8 @@
         function showSearchSuggestions(searchTerm) {
             // Calculate relevance score for each channel
             const suggestions = state.allChannels.map(channel => {
-                const name = channel.element.querySelector('h3').textContent.toLowerCase();
+                const name = channel.name;
+                const displayName = channel.displayName.toLowerCase();
                 const group = channel.group.toLowerCase();
                 const country = channel.country.toLowerCase();
                 
@@ -1528,9 +1769,11 @@
                 
                 // Exact match in name gets highest score
                 if (name === searchTerm) score += 100;
+                if (displayName === searchTerm) score += 100;
                 
                 // Name contains search term
                 if (name.includes(searchTerm)) score += 50;
+                if (displayName.includes(searchTerm)) score += 50;
                 
                 // Group or country contains search term
                 if (group.includes(searchTerm) || country.includes(searchTerm)) score += 25;
@@ -1540,6 +1783,7 @@
                 searchWords.forEach(word => {
                     if (word.length > 2) {
                         if (name.includes(word)) score += 10;
+                        if (displayName.includes(word)) score += 10;
                         if (group.includes(word)) score += 5;
                         if (country.includes(word)) score += 5;
                     }
@@ -1553,8 +1797,8 @@
             
             if (suggestions.length > 0) {
                 domCache.searchSuggestions.innerHTML = suggestions.map(channel => `
-                    <div class="search-suggestion" data-key="${channel.key}">
-                        <div class="font-medium">${channel.element.querySelector('h3').textContent}</div>
+                    <div class="search-suggestion" data-name="${channel.displayName}">
+                        <div class="font-medium">${channel.displayName}</div>
                         <div class="text-xs text-gray-400">${channel.group} • ${channel.country}</div>
                     </div>
                 `).join('');
@@ -1564,8 +1808,8 @@
                 // Add click handlers to suggestions
                 domCache.searchSuggestions.querySelectorAll('.search-suggestion').forEach(suggestion => {
                     suggestion.addEventListener('click', function() {
-                        const key = this.getAttribute('data-key');
-                        navigateToChannel(key);
+                        const name = this.getAttribute('data-name');
+                        navigateToChannelByName(name);
                     });
                     
                     // Add hover effect
@@ -1583,11 +1827,17 @@
             }
         }
 
-        // Navigate to and focus on a specific channel
-        function navigateToChannel(key) {
-            const channelElement = document.getElementById(`channel-${key}`);
+        // Navigate to and focus on a specific channel by name
+        function navigateToChannelByName(name) {
+            // Find the channel element by name (case-insensitive)
+            const channelElements = document.querySelectorAll('.channel-card');
+            const channelElement = Array.from(channelElements).find(card => {
+                const cardName = card.querySelector('h3').textContent.toLowerCase();
+                return cardName === name.toLowerCase();
+            });
             
             if (channelElement) {
+                const key = channelElement.getAttribute('data-key');
                 // Add to recently viewed
                 addToRecentlyViewed(key);
                 
@@ -1713,6 +1963,7 @@
                 const cards = group.querySelectorAll('.channel-card');
                 cards.forEach(card => {
                     const name = card.getAttribute('data-name');
+                    const displayName = card.querySelector('h3').textContent.toLowerCase();
                     const access = card.getAttribute('data-access');
                     const status = card.getAttribute('data-status');
                     const quality = card.getAttribute('data-quality');
@@ -1721,6 +1972,7 @@
                     
                     // Check search term
                     const searchMatch = name.includes(searchTerm) || 
+                                       displayName.includes(searchTerm) ||
                                        access.includes(searchTerm) || 
                                        category.includes(searchTerm) ||
                                        quality.includes(searchTerm);
@@ -1796,14 +2048,19 @@
         // Update dark mode
         function updateDarkMode() {
             if (state.darkMode) {
-                document.documentElement.classList.add('dark');
+                document.body.classList.add('light-mode');
+                domCache.themeToggle.classList.remove('dark');
                 domCache.toggleDarkMode.innerHTML = '<i class="fas fa-sun text-white"></i>';
-                domCache.toggleDarkMode.setAttribute('title', 'Switch to Light Mode');
-            } else {
-                document.documentElement.classList.remove('dark');
-                domCache.toggleDarkMode.innerHTML = '<i class="fas fa-moon text-white"></i>';
                 domCache.toggleDarkMode.setAttribute('title', 'Switch to Dark Mode');
+            } else {
+                document.body.classList.remove('light-mode');
+                domCache.themeToggle.classList.add('dark');
+                domCache.toggleDarkMode.innerHTML = '<i class="fas fa-moon text-white"></i>';
+                domCache.toggleDarkMode.setAttribute('title', 'Switch to Light Mode');
             }
+            
+            // Save to localStorage
+            localStorage.setItem('darkMode', state.darkMode);
         }
 
         // Set up back to top button
@@ -1959,7 +2216,7 @@
             const recommended = shuffled.slice(0, 10);
             
             // Add to container with highlight effect
-            recommended.forEach((channel, index) => {
+            recommended.forEach((channel, index) {
                 const card = channel.element;
                 card.classList.add('recommended-card');
                 card.classList.add('highlight-pulse');

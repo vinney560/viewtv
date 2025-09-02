@@ -347,7 +347,7 @@
         .detail-btn {
             position: absolute;
             top: 8px;
-            right: 8px;
+            right: 10px;
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -363,7 +363,7 @@
         }
         
         .channel-card:hover .detail-btn {
-            opacity: 2;
+            opacity: 1;
         }
         
         .detail-btn:hover {
@@ -391,7 +391,7 @@
         }
         
         .channel-card:hover .favorite-btn {
-            opacity: 2;
+            opacity: 1;
         }
         
         .favorite-btn:hover {
@@ -600,8 +600,8 @@
         /* Back button in modal */
         .modal-back-btn {
             position: absolute;
-            top: 1.5rem;
-            left: 1.5rem;
+            top: 1.3rem;
+            left: 1.3rem;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -802,8 +802,8 @@
                             <span class="text-sm text-gray-300">Free</span>
                         </label>
                         <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="access" data-value="premium"></div>
-                            <span class="text-sm text-gray-300">Premium</span>
+                            <div class="custom-checkbox" data-filter="access" data-value="paid"></div>
+                            <span class="text-sm text-gray-300">Paid</span>
                         </label>
                     </div>
                 </div>
@@ -1465,7 +1465,7 @@
                         if (isIp || hasPort) {
                             window.open(url, '_blank');
                         } else {
-                            window.location.href = `/plus-play/${key}`;
+                            window.location.href = `/plus-channel/${key}`;
                         }
                     } else {
                         window.location.href = `/plus-player?${new URLSearchParams({url: url, token: card.getAttribute('data-token') || ''})}`;

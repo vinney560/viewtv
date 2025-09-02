@@ -380,7 +380,7 @@
         .detail-btn {
             position: absolute;
             top: 16px;
-            right: 16px;
+            right: 2px;
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -435,87 +435,6 @@
         .favorite-btn.active {
             color: #ef4444;
             opacity: 1;
-        }
-        
-        /* View modes */
-        .view-mode-btn {
-            padding: 0.5rem;
-            border-radius: 8px;
-            background: rgba(31, 41, 55, 0.5);
-            color: #9ca3af;
-            transition: all 0.3s;
-        }
-        
-        .view-mode-btn.active {
-            background: rgba(6, 182, 212, 0.2);
-            color: var(--primary);
-        }
-        
-        .view-mode-btn:hover {
-            background: rgba(6, 182, 212, 0.3);
-            color: white;
-        }
-        
-        /* Grid view */
-        .grid-view .channel-card {
-            height: 100%;
-        }
-        
-        /* List view */
-        .list-view {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .list-view .channel-card {
-            display: flex;
-            flex-direction: row;
-            height: 120px;
-            margin-bottom: 0;
-            transition: all 0.3s ease;
-            animation: none !important;
-        }
-        
-        .list-view .channel-card .channel-image-container {
-            width: 200px;
-            flex-shrink: 0;
-            height: 100%;
-            position: relative;
-        }
-        
-        .list-view .channel-card .channel-image-container img {
-            object-fit: cover;
-            height: 100%;
-            width: 100%;
-        }
-        
-        .list-view .channel-card .channel-info {
-            flex: 1;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        
-        .list-view .channel-card .channel-info h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .list-view .channel-card .channel-info p {
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .list-view .channel-card .channel-actions {
-            display: flex;
-            align-items: center;
-            margin-top: auto;
-        }
-        
-        .list-view .channel-card .channel-actions .status-badge {
-            margin-right: 0.5rem;
         }
         
         /* Filter section */
@@ -730,20 +649,6 @@
                 order: 2;
             }
             
-            .list-view .channel-card {
-                flex-direction: column;
-                height: auto;
-            }
-            
-            .list-view .channel-card .channel-image-container {
-                width: 100%;
-                height: 180px;
-            }
-            
-            .grid-view .channel-card {
-                height: auto;
-            }
-            
             .modal-content {
                 width: 95%;
                 margin: 10px;
@@ -874,20 +779,6 @@
             </div>
             
             <div class="header-controls flex items-center space-x-4">
-                <!-- View Mode Toggle -->
-                <div class="flex items-center space-x-2 bg-gray-800/50 rounded-xl p-1">
-                    <button id="gridViewBtn" class="view-mode-btn active tooltip" data-tooltip="Grid View">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                    </button>
-                    <button id="listViewBtn" class="view-mode-btn tooltip" data-tooltip="List View">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-                
                 <!-- Category Dropdown -->
                 <div class="dropdown relative">
                     <button class="flex items-center space-x-2 px-4 py-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30">
@@ -1135,7 +1026,6 @@
                 status: [],
                 favorites: false
             },
-            viewMode: 'grid', // 'grid' or 'list'
             allChannels: []
         };
 
@@ -1145,8 +1035,6 @@
             searchSuggestions: document.getElementById('searchSuggestions'),
             filterSection: document.getElementById('filterSection'),
             channelsView: document.getElementById('channelsView'),
-            gridViewBtn: document.getElementById('gridViewBtn'),
-            listViewBtn: document.getElementById('listViewBtn'),
             clearFilters: document.getElementById('clearFilters'),
             refreshRecommended: document.getElementById('refresh-recommended'),
             backToTop: document.getElementById('backToTop')
@@ -1337,114 +1225,6 @@
             filterChannels();
         });
 
-        // View mode toggle
-        domCache.gridViewBtn.addEventListener('click', function() {
-            setViewMode('grid');
-        });
-
-        domCache.listViewBtn.addEventListener('click', function() {
-            setViewMode('list');
-        });
-
-        function setViewMode(mode) {
-            state.viewMode = mode;
-            
-            if (mode === 'grid') {
-                domCache.channelsView.className = 'grid-view view-transition';
-                domCache.gridViewBtn.classList.add('active');
-                domCache.listViewBtn.classList.remove('active');
-                
-                // Convert list view cards back to grid
-                document.querySelectorAll('.channel-card').forEach(card => {
-                    card.classList.remove('list-view-card');
-                    const imageContainer = card.querySelector('.channel-image-container');
-                    const infoContainer = card.querySelector('.channel-info');
-                    
-                    if (imageContainer && infoContainer) {
-                        // Remove list view structure
-                        imageContainer.remove();
-                        infoContainer.remove();
-                        
-                        // Restore original structure
-                        const originalContent = card.innerHTML;
-                        card.innerHTML = originalContent;
-                    }
-                });
-            } else {
-                domCache.channelsView.className = 'list-view view-transition';
-                domCache.gridViewBtn.classList.remove('active');
-                domCache.listViewBtn.classList.add('active');
-                
-                // Convert grid cards to list view
-                document.querySelectorAll('.channel-card').forEach(card => {
-                    card.classList.add('list-view-card');
-                    
-                    // Skip if already converted
-                    if (card.querySelector('.channel-image-container')) return;
-                    
-                    const originalContent = card.innerHTML;
-                    
-                    // Extract image
-                    const imageElement = card.querySelector('.relative.pt-\\[56\\.25\\%\\]');
-                    const imageContainer = document.createElement('div');
-                    imageContainer.className = 'channel-image-container';
-                    if (imageElement) {
-                        imageContainer.appendChild(imageElement.cloneNode(true));
-                        imageElement.remove();
-                    }
-                    
-                    // Extract info
-                    const infoElement = card.querySelector('.p-3');
-                    const infoContainer = document.createElement('div');
-                    infoContainer.className = 'channel-info';
-                    if (infoElement) {
-                        // Create actions section
-                        const actions = document.createElement('div');
-                        actions.className = 'channel-actions';
-                        
-                        // Add status and quality badges to actions
-                        const statusBadge = infoElement.querySelector('.status-badge');
-                        const qualityText = infoElement.querySelector('.text-gray-500');
-                        
-                        if (statusBadge) {
-                            actions.appendChild(statusBadge.cloneNode(true));
-                            statusBadge.remove();
-                        }
-                        
-                        if (qualityText) {
-                            actions.appendChild(qualityText.cloneNode(true));
-                            qualityText.remove();
-                        }
-                        
-                        infoContainer.appendChild(infoElement.cloneNode(true));
-                        infoContainer.appendChild(actions);
-                        infoElement.remove();
-                    }
-                    
-                    // Clear and rebuild card structure
-                    card.innerHTML = '';
-                    card.appendChild(imageContainer);
-                    card.appendChild(infoContainer);
-                    
-                    // Reattach event listeners
-                    const detailBtn = card.querySelector('.detail-btn');
-                    const favoriteBtn = card.querySelector('.favorite-btn');
-                    
-                    if (detailBtn) {
-                        detailBtn.onclick = () => showChannelDetails(card);
-                    }
-                    
-                    if (favoriteBtn) {
-                        const key = card.getAttribute('data-key');
-                        favoriteBtn.onclick = () => toggleFavorite(favoriteBtn, key);
-                    }
-                });
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('viewMode', mode);
-        }
-
         // Filter channels based on search and filters
         function filterChannels() {
             const searchTerm = domCache.searchInput.value.toLowerCase();
@@ -1567,10 +1347,6 @@
                     }, 2000);
                 }, 800);
             });
-            
-            // Load view mode from localStorage
-            const savedViewMode = localStorage.getItem('viewMode') || 'grid';
-            setViewMode(savedViewMode);
             
             // Mark favorite channels
             document.querySelectorAll('.channel-card').forEach(card => {
@@ -1781,7 +1557,7 @@
                     state.favorites = state.favorites.filter(k => k !== key);
                     showToast('Removed from favorites');
                     modalFavoriteBtn.innerHTML = `
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                         Favorite

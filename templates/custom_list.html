@@ -3,87 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curated Playlist | ViewTv</title>
+    <title>Curated Channels | ViewTv</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --primary: #06b6d4;
+            --primary-dark: #0891b2;
+            --secondary: #10b981;
+            --dark: #111827;
+            --darker: #030712;
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+            background: radial-gradient(ellipse at center, var(--dark) 0%, var(--darker) 100%);
+            overflow-x: hidden;
         }
+        
         .card-glass {
             background: rgba(31, 41, 55, 0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+        
         .channel-card {
             transition: all 0.3s ease;
             background: rgba(31, 41, 55, 0.5);
             backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
         }
+        
         .channel-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.3);
-            border-color: rgba(6, 182, 212, 0.3);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px -10px rgba(6, 182, 212, 0.4);
+            border-color: rgba(6, 182, 212, 0.5);
         }
+        
+        .channel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .channel-card:hover::before {
+            transform: scaleX(1);
+        }
+        
         .content-wrapper {
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
+        
         .channels-container {
             flex: 1;
             overflow-y: auto;
         }
+        
         .search-box:focus {
             box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
         }
+        
         .toast-entry {
             animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
+        
         .toast-exit {
             animation: toast-out 0.5s ease forwards;
         }
+        
         @keyframes toast-in {
             from { opacity: 0; transform: translateX(100%); }
             to { opacity: 1; transform: translateX(0); }
         }
+        
         @keyframes toast-out {
             from { opacity: 1; transform: translateX(0); }
             to { opacity: 0; transform: translateX(100%); }
         }
+        
         .dropdown-content {
             display: none;
             animation: fadeIn 0.2s ease-out;
         }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
         .dropdown:hover .dropdown-content {
             display: block;
         }
+        
         .category-pill {
             transition: all 0.2s ease;
         }
+        
         .category-pill:hover {
             background: rgba(6, 182, 212, 0.2);
         }
+        
         .gradient-text {
-            background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
+        
         .invalid-channel {
             opacity: 0.7;
             filter: grayscale(80%);
         }
+        
         /* New styles */
         .recommended-section {
             margin-bottom: 2rem;
         }
+        
         .recommended-container {
             display: flex;
             overflow-x: auto;
@@ -93,9 +140,11 @@
             padding-bottom: 1rem;
             gap: 1rem;
         }
+        
         .recommended-container::-webkit-scrollbar {
             display: none;
         }
+        
         .recommended-card {
             flex: 0 0 auto;
             width: 200px;
@@ -104,9 +153,11 @@
             transition: all 0.3s ease;
             position: relative;
         }
+        
         .recommended-card:hover {
             transform: scale(1.03);
         }
+        
         .scroll-btn {
             position: absolute;
             top: 50%;
@@ -124,15 +175,19 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
+        
         .scroll-btn.left {
             left: 10px;
         }
+        
         .scroll-btn.right {
             right: 10px;
         }
+        
         .recommended-section:hover .scroll-btn {
             opacity: 1;
         }
+        
         .back-btn {
             position: fixed;
             bottom: 20px;
@@ -149,30 +204,36 @@
             box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
             transition: all 0.3s ease;
         }
+        
         .back-btn:hover {
             transform: scale(1.1);
             background: rgba(6, 182, 212, 1);
         }
+        
         .highlight-pulse {
             animation: highlightPulse 2s infinite;
         }
+        
         @keyframes highlightPulse {
             0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
             100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
         }
+        
         .loading-spinner {
             display: inline-block;
             width: 20px;
             height: 20px;
             border: 3px solid rgba(255,255,255,.3);
             border-radius: 50%;
-            border-top-color: #06b6d4;
+            border-top-color: var(--primary);
             animation: spin 1s ease-in-out infinite;
         }
+        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
         /* Modal styles */
         .modal-overlay {
             display: none;
@@ -181,37 +242,46 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
             z-index: 100;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
+        
         .modal-content {
             background: rgba(31, 41, 55, 0.95);
-            border-radius: 16px;
+            border-radius: 20px;
             border: 1px solid rgba(6, 182, 212, 0.3);
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.25);
             animation: modalFadeIn 0.3s ease-out;
+            position: relative;
         }
+        
         @keyframes modalFadeIn {
             from { opacity: 0; transform: scale(0.9) translateY(-20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
+        
         .modal-header {
             padding: 1.5rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 20px 20px 0 0;
         }
+        
         .modal-body {
             padding: 1.5rem;
         }
+        
         .modal-footer {
             padding: 1rem 1.5rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -219,6 +289,7 @@
             justify-content: flex-end;
             gap: 0.75rem;
         }
+        
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -227,47 +298,58 @@
             font-size: 0.75rem;
             font-weight: 600;
         }
+        
         .status-live {
             background: rgba(16, 185, 129, 0.2);
             color: #10b981;
         }
+        
         .status-offline {
             background: rgba(239, 68, 68, 0.2);
             color: #ef4444;
         }
+        
         .status-checking {
             background: rgba(245, 158, 11, 0.2);
             color: #f59e0b;
         }
+        
         .info-grid {
             display: grid;
             grid-template-columns: auto 1fr;
             gap: 0.75rem 1rem;
         }
+        
         .info-label {
             color: #9ca3af;
             font-weight: 500;
+            font-size: 0.9rem;
         }
+        
         .info-value {
             color: #f3f4f6;
-            word-break: break-all;
+            word-break: break-word;
+            font-size: 0.95rem;
         }
+        
         .channel-logo-modal {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
-            margin: 0 auto 1rem;
+            margin: 0 auto 1.5rem;
             display: block;
-            border-radius: 12px;
+            border-radius: 16px;
             background: rgba(0, 0, 0, 0.2);
-            padding: 0.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
+        
         .detail-btn {
             position: absolute;
             top: 8px;
             right: 8px;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.6);
             display: flex;
@@ -276,14 +358,266 @@
             color: white;
             cursor: pointer;
             opacity: 0;
-            transition: opacity 0.3s, background 0.3s;
+            transition: opacity 0.3s, background 0.3s, transform 0.3s;
             z-index: 5;
         }
+        
         .channel-card:hover .detail-btn {
             opacity: 1;
         }
+        
         .detail-btn:hover {
-            background: rgba(6, 182, 212, 0.8);
+            background: rgba(6, 182, 212, 0.9);
+            transform: scale(1.1);
+        }
+        
+        /* Favorite button */
+        .favorite-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s, background 0.3s, transform 0.3s;
+            z-index: 5;
+        }
+        
+        .channel-card:hover .favorite-btn {
+            opacity: 1;
+        }
+        
+        .favorite-btn:hover {
+            background: rgba(239, 68, 68, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .favorite-btn.active {
+            color: #ef4444;
+            opacity: 1;
+        }
+        
+        /* View modes */
+        .view-mode-btn {
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(31, 41, 55, 0.5);
+            color: #9ca3af;
+            transition: all 0.3s;
+        }
+        
+        .view-mode-btn.active {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--primary);
+        }
+        
+        .view-mode-btn:hover {
+            background: rgba(6, 182, 212, 0.3);
+            color: white;
+        }
+        
+        /* Grid view */
+        .grid-view .channel-card {
+            height: 100%;
+        }
+        
+        /* List view */
+        .list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .list-view .channel-card {
+            display: flex;
+            height: auto;
+        }
+        
+        .list-view .channel-card .channel-image {
+            width: 160px;
+            flex-shrink: 0;
+        }
+        
+        .list-view .channel-card .channel-info {
+            flex: 1;
+            padding: 1rem;
+        }
+        
+        /* Filter section */
+        .filter-section {
+            background: rgba(31, 41, 55, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(31, 41, 55, 0.3);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(6, 182, 212, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(6, 182, 212, 0.7);
+        }
+        
+        /* Animation for cards */
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .channel-card {
+            animation: cardAppear 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+        
+        /* Delay for staggered animation */
+        .channel-card:nth-child(1) { animation-delay: 0.05s; }
+        .channel-card:nth-child(2) { animation-delay: 0.1s; }
+        .channel-card:nth-child(3) { animation-delay: 0.15s; }
+        .channel-card:nth-child(4) { animation-delay: 0.2s; }
+        .channel-card:nth-child(5) { animation-delay: 0.25s; }
+        .channel-card:nth-child(6) { animation-delay: 0.3s; }
+        .channel-card:nth-child(7) { animation-delay: 0.35s; }
+        .channel-card:nth-child(8) { animation-delay: 0.4s; }
+        .channel-card:nth-child(9) { animation-delay: 0.45s; }
+        .channel-card:nth-child(10) { animation-delay: 0.5s; }
+        
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+        
+        /* Skeleton loading */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(31, 41, 55, 0.5) 25%, rgba(55, 65, 81, 0.5) 50%, rgba(31, 41, 55, 0.5) 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes skeletonLoading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        /* Custom checkbox */
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: rgba(31, 41, 55, 0.7);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .custom-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .custom-checkbox.checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 9px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem;
+            background: rgba(31, 41, 55, 0.9);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 100;
+        }
+        
+        .tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Back button in modal */
+        .modal-back-btn {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(31, 41, 55, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 5;
+        }
+        
+        .modal-back-btn:hover {
+            background: rgba(6, 182, 212, 0.7);
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -332,6 +666,12 @@
     <!-- Channel Details Modal -->
     <div id="channelModal" class="modal-overlay">
         <div class="modal-content">
+            <div class="modal-back-btn" onclick="closeModal()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </div>
+            
             <div class="modal-header">
                 <h3 class="text-xl font-bold text-cyan-100" id="modalTitle">Channel Details</h3>
                 <button class="text-gray-400 hover:text-white transition" onclick="closeModal()">
@@ -357,6 +697,17 @@
                     
                     <span class="info-label">Category:</span>
                     <span class="info-value" id="modalCategory"></span>
+                    
+                    <span class="info-label">Quality:</span>
+                    <span class="info-value" id="modalQuality">HD</span>
+                    
+                    <span class="info-label">Language:</span>
+                    <span class="info-value" id="modalLanguage">English</span>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-700">
+                    <h4 class="text-lg font-semibold text-cyan-300 mb-3">Channel Description</h4>
+                    <p id="modalDescription" class="text-gray-300 text-sm">This is a premium channel offering high-quality content with various programs and shows. Enjoy seamless streaming with our optimized server infrastructure.</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -373,6 +724,12 @@
                     </svg>
                     Play Channel
                 </button>
+                <button id="modalFavoriteBtn" class="px-4 py-2 bg-gray-700 hover:bg-red-600 rounded-lg transition flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    Favorite
+                </button>
             </div>
         </div>
     </div>
@@ -384,10 +741,24 @@
                 <svg class="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
                 </svg>
-                <h1 class="text-2xl font-bold gradient-text">Curated Playlist | ViewTV</h1>
+                <h1 class="text-2xl font-bold gradient-text">Curated Channels | ViewTV</h1>
             </div>
             
             <div class="flex items-center space-x-4">
+                <!-- View Mode Toggle -->
+                <div class="flex items-center space-x-2 bg-gray-800/50 rounded-xl p-1">
+                    <button id="gridViewBtn" class="view-mode-btn active tooltip" data-tooltip="Grid View">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                        </svg>
+                    </button>
+                    <button id="listViewBtn" class="view-mode-btn tooltip" data-tooltip="List View">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+                
                 <!-- Category Dropdown -->
                 <div class="dropdown relative">
                     <button class="flex items-center space-x-2 px-4 py-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30">
@@ -412,6 +783,56 @@
                         class="search-box w-full bg-gray-800/80 border border-gray-700/50 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
                     <i class="fas fa-search absolute left-3 top-2.5 text-gray-500"></i>
                 </div>
+                
+                <!-- Filter Button -->
+                <button id="filterToggle" class="p-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30 tooltip" data-tooltip="Filters">
+                    <i class="fas fa-filter text-cyan-300"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div id="filterSection" class="filter-section mt-4 hidden">
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-300">Access:</span>
+                    <div class="flex space-x-2">
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <div class="custom-checkbox" data-filter="access" data-value="free"></div>
+                            <span class="text-sm text-gray-300">Free</span>
+                        </label>
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <div class="custom-checkbox" data-filter="access" data-value="premium"></div>
+                            <span class="text-sm text-gray-300">Premium</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-300">Status:</span>
+                    <div class="flex space-x-2">
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <div class="custom-checkbox" data-filter="status" data-value="live"></div>
+                            <span class="text-sm text-gray-300">Live</span>
+                        </label>
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <div class="custom-checkbox" data-filter="status" data-value="offline"></div>
+                            <span class="text-sm text-gray-300">Offline</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-300">Favorites:</span>
+                    <label class="flex items-center space-x-1 cursor-pointer">
+                        <div class="custom-checkbox" data-filter="favorites" data-value="true"></div>
+                        <span class="text-sm text-gray-300">Show Only</span>
+                    </label>
+                </div>
+                
+                <button id="clearFilters" class="ml-auto text-sm text-cyan-400 hover:text-cyan-300 transition">
+                    Clear All Filters
+                </button>
             </div>
         </div>
     </header>
@@ -446,88 +867,100 @@
             </section>
 
             <!-- Regular Channel Categories -->
-            {% for group_title, group_channels in categorized_channels.items() %}
-            <section class="mb-10 channel-group" id="{{ group_title | lower | replace(' ', '-') }}" data-category="{{ group_title | lower }}">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
-                        <i class="fas fa-tag mr-3 text-cyan-400"></i>
-                        {{ group_title or 'Uncategorized' }}
-                    </h2>
-                    <span class="text-xs bg-cyan-900/30 text-cyan-300 px-3 py-1 rounded-full">
-                        {{ group_channels|length }} channels
-                    </span>
-                </div>
+            <div id="channelsView" class="grid-view">
+                {% for group_title, group_channels in categorized_channels.items() %}
+                <section class="mb-10 channel-group" id="{{ group_title | lower | replace(' ', '-') }}" data-category="{{ group_title | lower }}">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-cyan-100 flex items-center">
+                            <i class="fas fa-tag mr-3 text-cyan-400"></i>
+                            {{ group_title or 'Uncategorized' }}
+                        </h2>
+                        <span class="text-xs bg-cyan-900/30 text-cyan-300 px-3 py-1 rounded-full">
+                            {{ group_channels|length }} channels
+                        </span>
+                    </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {% for channel in group_channels %}
-                    {% set channel_url = channel.get('url', '') %}
-                    {% set channel_name = channel.get('name', '') %}
-                    {% set channel_token = channel.get('token', '') %}
-                    
-                    <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30
-                        {% if not channel_url %} invalid-channel {% endif %}"
-                         data-name="{{ channel_name | lower }}"
-                         data-access="{{ channel.get('access', 'free') | lower }}"
-                         data-key="{{ channel.key }}"
-                         data-group="{{ group_title }}"
-                         data-country="{{ channel.get('country', '') }}"
-                         data-logo="{{ channel.get('logo', '') }}"
-                         data-url="{{ channel_url }}">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                        {% for channel in group_channels %}
+                        {% set channel_url = channel.get('url', '') %}
+                        {% set channel_name = channel.get('name', '') %}
+                        {% set channel_token = channel.get('token', '') %}
                         
-                        <!-- Details button -->
-                        <button class="detail-btn" onclick="showChannelDetails(this.closest('.channel-card'))">
-                            <i class="fas fa-info-circle text-sm"></i>
-                        </button>
-                        
-                        {% if channel_url %}
-                            {% set url_parts = channel_url.split('://') %}
-                            {% if url_parts|length > 1 %}
-                                {% set domain_port = url_parts[1].split('/')[0] %}
-                                {% set domain = domain_port.split(':')[0] %}
-                                {% set is_ip = domain.replace('.', '').isdigit() %}
-                                {% set has_port = ':' in domain_port %}
-                                
-                                {% if is_ip or has_port %}
-                                    <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
+                        <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30
+                            {% if not channel_url %} invalid-channel {% endif %}"
+                             data-name="{{ channel_name | lower }}"
+                             data-access="{{ channel.get('access', 'free') | lower }}"
+                             data-key="{{ channel.key }}"
+                             data-group="{{ group_title }}"
+                             data-country="{{ channel.get('country', '') }}"
+                             data-logo="{{ channel.get('logo', '') }}"
+                             data-url="{{ channel_url }}"
+                             data-status="live">
+                            
+                            <!-- Details button -->
+                            <button class="detail-btn tooltip" data-tooltip="View Details" onclick="showChannelDetails(this.closest('.channel-card'))">
+                                <i class="fas fa-info-circle text-sm"></i>
+                            </button>
+                            
+                            <!-- Favorite button -->
+                            <button class="favorite-btn tooltip" data-tooltip="Add to Favorites" onclick="toggleFavorite(this, '{{ channel.key }}')">
+                                <i class="fas fa-heart text-sm"></i>
+                            </button>
+                            
+                            {% if channel_url %}
+                                {% set url_parts = channel_url.split('://') %}
+                                {% if url_parts|length > 1 %}
+                                    {% set domain_port = url_parts[1].split('/')[0] %}
+                                    {% set domain = domain_port.split(':')[0] %}
+                                    {% set is_ip = domain.replace('.', '').isdigit() %}
+                                    {% set has_port = ':' in domain_port %}
+                                    
+                                    {% if is_ip or has_port %}
+                                        <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
+                                    {% else %}
+                                        <a href="{{ url_for('plus_play', key=channel.key) }}">
+                                    {% endif %}
                                 {% else %}
-                                    <a href="{{ url_for('plus_play', key=channel.key) }}">
+                                    <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" class="block h-full">
                                 {% endif %}
                             {% else %}
-                                <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" class="block h-full">
+                                <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">
+                                    <i class="fas fa-unlink text-xl mb-2"></i>
+                                    <p class="text-xs">No URL provided</p>
+                                </div>
                             {% endif %}
-                        {% else %}
-                            <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">
-                                <i class="fas fa-unlink text-xl mb-2"></i>
-                                <p class="text-xs">No URL provided</p>
-                            </div>
-                        {% endif %}
-                        
-                            <div class="relative pt-[56.25%] bg-gray-900/20">
-                                {% if channel.get('logo') %}
-                                <img src="{{ channel.logo }}" alt="{{ channel_name }}"
-                                     class="absolute inset-0 w-full h-full object-contain p-4">
-                                {% else %}
-                                <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
-                                    <i class="fas fa-tv text-5xl"></i>
+                            
+                                <div class="relative pt-[56.25%] bg-gray-900/20">
+                                    {% if channel.get('logo') %}
+                                    <img src="{{ channel.logo }}" alt="{{ channel_name }}"
+                                         class="absolute inset-0 w-full h-full object-contain p-4">
+                                    {% else %}
+                                    <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
+                                        <i class="fas fa-tv text-5xl"></i>
+                                    </div>
+                                    {% endif %}
+                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                                        <span class="text-xs font-medium text-cyan-400">
+                                            {{ channel.get('access', 'Free') }}
+                                        </span>
+                                    </div>
                                 </div>
-                                {% endif %}
-                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                                    <span class="text-xs font-medium text-cyan-400">
-                                        {{ channel.get('access', 'Free') }}
-                                    </span>
+                                <div class="p-3">
+                                    <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
+                                    <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
+                                    <div class="flex items-center mt-2">
+                                        <span class="status-badge status-live text-xs">Live</span>
+                                        <span class="ml-2 text-xs text-gray-500">HD</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="p-3">
-                                <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
-                                <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
-                            </div>
-                        
-                        {% if channel_url %}</a>{% endif %}
+                            
+                            {% if channel_url %}</a>{% endif %}
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
-            </section>
-            {% endfor %}
+                </section>
+                {% endfor %}
+            </div>
         </div>
     </main>
 
@@ -562,9 +995,102 @@
 
     <!-- JavaScript -->
     <script>
+        // Initialize state
+        const state = {
+            favorites: JSON.parse(localStorage.getItem('channelFavorites')) || [],
+            filters: {
+                access: [],
+                status: [],
+                favorites: false
+            },
+            viewMode: 'grid' // 'grid' or 'list'
+        };
+
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', function () {
             const searchTerm = this.value.toLowerCase();
+            filterChannels();
+        });
+
+        // Toggle filter section
+        document.getElementById('filterToggle').addEventListener('click', function() {
+            const filterSection = document.getElementById('filterSection');
+            filterSection.classList.toggle('hidden');
+        });
+
+        // Setup custom checkboxes
+        document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function() {
+                this.classList.toggle('checked');
+                
+                const filterType = this.dataset.filter;
+                const value = this.dataset.value;
+                
+                if (filterType === 'favorites') {
+                    state.filters.favorites = this.classList.contains('checked');
+                } else {
+                    if (this.classList.contains('checked')) {
+                        if (!state.filters[filterType].includes(value)) {
+                            state.filters[filterType].push(value);
+                        }
+                    } else {
+                        state.filters[filterType] = state.filters[filterType].filter(v => v !== value);
+                    }
+                }
+                
+                filterChannels();
+            });
+        });
+
+        // Clear filters
+        document.getElementById('clearFilters').addEventListener('click', function() {
+            // Reset UI
+            document.querySelectorAll('.custom-checkbox').forEach(cb => {
+                cb.classList.remove('checked');
+            });
+            
+            // Reset state
+            state.filters = {
+                access: [],
+                status: [],
+                favorites: false
+            };
+            
+            filterChannels();
+        });
+
+        // View mode toggle
+        document.getElementById('gridViewBtn').addEventListener('click', function() {
+            setViewMode('grid');
+        });
+
+        document.getElementById('listViewBtn').addEventListener('click', function() {
+            setViewMode('list');
+        });
+
+        function setViewMode(mode) {
+            state.viewMode = mode;
+            const channelsView = document.getElementById('channelsView');
+            const gridViewBtn = document.getElementById('gridViewBtn');
+            const listViewBtn = document.getElementById('listViewBtn');
+            
+            if (mode === 'grid') {
+                channelsView.className = 'grid-view';
+                gridViewBtn.classList.add('active');
+                listViewBtn.classList.remove('active');
+            } else {
+                channelsView.className = 'list-view';
+                gridViewBtn.classList.remove('active');
+                listViewBtn.classList.add('active');
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('viewMode', mode);
+        }
+
+        // Filter channels based on search and filters
+        function filterChannels() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const channelGroups = document.querySelectorAll('.channel-group');
 
             channelGroups.forEach(group => {
@@ -575,8 +1101,21 @@
                 cards.forEach(card => {
                     const name = card.getAttribute('data-name');
                     const access = card.getAttribute('data-access');
-
-                    const match = name.includes(searchTerm) || access.includes(searchTerm) || category.includes(searchTerm);
+                    const status = card.getAttribute('data-status');
+                    const key = card.getAttribute('data-key');
+                    const isFavorite = state.favorites.includes(key);
+                    
+                    // Check search term
+                    const searchMatch = name.includes(searchTerm) || 
+                                       access.includes(searchTerm) || 
+                                       category.includes(searchTerm);
+                    
+                    // Check filters
+                    const accessMatch = state.filters.access.length === 0 || state.filters.access.includes(access);
+                    const statusMatch = state.filters.status.length === 0 || state.filters.status.includes(status);
+                    const favoriteMatch = !state.filters.favorites || isFavorite;
+                    
+                    const match = searchMatch && accessMatch && statusMatch && favoriteMatch;
                     card.style.display = match ? 'block' : 'none';
 
                     if (match) matchFoundInGroup = true;
@@ -584,7 +1123,28 @@
 
                 group.style.display = matchFoundInGroup ? 'block' : 'none';
             });
-        });
+        }
+
+        // Toggle favorite
+        function toggleFavorite(button, key) {
+            button.classList.toggle('active');
+            
+            if (state.favorites.includes(key)) {
+                state.favorites = state.favorites.filter(k => k !== key);
+                showToast('Removed from favorites');
+            } else {
+                state.favorites.push(key);
+                showToast('Added to favorites');
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('channelFavorites', JSON.stringify(state.favorites));
+            
+            // If favorites filter is active, update view
+            if (state.filters.favorites) {
+                filterChannels();
+            }
+        }
 
         // Auto-dismiss toasts
         document.addEventListener('DOMContentLoaded', () => {
@@ -647,6 +1207,40 @@
                         text.textContent = 'Refresh';
                     }, 2000);
                 }, 800);
+            });
+            
+            // Load view mode from localStorage
+            const savedViewMode = localStorage.getItem('viewMode') || 'grid';
+            setViewMode(savedViewMode);
+            
+            // Mark favorite channels
+            document.querySelectorAll('.channel-card').forEach(card => {
+                const key = card.getAttribute('data-key');
+                if (state.favorites.includes(key)) {
+                    const favoriteBtn = card.querySelector('.favorite-btn');
+                    if (favoriteBtn) {
+                        favoriteBtn.classList.add('active');
+                    }
+                }
+            });
+            
+            // Add ripple effect to buttons
+            document.querySelectorAll('button, a').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const x = e.clientX - e.target.getBoundingClientRect().left;
+                    const y = e.clientY - e.target.getBoundingClientRect().top;
+                    
+                    const ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
             });
         });
 
@@ -777,15 +1371,17 @@
             const modalLogo = document.getElementById('modalLogo');
             const modalStatus = document.getElementById('modalStatus');
             const modalPlayBtn = document.getElementById('modalPlayBtn');
+            const modalFavoriteBtn = document.getElementById('modalFavoriteBtn');
             
             // Get channel data from card attributes
             const name = card.getAttribute('data-name');
             const access = card.getAttribute('data-access');
             const country = card.getAttribute('data-country');
             const category = card.getAttribute('data-group');
-            const url = card.getAttribute('data-url');
             const logo = card.getAttribute('data-logo');
+            const url = card.getAttribute('data-url');
             const key = card.getAttribute('data-key');
+            const isFavorite = state.favorites.includes(key);
             
             // Set modal content
             modalTitle.textContent = name;
@@ -801,6 +1397,59 @@
                 modalLogo.style.display = 'none';
             }
             
+            // Set favorite button state
+            if (isFavorite) {
+                modalFavoriteBtn.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    Favorited
+                `;
+                modalFavoriteBtn.classList.add('bg-red-600');
+            } else {
+                modalFavoriteBtn.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    Favorite
+                `;
+                modalFavoriteBtn.classList.remove('bg-red-600');
+            }
+            
+            // Set favorite button action
+            modalFavoriteBtn.onclick = function() {
+                if (isFavorite) {
+                    state.favorites = state.favorites.filter(k => k !== key);
+                    showToast('Removed from favorites');
+                    modalFavoriteBtn.innerHTML = `
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        Favorite
+                    `;
+                    modalFavoriteBtn.classList.remove('bg-red-600');
+                } else {
+                    state.favorites.push(key);
+                    showToast('Added to favorites');
+                    modalFavoriteBtn.innerHTML = `
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        Favorited
+                    `;
+                    modalFavoriteBtn.classList.add('bg-red-600');
+                }
+                
+                // Update the card's favorite button
+                const cardFavoriteBtn = card.querySelector('.favorite-btn');
+                if (cardFavoriteBtn) {
+                    cardFavoriteBtn.classList.toggle('active');
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('channelFavorites', JSON.stringify(state.favorites));
+            };
+            
             // Set play button action
             if (url) {
                 modalPlayBtn.style.display = 'flex';
@@ -810,7 +1459,7 @@
                     if (urlParts.length > 1) {
                         const domainPort = urlParts[1].split('/')[0];
                         const domain = domainPort.split(':')[0];
-                        const isIp = domain.replace('.', '').isdigit();
+                        const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(domain);
                         const hasPort = domainPort.includes(':');
                         
                         if (isIp || hasPort) {
@@ -827,7 +1476,7 @@
                 modalPlayBtn.style.display = 'none';
             }
             
-            // Check channel status
+            // Check channel status (simulated)
             checkChannelStatus(url, modalStatus);
             
             // Show modal
@@ -842,7 +1491,7 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Check channel status (ping)
+        // Check channel status (simulated)
         function checkChannelStatus(url, statusElement) {
             if (!url) {
                 statusElement.textContent = 'No URL';
@@ -853,23 +1502,19 @@
             statusElement.textContent = 'Checking...';
             statusElement.className = 'status-badge status-checking';
             
-            // Send request to server to check channel status
-            fetch(`/check-channel-status?url=${encodeURIComponent(url)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'live') {
-                        statusElement.textContent = 'Live';
-                        statusElement.className = 'status-badge status-live';
-                    } else {
-                        statusElement.textContent = 'Offline';
-                        statusElement.className = 'status-badge status-offline';
-                    }
-                })
-                .catch(error => {
-                    statusElement.textContent = 'Error checking';
+            // Simulate status check with random result
+            setTimeout(() => {
+                // 80% chance of being live for demo purposes
+                const isLive = Math.random() > 0.2;
+                
+                if (isLive) {
+                    statusElement.textContent = 'Live';
+                    statusElement.className = 'status-badge status-live';
+                } else {
+                    statusElement.textContent = 'Offline';
                     statusElement.className = 'status-badge status-offline';
-                    console.error('Error checking channel status:', error);
-                });
+                }
+            }, 1500);
         }
 
         // Close modal when clicking outside

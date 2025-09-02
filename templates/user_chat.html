@@ -476,7 +476,7 @@
             animation: bounce 1.3s linear infinite;
         }
         
-        .typing-indicator span:nth-child(2) {
+        . span:nth-child(2) {
             animation-delay: 0.15s;
         }
         
@@ -486,7 +486,7 @@
         
         @keyframes bounce {
             0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-5px); }
+            30% { transform: translateY(-5); }
         }
         
         .message-reactions {
@@ -528,7 +528,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+           : 8px;
             transition: all 0.2s ease;
         }
         
@@ -542,7 +542,7 @@
             background: var(--primary);
             color: white;
             width: 20px;
-            height: 20px;
+            height: 20;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -606,7 +606,7 @@
         }
         
         .notification-content {
-            flex: 1;
+            flex: ;
             max-width: 250px;
         }
         
@@ -680,7 +680,7 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
-            border: 1px solid var(--glass-border);
+            border: 1 solid var(--glass-border);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         
@@ -751,7 +751,7 @@
         .reject-call {
             background: var(--error);
             color: white;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 20 rgba(239, 68, 68, 0.3);
         }
         
         .reject-call:hover {
@@ -827,9 +827,9 @@
 <body>
     <div class="floating-particles" id="particles"></div>
     
-    <button class="back-button" onclick="location.href='user_messages.html'">
+    <button class="back-button" onclick="location.href='{{ url_for('user_messages') }}'">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"></path>
+            <path d="M19 12H5M12 19l-7-7 -7"/>
         </svg>
     </button>
     
@@ -843,14 +843,14 @@
             <div class="header-actions">
                 <div class="header-btn" id="voice-call-btn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 -6-6 19.79 19.79 0 0 1-3.07-8.67A2  0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                     </svg>
                 </div>
                 <div class="header-btn">
                     <i class="fas fa-video"></i>
                 </div>
                 <div class="header-btn">
-                    <i class="fas fa-ellipsis-v"></i>
+                    <i class="fas fa-ellipsis-v"></>
                 </div>
             </div>
         </div>
@@ -858,33 +858,25 @@
         <div class="chat-messages" id="messages">
             <div class="chat-date-divider">Today</div>
             
-            <!-- Sample messages for demonstration -->
-            <div class="message received" data-message-id="1">
-                Hello! How can we help you today?
+            {% for message in messages %}
+            <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}" data-message-id="{{ message.id }}">
+                {{ message.content }}
                 <div class="message-time">
-                    10:30
-                </div>
-            </div>
-            
-            <div class="message sent" data-message-id="2">
-                I'm having trouble with my account login.
-                <div class="message-time">
-                    10:32
+                    {{ message.timestamp.strftime('%H:%M') }}
+                    {% if message.sender_id == current_user.id %}
                     <span class="message-status"><i class="fas fa-check-double"></i></span>
+                    {% endif %}
                 </div>
-            </div>
-            
-            <div class="message received" data-message-id="3">
-                Sorry to hear that. Let me help you with that. Could you please tell me your username?
-                <div class="message-time">
-                    10:33
-                </div>
+                
+                {% if loop.last and message.sender_id != current_user.id %}
                 <div class="message-reactions">
                     <span class="reaction">👍</span>
                     <span class="reaction">❤️</span>
                     <span class="reaction">😮</span>
                 </div>
+                {% endif %}
             </div>
+            {% endfor %}
             
             <div class="typing-indicator" id="typing-indicator" style="display: none;">
                 <span></span>
@@ -895,7 +887,7 @@
         </div>
         
         <div class="wave-divider">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox=" 1200 120" preserveAspectRatio="none">
                 <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
             </svg>
         </div>
@@ -910,7 +902,7 @@
                 </div>
                 <div class="input-btn">
                     <i class="fas fa-smile"></i>
-                </div>
+                </>
             </div>
             
             <div class="message-input-container">
@@ -1040,7 +1032,7 @@
             message.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
                 contextMenu.style.display = 'block';
-                contextMenu.style.left = `${e.pageX}px`;
+                context.style.left = `${e.pageX}px`;
                 contextMenu.style.top = `${e.pageY}px`;
             });
         });
@@ -1059,6 +1051,26 @@
                 notification.classList.remove('show');
             }, 3000);
         }
+
+        // Simulate typing indicator
+        let typingTimeout;
+        
+        messageInput.addEventListener('focus', () => {
+            socket.emit('typing_start');
+        });
+        
+        messageInput.addEventListener('blur', () => {
+            socket.emit('typing_stop');
+        });
+        
+        messageInput.addEventListener('keydown', () => {
+            clearTimeout(typingTimeout);
+            socket.emit('typing_start');
+            
+            typingTimeout = setTimeout(() => {
+                socket.emit('typing_stop');
+            }, 2000);
+        });
 
         // Enhanced WebRTC implementation for voice calls from admin version
         const callModal = document.getElementById('call-modal');
@@ -1083,7 +1095,6 @@
         let audioContext = null;
         let analyser = null;
         let audioVisualizerInterval = null;
-        let isIncomingCall = false;
         
         // Initialize call button
         voiceCallBtn.addEventListener('click', () => {
@@ -1101,7 +1112,6 @@
             callTimer.style.display = 'none';
             audioVisualizer.style.display = 'none';
             callModal.classList.add('active');
-            isIncomingCall = false;
         });
         
         // End call button
@@ -1111,7 +1121,7 @@
                 socket.emit('end_call', {
                     call_id: currentCallId
                 });
-            } else if (currentCallId) {
+            } else if (currentId) {
                 // Cancel outgoing call
                 socket.emit('end_call', {
                     call_id: currentCallId
@@ -1175,7 +1185,7 @@
                 analyser = audioContext.createAnalyser();
                 const source = audioContext.createMediaStreamSource(localStream);
                 source.connect(analyser);
-                analyser.fftSize = 32;
+                analyser.fft = 32;
                 
                 // Start visualizer
                 startAudioVisualizer();
@@ -1189,7 +1199,7 @@
                 });
                 
                 // Create offer if we initiated the call
-                if (!isIncomingCall) {
+                if (acceptCallBtn.style.display === 'none') {
                     const offer = await peerConnection.createOffer();
                     await peerConnection.setLocalDescription(offer);
                     
@@ -1234,7 +1244,7 @@
                 if (event.candidate) {
                     socket.emit('webrtc_ice_candidate', {
                         candidate: event.candidate,
-                        call_id: currentCallId
+                        call_id: currentCall
                     });
                 }
             };
@@ -1308,45 +1318,10 @@
             }
         }
         
-        // Socket.io functionality
-        // For demo purposes, we'll simulate a socket connection
-        const socket = {
-            emit: function(event, data) {
-                console.log('Emitting:', event, data);
-                
-                // Simulate server responses for demo
-                if (event === 'voice_call_request') {
-                    setTimeout(() => {
-                        this.onCallInitiated({ call_id: 'demo_call_123' });
-                    }, 1000);
-                } else if (event === 'send_message') {
-                    setTimeout(() => {
-                        this.onReceiveMessage({
-                            sender_id: 2, // Support ID
-                            content: 'Thanks for your message. We\'ll get back to you shortly.',
-                            timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                        });
-                    }, 1500);
-                }
-            },
-            on: function(event, callback) {
-                this['on' + event] = callback;
-            },
-            onreceive_message: null,
-            ontyping: null,
-            onincoming_call: null,
-            oncall_initiated: null,
-            oncall_accepted: null,
-            oncall_rejected: null,
-            oncall_ended: null,
-            onwebrtc_offer: null,
-            onwebrtc_answer: null,
-            onwebrtc_ice_candidate: null
-        };
-        
-        // For demo purposes
-        const currentUserId = 1;
-        const adminId = 2;
+        // Original socket.io functionality remains exactly the same
+        const socket = io();
+        const currentUserId = {{ current_user.id }};
+        const adminId = {{ other_user.id }};
         
         // Create conversation room ID
         const user_ids = [currentUserId, adminId].sort((a, b) => a - b);
@@ -1361,7 +1336,6 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         };
         
-        // Handle receiving messages
         socket.on('receive_message', function(data) {
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
@@ -1387,10 +1361,8 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         });
         
-        // Handle typing indicator
         socket.on('typing', function(data) {
             const typingIndicator = document.getElementById('typing-indicator');
-            const messagesDiv = document.getElementById('messages');
             
             if (data.isTyping) {
                 typingIndicator.style.display = 'flex';
@@ -1403,15 +1375,17 @@
         // Voice call event handlers
         socket.on('incoming_call', function(data) {
             currentCallId = data.call_id;
-            isIncomingCall = true;
             callStatus.textContent = 'Incoming Call';
-            callerName.textContent = data.caller_name || 'Support Team';
+            callerName.textContent = data.caller_name;
             acceptCallBtn.style.display = 'block';
             endCallBtn.style.display = 'block';
             callControls.style.display = 'none';
             callTimer.style.display = 'none';
             audioVisualizer.style.display = 'none';
             callModal.classList.add('active');
+            
+            // Play ringtone
+            // You would implement this with an audio element
         });
         
         socket.on('call_initiated', function(data) {
@@ -1428,6 +1402,8 @@
             
             // Initialize audio for the call
             await initializeAudio();
+            
+            // Stop ringtone if playing
         });
         
         socket.on('call_rejected', function(data) {
@@ -1461,18 +1437,13 @@
         });
         
         socket.on('webrtc_answer', async function(data) {
-            if (peerConnection) {
-                await peerConnection.setRemoteDescription(data.answer);
-            }
+            await peerConnection.setRemoteDescription(data.answer);
         });
         
         socket.on('webrtc_ice_candidate', async function(data) {
-            if (peerConnection) {
-                await peerConnection.addIceCandidate(data.candidate);
-            }
+            await peerConnection.addIceCandidate(data.candidate);
         });
         
-        // Send message functionality
         document.getElementById('send-button').addEventListener('click', sendMessage);
         document.getElementById('message-input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -1490,44 +1461,11 @@
                     content: content
                 });
                 
-                // Add message to UI immediately
-                const messagesDiv = document.getElementById('messages');
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'message sent';
-                messageDiv.innerHTML = `
-                    ${content}
-                    <div class="message-time">
-                        ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                        <span class="message-status"><i class="fas fa-check-double"></i></span>
-                    </div>
-                `;
-                
-                messagesDiv.appendChild(messageDiv);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                
                 input.value = '';
                 charCount.textContent = '0';
                 charCount.style.color = 'var(--gray)';
-                
-                // Show typing indicator from support
-                const typingIndicator = document.getElementById('typing-indicator');
-                typingIndicator.style.display = 'flex';
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                
-                // Hide typing indicator after a delay
-                setTimeout(() => {
-                    typingIndicator.style.display = 'none';
-                }, 2000);
             }
         }
-        
-        // Simulate incoming call for demo after 5 seconds
-        setTimeout(() => {
-            socket.onincoming_call({
-                call_id: 'demo_incoming_123',
-                caller_name: 'Support Team'
-            });
-        }, 5000);
     </script>
 </body>
 </html>

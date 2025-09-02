@@ -6,57 +6,39 @@
     <title>Curated Playlist | ViewTv</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
     <style>
         :root {
             --primary: #06b6d4;
             --primary-dark: #0891b2;
-            --primary-light: #67e8f9;
             --secondary: #10b981;
-            --accent: #8b5cf6;
             --dark: #111827;
             --darker: #030712;
-            --card-bg: rgba(31, 41, 55, 0.7);
         }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(ellipse at top, var(--dark) 0%, var(--darker) 100%);
+            background: radial-gradient(ellipse at center, var(--dark) 0%, var(--darker) 100%);
             overflow-x: hidden;
-            min-height: 100vh;
-        }
-        
-        .glass-effect {
-            background: rgba(31, 41, 55, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
         
         .card-glass {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            overflow: hidden;
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         
         .channel-card {
             transition: all 0.3s ease;
-            background: rgba(31, 41, 55, 0.6);
+            background: rgba(31, 41, 55, 0.5);
             backdrop-filter: blur(8px);
             position: relative;
             overflow: hidden;
-            border-radius: 14px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
         
         .channel-card:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 20px 40px -10px rgba(6, 182, 212, 0.4);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px -10px rgba(6, 182, 212, 0.4);
             border-color: rgba(6, 182, 212, 0.5);
         }
         
@@ -66,11 +48,11 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 0.5s ease;
+            transition: transform 0.3s ease;
         }
         
         .channel-card:hover::before {
@@ -86,184 +68,158 @@
         .channels-container {
             flex: 1;
             overflow-y: auto;
-            padding: 1rem 0;
+        }
+        
+        .search-box:focus {
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
+        }
+        
+        .toast-entry {
+            animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        .toast-exit {
+            animation: toast-out 0.5s ease forwards;
+        }
+        
+        @keyframes toast-in {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes toast-out {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100%); }
+        }
+        
+        .dropdown-content {
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .category-pill {
+            transition: all 0.2s ease;
+        }
+        
+        .category-pill:hover {
+            background: rgba(6, 182, 212, 0.2);
         }
         
         .gradient-text {
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
         
-        .search-box:focus {
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3), 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        .invalid-channel {
+            opacity: 0.7;
+            filter: grayscale(80%);
         }
         
-        /* Modern header */
-        .header-glass {
-            background: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        /* New styles */
+        .recommended-section {
+            margin-bottom: 2rem;
         }
         
-        /* Modern buttons */
-        .btn-primary {
-            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border: none;
+        .recommended-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 1rem;
+            gap: 1rem;
+        }
+        
+        .recommended-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .recommended-card {
+            flex: 0 0 auto;
+            width: 200px;
             border-radius: 12px;
-            padding: 0.75rem 1.5rem;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.5);
-        }
-        
-        /* Enhanced modal */
-        .modal-content {
-            background: rgba(31, 41, 55, 0.95);
-            border-radius: 24px;
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        
-        /* Enhanced footer */
-        .footer-glass {
-            background: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Floating action buttons */
-        .floating-btn {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
-            transition: all 0.3s ease;
-            border: none;
-        }
-        
-        .floating-btn:hover {
-            transform: translateY(-4px) rotate(5deg);
-            box-shadow: 0 12px 30px rgba(6, 182, 212, 0.6);
-        }
-        
-        /* Category pills */
-        .category-pill {
-            background: rgba(31, 41, 55, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-            transition: all 0.3s ease;
-            color: var(--primary-light);
-            font-weight: 500;
-        }
-        
-        .category-pill:hover {
-            background: rgba(6, 182, 212, 0.2);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3);
-        }
-        
-        /* Status badges */
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-        
-        .status-live {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-        }
-        
-        .status-offline {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-        
-        .status-checking {
-            background: rgba(245, 158, 11, 0.2);
-            color: #f59e0b;
-        }
-        
-        /* Channel card enhancements */
-        .channel-image {
-            position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
         }
         
-        .channel-image::after {
-            content: '';
+        .recommended-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .scroll-btn {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 40%;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
-        }
-        
-        /* Detail and favorite buttons */
-        .detail-btn, .favorite-btn {
-            width: 36px;
-            height: 36px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(31, 41, 55, 0.8);
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             cursor: pointer;
-            z-index: 5;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            z-index: 10;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         
-        .detail-btn:hover {
-            background: rgba(6, 182, 212, 0.9);
-            transform: scale(1.15);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
+        .scroll-btn.left {
+            left: 10px;
         }
         
-        .favorite-btn:hover {
-            background: rgba(239, 68, 68, 0.8);
-            transform: scale(1.15);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+        .scroll-btn.right {
+            right: 10px;
         }
         
-        .favorite-btn.active {
-            color: #ef4444;
-            background: rgba(0, 0, 0, 0.9);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+        .recommended-section:hover .scroll-btn {
+            opacity: 1;
         }
         
-        /* Loading animation */
+        .back-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(6, 182, 212, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: scale(1.1);
+            background: rgba(6, 182, 212, 1);
+        }
+        
+        .highlight-pulse {
+            animation: highlightPulse 2s infinite;
+        }
+        
+        @keyframes highlightPulse {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+        
         .loading-spinner {
             display: inline-block;
             width: 20px;
@@ -278,10 +234,239 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Scrollbar styling */
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: rgba(31, 41, 55, 0.95);
+            border-radius: 20px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.25);
+            animation: modalFadeIn 0.3s ease-out;
+            position: relative;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(-20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-live {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        
+        .status-offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .status-checking {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 0.75rem 1rem;
+        }
+        
+        .info-label {
+            color: #9ca3af;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .info-value {
+            color: #f3f4f6;
+            word-break: break-word;
+            font-size: 0.95rem;
+        }
+        
+        .channel-logo-modal {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin: 0 auto 1.5rem;
+            display: block;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.75rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Always visible buttons */
+        .detail-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 5;
+            transition: background 0.3s, transform 0.3s;
+            opacity: 1 !important;
+        }
+        
+        .detail-btn:hover {
+            background: rgba(6, 182, 212, 0.9);
+            transform: scale(1.1);
+        }
+        
+        /* Favorite button - always visible */
+        .favorite-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 5;
+            transition: background 0.3s, transform 0.3s;
+            opacity: 1 !important;
+        }
+        
+        .favorite-btn:hover {
+            background: rgba(239, 68, 68, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .favorite-btn.active {
+            color: #ef4444;
+        }
+        
+        /* View modes */
+        .view-mode-btn {
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(31, 41, 55, 0.5);
+            color: #9ca3af;
+            transition: all 0.3s;
+        }
+        
+        .view-mode-btn.active {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--primary);
+        }
+        
+        .view-mode-btn:hover {
+            background: rgba(6, 182, 212, 0.3);
+            color: white;
+        }
+        
+        /* Grid view */
+        .grid-view .channel-card {
+            height: 100%;
+        }
+        
+        /* List view */
+        .list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .list-view .channel-card {
+            display: flex;
+            height: auto;
+            padding: 0.75rem;
+        }
+        
+        .list-view .channel-card .channel-image {
+            width: 160px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .list-view .channel-card .channel-info {
+            flex: 1;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .list-view .channel-card .channel-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0 0.5rem;
+        }
+        
+        /* Filter section */
+        .filter-section {
+            background: rgba(31, 41, 55, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Custom scrollbar */
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
         }
         
         ::-webkit-scrollbar-track {
@@ -290,228 +475,42 @@
         }
         
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+            background: rgba(6, 182, 212, 0.5);
             border-radius: 10px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(to bottom, var(--primary-dark), var(--primary));
+            background: rgba(6, 182, 212, 0.7);
         }
         
-        /* Animation enhancements */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .float-animation {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        /* Recommended section */
-        .recommended-card {
-            flex: 0 0 auto;
-            width: 240px;
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .recommended-card:hover {
-            transform: scale(1.08) rotate(2deg);
-            box-shadow: 0 20px 40px rgba(6, 182, 212, 0.4);
-        }
-        
-        /* Search suggestions */
-        .search-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(31, 41, 55, 0.98);
-            border-radius: 0 0 16px 16px;
-            max-height: 250px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            border-top: none;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        
-        /* View mode toggles */
-        .view-mode-btn {
-            padding: 0.6rem;
-            border-radius: 12px;
-            background: rgba(31, 41, 55, 0.6);
-            color: #9ca3af;
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .view-mode-btn.active {
-            background: rgba(6, 182, 212, 0.3);
-            color: white;
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
-        }
-        
-        .view-mode-btn:hover {
-            background: rgba(6, 182, 212, 0.4);
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        /* Filter section */
-        .filter-section {
-            background: rgba(31, 41, 55, 0.5);
-            border-radius: 16px;
-            padding: 1.2rem;
-            margin-bottom: 1.5rem;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Logo styling */
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4);
-        }
-        
-        /* Toast notifications */
-        .toast-entry {
-            animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Pulse animation for highlights */
-        @keyframes highlightPulse {
-            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(6, 182, 212, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
-        }
-        
-        /* Custom checkbox */
-        .custom-checkbox {
-            position: relative;
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            background: rgba(31, 41, 55, 0.7);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            border-radius: 6px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .custom-checkbox.checked {
-            background: var(--primary);
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-        }
-        
-        /* Responsive improvements */
-        @media (max-width: 768px) {
-            .search-container {
-                width: 100%;
-                margin-top: 1rem;
-                order: 3;
+        /* Animation for cards */
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-            
-            .header-container {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 1rem;
-            }
-            
-            .channel-card {
-                margin-bottom: 1rem;
-            }
-            
-            .logo-text {
-                font-size: 1.5rem;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
         
-        /* Tooltip enhancements */
-        .tooltip::before {
-            background: rgba(31, 41, 55, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .channel-card {
+            animation: cardAppear 0.5s ease-out;
+            animation-fill-mode: both;
         }
         
-        /* Section headers */
-        .section-header {
-            position: relative;
-            padding-bottom: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            border-radius: 2px;
-        }
-        
-        /* Channel group styling */
-        .channel-group {
-            margin-bottom: 3rem;
-        }
-        
-        /* Back to top button */
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
-            transition: all 0.3s ease;
-            z-index: 100;
-            border: none;
-        }
-        
-        .back-to-top:hover {
-            transform: translateY(-5px) rotate(5deg);
-            box-shadow: 0 12px 30px rgba(6, 182, 212, 0.6);
-        }
+        /* Delay for staggered animation */
+        .channel-card:nth-child(1) { animation-delay: 0.05s; }
+        .channel-card:nth-child(2) { animation-delay: 0.1s; }
+        .channel-card:nth-child(3) { animation-delay: 0.15s; }
+        .channel-card:nth-child(4) { animation-delay: 0.2s; }
+        .channel-card:nth-child(5) { animation-delay: 0.25s; }
+        .channel-card:nth-child(6) { animation-delay: 0.3s; }
+        .channel-card:nth-child(7) { animation-delay: 0.35s; }
+        .channel-card:nth-child(8) { animation-delay: 0.4s; }
+        .channel-card:nth-child(9) { animation-delay: 0.45s; }
+        .channel-card:nth-child(10) { animation-delay: 0.5s; }
         
         /* Ripple effect */
         .ripple {
@@ -529,7 +528,14 @@
             }
         }
         
-        /* Skeleton loading animation */
+        /* Skeleton loading */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(31, 41, 55, 0.5) 25%, rgba(55, 65, 81, 0.5) 50%, rgba(31, 41, 55, 0.5) 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
         @keyframes skeletonLoading {
             0% {
                 background-position: 200% 0;
@@ -539,28 +545,147 @@
             }
         }
         
-        /* Dropdown menu */
-        .dropdown-content {
-            background: rgba(31, 41, 55, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-        }
-        
-        /* Refresh button */
-        #refresh-recommended {
-            transition: all 0.3s ease;
-            border-radius: 20px;
-            background: rgba(6, 182, 212, 0.2);
+        /* Custom checkbox */
+        .custom-checkbox {
+            position: relative;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: rgba(31, 41, 55, 0.7);
             border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 4px;
+            transition: all 0.3s;
         }
         
-        #refresh-recommended:hover {
-            background: rgba(6, 182, 212, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3);
+        .custom-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .custom-checkbox.checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 9px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem;
+            background: rgba(31, 41, 55, 0.9);
+            color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 100;
+        }
+        
+        .tooltip:hover::before {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Back button in modal */
+        .modal-back-btn {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(31, 41, 55, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 5;
+            opacity: 1 !important;
+        }
+        
+        .modal-back-btn:hover {
+            background: rgba(6, 182, 212, 0.7);
+            transform: scale(1.1);
+        }
+        
+        /* Search suggestions */
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(31, 41, 55, 0.95);
+            border-radius: 0 0 12px 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-top: none;
+        }
+        
+        .search-suggestion {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-suggestion:hover {
+            background: rgba(6, 182, 212, 0.2);
+        }
+        
+        .search-suggestion i {
+            margin-right: 0.75rem;
+            color: var(--primary);
+        }
+        
+        /* Extended search bar */
+        .search-container {
+            position: relative;
+            min-width: 250px;
+            width: 350px;
+            transition: width 0.3s;
+        }
+        
+        .search-container:focus-within {
+            width: 400px;
+        }
+        
+        /* List view specific styles */
+        .list-view .detail-btn,
+        .list-view .favorite-btn {
+            position: relative;
+            top: auto;
+            left: auto;
+            right: auto;
+            margin: 0.25rem;
+        }
+        
+        .list-view .channel-actions {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
         }
     </style>
 </head>
@@ -678,18 +803,16 @@
     </div>
 
     <!-- Header -->
-    <header class="header-glass p-5 sticky top-0 z-40">
-        <div class="container mx-auto flex flex-wrap items-center justify-between gap-4 header-container">
-            <div class="logo-container">
-                <div class="logo-icon float-animation">
-                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 h16M4 10h10M4 14h6" />
-                    </svg>
-                </div>
-                <h1 class="text-2xl font-bold gradient-text logo-text">Curated Playlist | ViewTV</h1>
+    <header class="card-glass border-b border-gray-700/30 p-4 sticky top-0 z-40">
+        <div class="container mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <svg class="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 h16M4 10h10M4 14h6" />
+                </svg>
+                <h1 class="text-2xl font-bold gradient-text">Curated Playlist | ViewTV</h1>
             </div>
             
-            <div class="flex items-center space-x-4 header-actions">
+            <div class="flex items-center space-x-4">
                 <!-- View Mode Toggle -->
                 <div class="flex items-center space-x-2 bg-gray-800/50 rounded-xl p-1">
                     <button id="gridViewBtn" class="view-mode-btn active tooltip" data-tooltip="Grid View">
@@ -788,7 +911,7 @@
         <div class="container mx-auto px-4 py-6">
             <!-- Recommended Section -->
             <section class="recommended-section mb-10">
-                <div class="flex items-center justify-between mb-4 section-header">
+                <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold text-cyan-100 flex items-center">
                         <i class="fas fa-star mr-3 text-yellow-400"></i>
                         Recommended For You
@@ -816,7 +939,7 @@
             <div id="channelsView" class="grid-view">
                 {% for group_title, group_channels in categorized_channels.items() %}
                 <section class="mb-10 channel-group" id="{{ group_title | lower | replace(' ', '-') }}" data-category="{{ group_title | lower }}">
-                    <div class="flex items-center justify-between mb-4 section-header">
+                    <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xl font-bold text-cyan-100 flex items-center">
                             <i class="fas fa-tag mr-3 text-cyan-400"></i>
                             {{ group_title or 'Uncategorized' }}
@@ -826,7 +949,7 @@
                         </span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:-grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                         {% for channel in group_channels %}
                         {% set channel_url = channel.get('url', '') %}
                         {% set channel_name = channel.get('name', '') %}
@@ -876,7 +999,7 @@
                                 </div>
                             {% endif %}
                             
-                                <div class="channel-image relative pt-[56.25%] bg-gray-900/20">
+                                <div class="relative pt-[56.25%] bg-gray-900/20">
                                     {% if channel.get('logo') %}
                                     <img src="{{ channel.logo }}" alt="{{ channel_name }}"
                                          class="absolute inset-0 w-full h-full object-contain p-4">
@@ -885,18 +1008,18 @@
                                         <i class="fas fa-tv text-5xl"></i>
                                     </div>
                                     {% endif %}
-                                    <div class="absolute bottom-0 left-0 right-0 z-10 p-3">
-                                        <span class="text-xs font-medium text-cyan-400 bg-black/70 px-2 py-1 rounded-md">
+                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
+                                        <span class="text-xs font-medium text-cyan-400">
                                             {{ channel.get('access', 'Free') }}
                                         </span>
                                     </div>
                                 </div>
-                                <div class="p-4">
-                                    <h3 class="font-medium text-sm truncate mb-1">{{ channel_name }}</h3>
-                                    <p class="text-xs text-gray-400 mb-2 truncate">{{ channel.get('country', '') }}</p>
-                                    <div class="flex items-center justify-between">
+                                <div class="p-3">
+                                    <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
+                                    <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
+                                    <div class="flex items-center mt-2">
                                         <span class="status-badge status-live text-xs">Live</span>
-                                        <span class="text-xs text-gray-500">HD</span>
+                                        <span class="ml-2 text-xs text-gray-500">HD</span>
                                     </div>
                                 </div>
                             
@@ -911,7 +1034,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer-glass py-6 mt-6">
+    <footer class="card-glass border-t border-gray-700/30 py-4 mt-6">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center space-x-4 mb-4 md:mb-0">
@@ -933,11 +1056,11 @@
     </footer>
 
     <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop" title="Back to Top">
+    <div class="back-btn" id="backToTop" title="Back to Top">
         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
-    </button>
+    </div>
 
     <!-- JavaScript -->
     <script>
@@ -1477,7 +1600,7 @@
             } else {
                 modalFavoriteBtn.innerHTML = `
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin-round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                     Favorite
                 `;

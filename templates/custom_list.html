@@ -935,35 +935,6 @@
         .lazy-load-image.loaded {
             opacity: 1;
         }
-        
-        .channel-status-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            z-index: 5;
-        }
-        
-        .status-pending {
-            background-color: #f59e0b;
-            animation: pulse 1.5s infinite;
-        }
-        
-        .status-live-badge {
-            background-color: #10b981;
-        }
-        
-        .status-offline-badge {
-            background-color: #ef4444;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
     </style>
 </head>
 <body class="text-white flex flex-col min-h-screen">
@@ -1148,20 +1119,6 @@
                 </div>
                 
                 <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-300">Status:</span>
-                    <div class="flex space-x-2">
-                        <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="status" data-value="live"></div>
-                            <span class="text-sm text-gray-300">Live</span>
-                        </label>
-                        <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="status" data-value="offline"></div>
-                            <span class="text-sm text-gray-300">Offline</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-2">
                     <span class="text-sm text-gray-300">Favorites:</span>
                     <label class="flex items-center space-x-1 cursor-pointer">
                         <div class="custom-checkbox" data-filter="favorites" data-value="true"></div>
@@ -1274,11 +1231,7 @@
                              data-logo="{{ channel.get('logo', '') }}"
                              data-url="{{ channel_url }}"
                              data-quality="{{ channel.get('quality', 'hd') }}"
-                             data-status="pending"
                              id="channel-{{ channel.key }}">
-                            
-                            <!-- Status indicator -->
-                            <div class="channel-status-indicator status-pending"></div>
                             
                             <!-- Details button -->
                             <button class="detail-btn tooltip" data-tooltip="View Details" onclick="showChannelDetails(this.closest('.channel-card'))">
@@ -1336,8 +1289,7 @@
                                     <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
                                     <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
                                     <div class="flex items-center mt-2">
-                                        <span class="status-badge status-checking text-xs">Checking</span>
-                                        <span class="ml-2 text-xs text-gray-500">{{ channel.get('quality', 'HD') }}</span>
+                                        <span class="text-xs text-gray-500">{{ channel.get('quality', 'HD') }}</span>
                                     </div>
                                 </div>
                             
@@ -1401,17 +1353,12 @@
             recentlyViewed: JSON.parse(localStorage.getItem('recentlyViewed')) || [],
             filters: {
                 access: [],
-                status: [],
                 favorites: false,
                 quality: []
             },
             allChannels: [],
             currentView: 'grid', // 'grid' or 'list'
-            darkMode: localStorage.getItem('darkMode') === 'true',
-            channelStatusQueue: [], // Queue for channel status checking
-            statusCheckInterval: null, // Interval for processing the queue
-            visibleChannels: new Set(), // Track currently visible channels
-            lazyLoadObserver: null // Observer for lazy loading
+            darkMode: localStorage.getItem('darkMode') === 'true'
         };
 
         // Cache DOM elements for performance
@@ -1465,145 +1412,6 @@
             
             // Set up auto-dismiss for toasts
             setupToasts();
-            
-            // Initialize lazy loading and status checking
-            initLazyLoading();
-            
-            // Start the status check queue processor
-            startStatusCheckQueue();
-        }
-
-        // Initialize lazy loading and status checking
-        function initLazyLoading() {
-            // Set up Intersection Observer for lazy loading and status checking
-            state.lazyLoadObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const card = entry.target;
-                        const key = card.getAttribute('data-key');
-                        
-                        // Add to visible channels set
-                        state.visibleChannels.add(key);
-                        
-                        // Add to status check queue if not already checked
-                        if (card.getAttribute('data-status') === 'pending') {
-                            addToStatusCheckQueue(card);
-                        }
-                        
-                        // Lazy load images
-                        const img = card.querySelector('img.lazy-load-image');
-                        if (img && !img.classList.contains('loaded')) {
-                            const src = img.getAttribute('src');
-                            if (src) {
-                                img.setAttribute('src', src);
-                            }
-                        }
-                    } else {
-                        const key = entry.target.getAttribute('data-key');
-                        state.visibleChannels.delete(key);
-                    }
-                });
-            }, {
-                rootMargin: '100px 0px', // Load slightly before they become visible
-                threshold: 0.01
-            });
-
-            // Observe all channel cards
-            document.querySelectorAll('.channel-card').forEach(card => {
-                state.lazyLoadObserver.observe(card);
-            });
-        }
-
-        // Add channel to status check queue
-        function addToStatusCheckQueue(card) {
-            const url = card.getAttribute('data-url');
-            if (!url) return;
-            
-            state.channelStatusQueue.push({
-                card: card,
-                url: url
-            });
-        }
-
-        // Process the status check queue
-        function processStatusCheckQueue() {
-            // Process up to 5 channels at a time from the queue
-            const batchSize = 5;
-            const batch = state.channelStatusQueue.splice(0, batchSize);
-            
-            batch.forEach(item => {
-                if (state.visibleChannels.has(item.card.getAttribute('data-key'))) {
-                    checkChannelStatus(item.url, item.card);
-                }
-            });
-        }
-
-        // Start the status check queue processor
-        function startStatusCheckQueue() {
-            // Process queue every 100ms (max 50 checks per second)
-            state.statusCheckInterval = setInterval(processStatusCheckQueue, 100);
-        }
-
-        // Check channel status and update UI
-        function checkChannelStatus(url, cardElement) {
-            if (!url) {
-                updateChannelStatus(cardElement, 'offline');
-                return;
-            }
-            
-            // Mark as checking
-            updateChannelStatus(cardElement, 'checking');
-            
-            // Use the Flask endpoint to check channel status
-            fetch(`/check-channel-status?url=${encodeURIComponent(url)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'live') {
-                        updateChannelStatus(cardElement, 'live');
-                    } else if (data.status === 'offline') {
-                        updateChannelStatus(cardElement, 'offline');
-                    } else {
-                        updateChannelStatus(cardElement, 'offline');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking channel status:', error);
-                    updateChannelStatus(cardElement, 'offline');
-                });
-        }
-
-        // Update channel status UI
-        function updateChannelStatus(cardElement, status) {
-            cardElement.setAttribute('data-status', status);
-            
-            // Update status indicator
-            const statusIndicator = cardElement.querySelector('.channel-status-indicator');
-            if (statusIndicator) {
-                statusIndicator.className = 'channel-status-indicator';
-                if (status === 'checking') {
-                    statusIndicator.classList.add('status-pending');
-                } else if (status === 'live') {
-                    statusIndicator.classList.add('status-live-badge');
-                } else {
-                    statusIndicator.classList.add('status-offline-badge');
-                }
-            }
-            
-            // Update status badge text
-            const statusBadge = cardElement.querySelector('.status-badge');
-            if (statusBadge) {
-                statusBadge.className = 'status-badge';
-                if (status === 'checking') {
-                    statusBadge.classList.add('status-checking');
-                    statusBadge.textContent = 'Checking';
-                } else if (status === 'live') {
-                    statusBadge.classList.add('status-live');
-                    statusBadge.textContent = 'Live';
-                } else {
-                    statusBadge.classList.add('status-offline');
-                    statusBadge.textContent = 'Offline';
-                }
-            }
         }
 
         // Set up event listeners
@@ -1691,7 +1499,6 @@
                 // Reset state
                 state.filters = {
                     access: [],
-                    status: [],
                     favorites: false,
                     quality: []
                 };
@@ -2052,7 +1859,6 @@
                 cards.forEach(card => {
                     const name = card.getAttribute('data-name');
                     const access = card.getAttribute('data-access');
-                    const status = card.getAttribute('data-status');
                     const quality = card.getAttribute('data-quality');
                     const key = card.getAttribute('data-key');
                     const isFavorite = state.favorites.includes(key);
@@ -2065,11 +1871,10 @@
                     
                     // Check filters
                     const accessMatch = state.filters.access.length === 0 || state.filters.access.includes(access);
-                    const statusMatch = state.filters.status.length === 0 || state.filters.status.includes(status);
                     const qualityMatch = state.filters.quality.length === 0 || state.filters.quality.includes(quality);
                     const favoriteMatch = !state.filters.favorites || isFavorite;
                     
-                    const match = searchMatch && accessMatch && statusMatch && favoriteMatch && qualityMatch;
+                    const match = searchMatch && accessMatch && favoriteMatch && qualityMatch;
                     card.style.display = match ? 'block' : 'none';
 
                     if (match) matchFoundInGroup = true;
@@ -2301,7 +2106,7 @@
             const recommended = shuffled.slice(0, 10);
             
             // Add to container with highlight effect
-            recommended.forEach((channel, index) => {
+            recommended.forEach((channel, index) {
                 const card = channel.element;
                 card.classList.add('recommended-card');
                 card.classList.add('highlight-pulse');
@@ -2447,7 +2252,7 @@
                 modalPlayBtn.style.display = 'none';
             }
             
-            // Check channel status using the Flask endpoint
+            // Check channel status using the Flask endpoint (only in modal)
             checkChannelStatusForModal(url, modalStatus);
             
             // Show modal
@@ -2509,17 +2314,6 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeModal();
-            }
-        });
-
-        // Clean up when page is unloaded
-        window.addEventListener('beforeunload', function() {
-            if (state.statusCheckInterval) {
-                clearInterval(state.statusCheckInterval);
-            }
-            
-            if (state.lazyLoadObserver) {
-                state.lazyLoadObserver.disconnect();
             }
         });
 

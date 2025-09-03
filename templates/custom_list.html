@@ -925,16 +925,6 @@
         .theme-toggle.dark .theme-toggle-handle {
             left: calc(100% - 22px);
         }
-        
-        /* New: Lazy loading styles */
-        .lazy-load-image {
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .lazy-load-image.loaded {
-            opacity: 1;
-        }
     </style>
 </head>
 <body class="text-white flex flex-col min-h-screen">
@@ -1119,6 +1109,20 @@
                 </div>
                 
                 <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-300">Status:</span>
+                    <div class="flex space-x-2">
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <div class="custom-checkbox" data-filter="status" data-value="live"></div>
+                            <span class="text-sm text-gray-300">Live</span>
+                        </label>
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <div class="custom-checkbox" data-filter="status" data-value="offline"></div>
+                            <span class="text-sm text-gray-300">Offline</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
                     <span class="text-sm text-gray-300">Favorites:</span>
                     <label class="flex items-center space-x-1 cursor-pointer">
                         <div class="custom-checkbox" data-filter="favorites" data-value="true"></div>
@@ -1231,6 +1235,7 @@
                              data-logo="{{ channel.get('logo', '') }}"
                              data-url="{{ channel_url }}"
                              data-quality="{{ channel.get('quality', 'hd') }}"
+                             data-status="live"
                              id="channel-{{ channel.key }}">
                             
                             <!-- Details button -->
@@ -1252,9 +1257,9 @@
                                     {% set has_port = ':' in domain_port %}
                                     
                                     {% if is_ip or has_port %}
-                                        <a href="{{ channel_url }}" class="block h-full" onclick="return validateAndPlayChannel(event, '{{ channel.key }}', '{{ channel_url }}')">
+                                        <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
                                     {% else %}
-                                        <a href="{{ url_for('plus_play', key=channel.key) }}" class="block h-full">
+                                        <a href="{{ url_for('plus_play', key=channel.key) }}">
                                     {% endif %}
                                 {% else %}
                                     <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" class="block h-full">
@@ -1269,8 +1274,7 @@
                                 <div class="relative pt-[56.25%] bg-gray-900/20 channel-image">
                                     {% if channel.get('logo') %}
                                     <img src="{{ channel.logo }}" alt="{{ channel_name }}"
-                                         class="lazy-load-image absolute inset-0 w-full h-full object-contain p-4"
-                                         onload="this.classList.add('loaded')">
+                                         class="absolute inset-0 w-full h-full object-contain p-4">
                                     {% else %}
                                     <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
                                         <i class="fas fa-tv text-5xl"></i>
@@ -1289,7 +1293,8 @@
                                     <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
                                     <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
                                     <div class="flex items-center mt-2">
-                                        <span class="text-xs text-gray-500">{{ channel.get('quality', 'HD') }}</span>
+                                        <span class="status-badge status-live text-xs">Live</span>
+                                        <span class="ml-2 text-xs text-gray-500">{{ channel.get('quality', 'HD') }}</span>
                                     </div>
                                 </div>
                             
@@ -1353,6 +1358,7 @@
             recentlyViewed: JSON.parse(localStorage.getItem('recentlyViewed')) || [],
             filters: {
                 access: [],
+                status: [],
                 favorites: false,
                 quality: []
             },
@@ -1412,6 +1418,23 @@
             
             // Set up auto-dismiss for toasts
             setupToasts();
+            
+            // Initialize channel statuses
+            initChannelStatuses();
+        }
+
+        // Initialize channel statuses
+        function initChannelStatuses() {
+            // Check status for all channels
+            document.querySelectorAll('.channel-card').forEach(card => {
+                const url = card.getAttribute('data-url');
+                if (url) {
+                    const statusElement = card.querySelector('.status-badge');
+                    if (statusElement) {
+                        checkChannelStatus(url, statusElement);
+                    }
+                }
+            });
         }
 
         // Set up event listeners
@@ -1499,6 +1522,7 @@
                 // Reset state
                 state.filters = {
                     access: [],
+                    status: [],
                     favorites: false,
                     quality: []
                 };
@@ -1859,6 +1883,7 @@
                 cards.forEach(card => {
                     const name = card.getAttribute('data-name');
                     const access = card.getAttribute('data-access');
+                    const status = card.getAttribute('data-status');
                     const quality = card.getAttribute('data-quality');
                     const key = card.getAttribute('data-key');
                     const isFavorite = state.favorites.includes(key);
@@ -1871,10 +1896,11 @@
                     
                     // Check filters
                     const accessMatch = state.filters.access.length === 0 || state.filters.access.includes(access);
+                    const statusMatch = state.filters.status.length === 0 || state.filters.status.includes(status);
                     const qualityMatch = state.filters.quality.length === 0 || state.filters.quality.includes(quality);
                     const favoriteMatch = !state.filters.favorites || isFavorite;
                     
-                    const match = searchMatch && accessMatch && favoriteMatch && qualityMatch;
+                    const match = searchMatch && accessMatch && statusMatch && favoriteMatch && qualityMatch;
                     card.style.display = match ? 'block' : 'none';
 
                     if (match) matchFoundInGroup = true;
@@ -2049,38 +2075,21 @@
             });
         }
 
-        // Validate and play channel
-        function validateAndPlayChannel(event, key, url) {
-            event.preventDefault();
-            
+        // Validate direct IP links before opening
+        function validateLink(event, url) {
             try {
                 // Basic URL validation
                 if (!url.startsWith('http://') && !url.startsWith('https://')) {
                     showToast('Invalid URL format', 'error');
+                    event.preventDefault();
                     return false;
                 }
 
-                // Check if this is a direct IP link
-                const urlParts = url.split('://');
-                if (urlParts.length > 1) {
-                    const domainPort = urlParts[1].split('/')[0];
-                    const domain = domainPort.split(':')[0];
-                    const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(domain);
-                    const hasPort = domainPort.includes(':');
-                    
-                    if (isIp || hasPort) {
-                        // Open direct IP links in new tab
-                        window.open(url, '_blank');
-                        return false;
-                    }
-                }
-                
-                // For regular URLs, use the standard player route
-                window.location.href = `/plus-channel/${key}`;
-                return false;
-                
+                // Additional checks can be added here if needed
+                return true;
             } catch (e) {
                 showToast('Error opening channel', 'error');
+                event.preventDefault();
                 return false;
             }
         }
@@ -2106,7 +2115,7 @@
             const recommended = shuffled.slice(0, 10);
             
             // Add to container with highlight effect
-            recommended.forEach((channel, index) {
+            recommended.forEach((channel, index) => {
                 const card = channel.element;
                 card.classList.add('recommended-card');
                 card.classList.add('highlight-pulse');
@@ -2252,16 +2261,23 @@
                 modalPlayBtn.style.display = 'none';
             }
             
-            // Check channel status using the Flask endpoint (only in modal)
-            checkChannelStatusForModal(url, modalStatus);
+            // Check channel status using the Flask endpoint
+            checkChannelStatus(url, modalStatus);
             
             // Show modal
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
 
-        // Check channel status for modal
-        function checkChannelStatusForModal(url, statusElement) {
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('channelModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Check channel status using the Flask endpoint
+        function checkChannelStatus(url, statusElement) {
             if (!url) {
                 statusElement.textContent = 'No URL';
                 statusElement.className = 'status-badge status-offline';
@@ -2294,13 +2310,6 @@
                     statusElement.textContent = 'Error';
                     statusElement.className = 'status-badge status-offline';
                 });
-        }
-
-        // Close modal
-        function closeModal() {
-            const modal = document.getElementById('channelModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
         }
 
         // Close modal when clicking outside

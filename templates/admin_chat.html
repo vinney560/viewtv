@@ -42,7 +42,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 0;
             color: var(--text-primary);
             position: relative;
             overflow: hidden;
@@ -82,17 +82,14 @@
         
         .chat-container {
             width: 100%;
-            max-width: 1100px;
-            height: 90vh;
+            height: 100vh;
             display: flex;
             background: var(--card-bg);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
+            border-radius: 0;
             overflow: hidden;
-            border: 1px solid var(--glass-border);
-            box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
+            border: none;
+            box-shadow: none;
             position: relative;
         }
         
@@ -250,17 +247,19 @@
         
         .message {
             max-width: 75%;
-            padding: 18px 22px;
+            padding: 12px 16px;
             border-radius: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             position: relative;
             animation: fadeIn 0.25s ease-out;
-            line-height: 1.5;
-            font-size: 16px;
+            line-height: 1.4;
+            font-size: 14px;
             backdrop-filter: blur(5px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transform-origin: center bottom;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
         
         .message:hover {
@@ -290,9 +289,9 @@
         }
         
         .message-time {
-            font-size: 13px;
+            font-size: 11px;
             color: var(--text-secondary);
-            margin-top: 8px;
+            margin-top: 6px;
             text-align: right;
             font-weight: 400;
             display: flex;
@@ -302,7 +301,7 @@
         }
         
         .message-status {
-            font-size: 12px;
+            font-size: 10px;
             color: var(--primary-light);
         }
         
@@ -314,6 +313,7 @@
             border-top: 1px solid var(--glass-border);
             z-index: 10;
             position: relative;
+            transition: all 0.3s ease;
         }
         
         .input-actions {
@@ -321,6 +321,7 @@
             align-items: flex-end;
             margin-right: 16px;
             padding-bottom: 8px;
+            transition: all 0.3s ease;
         }
         
         .input-btn {
@@ -338,6 +339,11 @@
         .input-btn:hover {
             color: var(--primary-light);
             background: rgba(74, 108, 247, 0.1);
+        }
+        
+        .input-btn.active {
+            color: var(--primary-light);
+            background: rgba(74, 108, 247, 0.2);
         }
         
         .message-input-container {
@@ -682,6 +688,7 @@
             display: block;
             width: calc(100% + 1.3px);
             height: 30px;
+            opacity: 0.5;
         }
         
         .wave-divider .shape-fill {
@@ -854,6 +861,7 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: 30px;
+            position: relative;
         }
         
         .caller-avatar {
@@ -955,6 +963,7 @@
             border-radius: 50%;
             margin: 0 5px;
             animation: pulse-dot 1.5s infinite ease-in-out;
+            opacity: 0.7;
         }
         
         .calling-dot:nth-child(2) {
@@ -966,8 +975,8 @@
         }
         
         @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.7; }
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.5); opacity: 1; }
         }
         
         .call-controls {
@@ -1015,6 +1024,61 @@
             border-radius: 2px;
             transition: height 0.1s ease;
         }
+        
+        /* Emoji picker styles */
+        .emoji-picker {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            z-index: 100;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+        
+        .emoji {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 6px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .emoji:hover {
+            background: rgba(74, 108, 247, 0.2);
+            transform: scale(1.2);
+        }
+        
+        /* Input focus state */
+        .input-focused .input-actions {
+            opacity: 0;
+            width: 0;
+            margin-right: 0;
+            pointer-events: none;
+        }
+        
+        .input-focused .message-input-container {
+            margin-left: 0;
+        }
+        
+        /* Deleted message style */
+        .message.deleted {
+            opacity: 0.5;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .message.deleted .message-content {
+            font-style: italic;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -1054,7 +1118,7 @@
                 
                 {% for message in messages %}
                 <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}" data-message-id="{{ message.id }}">
-                    {{ message.content }}
+                    <div class="message-content">{{ message.content }}</div>
                     <div class="message-time">
                         {{ message.timestamp.strftime('%H:%M') }}
                         {% if message.sender_id == current_user.id %}
@@ -1082,19 +1146,19 @@
             
             <div class="wave-divider">
                 <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21, 0,0,0,321.39,56.44Z" class="shape-fill"></path>
                 </svg>
             </div>
             
-            <div class="chat-input-area">
-                <div class="input-actions">
-                    <div class="input-btn">
+            <div class="chat-input-area" id="chat-input-area">
+                <div class="input-actions" id="input-actions">
+                    <div class="input-btn" id="attach-btn">
                         <i class="fas fa-paperclip"></i>
                     </div>
-                    <div class="input-btn">
+                    <div class="input-btn" id="image-btn">
                         <i class="fas fa-image"></i>
                     </div>
-                    <div class="input-btn">
+                    <div class="input-btn" id="emoji-btn">
                         <i class="fas fa-smile"></i>
                     </div>
                 </div>
@@ -1117,6 +1181,40 @@
                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
                 </button>
+            </div>
+            
+            <div class="emoji-picker" id="emoji-picker">
+                <span class="emoji">😀</span>
+                <span class="emoji">😃</span>
+                <span class="emoji">😄</span>
+                <span class="emoji">😁</span>
+                <span class="emoji">😆</span>
+                <span class="emoji">😅</span>
+                <span class="emoji">😂</span>
+                <span class="emoji">🤣</span>
+                <span class="emoji">😊</span>
+                <span class="emoji">😇</span>
+                <span class="emoji">🙂</span>
+                <span class="emoji">🙃</span>
+                <span class="emoji">😉</span>
+                <span class="emoji">😌</span>
+                <span class="emoji">😍</span>
+                <span class="emoji">🥰</span>
+                <span class="emoji">😘</span>
+                <span class="emoji">😗</span>
+                <span class="emoji">😙</span>
+                <span class="emoji">😚</span>
+                <span class="emoji">😋</span>
+                <span class="emoji">😛</span>
+                <span class="emoji">😝</span>
+                <span class="emoji">😜</span>
+                <span class="emoji">🤪</span>
+                <span class="emoji">🤨</span>
+                <span class="emoji">🧐</span>
+                <span class="emoji">🤓</span>
+                <span class="emoji">😎</span>
+                <span class="emoji">🤩</span>
+                <span class="emoji">🥳</span>
             </div>
         </div>
         
@@ -1222,7 +1320,7 @@
         <div class="context-item"><i class="fas fa-reply"></i> Reply</div>
         <div class="context-item"><i class="fas fa-share"></i> Forward</div>
         <div class="context-item"><i class="fas fa-copy"></i> Copy</div>
-        <div class="context-item" style="color: var(--error);"><i class="fas fa-trash"></i> Delete</div>
+        <div class="context-item" style="color: var(--error);" id="delete-message-btn"><i class="fas fa-trash"></i> Delete</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
@@ -1254,6 +1352,10 @@
         // Auto-resize textarea
         const messageInput = document.getElementById('message-input');
         const charCount = document.getElementById('char-count');
+        const chatInputArea = document.getElementById('chat-input-area');
+        const inputActions = document.getElementById('input-actions');
+        const emojiBtn = document.getElementById('emoji-btn');
+        const emojiPicker = document.getElementById('emoji-picker');
         
         messageInput.addEventListener('input', function() {
             // Auto-resize
@@ -1274,23 +1376,80 @@
             }
         });
 
+        // Input focus behavior
+        messageInput.addEventListener('focus', () => {
+            chatInputArea.classList.add('input-focused');
+            socket.emit('typing_start');
+        });
+        
+        messageInput.addEventListener('blur', () => {
+            chatInputArea.classList.remove('input-focused');
+            socket.emit('typing_stop');
+        });
+
+        // Emoji picker functionality
+        emojiBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            emojiPicker.style.display = emojiPicker.style.display === 'grid' ? 'none' : 'grid';
+            emojiBtn.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+                emojiPicker.style.display = 'none';
+                emojiBtn.classList.remove('active');
+            }
+        });
+
+        // Add emoji to input
+        const emojis = document.querySelectorAll('.emoji');
+        emojis.forEach(emoji => {
+            emoji.addEventListener('click', () => {
+                messageInput.value += emoji.textContent;
+                messageInput.focus();
+                charCount.textContent = messageInput.value.length;
+            });
+        });
+
         // Context menu for messages
         const contextMenu = document.getElementById('context-menu');
-        const messages = document.querySelectorAll('.message');
+        const deleteMessageBtn = document.getElementById('delete-message-btn');
+        const messagesContainer = document.getElementById('messages');
+        let currentContextMessage = null;
         
-        messages.forEach(message => {
-            message.addEventListener('contextmenu', (e) => {
+        messagesContainer.addEventListener('contextmenu', (e) => {
+            const message = e.target.closest('.message');
+            if (message) {
                 e.preventDefault();
+                currentContextMessage = message;
                 contextMenu.style.display = 'block';
                 contextMenu.style.left = `${e.pageX}px`;
                 contextMenu.style.top = `${e.pageY}px`;
-            });
+            }
         });
         
         document.addEventListener('click', () => {
             contextMenu.style.display = 'none';
         });
         
+        // Delete message functionality
+        deleteMessageBtn.addEventListener('click', () => {
+            if (currentContextMessage) {
+                const messageId = currentContextMessage.dataset.messageId;
+                
+                // Mark as deleted visually
+                currentContextMessage.classList.add('deleted');
+                
+                // Store deletion in localStorage
+                const deletedMessages = JSON.parse(localStorage.getItem('deletedMessages') || '{}');
+                deletedMessages[messageId] = true;
+                localStorage.setItem('deletedMessages', JSON.stringify(deletedMessages));
+                
+                // Hide context menu
+                contextMenu.style.display = 'none';
+            }
+        });
+
         // Notification system
         const notification = document.getElementById('notification');
         
@@ -1594,23 +1753,37 @@
         window.onload = function() {
             const messagesDiv = document.getElementById('messages');
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Check for previously deleted messages
+            const deletedMessages = JSON.parse(localStorage.getItem('deletedMessages') || '{}');
+            document.querySelectorAll('.message').forEach(message => {
+                const messageId = message.dataset.messageId;
+                if (deletedMessages[messageId]) {
+                    message.classList.add('deleted');
+                }
+            });
         };
         
         socket.on('receive_message', function(data) {
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             
+            // Check if this message was previously deleted
+            const deletedMessages = JSON.parse(localStorage.getItem('deletedMessages') || '{}');
+            const isDeleted = deletedMessages[data.id];
+            
             if (data.sender_id == currentUserId) {
-                messageDiv.className = 'message sent';
+                messageDiv.className = 'message sent' + (isDeleted ? ' deleted' : '');
             } else {
-                messageDiv.className = 'message received';
+                messageDiv.className = 'message received' + (isDeleted ? ' deleted' : '');
                 if (!document.hasFocus()) {
                     showNotification();
                 }
             }
             
+            messageDiv.dataset.messageId = data.id;
             messageDiv.innerHTML = `
-                ${data.content}
+                <div class="message-content">${data.content}</div>
                 <div class="message-time">
                     ${data.timestamp}
                     ${data.sender_id == currentUserId ? '<span class="message-status"><i class="fas fa-check-double"></i></span>' : ''}
@@ -1622,10 +1795,20 @@
             
             // Reset textarea height
             messageInput.style.height = 'auto';
+            
+            // Add context menu event
+            messageDiv.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                currentContextMessage = messageDiv;
+                contextMenu.style.display = 'block';
+                contextMenu.style.left = `${e.pageX}px`;
+                contextMenu.style.top = `${e.pageY}px`;
+            });
         });
         
         socket.on('typing', function(data) {
             const typingIndicator = document.getElementById('typing-indicator');
+            const messagesDiv = document.getElementById('messages');
             
             if (data.isTyping) {
                 typingIndicator.style.display = 'flex';

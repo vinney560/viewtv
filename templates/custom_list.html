@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* CSS remains mostly the same, but we'll optimize some parts */
         :root {
             --primary: #06b6d4;
             --primary-dark: #0891b2;
@@ -705,7 +706,7 @@
             background: rgba(6, 182, 212, 0.7);
             transform: scale(1.1);
         }
-        
+    
         /* Performance optimizations */
         .will-change {
             will-change: transform, opacity;
@@ -769,161 +770,6 @@
                 order: 2;
                 margin-top: 0.5rem;
             }
-        }
-        
-        /* Improved search suggestions */
-        .search-suggestion.highlight {
-            background: rgba(6, 182, 212, 0.3);
-        }
-        
-        .light-mode .search-suggestion.highlight {
-            background: rgba(6, 182, 212, 0.1);
-        }
-        
-        /* View transition for smoother changes */
-        .view-transition {
-            transition: all 0.3s ease;
-        }
-        
-        /* Focus effect for channel cards */
-        .channel-card:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-        
-        /* New: Recently Viewed Section */
-        .recently-viewed-section {
-            margin-bottom: 2rem;
-        }
-        
-        /* New: Channel Count Badge */
-        .channel-count {
-            background: rgba(6, 182, 212, 0.2);
-            color: var(--primary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .light-mode .channel-count {
-            background: rgba(6, 182, 212, 0.1);
-        }
-        
-        /* New: Quick Actions */
-        .quick-actions {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 20;
-        }
-        
-        .quick-action-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            background: rgba(31, 41, 55, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .light-mode .quick-action-btn {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
-        .quick-action-btn:hover {
-            transform: scale(1.1);
-            background: rgba(6, 182, 212, 0.8);
-        }
-        
-        /* New: View Toggle */
-        .view-toggle {
-            display: flex;
-            align-items: center;
-            background: rgba(31, 41, 55, 0.5);
-            border-radius: 12px;
-            padding: 0.25rem;
-            margin-left: auto;
-        }
-        
-        .light-mode .view-toggle {
-            background: rgba(255, 255, 255, 0.5);
-        }
-        
-        .view-toggle-btn {
-            padding: 0.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .view-toggle-btn.active {
-            background: rgba(6, 182, 212, 0.3);
-        }
-        
-        /* New: List View Styles */
-        .list-view .channel-group {
-            margin-bottom: 2rem;
-        }
-        
-        .list-view .channel-card {
-            display: flex;
-            width: 100%;
-            height: auto;
-            margin-bottom: 1rem;
-        }
-        
-        .list-view .channel-card .channel-image {
-            width: 120px;
-            min-width: 120px;
-            height: 80px;
-        }
-        
-        .list-view .channel-card .channel-info {
-            flex: 1;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        /* New: Dark Mode Toggle */
-        .theme-toggle {
-            position: relative;
-            width: 50px;
-            height: 24px;
-            background: rgba(31, 41, 55, 0.7);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .light-mode .theme-toggle {
-            background: rgba(255, 255, 255, 0.7);
-        }
-        
-        .theme-toggle-handle {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background: var(--primary);
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-        
-        .theme-toggle.dark .theme-toggle-handle {
-            left: calc(100% - 22px);
         }
     </style>
 </head>
@@ -1257,7 +1103,7 @@
                                     {% set has_port = ':' in domain_port %}
                                     
                                     {% if is_ip or has_port %}
-                                        <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
+                                        <a href="{{ channel_url }}" class="block h-full" target="_blank">
                                     {% else %}
                                         <a href="{{ url_for('plus_play', key=channel.key) }}">
                                     {% endif %}
@@ -1274,7 +1120,7 @@
                                 <div class="relative pt-[56.25%] bg-gray-900/20 channel-image">
                                     {% if channel.get('logo') %}
                                     <img src="{{ channel.logo }}" alt="{{ channel_name }}"
-                                         class="absolute inset-0 w-full h-full object-contain p-4">
+                                         class="absolute inset-0 w-full h-full object-contain p-4" loading="lazy">
                                     {% else %}
                                     <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
                                         <i class="fas fa-tv text-5xl"></i>
@@ -1363,8 +1209,12 @@
                 quality: []
             },
             allChannels: [],
-            currentView: 'grid', // 'grid' or 'list'
-            darkMode: localStorage.getItem('darkMode') === 'true'
+            currentView: localStorage.getItem('viewMode') || 'grid',
+            darkMode: localStorage.getItem('darkMode') !== 'false',
+            statusCheckQueue: [],
+            statusCheckInProgress: 0,
+            MAX_CONCURRENT_CHECKS: 5,
+            statusCache: new Map()
         };
 
         // Cache DOM elements for performance
@@ -1419,22 +1269,111 @@
             // Set up auto-dismiss for toasts
             setupToasts();
             
-            // Initialize channel statuses
+            // Initialize channel statuses with optimized checking
             initChannelStatuses();
         }
 
-        // Initialize channel statuses
+        // Initialize channel statuses with optimized queue system
         function initChannelStatuses() {
-            // Check status for all channels
+            // Add all channels to the queue
             document.querySelectorAll('.channel-card').forEach(card => {
                 const url = card.getAttribute('data-url');
                 if (url) {
                     const statusElement = card.querySelector('.status-badge');
                     if (statusElement) {
-                        checkChannelStatus(url, statusElement);
+                        state.statusCheckQueue.push({ url, statusElement, card });
                     }
                 }
             });
+            
+            // Start processing the queue
+            processStatusQueue();
+        }
+
+        // Process the status check queue with concurrency control
+        function processStatusQueue() {
+            // Process up to MAX_CONCURRENT_CHECKS at a time
+            while (state.statusCheckInProgress < state.MAX_CONCURRENT_CHECKS && state.statusCheckQueue.length > 0) {
+                const { url, statusElement, card } = state.statusCheckQueue.shift();
+                state.statusCheckInProgress++;
+                
+                // Check if we have a cached result
+                const cachedResult = state.statusCache.get(url);
+                if (cachedResult && (Date.now() - cachedResult.timestamp) < 300000) { // 5 minute cache
+                    updateStatusDisplay(statusElement, cachedResult.status);
+                    state.statusCheckInProgress--;
+                    continue;
+                }
+                
+                checkChannelStatus(url, statusElement, card).finally(() => {
+                    state.statusCheckInProgress--;
+                    // Continue processing the queue
+                    if (state.statusCheckQueue.length > 0) {
+                        setTimeout(processStatusQueue, 100); // Small delay between batches
+                    }
+                });
+            }
+        }
+
+        // Update status display
+        function updateStatusDisplay(statusElement, status) {
+            if (status === 'live') {
+                statusElement.textContent = 'Live';
+                statusElement.className = 'status-badge status-live';
+            } else if (status === 'offline') {
+                statusElement.textContent = 'Offline';
+                statusElement.className = 'status-badge status-offline';
+            } else {
+                statusElement.textContent = 'Unknown';
+                statusElement.className = 'status-badge status-checking';
+            }
+        }
+
+        // Check channel status using the Flask endpoint
+        function checkChannelStatus(url, statusElement, card) {
+            if (!url) {
+                updateStatusDisplay(statusElement, 'offline');
+                return Promise.resolve();
+            }
+            
+            statusElement.textContent = 'Checking...';
+            statusElement.className = 'status-badge status-checking';
+            
+            // Use AbortController to handle timeouts
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            return fetch(`/check-channel-status?url=${encodeURIComponent(url)}`, { 
+                signal: controller.signal 
+            })
+                .then(response => {
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    // Cache the result
+                    state.statusCache.set(url, {
+                        status: data.status,
+                        timestamp: Date.now()
+                    });
+                    
+                    updateStatusDisplay(statusElement, data.status);
+                    
+                    // Update the card's data attribute
+                    if (card) {
+                        card.setAttribute('data-status', data.status);
+                    }
+                })
+                .catch(error => {
+                    clearTimeout(timeoutId);
+                    console.error('Error checking channel status:', error);
+                    updateStatusDisplay(statusElement, 'offline');
+                    
+                    if (card) {
+                        card.setAttribute('data-status', 'offline');
+                    }
+                });
         }
 
         // Set up event listeners
@@ -1471,21 +1410,6 @@
             // Toggle filter section
             domCache.filterToggle.addEventListener('click', function() {
                 domCache.filterSection.classList.toggle('hidden');
-                
-                // Add animation for smoother transition
-                if (!domCache.filterSection.classList.contains('hidden')) {
-                    domCache.filterSection.style.display = 'block';
-                    setTimeout(() => {
-                        domCache.filterSection.style.opacity = 1;
-                        domCache.filterSection.style.transform = 'translateY(0)';
-                    }, 10);
-                } else {
-                    domCache.filterSection.style.opacity = 0;
-                    domCache.filterSection.style.transform = 'translateY(-10px)';
-                    setTimeout(() => {
-                        domCache.filterSection.style.display = 'none';
-                    }, 300);
-                }
             });
 
             // Setup custom checkboxes
@@ -2075,25 +1999,6 @@
             });
         }
 
-        // Validate direct IP links before opening
-        function validateLink(event, url) {
-            try {
-                // Basic URL validation
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    showToast('Invalid URL format', 'error');
-                    event.preventDefault();
-                    return false;
-                }
-
-                // Additional checks can be added here if needed
-                return true;
-            } catch (e) {
-                showToast('Error opening channel', 'error');
-                event.preventDefault();
-                return false;
-            }
-        }
-
         // Generate recommended channels
         function generateRecommendedChannels() {
             const container = document.getElementById('recommendedChannels');
@@ -2115,7 +2020,7 @@
             const recommended = shuffled.slice(0, 10);
             
             // Add to container with highlight effect
-            recommended.forEach((channel, index) => {
+            recommended.forEach((channel, index) {
                 const card = channel.element;
                 card.classList.add('recommended-card');
                 card.classList.add('highlight-pulse');
@@ -2262,7 +2167,7 @@
             }
             
             // Check channel status using the Flask endpoint
-            checkChannelStatus(url, modalStatus);
+            checkChannelStatus(url, modalStatus, null, true);
             
             // Show modal
             modal.style.display = 'flex';
@@ -2274,42 +2179,6 @@
             const modal = document.getElementById('channelModal');
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
-        }
-
-        // Check channel status using the Flask endpoint
-        function checkChannelStatus(url, statusElement) {
-            if (!url) {
-                statusElement.textContent = 'No URL';
-                statusElement.className = 'status-badge status-offline';
-                return;
-            }
-            
-            statusElement.textContent = 'Checking...';
-            statusElement.className = 'status-badge status-checking';
-            
-            // Use the Flask endpoint to check channel status
-            fetch(`/check-channel-status?url=${encodeURIComponent(url)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'live') {
-                        statusElement.textContent = 'Live';
-                        statusElement.className = 'status-badge status-live';
-                    } else if (data.status === 'offline') {
-                        statusElement.textContent = 'Offline';
-                        statusElement.className = 'status-badge status-offline';
-                    } else if (data.status === 'error') {
-                        statusElement.textContent = 'Error';
-                        statusElement.className = 'status-badge status-offline';
-                    } else {
-                        statusElement.textContent = 'Unknown';
-                        statusElement.className = 'status-badge status-checking';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking channel status:', error);
-                    statusElement.textContent = 'Error';
-                    statusElement.className = 'status-badge status-offline';
-                });
         }
 
         // Close modal when clicking outside

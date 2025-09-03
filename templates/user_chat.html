@@ -41,9 +41,7 @@
                 linear-gradient(135deg, var(--darker), var(--dark));
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            padding: 0;
             color: var(--light);
             position: relative;
             overflow: hidden;
@@ -81,20 +79,132 @@
             100% { transform: translateY(0) translateX(0) rotate(360deg); }
         }
         
+        /* Sidebar styles */
+        .sidebar {
+            width: 320px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--glass-border);
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 5;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .sidebar-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s ease;
+        }
+        
+        .close-sidebar:hover {
+            color: var(--light);
+        }
+        
+        .conversation-list {
+            padding: 10px 0;
+        }
+        
+        .conversation-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        .conversation-item:hover {
+            background: rgba(79, 70, 229, 0.1);
+        }
+        
+        .conversation-item.active {
+            background: rgba(79, 70, 229, 0.2);
+        }
+        
+        .conversation-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .conversation-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .conversation-preview {
+            font-size: 13px;
+            color: var(--gray);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .conversation-meta {
+            text-align: right;
+            margin-left: 10px;
+        }
+        
+        .conversation-time {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+        
+        .conversation-badge {
+            display: inline-block;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 11px;
+            text-align: center;
+            line-height: 18px;
+        }
+        
         .chat-container {
-            width: 100%;
-            max-width: 900px;
-            height: 90vh;
+            flex: 1;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             background: var(--glass);
             backdrop-filter: blur(10px);
-            border-radius: 24px;
             overflow: hidden;
-            border: 1px solid var(--glass-border);
-            box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
             position: relative;
             transform-style: preserve-3d;
             perspective: 1000px;
@@ -248,22 +358,23 @@
         
         .message {
             max-width: 75%;
-            padding: 16px 20px;
-            border-radius: 20px;
-            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 12px;
             position: relative;
             animation: fadeIn 0.25s ease-out;
-            line-height: 1.5;
-            font-size: 15px;
+            line-height: 1.4;
+            font-size: 14px;
             backdrop-filter: blur(5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transform-origin: center bottom;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            word-wrap: break-word;
         }
         
         .message:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
         @keyframes fadeIn {
@@ -288,9 +399,9 @@
         }
         
         .message-time {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--gray);
-            margin-top: 8px;
+            margin-top: 6px;
             text-align: right;
             font-weight: 400;
             display: flex;
@@ -311,12 +422,14 @@
             border-top: 1px solid var(--glass-border);
             z-index: 10;
             position: relative;
+            transition: all 0.3s ease;
         }
         
         .input-actions {
             display: flex;
             align-items: center;
             margin-right: 12px;
+            transition: all 0.3s ease;
         }
         
         .input-btn {
@@ -336,14 +449,20 @@
             background: rgba(79, 70, 229, 0.1);
         }
         
+        .input-btn.emoji-btn.active {
+            color: var(--primary-light);
+            background: rgba(79, 70, 229, 0.1);
+        }
+        
         .message-input-container {
             flex: 1;
             position: relative;
+            transition: all 0.3s ease;
         }
         
         .message-input {
             width: 100%;
-            padding: 16px 20px;
+            padding: 12px 16px;
             border: none;
             border-radius: 24px;
             background: rgba(30, 41, 59, 0.7);
@@ -387,6 +506,7 @@
             transition: all 0.2s ease;
            position: relative;
             overflow: hidden;
+            flex-shrink: 0;
         }
         
         .send-button::before {
@@ -850,15 +970,142 @@
             border-radius: 2px;
             transition: height 0.1s ease;
         }
+        
+        /* Emoji Picker */
+        .emoji-picker {
+            position: absolute;
+            bottom: 70px;
+            right: 20px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 10px;
+            width: 300px;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .emoji-picker.active {
+            display: block;
+        }
+        
+        .emoji-category {
+            margin-bottom: 10px;
+        }
+        
+        .emoji-category h4 {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+        }
+        
+        .emoji {
+            font-size: 20px;
+            cursor: pointer;
+            text-align: center;
+            padding: 5px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+        
+        .emoji:hover {
+            background: rgba(79, 70, 229, 0.2);
+        }
+        
+        /* Input focus state */
+        .input-focused .input-actions {
+            opacity: 0;
+            visibility: hidden;
+            width: 0;
+            margin-right: 0;
+        }
+        
+        .input-focused .message-input-container {
+            margin-left: 0;
+        }
+        
+        /* Toggle sidebar button */
+        .toggle-sidebar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.3);
+            color: white;
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+        }
+        
+        .toggle-sidebar:hover {
+            background: rgba(30, 41, 59, 0.9);
+            color: cyan;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Sidebar hidden state */
+        .sidebar-hidden .sidebar {
+            transform: translateX(-100%);
+        }
+        
+        .sidebar-hidden .chat-container {
+            margin-left: 0;
+        }
+        
+        /* Delete button in conversation items */
+        .conversation-delete {
+            opacity: 0;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 5px;
+        }
+        
+        .conversation-item:hover .conversation-delete {
+            opacity: 1;
+        }
+        
+        .conversation-delete:hover {
+            color: var(--error);
+        }
     </style>
 </head>
 <body>
     <div class="floating-particles" id="particles"></div>
     
-    <button class="back-button" onclick="location.href='{{ url_for('user_messages') }}'">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
+    <!-- Sidebar with mock conversations -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Conversations</h2>
+            <button class="close-sidebar" id="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="conversation-list" id="conversation-list">
+            <!-- Mock conversations will be added by JavaScript -->
+        </div>
+    </div>
+    
+    <button class="toggle-sidebar" id="toggle-sidebar">
+        <i class="fas fa-bars"></i>
     </button>
     
     <div class="chat-container">
@@ -920,15 +1167,15 @@
             </svg>
         </div>
         
-        <div class="chat-input-area">
-            <div class="input-actions">
+        <div class="chat-input-area" id="chat-input-area">
+            <div class="input-actions" id="input-actions">
                 <div class="input-btn">
                     <i class="fas fa-paperclip"></i>
                 </div>
                 <div class="input-btn">
                     <i class="fas fa-image"></i>
                 </div>
-                <div class="input-btn">
+                <div class="input-btn emoji-btn" id="emoji-btn">
                     <i class="fas fa-smile"></i>
                 </div>
             </div>
@@ -944,6 +1191,76 @@
                     <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                 </svg>
             </button>
+        </div>
+    </div>
+
+    <!-- Emoji Picker -->
+    <div class="emoji-picker" id="emoji-picker">
+        <div class="emoji-category">
+            <h4>Smileys & People</h4>
+            <div class="emoji-grid">
+                <span class="emoji">😀</span>
+                <span class="emoji">😃</span>
+                <span class="emoji">😄</span>
+                <span class="emoji">😁</span>
+                <span class="emoji">😆</span>
+                <span class="emoji">😅</span>
+                <span class="emoji">😂</span>
+                <span class="emoji">🤣</span>
+                <span class="emoji">😊</span>
+                <span class="emoji">😇</span>
+                <span class="emoji">🙂</span>
+                <span class="emoji">🙃</span>
+                <span class="emoji">😉</span>
+                <span class="emoji">😌</span>
+                <span class="emoji">😍</span>
+                <span class="emoji">🥰</span>
+                <span class="emoji">😘</span>
+                <span class="emoji">😗</span>
+                <span class="emoji">😙</span>
+                <span class="emoji">😚</span>
+                <span class="emoji">😋</span>
+                <span class="emoji">😛</span>
+                <span class="emoji">😝</span>
+                <span class="emoji">😜</span>
+                <span class="emoji">🤪</span>
+                <span class="emoji">🤨</span>
+                <span class="emoji">🧐</span>
+                <span class="emoji">🤓</span>
+                <span class="emoji">😎</span>
+                <span class="emoji">🤩</span>
+                <span class="emoji">🥳</span>
+            </div>
+        </div>
+        <div class="emoji-category">
+            <h4>Hand Gestures</h4>
+            <div class="emoji-grid">
+                <span class="emoji">👍</span>
+                <span class="emoji">👎</span>
+                <span class="emoji">✊</span>
+                <span class="emoji">👊</span>
+                <span class="emoji">🤛</span>
+                <span class="emoji">🤜</span>
+                <span class="emoji">👌</span>
+                <span class="emoji">🤏</span>
+                <span class="emoji">✌️</span>
+                <span class="emoji">🤞</span>
+                <span class="emoji">🤟</span>
+                <span class="emoji">🤘</span>
+                <span class="emoji">🤙</span>
+                <span class="emoji">👈</span>
+                <span class="emoji">👉</span>
+                <span class="emoji">👆</span>
+                <span class="emoji">👇</span>
+                <span class="emoji">☝️</span>
+                <span class="emoji">✋</span>
+                <span class="emoji">🤚</span>
+                <span class="emoji">🖐️</span>
+                <span class="emoji">🖖</span>
+                <span class="emoji">👋</span>
+                <span class="emoji">🤙</span>
+                <span class="emoji">💪</span>
+            </div>
         </div>
     </div>
 
@@ -1085,10 +1402,14 @@
         
         messageInput.addEventListener('focus', () => {
             socket.emit('typing_start');
+            // Expand input area
+            document.getElementById('chat-input-area').classList.add('input-focused');
         });
         
         messageInput.addEventListener('blur', () => {
             socket.emit('typing_stop');
+            // Return input area to normal
+            document.getElementById('chat-input-area').classList.remove('input-focused');
         });
         
         messageInput.addEventListener('keydown', () => {
@@ -1345,6 +1666,118 @@
                 audioContext = null;
             }
         }
+        
+        // Emoji picker functionality
+        const emojiBtn = document.getElementById('emoji-btn');
+        const emojiPicker = document.getElementById('emoji-picker');
+        const emojis = document.querySelectorAll('.emoji');
+        
+        emojiBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            emojiPicker.classList.toggle('active');
+            emojiBtn.classList.toggle('active');
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+                emojiPicker.classList.remove('active');
+                emojiBtn.classList.remove('active');
+            }
+        });
+        
+        emojis.forEach(emoji => {
+            emoji.addEventListener('click', () => {
+                messageInput.value += emoji.textContent;
+                messageInput.focus();
+                // Update character count
+                charCount.textContent = messageInput.value.length;
+            });
+        });
+        
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const closeSidebar = document.getElementById('close-sidebar');
+        const toggleSidebar = document.getElementById('toggle-sidebar');
+        const conversationList = document.getElementById('conversation-list');
+        
+        // Check if sidebar should be open or closed
+        if (localStorage.getItem('sidebarOpen') === 'false') {
+            document.body.classList.add('sidebar-hidden');
+        }
+        
+        closeSidebar.addEventListener('click', () => {
+            document.body.classList.add('sidebar-hidden');
+            localStorage.setItem('sidebarOpen', 'false');
+        });
+        
+        toggleSidebar.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-hidden');
+            localStorage.setItem('sidebarOpen', !document.body.classList.contains('sidebar-hidden'));
+        });
+        
+        // Mock conversation data
+        const mockConversations = [
+            { id: 1, name: "John Doe", preview: "Hey, how are you doing?", time: "10:30 AM", unread: 3, avatar: "J" },
+            { id: 2, name: "Jane Smith", preview: "I'll be there in 10 minutes", time: "Yesterday", unread: 0, avatar: "J" },
+            { id: 3, name: "Alex Johnson", preview: "The meeting is scheduled for tomorrow", time: "Monday", unread: 1, avatar: "A" },
+            { id: 4, name: "Sarah Williams", preview: "Thanks for your help!", time: "12/05", unread: 0, avatar: "S" },
+            { id: 5, name: "Mike Brown", preview: "Can you send me those files?", time: "11/30", unread: 0, avatar: "M" },
+            { id: 6, name: "Emily Davis", preview: "Let's catch up soon", time: "11/28", unread: 0, avatar: "E" },
+            { id: 7, name: "David Wilson", preview: "The project is almost complete", time: "11/25", unread: 0, avatar: "D" }
+        ];
+        
+        // Get deleted conversations from localStorage
+        const deletedConversations = JSON.parse(localStorage.getItem('deletedConversations') || '[]');
+        
+        // Render conversations
+        function renderConversations() {
+            conversationList.innerHTML = '';
+            
+            mockConversations.forEach(conversation => {
+                // Skip if conversation is deleted
+                if (deletedConversations.includes(conversation.id)) return;
+                
+                const conversationItem = document.createElement('div');
+                conversationItem.className = 'conversation-item';
+                conversationItem.dataset.id = conversation.id;
+                
+                conversationItem.innerHTML = `
+                    <div class="conversation-avatar">${conversation.avatar}</div>
+                    <div class="conversation-info">
+                        <div class="conversation-name">${conversation.name}</div>
+                        <div class="conversation-preview">${conversation.preview}</div>
+                    </div>
+                    <div class="conversation-meta">
+                        <div class="conversation-time">${conversation.time}</div>
+                        ${conversation.unread > 0 ? `<div class="conversation-badge">${conversation.unread}</div>` : ''}
+                    </div>
+                    <div class="conversation-delete">
+                        <i class="fas fa-times"></i>
+                    </div>
+                `;
+                
+                conversationList.appendChild(conversationItem);
+                
+                // Add delete functionality
+                const deleteBtn = conversationItem.querySelector('.conversation-delete');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteConversation(conversation.id);
+                });
+            });
+        }
+        
+        // Delete conversation (soft delete)
+        function deleteConversation(id) {
+            if (!deletedConversations.includes(id)) {
+                deletedConversations.push(id);
+                localStorage.setItem('deletedConversations', JSON.stringify(deletedConversations));
+                renderConversations();
+            }
+        }
+        
+        // Initial render
+        renderConversations();
         
         // Original socket.io functionality remains exactly the same
         const socket = io();

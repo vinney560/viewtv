@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Tv Assistant | ViewTv</title>
+    <title>Neural IPTV Assistant</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* All your existing CSS styles remain the same */
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -457,6 +458,11 @@
                     },
                     body: formData
                 });
+                
+                // Check if response is OK
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
                 
                 const data = await response.json();
                 

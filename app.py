@@ -4831,11 +4831,12 @@ def index():
     
     user_id = session['user_id']
     
-    if request.method == 'POST':
+    # Handle AJAX requests
+    if request.method == 'POST' and request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         user_text = request.form['query'].strip()
         
         if not user_text:
-            return render_template('chat.html', history=session.get('history', []))
+            return jsonify({'error': 'Empty message'})
         
         # Predict intent with thread-safe access
         with model_lock:
@@ -4883,7 +4884,15 @@ def index():
         timestamp = (datetime.now() + timedelta(hours=3)).strftime("%H:%M")
         session['history'].append((timestamp, user_text, response))
         session.modified = True
+        
+        # Return JSON response for AJAX
+        return jsonify({
+            'timestamp': timestamp,
+            'user_message': user_text,
+            'bot_response': response
+        })
     
+    # Handle initial page load
     return render_template('chat.html', history=session.get('history', []))
 
 @app.route('/add_intent', methods=['POST'])

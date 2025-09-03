@@ -1880,31 +1880,54 @@ from urllib.parse import urlparse
 # In-memory cache {url: (status, expiry_timestamp)}
 channel_cache = {}
 
-def check_single_channel(url, headers, cache_ttl=120):
+def check_single_channel(url, headers, cache_ttl=20, retries=3):
+    """
+    Check a single channel with up to 3 retries if 'offline' or 'error'.
+    """
     now = time.time()
     if url in channel_cache and channel_cache[url][1] > now:
         return channel_cache[url][0]
 
-    try:
-        parsed = urlparse(url)
-        if not parsed.scheme or not parsed.netloc:
-            status = 'offline'
-        else:
-            # Fast connection/read timeout
-            response = requests.get(url, headers=headers, timeout=(2, 3), stream=True)
-            if response.status_code == 200:
-                chunk = next(response.iter_content(256), None)  # Just a small read
-                status = 'live' if chunk else 'offline'
-            else:
-                status = 'offline'
-    except Exception:
-        status = 'offline'
+    def attempt():
+        try:
+            parsed = urlparse(url)
+            if parsed.scheme not in ('http', 'https') or not parsed.netloc:
+                return 'offline'
 
+            # Try HEAD first
+            head = requests.head(url, headers=headers, timeout=(3, 5), allow_redirects=True)
+            if head.status_code == 200:
+                ctype = head.headers.get("Content-Type", "").lower()
+                if "video" in ctype or "mpegurl" in ctype:
+                    return "live"
+
+            # Fallback to GET small chunk
+            response = requests.get(url, headers=headers, timeout=(3, 5), stream=True, allow_redirects=True)
+            if response.status_code == 200:
+                ctype = response.headers.get("Content-Type", "").lower()
+                if "video" in ctype or "mpegurl" in ctype:
+                    return "live"
+                chunk = next(response.iter_content(1024), None)
+                return "live" if chunk else "offline"
+            return "offline"
+        except Exception:
+            return "offline"
+
+    # Retry loop (max `retries` times)
+    status = "offline"
+    for attempt_no in range(retries):
+        status = attempt()
+        if status == "live":
+            break
+        if attempt_no < retries - 1:
+            time.sleep(1)  # small delay between retries
+
+    # Cache final result
     channel_cache[url] = (status, now + cache_ttl)
     return status
 
 
-def check_channels_in_batches(urls, headers, batch_size=200, workers=200):
+def check_channels_in_batches(urls, headers, batch_size=200, workers=100):
     results = []
     for i in range(0, len(urls), batch_size):
         batch = urls[i:i + batch_size]
@@ -1918,16 +1941,9 @@ def check_channels_in_batches(urls, headers, batch_size=200, workers=200):
 @login_required
 @plus_required
 def check_channel_status():
-    urls = request.args.getlist("url")  # allow ?url=a&url=b&url=c
+    urls = request.args.getlist("url")
     if not urls:
         return jsonify({'status': 'error', 'message': 'No URL provided'})
-
-    # Optional tuning via query params
-    try:
-        batch_size = int(request.args.get("batch", 200))
-        workers = int(request.args.get("workers", 200))
-    except ValueError:
-        batch_size, workers = 200, 200
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -1937,7 +1953,7 @@ def check_channel_status():
         status = check_single_channel(urls[0], headers)
         return jsonify({'status': status})
     else:
-        statuses = check_channels_in_batches(urls, headers, batch_size=batch_size, workers=workers)
+        statuses = check_channels_in_batches(urls, headers, batch_size=200, workers=100)
         return jsonify([{'status': s} for s in statuses])
 #--------------------------------------------------------------------------
 import logging

@@ -3453,17 +3453,17 @@ USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
 INTENT_FILE = "intent_data.json"
 SYNONYMS_FILE = "synonyms.json"
-HISTORY_LIMIT = 60
+HISTORY_LIMIT = 100                 # Keep more conversation context
 CHECK_TIMEOUT = 5
-REASONING_DEPTH = 7
-CONVERSATION_MEMORY = 10
+REASONING_DEPTH = 12                # Allow deeper reasoning
+CONVERSATION_MEMORY = 20            # Remember more past interactions
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
-ONLINE_LEARNING_INTERVAL = 5
-MIN_UPDATE_SAMPLES = 3
-MIN_CONFIDENCE = 0.6
-SPELLING_THRESHOLD = 0.8
-CREATIVITY_LEVEL = 0.3
-SELF_AWARENESS_LEVEL = 0.2  # Probability of self-referential response
+ONLINE_LEARNING_INTERVAL = 3        # Learn more frequently
+MIN_UPDATE_SAMPLES = 2              # Update model more easily
+MIN_CONFIDENCE = 0.55               # Be slightly less strict, accept more inputs
+SPELLING_THRESHOLD = 0.75           # Slightly more tolerant to typos
+CREATIVITY_LEVEL = 0.6              # More imaginative responses
+SELF_AWARENESS_LEVEL = 0.35         # Respond self-referentially more often
 
 # ------------------------ Data Loading ------------------------
 with open("channels.json", "r") as f:

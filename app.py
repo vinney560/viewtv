@@ -1880,7 +1880,7 @@ from urllib.parse import urlparse
 # In-memory cache {url: (status, expiry_timestamp)}
 channel_cache = {}
 
-def check_single_channel(url, headers, cache_ttl=36000):
+def check_single_channel(url, headers, cache_ttl=120):
     now = time.time()
     if url in channel_cache and channel_cache[url][1] > now:
         return channel_cache[url][0]
@@ -1890,10 +1890,10 @@ def check_single_channel(url, headers, cache_ttl=36000):
         if not parsed.scheme or not parsed.netloc:
             status = 'offline'
         else:
-            response = requests.get(url, headers=headers, timeout=5, stream=True)
+            # Fast connection/read timeout
+            response = requests.get(url, headers=headers, timeout=(2, 3), stream=True)
             if response.status_code == 200:
-                # Grab a small chunk to confirm data is flowing
-                chunk = next(response.iter_content(1024), None)
+                chunk = next(response.iter_content(256), None)  # Just a small read
                 status = 'live' if chunk else 'offline'
             else:
                 status = 'offline'
@@ -1903,6 +1903,17 @@ def check_single_channel(url, headers, cache_ttl=36000):
     channel_cache[url] = (status, now + cache_ttl)
     return status
 
+
+def check_channels_in_batches(urls, headers, batch_size=200, workers=200):
+    results = []
+    for i in range(0, len(urls), batch_size):
+        batch = urls[i:i + batch_size]
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            statuses = list(executor.map(lambda u: check_single_channel(u, headers), batch))
+            results.extend(statuses)
+    return results
+
+
 @app.route('/check-channel-status')
 @login_required
 @plus_required
@@ -1911,21 +1922,23 @@ def check_channel_status():
     if not urls:
         return jsonify({'status': 'error', 'message': 'No URL provided'})
 
+    # Optional tuning via query params
+    try:
+        batch_size = int(request.args.get("batch", 200))
+        workers = int(request.args.get("workers", 200))
+    except ValueError:
+        batch_size, workers = 200, 200
+
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
 
     if len(urls) == 1:
-        # Single URL check (fast path)
         status = check_single_channel(urls[0], headers)
         return jsonify({'status': status})
     else:
-        # Batch check (parallel but keep order)
-        results = []
-        with ThreadPoolExecutor(max_workers=50) as executor:
-            statuses = list(executor.map(lambda u: check_single_channel(u, headers), urls))
-            results = [{'status': s} for s in statuses]
-        return jsonify(results)
+        statuses = check_channels_in_batches(urls, headers, batch_size=batch_size, workers=workers)
+        return jsonify([{'status': s} for s in statuses])
 #--------------------------------------------------------------------------
 import logging
 import hmac

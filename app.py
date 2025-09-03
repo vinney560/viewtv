@@ -1873,71 +1873,59 @@ def custom_list():
 
     return render_template('custom_list.html', categorized_channels=categorized_channels)
 
+from concurrent.futures import ThreadPoolExecutor
+from flask import jsonify, request
 from urllib.parse import urlparse
-import socket
+
+# In-memory cache {url: (status, expiry_timestamp)}
+channel_cache = {}
+
+def check_single_channel(url, headers, cache_ttl=36000):
+    now = time.time()
+    if url in channel_cache and channel_cache[url][1] > now:
+        return channel_cache[url][0]
+
+    try:
+        parsed = urlparse(url)
+        if not parsed.scheme or not parsed.netloc:
+            status = 'offline'
+        else:
+            response = requests.get(url, headers=headers, timeout=5, stream=True)
+            if response.status_code == 200:
+                # Grab a small chunk to confirm data is flowing
+                chunk = next(response.iter_content(1024), None)
+                status = 'live' if chunk else 'offline'
+            else:
+                status = 'offline'
+    except Exception:
+        status = 'offline'
+
+    channel_cache[url] = (status, now + cache_ttl)
+    return status
 
 @app.route('/check-channel-status')
 @login_required
 @plus_required
 def check_channel_status():
-    url = request.args.get('url')
-    if not url:
+    urls = request.args.getlist("url")  # allow ?url=a&url=b&url=c
+    if not urls:
         return jsonify({'status': 'error', 'message': 'No URL provided'})
-    
-    try:
-        # Validate URL format
-        parsed = urlparse(url)
-        if not parsed.scheme or not parsed.netloc:
-            return jsonify({'status': 'offline'})
-        
-        # For HTTP/HTTPS URLs
-        if parsed.scheme in ['http', 'https']:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-            }
-            
-            # Set a timeout to avoid hanging
-            response = requests.head(url, headers=headers, timeout=5, allow_redirects=True)
-            
-            if response.status_code == 200:
-                return jsonify({'status': 'live'})
-            else:
-                # Try with GET request for the first byte for streams that don't support HEAD
-                response = requests.get(url, headers=headers, timeout=5, stream=True)
-                if response.status_code == 200:
-                    return jsonify({'status': 'live'})
-                else:
-                    return jsonify({'status': 'offline'})
-                    
-        # For UDP/TCP streams (limited checking)
-        elif parsed.scheme in ['udp', 'rtp', 'rtsp', 'rtmp']:
-            # Extract host and port
-            host = parsed.hostname
-            port = parsed.port or (1935 if parsed.scheme == 'rtmp' else 554)
-            
-            # Try to establish a basic connection
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(3)
-            result = sock.connect_ex((host, port))
-            sock.close()
-            
-            if result == 0:
-                return jsonify({'status': 'live'})
-            else:
-                return jsonify({'status': 'offline'})
-                
-        else:
-            return jsonify({'status': 'unknown'})
-            
-    except requests.exceptions.RequestException:
-        return jsonify({'status': 'offline'})
-    except socket.gaierror:
-        return jsonify({'status': 'offline'})
-    except socket.timeout:
-        return jsonify({'status': 'offline'})
-    except Exception as e:
-        print(f"Error checking channel status: {e}")
-        return jsonify({'status': 'error'})
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+
+    if len(urls) == 1:
+        # Single URL check (fast path)
+        status = check_single_channel(urls[0], headers)
+        return jsonify({'status': status})
+    else:
+        # Batch check (parallel but keep order)
+        results = []
+        with ThreadPoolExecutor(max_workers=50) as executor:
+            statuses = list(executor.map(lambda u: check_single_channel(u, headers), urls))
+            results = [{'status': s} for s in statuses]
+        return jsonify(results)
 #--------------------------------------------------------------------------
 import logging
 import hmac

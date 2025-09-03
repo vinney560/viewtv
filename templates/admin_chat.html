@@ -7,20 +7,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4a6cf7;
-            --primary-light: #6b8aff;
-            --primary-dark: #3a56c7;
-            --secondary: #8a2be2;
-            --secondary-light: #9c47f0;
-            --accent: #ff6b6b;
-            --accent-light: #ff8e8e;
-            --dark-bg: #0f172a;
-            --darker-bg: #0b1120;
-            --card-bg: rgba(15, 23, 42, 0.95);
-            --glass-bg: rgba(30, 41, 59, 0.5);
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --primary-dark: #3730a3;
+            --accent: #ec4899;
+            --accent-light: #f472b6;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f1f5f9;
+            --gray: #94a3b8;
+            --glass: rgba(15, 23, 42, 0.9);
             --glass-border: rgba(148, 163, 184, 0.15);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
+            --sent-bg: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(79, 70, 229, 0.1));
+            --sent-border: rgba(99, 102, 241, 0.3);
+            --received-bg: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(30, 41, 59, 0.3));
+            --received-border: rgba(255, 255, 255, 0.1);
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
@@ -35,15 +36,15 @@
         
         body {
             background: 
-                radial-gradient(circle at top right, rgba(79, 70, 229, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-                linear-gradient(to bottom, var(--dark-bg), var(--darker-bg));
+                radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 20%),
+                linear-gradient(135deg, var(--darker), var(--dark));
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 0;
-            color: var(--text-primary);
+            color: var(--light);
             position: relative;
             overflow: hidden;
         }
@@ -61,16 +62,16 @@
         .particle {
             position: absolute;
             border-radius: 50%;
-            background: rgba(74, 108, 247, 0.1);
+            background: rgba(79, 70, 229, 0.1);
             animation: float 15s infinite linear;
         }
         
         .particle:nth-child(3n+1) {
-            background: rgba(138, 43, 226, 0.1);
+            background: rgba(236, 72, 153, 0.1);
         }
         
         .particle:nth-child(5n+1) {
-            background: rgba(255, 107, 107, 0.1);
+            background: rgba(99, 102, 241, 0.1);
         }
         
         @keyframes float {
@@ -84,46 +85,43 @@
             width: 100%;
             height: 100vh;
             display: flex;
-            background: var(--card-bg);
+            flex-direction: column;
+            background: var(--glass);
             backdrop-filter: blur(10px);
             border-radius: 0;
             overflow: hidden;
             border: none;
             box-shadow: none;
             position: relative;
-        }
-        
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
         
         .chat-header {
             display: flex;
             align-items: center;
-            padding: 20px 30px;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
+            padding: 20px 24px;
+            background: rgba(15, 23, 42, 0.7);
             border-bottom: 1px solid var(--glass-border);
             z-index: 10;
+            position: relative;
         }
         
         .avatar {
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
             font-weight: 600;
-            font-size: 22px;
+            font-size: 18px;
             margin-right: 16px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(74, 108, 247, 0.5);
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
         }
         
         .avatar::after {
@@ -154,7 +152,7 @@
         
         .header-info h3 {
             margin: 0;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -163,16 +161,16 @@
         
         .header-info p {
             margin: 4px 0 0;
-            color: var(--text-secondary);
+            color: var(--gray);
             font-size: 14px;
             font-weight: 400;
         }
         
         .status-indicator {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: var(--success);
+            background: #10b981;
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
             position: relative;
         }
@@ -184,10 +182,10 @@
             left: 50%;
             width: 100%;
             height: 100%;
-            background: var(--success);
+            background: #10b981;
             border-radius: 50%;
             animation: pulse 2s infinite;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50);
         }
         
         @keyframes pulse {
@@ -210,46 +208,46 @@
         
         .header-actions {
             display: flex;
-            gap: 16px;
+            gap: 12px;
         }
         
         .header-btn {
-            width: 48px;
-            height: 48px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid var(--glass-border);
-            color: var(--text-primary);
+            color: var(--light);
             cursor: pointer;
             transition: all 0.2s ease;
         }
         
         .header-btn:hover {
-            background: rgba(74, 108, 247, 0.2);
+            background: rgba(79, 70, 229, 0.2);
             color: var(--primary-light);
             transform: translateY(-2px);
         }
         
         .chat-messages {
             flex: 1;
-            padding: 30px;
+            padding: 24px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             position: relative;
             background: 
-                radial-gradient(circle at 20% 20%, rgba(30, 41, 59, 0.5) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(30, 41, 59,  0.5) 0%, transparent 40%);
+                radial-gradient(circle at 20% 20%, rgba(30, 41, 59, 0.3) 0%, transparent 30%),
+                radial-gradient(circle at 80% 80%, rgba(30, 41, 59, 0.3) 0%, transparent 30%);
         }
         
         .message {
             max-width: 75%;
             padding: 12px 16px;
             border-radius: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             position: relative;
             animation: fadeIn 0.25s ease-out;
             line-height: 1.4;
@@ -264,7 +262,7 @@
         
         .message:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba( 0, 0, 0, 0.2);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
         
         @keyframes fadeIn {
@@ -274,23 +272,23 @@
         
         .sent {
             align-self: flex-end;
-            background: linear-gradient(135deg, rgba(74, 108, 247, 0.25), rgba(74, 108, 247, 0.15));
-            border: 1px solid rgba(74, 108, 247, 0.3);
-            color: var(--text-primary);
+            background: var(--sent-bg);
+            border: 1px solid var(--sent-border);
+            color: var(--light);
             border-bottom-right-radius: 6px;
         }
         
         .received {
             align-self: flex-start;
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
+            background: var(--received-bg);
+            border: 1px solid var(--received-border);
+            color: var(--light);
             border-bottom-left-radius: 6px;
         }
         
         .message-time {
             font-size: 11px;
-            color: var(--text-secondary);
+            color: var(--gray);
             margin-top: 6px;
             text-align: right;
             font-weight: 400;
@@ -307,9 +305,8 @@
         
         .chat-input-area {
             display: flex;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
+            padding: 16px;
+            background: rgba(15, 23, 42, 0.7);
             border-top: 1px solid var(--glass-border);
             z-index: 10;
             position: relative;
@@ -318,119 +315,86 @@
         
         .input-actions {
             display: flex;
-            align-items: flex-end;
-            margin-right: 16px;
-            padding-bottom: 8px;
+            align-items: center;
+            margin-right: 12px;
             transition: all 0.3s ease;
         }
         
         .input-btn {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-secondary);
+            color: var(--gray);
             cursor: pointer;
             transition: all 0.2s ease;
         }
         
         .input-btn:hover {
             color: var(--primary-light);
-            background: rgba(74, 108, 247, 0.1);
+            background: rgba(79, 70, 229, 0.1);
         }
         
         .input-btn.active {
             color: var(--primary-light);
-            background: rgba(74, 108, 247, 0.2);
+            background: rgba(79, 70, 229, 0.2);
         }
         
         .message-input-container {
             flex: 1;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 24px;
-            padding: 12px 22px;
-            min-height: 60px;
-            transition: all 0.2s ease;
-        }
-        
-        .message-input-container:focus-within {
-            background: rgba(30, 41, 59, 0.9);
-            box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.5);
+            transition: all 0.3s ease;
         }
         
         .message-input {
             width: 100%;
+            padding: 16px 20px;
             border: none;
-            background: transparent;
-            font-size: 16px;
+            border-radius: 24px;
+            background: rgba(30, 41, 59, 0.7);
+            font-size: 15px;
             outline: none;
-            color: var(--text-primary);
-            resize: none;
-            min-height: 36px;
-            max-height: 150px;
-            padding: 0;
-            margin: 4px 0;
+            color: var(--light);
+            transition: all 0.2s ease;
+            padding-right: 50px;
+        }
+        
+        .message-input:focus {
+            background: rgba(30, 41, 59, 0.9);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
         }
         
         .message-input::placeholder {
             color: rgba(148, 163, 184, 0.7);
-        }
-        
-        .input-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 4px;
-        }
+       }
         
         .input-limit {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        
-        .input-formatting {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .format-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 15px;
-            padding: 4px;
-            border-radius: 4px;
-            transition: all 0.2s ease;
-        }
-        
-        .format-btn:hover {
-            color: var(--primary-light);
-            background: rgba(74, 108, 247, 0.1);
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: var(--gray);
+            transition: all 0.3s ease;
         }
         
         .send-button {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border: none;
             border-radius: 50%;
-            width: 58px;
-            height: 58px;
-            margin-left: 16px;
+            width: 50px;
+            height: 50px;
+            margin-left: 12px;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
             transition: all 0.2s ease;
-            position: relative;
+           position: relative;
             overflow: hidden;
-            align-self: flex-end;
-            margin-bottom: 8px;
         }
         
         .send-button::before {
@@ -456,19 +420,19 @@
         
         .send-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(74, 108, 247, 0.5);
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
         }
         
         .back-button {
             position: absolute;
             top: 24px;
             left: 24px;
-            background: rgba(15, 23, 42, 0.8);
+            background: rgba(15, 23, 42, 0.3);
             color: white;
             border: 1px solid var(--glass-border);
             border-radius: 50%;
-            width: 52px;
-            height: 52px;
+            width: 44px;
+            height: 44px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -487,12 +451,12 @@
         }
         
         .chat-messages::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         
         .chat-messages::-webkit-scrollbar-thumb {
-            background: rgba(74, 108, 247, 0.4);
-            border-radius: 4px;
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 3px;
         }
         
         .chat-messages::-webkit-scrollbar-track {
@@ -502,7 +466,7 @@
         .typing-indicator {
             display: flex;
             align-items: center;
-            padding: 12px 18px;
+            padding: 8px 16px;
             background: rgba(30, 41, 59, 0.6);
             border-radius: 20px;
             width: fit-content;
@@ -511,9 +475,9 @@
         }
         
         .typing-indicator span {
-            height: 10px;
-            width: 10px;
-            background: var(--text-secondary);
+            height: 8px;
+            width: 8px;
+            background: var(--gray);
             border-radius: 50%;
             display: inline-block;
             margin: 0 2px;
@@ -535,22 +499,22 @@
         
         .message-reactions {
             display: flex;
-            gap: 6px;
-            margin-top: 10px;
+            gap: 4px;
+            margin-top: 8px;
             justify-content: flex-end;
         }
         
         .reaction {
             background: rgba(30, 41, 59, 0.5);
             border-radius: 12px;
-            padding: 4px 8px;
-            font-size: 14px;
+            padding: 2px 6px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
         
         .reaction:hover {
-            background: rgba(74, 108, 247, 0.2);
+            background: rgba(79, 70, 229, 0.2);
             transform: scale(1.1);
         }
         
@@ -567,7 +531,7 @@
         }
         
         .context-item {
-            padding: 10px 16px;
+            padding: 8px 16px;
             font-size: 14px;
             cursor: pointer;
             display: flex;
@@ -577,7 +541,7 @@
         }
         
         .context-item:hover {
-            background: rgba(74, 108, 247, 0.2);
+            background: rgba(79, 70, 229, 0.2);
         }
         
         .unread-indicator {
@@ -585,8 +549,8 @@
             right: 24px;
             background: var(--primary);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -599,9 +563,9 @@
         .chat-date-divider {
             display: flex;
             align-items: center;
-            margin: 20px 0;
-            color: var(--text-secondary);
-            font-size: 14px;
+            margin: 16px 0;
+            color: var(--gray);
+            font-size: 12px;
         }
         
         .chat-date-divider::before,
@@ -637,10 +601,10 @@
         }
         
         .notification-avatar {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             display: flex;
             justify-content: center;
             align-items: center;
@@ -652,6 +616,8 @@
         .notification-content {
             flex: 1;
             max-width: 250px;
+            display: flex;
+            flex-direction: column;
         }
         
         .notification-content h4 {
@@ -666,7 +632,7 @@
         .notification-content p {
             margin: 4px 0 0;
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--gray);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -688,138 +654,10 @@
             display: block;
             width: calc(100% + 1.3px);
             height: 30px;
-            opacity: 0.5;
         }
         
         .wave-divider .shape-fill {
-            fill: rgba(74, 108, 247, 0.1);
-        }
-        
-        /* User Info Sidebar */
-        .user-info-sidebar {
-            width: 380px;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            border-left: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-        
-        .user-info-sidebar.open {
-            transform: translateX(0);
-        }
-        
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px;
-            border-bottom: 1px solid var(--glass-border);
-        }
-        
-        .sidebar-header h3 {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .close-sidebar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .close-sidebar:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--error);
-        }
-        
-        .sidebar-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-        }
-        
-        .user-avatar-large {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: 600;
-            font-size: 32px;
-            margin: 0 auto 20px;
-            box-shadow: 0 0 30px rgba(74, 108, 247, 0.5);
-        }
-        
-        .user-name {
-            text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-        
-        .user-email {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-        }
-        
-        .detail-item {
-            margin-bottom: 20px;
-        }
-        
-        .detail-item label {
-            display: block;
-            color: var(--text-secondary);
-            font-size: 13px;
-            margin-bottom: 6px;
-        }
-        
-        .detail-item p {
-            font-size: 15px;
-        }
-        
-        .user-actions {
-            margin-top: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .user-action-btn {
-            padding: 14px 16px;
-            border-radius: 10px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-        }
-        
-        .user-action-btn:hover {
-            background: rgba(74, 108, 247, 0.2);
-        }
-        
-        .user-action-btn.warning:hover {
-            background: rgba(239, 68, 68, 0.2);
+            fill: rgba(79, 70, 229, 0.1);
         }
         
         /* Voice Call Styles */
@@ -846,7 +684,7 @@
         }
         
         .call-container {
-            background: var(--card-bg);
+            background: var(--glass);
             border-radius: 24px;
             padding: 30px;
             width: 90%;
@@ -861,14 +699,13 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: 30px;
-            position: relative;
         }
         
         .caller-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             display: flex;
             justify-content: center;
             align-items: center;
@@ -877,7 +714,7 @@
             font-size: 32px;
             margin-bottom: 20px;
             position: relative;
-            box-shadow: 0 0 30px rgba(74, 108, 247, 0.5);
+            box-shadow: 0 0 30px rgba(79, 70, 229, 0.5);
         }
         
         .caller-info h3 {
@@ -886,7 +723,7 @@
         }
         
         .call-status {
-            color: var(--text-secondary);
+            color: var(--gray);
             font-size: 16px;
         }
         
@@ -903,7 +740,7 @@
             border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
+           justify-content: center;
             font-size: 20px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -946,7 +783,7 @@
         .call-timer {
             font-size: 24px;
             margin-top: 20px;
-            color: var(--text-primary);
+            color: var(--light);
             font-weight: 600;
         }
         
@@ -963,7 +800,6 @@
             border-radius: 50%;
             margin: 0 5px;
             animation: pulse-dot 1.5s infinite ease-in-out;
-            opacity: 0.7;
         }
         
         .calling-dot:nth-child(2) {
@@ -975,8 +811,8 @@
         }
         
         @keyframes pulse-dot {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.5); opacity: 1; }
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
         }
         
         .call-controls {
@@ -1028,9 +864,9 @@
         /* Emoji picker styles */
         .emoji-picker {
             position: absolute;
-            bottom: 100px;
+            bottom: 80px;
             right: 20px;
-            background: var(--card-bg);
+            background: var(--glass);
             backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
@@ -1053,7 +889,7 @@
         }
         
         .emoji:hover {
-            background: rgba(74, 108, 247, 0.2);
+            background: rgba(79, 70, 229, 0.2);
             transform: scale(1.2);
         }
         
@@ -1077,7 +913,134 @@
         
         .message.deleted .message-content {
             font-style: italic;
-            color: var(--text-secondary);
+            color: var(--gray);
+        }
+        
+        /* User info sidebar */
+        .user-info-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid var(--glass-border);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .user-info-sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .sidebar-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-sidebar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--glass-border);
+            color: var(--light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .close-sidebar:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+        
+        .user-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 600;
+            font-size: 32px;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 30px rgba(79, 70, 229, 0.5);
+        }
+        
+        .user-name {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .user-email {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        
+        .detail-item label {
+            display: block;
+            color: var(--gray);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-item p {
+            font-size: 14px;
+        }
+        
+        .user-actions {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .user-action-btn {
+            padding: 12px 16px;
+            border-radius: 8px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--glass-border);
+            color: var(--light);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .user-action-btn:hover {
+            background: rgba(79, 70, 229, 0.2);
+        }
+        
+        .user-action-btn.warning:hover {
+            background: rgba(239, 68, 68, 0.2);
         }
     </style>
 </head>
@@ -1091,174 +1054,163 @@
     </button>
     
     <div class="chat-container">
-        <div class="chat-main">
-            <div class="chat-header">
-                <div class="avatar">{{ other_user.name[0] }}</div>
-                <div class="header-info">
-                    <h3>{{ other_user.name }} <span class="status-indicator"></span></h3>
-                    <p>{{ other_user.email }} • Active now</p>
-                </div>
-                <div class="header-actions">
-                    <div class="header-btn" id="voice-call-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                    </div>
-                    <div class="header-btn">
-                        <i class="fas fa-video"></i>
-                    </div>
-                    <div class="header-btn" id="info-toggle-btn">
-                        <i class="fas fa-info"></i>
-                    </div>
-                </div>
+        <div class="chat-header">
+            <div class="avatar">{{ other_user.name[0] }}</div>
+            <div class="header-info">
+                <h3>{{ other_user.name }} <span class="status-indicator"></span></h3>
+                <p>{{ other_user.email }} • Active now</p>
             </div>
-            
-            <div class="chat-messages" id="messages">
-                <div class="chat-date-divider">Today</div>
-                
-                {% for message in messages %}
-                <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}" data-message-id="{{ message.id }}">
-                    <div class="message-content">{{ message.content }}</div>
-                    <div class="message-time">
-                        {{ message.timestamp.strftime('%H:%M') }}
-                        {% if message.sender_id == current_user.id %}
-                        <span class="message-status"><i class="fas fa-check-double"></i></span>
-                        {% endif %}
-                    </div>
-                    
-                    {% if loop.last and message.sender_id != current_user.id %}
-                    <div class="message-reactions">
-                        <span class="reaction">👍</span>
-                        <span class="reaction">❤️</span>
-                        <span class="reaction">😮</span>
-                    </div>
-                    {% endif %}
-                </div>
-                {% endfor %}
-                
-                <div class="typing-indicator" id="typing-indicator" style="display: none;">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span style="margin-left: 8px;">{{ other_user.name.split(' ')[0] }} is typing...</span>
-                </div>
-            </div>
-            
-            <div class="wave-divider">
-                <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21, 0,0,0,321.39,56.44Z" class="shape-fill"></path>
-                </svg>
-            </div>
-            
-            <div class="chat-input-area" id="chat-input-area">
-                <div class="input-actions" id="input-actions">
-                    <div class="input-btn" id="attach-btn">
-                        <i class="fas fa-paperclip"></i>
-                    </div>
-                    <div class="input-btn" id="image-btn">
-                        <i class="fas fa-image"></i>
-                    </div>
-                    <div class="input-btn" id="emoji-btn">
-                        <i class="fas fa-smile"></i>
-                    </div>
-                </div>
-                
-                <div class="message-input-container">
-                    <textarea class="message-input" id="message-input" placeholder="Type your message..." rows="1"></textarea>
-                    <div class="input-bottom">
-                        <div class="input-formatting">
-                            <button class="format-btn" title="Bold"><strong>B</strong></button>
-                            <button class="format-btn" title="Italic"><em>I</em></button>
-                            <button class="format-btn" title="Code">{"}"}</button>
-                        </div>
-                        <div class="input-limit"><span id="char-count">0</span>/1000</div>
-                    </div>
-                </div>
-                
-                <button class="send-button" id="send-button">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            <div class="header-actions">
+                <div class="header-btn" id="voice-call-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                     </svg>
-                </button>
-            </div>
-            
-            <div class="emoji-picker" id="emoji-picker">
-                <span class="emoji">😀</span>
-                <span class="emoji">😃</span>
-                <span class="emoji">😄</span>
-                <span class="emoji">😁</span>
-                <span class="emoji">😆</span>
-                <span class="emoji">😅</span>
-                <span class="emoji">😂</span>
-                <span class="emoji">🤣</span>
-                <span class="emoji">😊</span>
-                <span class="emoji">😇</span>
-                <span class="emoji">🙂</span>
-                <span class="emoji">🙃</span>
-                <span class="emoji">😉</span>
-                <span class="emoji">😌</span>
-                <span class="emoji">😍</span>
-                <span class="emoji">🥰</span>
-                <span class="emoji">😘</span>
-                <span class="emoji">😗</span>
-                <span class="emoji">😙</span>
-                <span class="emoji">😚</span>
-                <span class="emoji">😋</span>
-                <span class="emoji">😛</span>
-                <span class="emoji">😝</span>
-                <span class="emoji">😜</span>
-                <span class="emoji">🤪</span>
-                <span class="emoji">🤨</span>
-                <span class="emoji">🧐</span>
-                <span class="emoji">🤓</span>
-                <span class="emoji">😎</span>
-                <span class="emoji">🤩</span>
-                <span class="emoji">🥳</span>
+                </div>
+                <div class="header-btn">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="header-btn" id="info-toggle-btn">
+                    <i class="fas fa-info"></i>
+                </div>
             </div>
         </div>
         
-        <!-- User Info Sidebar -->
-        <div class="user-info-sidebar" id="user-info-sidebar">
-            <div class="sidebar-header">
-                <h3>User Details</h3>
-                <div class="close-sidebar" id="close-sidebar">
-                    <i class="fas fa-times"></i>
+        <div class="chat-messages" id="messages">
+            <div class="chat-date-divider">Today</div>
+            
+            {% for message in messages %}
+            <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}" data-message-id="{{ message.id }}">
+                <div class="message-content">{{ message.content }}</div>
+                <div class="message-time">
+                    {{ message.timestamp.strftime('%H:%M') }}
+                    {% if message.sender_id == current_user.id %}
+                    <span class="message-status"><i class="fas fa-check-double"></i></span>
+                    {% endif %}
+                </div>
+                
+                {% if loop.last and message.sender_id != current_user.id %}
+                <div class="message-reactions">
+                    <span class="reaction">👍</span>
+                    <span class="reaction">❤️</span>
+                    <span class="reaction">😮</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div class="typing-indicator"id="typing-indicator" style="display: none;">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span style="margin-left: 8px;">{{ other_user.name.split(' ')[0] }} is typing...</span>
+            </div>
+        </div>
+        
+        <div class="wave-divider">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+        
+        <div class="chat-input-area" id="chat-input-area">
+            <div class="input-actions" id="input-actions">
+                <div class="input-btn" id="attach-btn">
+                    <i class="fas fa-paperclip"></i>
+                </div>
+                <div class="input-btn" id="image-btn">
+                    <i class="fas fa-image"></i>
+                </div>
+                <div class="input-btn" id="emoji-btn">
+                    <i class="fas fa-smile"></i>
                 </div>
             </div>
             
-            <div class="sidebar-content">
-                <div class="user-avatar-large">{{ other_user.name[0] }}</div>
-                <div class="user-name">{{ other_user.name }}</div>
-                <div class="user-email">{{ other_user.email }}</div>
-                
-                <div class="detail-item">
-                    <label>Member Since</label>
-                    <p>January 15, 2023</p>
-                </div>
-                
-                <div class="detail-item">
-                    <label>Last Active</label>
-                    <p>Just now</p>
-                </div>
-                
-                <div class="detail-item">
-                    <label>Status</label>
-                    <p>Premium User</p>
-                </div>
-                
-                <div class="user-actions">
-                    <button class="user-action-btn">
-                        <i class="fas fa-user-clock"></i> View Activity History
-                    </button>
-                    <button class="user-action-btn">
-                        <i class="fas fa-ticket-alt"></i> View Support Tickets
-                    </button>
-                    <button class="user-action-btn warning">
-                        <i class="fas fa-ban"></i> Block User
-                    </button>
-                </div>
+            <div class="message-input-container">
+                <input type="text" class="message-input" id="message-input" placeholder="Type your message..." maxlength="500">
+                <div class="input-limit"><span id="char-count">0</span>/500</div>
             </div>
+            
+            <button class="send-button" id="send-button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="emoji-picker" id="emoji-picker">
+            <span class="emoji">😀</span>
+            <span class="emoji">😃</span>
+            <span class="emoji">😄</span>
+            <span class="emoji">😁</span>
+            <span class="emoji">😆</span>
+            <span class="emoji">😅</span>
+            <span class="emoji">😂</span>
+            <span class="emoji">🤣</span>
+            <span class="emoji">😊</span>
+            <span class="emoji">😇</span>
+            <span class="emoji">🙂</span>
+            <span class="emoji">🙃</span>
+            <span class="emoji">😉</span>
+            <span class="emoji">😌</span>
+            <span class="emoji">😍</span>
+            <span class="emoji">🥰</span>
+            <span class="emoji">😘</span>
+            <span class="emoji">😗</span>
+            <span class="emoji">😙</span>
+            <span class="emoji">😚</span>
+            <span class="emoji">😋</span>
+            <span class="emoji">😛</span>
+            <span class="emoji">😝</span>
+            <span class="emoji">😜</span>
+            <span class="emoji">🤪</span>
+            <span class="emoji">🤨</span>
+            <span class="emoji">🧐</span>
+            <span class="emoji">🤓</span>
+            <span class="emoji">😎</span>
+            <span class="emoji">🤩</span>
+            <span class="emoji">🥳</span>
+        </div>
+    </div>
+
+    <!-- User Info Sidebar -->
+    <div class="user-info-sidebar" id="user-info-sidebar">
+        <div class="sidebar-header">
+            <h3>User Details</h3>
+            <div class="close-sidebar" id="close-sidebar">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        
+        <div class="user-avatar-large">{{ other_user.name[0] }}</div>
+        <div class="user-name">{{ other_user.name }}</div>
+        <div class="user-email">{{ other_user.email }}</div>
+        
+        <div class="detail-item">
+            <label>Member Since</label>
+            <p>January 15, 2023</p>
+        </div>
+        
+        <div class="detail-item">
+            <label>Last Active</label>
+            <p>Just now</p>
+        </div>
+        
+        <div class="detail-item">
+            <label>Status</label>
+            <p>Premium User</p>
+        </div>
+        
+        <div class="user-actions">
+            <button class="user-action-btn">
+                <i class="fas fa-user-clock"></i> View Activity History
+            </button>
+            <button class="user-action-btn">
+                <i class="fas fa-ticket-alt"></i> View Support Tickets
+            </button>
+            <button class="user-action-btn warning">
+                <i class="fas fa-ban"></i> Block User
+            </button>
         </div>
     </div>
 
@@ -1349,7 +1301,7 @@
             particlesContainer.appendChild(particle);
         }
 
-        // Auto-resize textarea
+        // Character counter for message input
         const messageInput = document.getElementById('message-input');
         const charCount = document.getElementById('char-count');
         const chatInputArea = document.getElementById('chat-input-area');
@@ -1357,21 +1309,16 @@
         const emojiBtn = document.getElementById('emoji-btn');
         const emojiPicker = document.getElementById('emoji-picker');
         
-        messageInput.addEventListener('input', function() {
-            // Auto-resize
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
+        messageInput.addEventListener('input', () => {
+            charCount.textContent = messageInput.value.length;
             
-            // Character counter
-            charCount.textContent = this.value.length;
-            
-            if (this.value.length > 800) {
+            if (messageInput.value.length > 400) {
                 charCount.style.color = 'var(--warning)';
             } else {
-                charCount.style.color = 'var(--text-secondary)';
+                charCount.style.color = 'var(--gray)';
             }
             
-            if (this.value.length > 950) {
+            if (messageInput.value.length > 450) {
                 charCount.style.color = 'var(--error)';
             }
         });
@@ -1448,6 +1395,17 @@
                 // Hide context menu
                 contextMenu.style.display = 'none';
             }
+        });
+
+        // Check for previously deleted messages on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const deletedMessages = JSON.parse(localStorage.getItem('deletedMessages') || '{}');
+            document.querySelectorAll('.message').forEach(message => {
+                const messageId = message.dataset.messageId;
+                if (deletedMessages[messageId]) {
+                    message.classList.add('deleted');
+                }
+            });
         });
 
         // Notification system
@@ -1687,7 +1645,7 @@
         function startAudioVisualizer() {
             const dataArray = new Uint8Array(analyser.frequencyBinCount);
             
-            audioVisualizerInterval = setInterval(() => {
+            audioVisualizerInterval = setInterval(()=> {
                 analyser.getByteFrequencyData(dataArray);
                 
                 visualizerBars.forEach((bar, index) => {
@@ -1793,9 +1751,6 @@
             messagesDiv.appendChild(messageDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
             
-            // Reset textarea height
-            messageInput.style.height = 'auto';
-            
             // Add context menu event
             messageDiv.addEventListener('contextmenu', (e) => {
                 e.preventDefault();
@@ -1891,9 +1846,8 @@
         });
         
         document.getElementById('send-button').addEventListener('click', sendMessage);
-        document.getElementById('message-input').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
+        document.getElementById('message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
                 sendMessage();
             }
         });
@@ -1909,9 +1863,8 @@
                 });
                 
                 input.value = '';
-                input.style.height = 'auto';
                 charCount.textContent = '0';
-                charCount.style.color = 'var(--text-secondary)';
+                charCount.style.color = 'var(--gray)';
             }
         }
     </script>

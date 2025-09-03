@@ -4831,85 +4831,61 @@ def index():
     
     user_id = session['user_id']
     
-    # Handle AJAX requests
     if request.method == 'POST':
-        # Check if it's an AJAX request
-        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-        
-        user_text = request.form.get('query', '').strip()
+        user_text = request.form['query'].strip()
         
         if not user_text:
-            if is_ajax:
-                return jsonify({'error': 'Empty message'})
             return render_template('chat.html', history=session.get('history', []))
         
-        try:
-            # Predict intent with thread-safe access
-            with model_lock:
-                try:
-                    model = initialize_model()
-                    intent = predict_intent(user_text, model)
-                except Exception as e:
-                    print(f"Intent prediction failed: {e}")
-                    intent = "general"  # Fallback
-            
-            # Extract entities and update synonyms
-            entities = extract_entities(user_text)
-            for entity in entities:
-                update_synonyms(entity)
-            
-            # Prepare enhanced context for reasoning
-            context = {
-                "intent": intent,
-                "entities": entities,
-                "user_text": user_text,
-                "is_follow_up": is_follow_up(user_text),
-                "user_history": session.get('history', [])[-5:],
-                "user_preferences": update_user_profile(user_id, user_text, intent, "").get("common_topics", {}),
-                "last_status": session.get('last_status', None),
-                "last_channel": session.get('last_channel', None)
-            }
-            
-            # Generate response using advanced reasoning engine
+        # Predict intent with thread-safe access
+        with model_lock:
             try:
-                response = reasoning_engine.reason(intent, context)
+                model = initialize_model()
+                intent = predict_intent(user_text, model)
             except Exception as e:
-                print(f"Reasoning failed: {e}")
-                response = "I encountered an error while processing your request. Please try again."
-            
-            # Update session with context
-            if hasattr(reasoning_engine, 'context'):
-                if "last_status" in reasoning_engine.context:
-                    session['last_status'] = reasoning_engine.context["last_status"]
-                if "last_channel" in reasoning_engine.context:
-                    session['last_channel'] = reasoning_engine.context["last_channel"]
-            
-            # Update profile with actual response
-            update_user_profile(user_id, user_text, intent, response)
-            
-            # Save to session history
-            timestamp = (datetime.now() + timedelta(hours=3)).strftime("%H:%M")
-            session['history'].append((timestamp, user_text, response))
-            session.modified = True
-            
-            # Return appropriate response based on request type
-            if is_ajax:
-                return jsonify({
-                    'timestamp': timestamp,
-                    'user_message': user_text,
-                    'bot_response': response
-                })
-            else:
-                return render_template('chat.html', history=session.get('history', []))
-                
+                print(f"Intent prediction failed: {e}")
+                intent = "general"  # Fallback
+        
+        # Extract entities and update synonyms
+        entities = extract_entities(user_text)
+        for entity in entities:
+            update_synonyms(entity)
+        
+        # Prepare enhanced context for reasoning
+        context = {
+            "intent": intent,
+            "entities": entities,
+            "user_text": user_text,
+            "is_follow_up": is_follow_up(user_text),
+            "user_history": session.get('history', [])[-5:],
+            "user_preferences": update_user_profile(user_id, user_text, intent, "").get("common_topics", {}),
+            "last_status": session.get('last_status', None),
+            "last_channel": session.get('last_channel', None)
+        }
+        
+        # Generate response using advanced reasoning engine
+        try:
+            response = reasoning_engine.reason(intent, context)
         except Exception as e:
-            print(f"Unexpected error in chat route: {e}")
-            if is_ajax:
-                return jsonify({'error': 'Internal server error'})
-            return render_template('chat.html', history=session.get('history', []))
+            print(f"Reasoning failed: {e}")
+            response = "I encountered an error while processing your request. Please try again."
+        
+        # Update session with context
+        if "last_status" in reasoning_engine.context:
+            session['last_status'] = reasoning_engine.context["last_status"]
+        if "last_channel" in reasoning_engine.context:
+            session['last_channel'] = reasoning_engine.context["last_channel"]
+        
+        # Update profile with actual response
+        update_user_profile(user_id, user_text, intent, response)
+        
+        # Save to session history
+        timestamp = (datetime.now() + timedelta(hours=3)).strftime("%H:%M")
+        session['history'].append((timestamp, user_text, response))
+        session.modified = True
     
-    # Handle initial page load (GET request)
     return render_template('chat.html', history=session.get('history', []))
+    
 @app.route('/add_intent', methods=['POST'])
 def add_intent_route():
     """Endpoint to add new intents dynamically"""

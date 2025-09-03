@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neural IPTV Assistant</title>
+    <title>ViewTv Assistant | ViewTv</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* All your existing CSS styles remain the same */
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -379,15 +378,16 @@
         {% endfor %}
     </div>
     
-    <div class="input-area">
-        <input type="text" id="query" name="query" placeholder="Ask about channels (e.g., 'Is ESPN online?')" autocomplete="off">
-        <button type="button" id="sendButton" aria-label="Send message">
+    <form method="POST" class="input-area">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="text" id="query" name="query" placeholder="Ask about channels (e.g., 'Is ESPN online?')" autocomplete="off" required>
+        <button type="submit" aria-label="Send message">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
             </svg>
         </button>
-    </div>
+    </form>
 
     <script>
         // Enhanced scroll management
@@ -421,20 +421,9 @@
             isAtBottom = checkAtBottom();
         });
         
-        // Send message function
-        async function sendMessage() {
-            const queryInput = document.getElementById('query');
-            const message = queryInput.value.trim();
-            
-            if (!message) return;
-            
-            // Clear input
-            queryInput.value = '';
-            
-            // Add user message to chat
-            const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            addMessageToChat(timestamp, message, 'user');
-            
+        // Form submission handler
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
             // Add typing indicator
             const typingIndicator = document.createElement('div');
             typingIndicator.className = 'typing-indicator';
@@ -444,105 +433,53 @@
                 <div class="typing-dot" style="animation-delay: 0.4s"></div>
             `;
             chatContainer.appendChild(typingIndicator);
-            smartScroll(true);
             
-            try {
-                // Send message to server
-                const formData = new FormData();
-                formData.append('query', message);
-                
-                const response = await fetch('/ai/chat', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: formData
-                });
-                
-                // Check if response is OK
-                if (!response.ok) {
-                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
-                }
-                
-                const data = await response.json();
-                
-                // Remove typing indicator
-                const indicators = document.querySelectorAll('.typing-indicator');
-                indicators.forEach(indicator => indicator.remove());
-                
-                if (data.error) {
-                    addMessageToChat(timestamp, 'Sorry, there was an error processing your request.', 'bot');
-                } else {
-                    addMessageToChat(data.timestamp, data.bot_response, 'bot');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                // Remove typing indicator
-                const indicators = document.querySelectorAll('.typing-indicator');
-                indicators.forEach(indicator => indicator.remove());
-                
-                addMessageToChat(timestamp, 'Sorry, there was a connection error. Please try again.', 'bot');
-            }
-        }
+            // Always scroll to bottom when sending new message
+            smartScroll(true);
+        });
         
-        // Add message to chat container
-        function addMessageToChat(timestamp, message, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}-message`;
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('query').focus();
+            checkAtBottom(); // Set initial scroll state
             
-            // Process message content for special formatting
-            let processedMessage = message;
-            
-            // Process status indicators
-            processedMessage = processedMessage
-                .replace(/✅/g, '<span class="status-online">✅</span>')
-                .replace(/⚠️/g, '<span class="status-offline">⚠️</span>')
-                .replace(/❌/g, '<span class="status-dead">❌</span>');
-            
-            // Process channel cards
-            if (message.includes('ℹ️') || message.includes('🔍')) {
-                const cardContent = message.split('ℹ️').pop() || message.split('🔍').pop();
-                processedMessage = message.replace(cardContent, `<div class="channel-card">${cardContent}</div>`);
+            // Scroll to bottom only if no preserved position and not scrolled up
+            if (!sessionStorage.getItem('chatScrollPos') && isAtBottom) {
+                setTimeout(() => smartScroll(true), 100);
             }
-            
-            // Process logo containers
-            if (message.includes('<img')) {
-                processedMessage = message
-                    .replace(/<img/g, '<div class="logo-container"><div class="logo-card"><img')
-                    .replace(/width="120">/g, 'width="120"><p>Channel Logo</p></div></div>');
+        });
+        
+        // MutationObserver for new messages
+        const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.addedNodes.length) {
+                    // Remove any typing indicators
+                    const typingIndicators = document.querySelectorAll('.typing-indicator');
+                    typingIndicators.forEach(indicator => indicator.remove());
+                    
+                    // Process new messages if they contain special elements
+                    processNewMessages(mutation.addedNodes);
+                    
+                    // Smart scroll only if user was at bottom
+                    if (isAtBottom) {
+                        smartScroll();
+                    }
+                }
             }
-            
-            // Process assistant tips
-            if (message.includes('💡')) {
-                const tipContent = message.split('💡').pop();
-                processedMessage = message.replace(tipContent, `
-                    <div class="assistant-tip">
-                        <div class="assistant-tip-header">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                            </svg>
-                            Assistant Tip
-                        </div>
-                        <div class="assistant-tip-content">${tipContent}</div>
-                    </div>
-                `);
-            }
-            
-            // Replace newlines with <br> tags
-            processedMessage = processedMessage.replace(/\n/g, '<br>');
-            
-            messageDiv.innerHTML = `
-                ${processedMessage}
-                <div class="message-time">${timestamp}</div>
-            `;
-            
-            chatContainer.appendChild(messageDiv);
-            smartScroll(true);
-            
-            // Process any additional formatting that might be needed
-            processChannelCards(messageDiv);
+        });
+        
+        observer.observe(chatContainer, { 
+            childList: true,
+            subtree: true
+        });
+        
+        // Process new messages for cards, status indicators, etc.
+        function processNewMessages(nodes) {
+            nodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('bot-message')) {
+                    processChannelCards(node);
+                }
+            });
         }
         
         // Process channel cards and other special content
@@ -593,29 +530,6 @@
             });
         }
         
-        // Event listeners
-        document.getElementById('sendButton').addEventListener('click', sendMessage);
-        
-        document.getElementById('query').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-        
-        // Initial setup
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('query').focus();
-            checkAtBottom(); // Set initial scroll state
-            
-            // Scroll to bottom only if no preserved position and not scrolled up
-            if (!sessionStorage.getItem('chatScrollPos') && isAtBottom) {
-                setTimeout(() => smartScroll(true), 100);
-            }
-            
-            // Process any existing messages for special formatting
-            processChannelCards();
-        });
-        
         // Preserve scroll position on page refresh
         window.addEventListener('beforeunload', () => {
             sessionStorage.setItem('chatScrollPos', chatContainer.scrollTop);
@@ -626,6 +540,11 @@
             chatContainer.scrollTop = sessionStorage.getItem('chatScrollPos');
             sessionStorage.removeItem('chatScrollPos');
         }
+        
+        // Initialize card processing
+        document.addEventListener('DOMContentLoaded', () {
+            processChannelCards();
+        });
     </script>
 </body>
 </html>

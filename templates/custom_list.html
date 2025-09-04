@@ -1866,42 +1866,7 @@
         }
 
         // Navigate to and focus on a specific channel by name
-        function navigateToChannelByName(name) {
-            // Find the channel element by name (case-insensitive)
-            const channelElements = document.querySelectorAll('.channel-card');
-            const channelElement = Array.from(channelElements).find(card => 
-                card.getAttribute('data-name') === name.toLowerCase()
-            );
-            
-            if (channelElement) {
-                const key = channelElement.getAttribute('data-key');
-                // Add to recently viewed
-                addToRecentlyViewed(key);
-                
-                // Scroll to the channel with smooth animation
-                channelElement.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center',
-                    inline: 'center'
-                });
-                
-                // Highlight the channel with a pulse effect
-                channelElement.classList.add('highlight-pulse');
-                
-                // Add focus for accessibility
-                setTimeout(() => channelElement.focus({ preventScroll: true }), 1000);
-                
-                // Remove the highlight after 5 seconds
-                setTimeout(() => {
-                    channelElement.classList.remove('highlight-pulse');
-                }, 5000);
-                
-                // Clear search and suggestions
-                domCache.searchInput.value = '';
-                domCache.searchSuggestions.style.display = 'none';
-                filterChannels();
-            }
-        }
+        function navigateToChannelByName(name){const el=[...document.querySelectorAll('.channel-card')].find(c=>c.getAttribute('data-name')?.toLowerCase()===name.toLowerCase());if(!el)return;addToRecentlyViewed(el.getAttribute('data-key'));el.closest('.channels-container')?el.closest('.channels-container').scrollTo({top:el.closest('.channels-container').scrollTop+(el.getBoundingClientRect().top-el.closest('.channels-container').getBoundingClientRect().top-(el.closest('.channels-container').getBoundingClientRect().height/2)+(el.getBoundingClientRect().height/2)),behavior:'smooth'}):el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});el.classList.add('highlight-pulse');setTimeout(()=>el.focus({preventScroll:true}),600);setTimeout(()=>el.classList.remove('highlight-pulse'),5000);domCache.searchInput.value='';domCache.searchSuggestions.style.display='none';filterChannels();}
 
         // Add channel to recently viewed
         function addToRecentlyViewed(key) {

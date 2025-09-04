@@ -1500,42 +1500,56 @@
             }, 300000); // Check every 5 minutes
         }
 
-        // Process the status check queue
+        // Process the status check queue with up to 5 concurrent checks
         function processStatusCheckQueue() {
-            if (state.isProcessingStatusQueue || state.statusCheckQueue.length === 0) return;
+            // Maximum concurrent checks
+            const MAX_CONCURRENT_CHECKS = 5;
+        
+            // Count how many checks are currently running
+            const runningChecks = document.querySelectorAll('.status-checking:not(.checked)').length;
+        
+            // If we're already at max concurrent checks or queue is empty, return
+            if (runningChecks >= MAX_CONCURRENT_CHECKS || state.statusCheckQueue.length === 0) return;
+        
+            // Process up to MAX_CONCURRENT_CHECKS items
+            for (let i = 0; i < MAX_CONCURRENT_CHECKS - runningChecks; i++) {
+                if (state.statusCheckQueue.length === 0) break;
             
-            state.isProcessingStatusQueue = true;
+                const item = state.statusCheckQueue.shift();
+                const { card, url } = item;
             
-            // Get the next item from the queue
-            const item = state.statusCheckQueue.shift();
-            const { card, url } = item;
+                // Only process if the card is visible or near viewport
+                const rect = card.getBoundingClientRect();
+                const isVisible = (
+                    rect.top >= 0 &&
+                    rect.left >= 0 &&
+                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) * 2 &&
+                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                );
             
-            // Only process if the card is visible or near viewport
-            const rect = card.getBoundingClientRect();
-            const isVisible = (
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) * 2 &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-            );
-            
-            if (isVisible) {
-                const statusElement = card.querySelector('.status-badge');
-                if (statusElement) {
-                    checkChannelStatus(url, statusElement).then(() => {
-                        state.isProcessingStatusQueue = false;
-                        // Process next item after a delay
-                        setTimeout(processStatusCheckQueue, 1000);
-                    });
+                if (isVisible) {
+                    const statusElement = card.querySelector('.status-badge');
+                    if (statusElement) {
+                        // Mark as being checked
+                        statusElement.classList.add('checking');
+                    
+                        checkChannelStatus(url, statusElement).then(() => {
+                            // Mark as completed
+                            statusElement.classList.remove('checking');
+                            statusElement.classList.add('checked');
+                        
+                            // Continue processing queue
+                            setTimeout(processStatusCheckQueue, 200); // Reduced delay
+                        });
+                    } else {
+                    // If no status element, just continue
+                        setTimeout(processStatusCheckQueue, 200);
+                    }
                 } else {
-                    state.isProcessingStatusQueue = false;
-                    setTimeout(processStatusCheckQueue, 1000);
+                    // If not visible, put it back at the end of the queue
+                    state.statusCheckQueue.push(item);
+                    setTimeout(processStatusCheckQueue, 200);
                 }
-            } else {
-                // If not visible, put it back at the end of the queue
-                state.statusCheckQueue.push(item);
-                state.isProcessingStatusQueue = false;
-                setTimeout(processStatusCheckQueue, 1000);
             }
         }
 

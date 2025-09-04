@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #6a93cb 0%, #a4bfef 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -21,36 +21,56 @@
             justify-content: center;
             padding: 20px;
             color: #333;
+            overflow-x: hidden;
         }
         
         .container {
             max-width: 600px;
             width: 100%;
-            background: white;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             padding: 40px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            z-index: -1;
+            border-radius: 25px;
         }
         
         h1 {
-            color: #4a6fa5;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
             font-size: 2.5rem;
         }
         
         p {
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
             line-height: 1.6;
             margin-bottom: 25px;
             font-size: 1.1rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         .offline-icon {
             font-size: 5rem;
-            color: #4a6fa5;
+            color: white;
             margin-bottom: 30px;
             animation: pulse 2s infinite;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
         
         @keyframes pulse {
@@ -61,16 +81,19 @@
         
         .features {
             text-align: left;
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 15px;
             margin: 25px 0;
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         
         .features h2 {
-            color: #4a6fa5;
+            color: white;
             margin-bottom: 15px;
             font-size: 1.5rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         
         .features ul {
@@ -78,10 +101,19 @@
         }
         
         .features li {
-            padding: 10px 0;
-            border-bottom: 1px solid #eaeaea;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .features li:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding-left: 10px;
         }
         
         .features li:last-child {
@@ -93,18 +125,20 @@
             color: #4a6fa5;
             font-weight: bold;
             margin-right: 10px;
-            background: #e6efff;
+            background: rgba(255, 255, 255, 0.9);
             width: 25px;
             height: 25px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         
         .retry-button {
-            background: #4a6fa5;
-            color: white;
+            background: rgba(255, 255, 255, 0.9);
+            color: #4a6fa5;
             border: none;
             padding: 15px 30px;
             font-size: 1.1rem;
@@ -112,13 +146,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
         }
         
         .retry-button:hover {
-            background: #3a5a80;
+            background: white;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 111, 165, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
         
         .retry-button:active {
@@ -129,14 +164,80 @@
             margin-top: 25px;
             padding: 15px;
             border-radius: 10px;
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
             display: none;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .status.online {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .status.offline {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.3);
         }
         
         footer {
             margin-top: 30px;
-            color: #888;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .connection-dots {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            margin: 0 5px;
+            animation: dotPulse 1.5s infinite ease-in-out;
+        }
+        
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes dotPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+        
+        .game-container {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .game-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .game-button:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
@@ -149,17 +250,42 @@
         <div class="features">
             <h2>Available Offline Features</h2>
             <ul>
-                <li>View previously loaded content</li>
-                <li>Play the built-in mini game</li>
-                <li>Read helpful information</li>
-                <li>Use the calculator tool</li>
-                <li>Access your saved documents</li>
+                <li data-action="content">View previously loaded content</li>
+                <li data-action="game">Play the built-in mini game</li>
+                <li data-action="info">Read helpful information</li>
+                <li data-action="calculator">Use the calculator tool</li>
+                <li data-action="documents">Access your saved documents</li>
             </ul>
         </div>
         
-        <button class="retry-button" onclick="checkConnection()">Retry Connection</button>
+        <button class="retry-button" onclick="checkConnection(true)">Retry Connection</button>
+        
+        <div class="connection-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
         
         <div id="statusMessage" class="status"></div>
+        
+        <div id="gameContainer" class="game-container">
+            <h3>Number Guessing Game</h3>
+            <p>I'm thinking of a number between 1 and 10. Can you guess it?</p>
+            <div>
+                <button class="game-button" onclick="makeGuess(1)">1</button>
+                <button class="game-button" onclick="makeGuess(2)">2</button>
+                <button class="game-button" onclick="makeGuess(3)">3</button>
+                <button class="game-button" onclick="makeGuess(4)">4</button>
+                <button class="game-button" onclick="makeGuess(5)">5</button>
+                <button class="game-button" onclick="makeGuess(6)">6</button>
+                <button class="game-button" onclick="makeGuess(7)">7</button>
+                <button class="game-button" onclick="makeGuess(8)">8</button>
+                <button class="game-button" onclick="makeGuess(9)">9</button>
+                <button class="game-button" onclick="makeGuess(10)">10</button>
+            </div>
+            <p id="gameResult"></p>
+            <button class="game-button" onclick="resetGame()">Play Again</button>
+        </div>
     </div>
     
     <footer>
@@ -167,21 +293,48 @@
     </footer>
 
     <script>
-        function checkConnection() {
+        // Global variables
+        let randomNumber;
+        let gameActive = false;
+        
+        // Check connection function with real online detection
+        function checkConnection(userInitiated = false) {
             const statusEl = document.getElementById('statusMessage');
             statusEl.style.display = 'block';
-            statusEl.innerHTML = '<p>Checking connection...</p>';
             
-            // Simulate network check since we can't actually check offline
-            setTimeout(() => {
-                statusEl.innerHTML = '<p>Still offline. Please check your network settings.</p>';
+            if (userInitiated) {
+                statusEl.innerHTML = '<p>Checking connection...</p>';
+                statusEl.className = 'status';
                 
                 // Pulse the icon to give visual feedback
                 document.querySelector('.offline-icon').style.animation = 'none';
                 setTimeout(() => {
                     document.querySelector('.offline-icon').style.animation = 'pulse 2s infinite';
                 }, 10);
-            }, 1500);
+            }
+            
+            // Try to make a real request to check connectivity
+            fetch(window.location.origin, { 
+                method: 'HEAD',
+                cache: 'no-cache'
+            })
+            .then(response => {
+                // If we get here, we're online
+                statusEl.innerHTML = '<p>Connection restored! Redirecting to login...</p>';
+                statusEl.className = 'status online';
+                
+                // Wait a moment to show the message, then redirect
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1500);
+            })
+            .catch(error => {
+                // Still offline
+                if (userInitiated) {
+                    statusEl.innerHTML = '<p>Still offline. Please check your network settings.</p>';
+                    statusEl.className = 'status offline';
+                }
+            });
         }
         
         // Simple calculator function to demonstrate offline functionality
@@ -198,35 +351,69 @@
             }
         }
         
+        // Game functions
+        function startGame() {
+            document.getElementById('gameContainer').style.display = 'block';
+            randomNumber = Math.floor(Math.random() * 10) + 1;
+            gameActive = true;
+            document.getElementById('gameResult').textContent = '';
+        }
+        
+        function makeGuess(guess) {
+            if (!gameActive) return;
+            
+            if (guess === randomNumber) {
+                document.getElementById('gameResult').textContent = 'Congratulations! You guessed right!';
+                document.getElementById('gameResult').style.color = '#c8e6c9';
+                gameActive = false;
+            } else {
+                document.getElementById('gameResult').textContent = `Sorry, try again!`;
+                document.getElementById('gameResult').style.color = '#ffcdd2';
+            }
+        }
+        
+        function resetGame() {
+            startGame();
+        }
+        
         // Add some interactive elements to the page
         document.addEventListener('DOMContentLoaded', function() {
             // Make the features list interactive
             const features = document.querySelectorAll('.features li');
             features.forEach(feature => {
                 feature.addEventListener('click', function() {
-                    if (this.textContent.includes('game')) {
-                        alert('🎮 Starting mini game...\n\nTry to guess a number between 1 and 10!');
-                        const randomNumber = Math.floor(Math.random() * 10) + 1;
-                        const guess = prompt('Enter your guess (1-10):');
-                        if (guess) {
-                            if (parseInt(guess) === randomNumber) {
-                                alert('Congratulations! You guessed right!');
-                            } else {
-                                alert(`Sorry, the number was ${randomNumber}. Try again!`);
-                            }
-                        }
-                    } else if (this.textContent.includes('calculator')) {
-                        calculate();
-                    } else if (this.textContent.includes('information')) {
-                        alert('💡 Offline Tip: You can save web pages for offline viewing in most browsers by going to Settings > Downloads or using the Save Page feature.');
-                    } else {
-                        this.style.backgroundColor = '#e6efff';
-                        setTimeout(() => {
-                            this.style.backgroundColor = 'transparent';
-                        }, 500);
+                    const action = this.getAttribute('data-action');
+                    
+                    switch(action) {
+                        case 'game':
+                            startGame();
+                            break;
+                        case 'calculator':
+                            calculate();
+                            break;
+                        case 'info':
+                            alert('💡 Offline Tip: You can save web pages for offline viewing in most browsers by going to Settings > Downloads or using the Save Page feature.');
+                            break;
+                        case 'content':
+                            alert('Previously loaded content would appear here. In a real app, this would show cached pages.');
+                            break;
+                        case 'documents':
+                            alert('Your saved documents would appear here. In a real app, this would access locally stored files.');
+                            break;
+                        default:
+                            this.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                            setTimeout(() => {
+                                this.style.backgroundColor = 'transparent';
+                            }, 500);
                     }
                 });
             });
+            
+            // Periodically check connection in the background
+            setInterval(() => checkConnection(), 10000);
+            
+            // Initial connection check
+            checkConnection();
         });
     </script>
 </body>

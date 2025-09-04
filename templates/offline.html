@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Mode | ViewTv</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #4a6fa5;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+        
+        .offline-icon {
+            font-size: 5rem;
+            color: #4a6fa5;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .features {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        
+        .features h2 {
+            color: #4a6fa5;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .features ul {
+            list-style-type: none;
+        }
+        
+        .features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features li:last-child {
+            border-bottom: none;
+        }
+        
+        .features li::before {
+            content: "✓";
+            color: #4a6fa5;
+            font-weight: bold;
+            margin-right: 10px;
+            background: #e6efff;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .retry-button {
+            background: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
+        }
+        
+        .retry-button:hover {
+            background: #3a5a80;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 111, 165, 0.4);
+        }
+        
+        .retry-button:active {
+            transform: translateY(0);
+        }
+        
+        .status {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            display: none;
+        }
+        
+        footer {
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="offline-icon">📶</div>
+        <h1>You're Offline</h1>
+        <p>It seems you've lost your internet connection. Don't worry - here's what you can do:</p>
+        
+        <div class="features">
+            <h2>Available Offline Features</h2>
+            <ul>
+                <li>View previously loaded content</li>
+                <li>Play the built-in mini game</li>
+                <li>Read helpful information</li>
+                <li>Use the calculator tool</li>
+                <li>Access your saved documents</li>
+            </ul>
+        </div>
+        
+        <button class="retry-button" onclick="checkConnection()">Retry Connection</button>
+        
+        <div id="statusMessage" class="status"></div>
+    </div>
+    
+    <footer>
+        <p>Offline Mode • Designed to work without internet connection | ViewTv</p>
+    </footer>
+
+    <script>
+        function checkConnection() {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.style.display = 'block';
+            statusEl.innerHTML = '<p>Checking connection...</p>';
+            
+            // Simulate network check since we can't actually check offline
+            setTimeout(() => {
+                statusEl.innerHTML = '<p>Still offline. Please check your network settings.</p>';
+                
+                // Pulse the icon to give visual feedback
+                document.querySelector('.offline-icon').style.animation = 'none';
+                setTimeout(() => {
+                    document.querySelector('.offline-icon').style.animation = 'pulse 2s infinite';
+                }, 10);
+            }, 1500);
+        }
+        
+        // Simple calculator function to demonstrate offline functionality
+        function calculate() {
+            const calculation = prompt('Enter a simple calculation (e.g., 2+2):');
+            if (calculation) {
+                try {
+                    // Using Function constructor as a simple way to evaluate math expressions
+                    const result = Function(`return ${calculation}`)();
+                    alert(`Result: ${result}`);
+                } catch (e) {
+                    alert('Invalid calculation. Please try something like 5+3 or 6*2');
+                }
+            }
+        }
+        
+        // Add some interactive elements to the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make the features list interactive
+            const features = document.querySelectorAll('.features li');
+            features.forEach(feature => {
+                feature.addEventListener('click', function() {
+                    if (this.textContent.includes('game')) {
+                        alert('🎮 Starting mini game...\n\nTry to guess a number between 1 and 10!');
+                        const randomNumber = Math.floor(Math.random() * 10) + 1;
+                        const guess = prompt('Enter your guess (1-10):');
+                        if (guess) {
+                            if (parseInt(guess) === randomNumber) {
+                                alert('Congratulations! You guessed right!');
+                            } else {
+                                alert(`Sorry, the number was ${randomNumber}. Try again!`);
+                            }
+                        }
+                    } else if (this.textContent.includes('calculator')) {
+                        calculate();
+                    } else if (this.textContent.includes('information')) {
+                        alert('💡 Offline Tip: You can save web pages for offline viewing in most browsers by going to Settings > Downloads or using the Save Page feature.');
+                    } else {
+                        this.style.backgroundColor = '#e6efff';
+                        setTimeout(() => {
+                            this.style.backgroundColor = 'transparent';
+                        }, 500);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

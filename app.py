@@ -2745,6 +2745,10 @@ def assistance():
 def manifest():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'manifest.json', mimetype='application/manifest+json')
 #-------------------------------------------------------------------------
+@app.route("/offline.html")
+def offline_html():
+    return render_template("offline.html")
+#-------------------------------------------------------------------------
 @app.route('/service-worker.js')
 def sw():
     return send_from_directory('static', 'service-worker.js', mimetype='application/javascript')
@@ -3444,10 +3448,11 @@ def set_notice():
 
     return render_template("notice_update.html", active_notice=active_notice)
 #========================================
-#      AI FEATURES 
+#      AI ASSISTANT
 #========================================
 
-# ------------------------ Enhanced Config ------------------------
+# -------------------- Enhanced Config ---------------------
+
 HISTORY_FILE = "history.json"
 USER_PROFILE_FILE = "user_profiles.json"
 MODEL_FILE = "intent_model.pkl"
@@ -3455,7 +3460,7 @@ INTENT_FILE = "intent_data.json"
 SYNONYMS_FILE = "synonyms.json"
 HISTORY_LIMIT = 100                 # Keep more conversation context
 CHECK_TIMEOUT = 5
-REASONING_DEPTH = 12                # Allow deeper reasoning
+REASONING_DEPTH = 12            # Allow deeper reasoning
 CONVERSATION_MEMORY = 20            # Remember more past interactions
 GENERAL_KNOWLEDGE_FILE = "general_knowledge.json"
 ONLINE_LEARNING_INTERVAL = 3        # Learn more frequently
@@ -3630,7 +3635,8 @@ class CreativeGenerator:
         except:
             return base_response
 
-# --------------- Enhanced Channel Matching Engine -------------
+# ------- Enhanced Channel Matching Engine --------
+
 class ChannelMatcher:
     def __init__(self):
         self.channel_list = channel_names

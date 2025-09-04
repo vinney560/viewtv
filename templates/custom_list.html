@@ -286,6 +286,8 @@
         
         .highlight-pulse {
             animation: highlightPulse 2s infinite;
+            outline: 2px solid #3b82f6; 
+            border-radius: 8px;
         }
         
         @keyframes highlightPulse {
@@ -1126,7 +1128,7 @@
                             <span class="text-sm text-gray-300">Live</span>
                         </label>
                         <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="status" data-value="offline"></div>
+                            <div class="custom-checkbox" data-filter="status" data-value="Offline"></div>
                             <span class="text-sm text-gray-300">Offline</span>
                         </label>
                     </div>
@@ -1503,7 +1505,7 @@
         // Process the status check queue with up to 5 concurrent checks
         function processStatusCheckQueue() {
             // Maximum concurrent checks
-            const MAX_CONCURRENT_CHECKS = 5;
+            const MAX_CONCURRENT_CHECKS = 8;
         
             // Count how many checks are currently running
             const runningChecks = document.querySelectorAll('.status-checking:not(.checked)').length;
@@ -1880,19 +1882,19 @@
                 channelElement.scrollIntoView({ 
                     behavior: 'smooth', 
                     block: 'center',
-                    inline: 'nearest'
+                    inline: 'center'
                 });
                 
                 // Highlight the channel with a pulse effect
                 channelElement.classList.add('highlight-pulse');
                 
                 // Add focus for accessibility
-                channelElement.focus({ preventScroll: true });
+                setTimeout(() => channelElement.focus({ preventScroll: true }), 1000);
                 
-                // Remove the highlight after 2 seconds
+                // Remove the highlight after 5 seconds
                 setTimeout(() => {
                     channelElement.classList.remove('highlight-pulse');
-                }, 2000);
+                }, 5000);
                 
                 // Clear search and suggestions
                 domCache.searchInput.value = '';

@@ -3474,7 +3474,7 @@ SELF_AWARENESS_LEVEL = 0.35         # Respond self-referentially more often
 with open("channels.json", "r") as f:
     channels = json.load(f)
 
-# Load intent data if exists
+# Load intent data if the json file exist(i doubt this...Intents are not loaded correctly)
 if os.path.exists(INTENT_FILE):
     with open(INTENT_FILE, "r") as f:
         intent_data = json.load(f)
@@ -3484,24 +3484,24 @@ else:
         "examples": []
     }
 
-# Load synonyms if exists
+# Load synonyms if the file exist
 if os.path.exists(SYNONYMS_FILE):
     with open(SYNONYMS_FILE, "r") as f:
         synonyms = json.load(f)
 else:
     synonyms = {}
 
-# Save intent data to file
+# Save intent data to intent_data.json file
 def save_intent_data():
     with open(INTENT_FILE, "w") as f:
         json.dump(intent_data, f, indent=2)
 
-# Save synonyms to file
+# Save synonyms to its rightful file
 def save_synonyms():
     with open(SYNONYMS_FILE, "w") as f:
         json.dump(synonyms, f, indent=2)
 
-# Load general knowledge base
+# Load general knowledge from the json file if it exist (This Works fine)
 if os.path.exists(GENERAL_KNOWLEDGE_FILE):
     with open(GENERAL_KNOWLEDGE_FILE, "r") as f:
         general_knowledge = json.load(f)
@@ -3569,14 +3569,14 @@ class CreativeGenerator:
         
     def get_related_words(self, topic):
         """Fetch related words from Datamuse API with caching."""
-        # Use cached results if recent
+        # Use cached results if still fresh
         if topic in self.cache and time.time() - self.last_fetch < self.cache_duration:
             return self.cache[topic]
             
         url = f"https://api.datamuse.com/words?ml={topic}"
         try:
             res = requests.get(url, timeout=2).json()
-            words = [w['word'] for w in res if ' ' not in w]  # Skip multi-word phrases
+            words = [w['word'] for w in res if ' ' not in w]  # Skip multi word phrases and responses
             if not words: 
                 words = [topic]
                 
@@ -3592,7 +3592,7 @@ class CreativeGenerator:
         """Create a creative sentence using related words."""
         words = self.get_related_words(topic)
         if len(words) < 3:
-            words += [topic] * (3 - len(words))  # Pad if too short
+            words += [topic] * (3 - len(words))
 
         templates = [
             f"The {random.choice(words)} brings {random.choice(words)} to life.",
@@ -3607,14 +3607,14 @@ class CreativeGenerator:
         return random.choice(templates)
     
     def add_creative_element(self, base_response, context):
-        """Add creative flair to responses occasionally"""
+        """To add creative spikes to responses occasionally (Over used mostly)"""
         if random.random() > CREATIVITY_LEVEL:
             return base_response
             
         # Determine creative topic
         topic = None
         if context.get("entities"):
-            topic = context["entities"][0].split()[0]  # First word of first entity
+            topic = context["entities"][0].split()[0]  # First word of first entity for fast noticing
         elif context.get("intent") == "recommend":
             topic = "entertainment"
         elif context.get("user_preferences"):
@@ -3635,7 +3635,7 @@ class CreativeGenerator:
         except:
             return base_response
 
-# ------- Enhanced Channel Matching Engine --------
+# ------- Advanced Channel Matching Engine --------
 
 class ChannelMatcher:
     def __init__(self):
@@ -3650,18 +3650,18 @@ class ChannelMatcher:
         if query_lower in self.channel_map:
             return self.channel_map[query_lower]
             
-        # 2. Check close matches with threshold
+        # 2. Check close matches usimg threshold(Physics pliz help me)
         matches = get_close_matches(query_lower, self.channel_map.keys(), n=1, cutoff=threshold)
         if matches:
             return self.channel_map[matches[0]]
             
-        # 3. Use Levenshtein distance for better correction
+        # 3. Use Levenshtein distance / Fuzzy Match for better correction
         best_match = None
         best_score = 0
         
         for channel in self.channel_list:
             channel_lower = channel.lower()
-            # Use Jaro-Winkler similarity for better handling of prefixes
+            # Use similarity for better handling of prefixes
             score = Levenshtein.jaro_winkler(query_lower, channel_lower)
             if score > best_score:
                 best_score = score
@@ -3679,13 +3679,15 @@ class ChannelMatcher:
             score = Levenshtein.jaro_winkler(query_lower, channel_lower)
             scored_channels.append((channel, score))
             
-        # Sort by similarity score
+        # Arrange by similarity score
         scored_channels.sort(key=lambda x: x[1], reverse=True)
         
         # Return top matches (excluding the query itself)
         return [chan for chan, score in scored_channels[:count] if score > 0.3]
 
 # --------------- Advanced Reasoning Engine -------------
+#Three Step Reasoning Engine Max....
+
 class AdvancedReasoningEngine:
     def __init__(self):
         self.context = {}
@@ -3697,7 +3699,7 @@ class AdvancedReasoningEngine:
         self.last_self_reflection = 0
     
     def build_decision_forest(self):
-        """Multi-layered decision forest for complex reasoning"""
+        """Multiple layers decision forest for complex reasoning"""
         return {
             "status_check": {
                 "primary": [
@@ -3776,7 +3778,7 @@ class AdvancedReasoningEngine:
         }
     
     def reason(self, intent, context):
-        """Multi-stage reasoning process with error resilience"""
+        """Multi-stage reasoning process with error tolerance (i think i should update the SPLELLING_THRESHOLD to fit more typos tolerance)"""
         try:
             self.context = context.copy()
             self.update_conversation_history(context)
@@ -3787,10 +3789,10 @@ class AdvancedReasoningEngine:
             # Secondary reasoning
             response = self.execute_secondary_reasoning(intent, response)
             
-            # Add conversational elements
+            # Add conversational engagments
             response = self.add_conversational_elements(response)
             
-            # Add creative elements occasionally
+            # Add creative thoughts occasionally
             response = self.creative_generator.add_creative_element(response, context)
             
             # Add self-awareness occasionally
@@ -3802,9 +3804,9 @@ class AdvancedReasoningEngine:
             return self.generate_error_response()
     
     def execute_primary_reasoning(self, intent):
-        """Handle primary decision tree with resilience"""
+        """Handle primary decision tree with tolerance and respect for immaturity or dumb ness"""
         if intent not in self.decision_forest:
-            intent = "general"  # Fallback to general handling
+            intent = "general"  # Fallback to general handling if intent matching not reached
         
         for condition, handler in self.decision_forest[intent]["primary"]:
             if self.evaluate_condition(condition):
@@ -3817,7 +3819,7 @@ class AdvancedReasoningEngine:
         return "I need more information to help with that. Could you clarify?"
     
     def execute_secondary_reasoning(self, intent, response):
-        """Apply secondary reasoning based on context"""
+        """Apply secondary reasoning based on context and comolexity of the user inputs"""
         if intent not in self.decision_forest:
             return response
         
@@ -3827,11 +3829,11 @@ class AdvancedReasoningEngine:
                     response += " " + handler()
                 except Exception as e:
                     print(f"Secondary handler error: {e}")
-                    # Continue without secondary addition
+                    # Continue without secondary addition so not to crash everything including Primary and fallback handler()
         return response
     
     def evaluate_condition(self, condition):
-        """Enhanced condition evaluation with confidence checks"""
+        """Advanced condition evaluation with confidence checks based on the training weights and data"""
         # Entity-based conditions
         if condition == "has_entities":
             return bool(self.context.get("entities"))
@@ -3889,7 +3891,7 @@ class AdvancedReasoningEngine:
         return False
     
     def update_conversation_history(self, context):
-        """Maintain conversation context"""
+        """Maintain conversation context and awareness"""
         self.conversation_history.append({
             "text": context.get("user_text", ""),
             "intent": context.get("intent", ""),
@@ -3897,7 +3899,7 @@ class AdvancedReasoningEngine:
             "timestamp": time.time()
         })
         
-        # Keep only recent history
+        # Keep only recent history (not sure if it works)
         if len(self.conversation_history) > CONVERSATION_MEMORY:
             self.conversation_history = self.conversation_history[-CONVERSATION_MEMORY:]
     
@@ -3915,7 +3917,7 @@ class AdvancedReasoningEngine:
         status = self.check_channel_status(channel)
         explanation = self.explain_status(channel, status)
         
-        # Store for potential follow-ups
+        # Store for potential follow ups
         self.context["last_status"] = status
         self.context["last_channel"] = channel
         
@@ -3945,7 +3947,7 @@ class AdvancedReasoningEngine:
         return "I'm not sure which channel you're referring to. Could you provide more details?"
     
     def suggest_possible_channels(self):
-        """Suggest possible channels when confidence is low"""
+        """Suggest possible channels when confidence is low or just not clearer for SGD"""
         if self.context.get("entities"):
             channel_query = self.context["entities"][0]
             suggestions = self.channel_matcher.suggest_alternatives(channel_query, 3)
@@ -4088,10 +4090,10 @@ class AdvancedReasoningEngine:
         return random.choice(general_knowledge.get("general_qa", {}).get("how_are_you", ["I'm functioning well, thank you!"]))
     
     def handle_self_awareness(self):
-        """Handle questions about AI's nature and capabilities"""
+        """Handle questions about AI's features or awareness and capabilities"""
         text = self.context["user_text"].lower()
         
-        # Nature questions
+        # FAQ handler
         if any(word in text for word in ["who are you", "what are you", "your nature"]):
             return ("I'm a specialized TV assistant AI designed to help you navigate television channels. "
                     "I exist solely to enhance your viewing experience!")
@@ -4101,19 +4103,19 @@ class AdvancedReasoningEngine:
             return ("I can check channel statuses, recommend shows, compare channels, "
                     "explain technical issues, and help you discover new content!")
         
-        # Memory questions
+        # Memory and history questions
         if any(word in text for word in ["remember me", "know about me"]):
             if self.context.get("user_history"):
                 return ("While I don't store personal data, I recognize our conversation history "
                         "to provide better recommendations during this session!")
             return "I'm focused on your TV needs during this session, not personal data!"
         
-        # Purpose questions
-        if any(word in text for word in ["why exist", "your purpose"]):
+        # Purpose questions - "mostly whats your job here"
+        if any(word in text for word in ["why exist", "your purpose", "Whats your job"]):
             return ("My purpose is to make television viewing effortless and enjoyable "
                     "by providing instant channel information and recommendations!")
         
-        # Fallback response
+        # Fallback response handler() 
         return random.choice(general_knowledge.get("self_awareness", [
             "I'm a TV assistant focused on enhancing your viewing experience!"
         ]))
@@ -4146,10 +4148,10 @@ class AdvancedReasoningEngine:
         return ("I'm not sure I understand. I specialize in TV channels - you can ask me about "
                 "channel status, information, recommendations, or comparisons!")
     
-    # ------------ Self-Awareness Enhancements ----------
+    # ----------- Self-Awareness Enhancements For More Human-Like Response ---------
     
     def add_self_awareness(self, response, context):
-        """Add self-referential elements to responses occasionally"""
+        """self-referential data to responses occasionally"""
         if random.random() > SELF_AWARENESS_LEVEL:
             return response
             
@@ -4175,7 +4177,7 @@ class AdvancedReasoningEngine:
             
         return response
 
-    # ------------ Natural Language Generation ----------
+    # ------------ Natural and Human Like Language Generation ----------
     
     def generate_status_response(self, channel, status, explanation):
         """Generate varied status responses with channel family awareness"""
@@ -4224,7 +4226,7 @@ class AdvancedReasoningEngine:
         return response
     
     def generate_error_response(self):
-        """Generate creative error response"""
+        """Generate creative error response not Robotic"""
         error_types = [
             "Hmm, I'm having trouble with that request.",
             "Looks like I need to tune my circuits for that one.",
@@ -4247,7 +4249,6 @@ class AdvancedReasoningEngine:
     # -------------------- Utility Methods --------------------
     def get_channel_family(self, channel):
         """Find which family a channel belongs to"""
-        # Simplified for this version - could be enhanced
         if "ESPN" in channel: return "ESPN"
         if "HBO" in channel: return "HBO"
         if "Fox" in channel: return "Fox"
@@ -4322,7 +4323,7 @@ class AdvancedReasoningEngine:
         return similar if similar else general_knowledge.get("popular_channels", ["ESPN", "CNN", "HBO"])
     
     def get_recommendations(self, history):
-        # Simple content-based recommendation
+        # content-based recommendation
         history_text = " ".join([msg for _, msg, _ in history]).lower()
         
         if any(word in history_text for word in ["sport", "football", "basketball"]):
@@ -4356,7 +4357,7 @@ class AdvancedReasoningEngine:
 
 # ------------------------ Core System ------------------------
 def get_key_by_name(name):
-    # Use advanced matching
+    # Use advanced matching adapted for max performance
     matcher = ChannelMatcher()
     channel_name = matcher.find_best_match(name)
     if not channel_name:
@@ -4368,7 +4369,7 @@ def get_key_by_name(name):
     return None
 
 def extract_entities(text):
-    """Enhanced entity extraction with spelling correction"""
+    """Advanced entity extraction with spelling correction"""
     entities = []
     text_lower = text.lower()
     matcher = ChannelMatcher()
@@ -4383,20 +4384,20 @@ def extract_entities(text):
         if name.lower() in text_lower:
             entities.append(name)
     
-    # 3. Use advanced matching for potential misspellings
+    # 3. Use advanced matching for any misspellings
     words = re.findall(r'\b\w+\b', text)
     for word in words:
-        if len(word) > 3:  # Only consider longer words
+        if len(word) > 3:  # Only consider longer words for weight balancing
             match = matcher.find_best_match(word)
             if match and match not in entities:
                 entities.append(match)
     
-    # Remove duplicates while preserving order
+    # Remove duplicates while preserving order (TFIDF - job)
     seen = set()
     return [x for x in entities if not (x in seen or seen.add(x))]
 
 def is_follow_up(text):
-    """Enhanced follow-up detection with context awareness"""
+    """Advanced follow-up detection with context awareness"""
     follow_phrases = [
         "about that", "what about", "and", "also", "how about",
         "next", "following", "too", "as well", "plus", "another",
@@ -4416,7 +4417,7 @@ def save_user_profiles(data):
         json.dump(data, f, indent=2)
 
 def update_user_profile(user_id, text, intent, response):
-    """Enhanced user profile with interaction patterns"""
+    """advanced user profile with interaction patterns"""
     profiles = load_user_profiles()
     if user_id not in profiles:
         profiles[user_id] = {
@@ -4464,7 +4465,8 @@ def update_user_profile(user_id, text, intent, response):
     save_user_profiles(profiles)
     return profile
 
-# ------------------------ Dynamic Intent Management ------------------------
+# ------------- Dynamic Intent Management ------------------------
+# Basically for not always editing the code for intent adding, self learnimg ML
 def get_or_create_intent(intent_name, description=""):
     """Get or create a new intent"""
     if intent_name not in intent_data["intents"]:
@@ -4532,9 +4534,9 @@ model_lock = Lock()
 
 def initialize_model():
     """Initialize or load the intent classification model"""
-    # Load training data from intent_data
+    # Load training data from intent_data json file
     if not intent_data["examples"]:
-        # Add default examples if none exist
+        # Add default examples as fallback
         default_examples = [
             ("is espn working", "status_check"),
             ("check cnn status", "status_check"),
@@ -4679,7 +4681,7 @@ def initialize_model():
     X_train = [x[0] for x in intent_data["examples"]]
     y_train = [x[1] for x in intent_data["examples"]]
     
-    # Calculate class weights
+    # Calculate class weights for ballanced responce and none linient answers
     classes = np.unique(y_train)
     class_weights = compute_class_weight('balanced', classes=classes, y=y_train)
     class_weight_dict = dict(zip(classes, class_weights))
@@ -4695,8 +4697,8 @@ def initialize_model():
         except Exception as e:
             print(f"Model loading failed: {str(e)}")
     
-    # Train new model
-    print("Training new model...")
+    # Train the model
+    print("Training the model...")
     vectorizer = TfidfVectorizer(
         max_features=100,
         ngram_range=(1, 2),
@@ -4769,7 +4771,7 @@ def update_model(model, new_samples):
     for text, intent in zip(X_new, y_new):
         add_training_example(text, intent)
     
-    # Update the model incrementally
+    # Update the model in a sequemce flow
     try:
         model.named_steps['sgdclassifier'].partial_fit(
             model.named_steps['tfidfvectorizer'].transform(X_new),
@@ -4818,7 +4820,7 @@ def learn_from_interactions():
             except Exception as e:
                 print(f"Learning thread error: {e}")
 
-# Start the learning thread
+# Start the learning experience 
 learning_thread = threading.Thread(target=learn_from_interactions, daemon=True)
 learning_thread.start()
 
@@ -4843,7 +4845,7 @@ def index():
         if not user_text:
             return render_template('chat.html', history=session.get('history', []))
         
-        # Predict intent with thread-safe access
+        # Predict intent with Lock so no "racing for parallel requests"
         with model_lock:
             try:
                 model = initialize_model()
@@ -4857,7 +4859,7 @@ def index():
         for entity in entities:
             update_synonyms(entity)
         
-        # Prepare enhanced context for reasoning
+        # Prepare advanced context for reasoning
         context = {
             "intent": intent,
             "entities": entities,
@@ -4885,7 +4887,7 @@ def index():
         # Update profile with actual response
         update_user_profile(user_id, user_text, intent, response)
         
-        # Save to session history
+        # Save to history
         timestamp = (datetime.now() + timedelta(hours=3)).strftime("%H:%M")
         session['history'].append((timestamp, user_text, response))
         session.modified = True
@@ -4894,7 +4896,7 @@ def index():
     
 @app.route('/add_intent', methods=['POST'])
 def add_intent_route():
-    """Endpoint to add new intents dynamically"""
+    """Endpoint for adding new intents dynamically to thr model"""
     data = request.json
     intent_name = data.get('intent_name')
     description = data.get('description', '')

@@ -3,6 +3,7 @@
 <head>
     <title>Admin Messages</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #4a5568;
@@ -11,6 +12,9 @@
             --light: #e2e8f0;
             --dark: #1a202c;
             --card-bg: rgba(255, 255, 255, 0.12);
+            --message-bg: rgba(255, 255, 255, 0.08);
+            --hover-bg: rgba(255, 255, 255, 0.15);
+            --active-bg: rgba(255, 255, 255, 0.2);
         }
         
         body {
@@ -21,8 +25,8 @@
             justify-content: center;
             align-items: center;
             font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.7rem;
-            padding: 0;
+            font-size: 0.9rem;
+            padding: 20px;
             margin: 0;
             overflow: hidden;
         }
@@ -34,11 +38,13 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             width: 98%;
             max-width: 1000px;
-            height: 40vh;
+            height: 85vh;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             position: relative;
             z-index: 2;
+            display: flex;
+            flex-direction: column;
         }
         
         .header {
@@ -46,6 +52,9 @@
             padding: 20px;
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .header h2 {
@@ -59,65 +68,67 @@
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
-        .user-list {
-            height: calc(100% - 80px);
-            overflow-x: auto;
-            overflow-y: hidden;
-            padding: 20px;
+        .search-container {
             display: flex;
-            flex-direction: row;
-            gap: 20px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 8px 15px;
+            width: 30%;
+        }
+        
+        .search-container i {
+            color: rgba(255, 255, 255, 0.7);
+            margin-right: 10px;
+        }
+        
+        .search-container input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.9rem;
+        }
+        
+        .search-container input:focus {
+            outline: none;
+        }
+        
+        .search-container input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .user-list {
+            height: 100%;
+            overflow-y: auto;
+            padding: 0;
             position: relative;
             z-index: 2;
         }
         
-        .user-card {
-            background: var(--card-bg);
-            border-radius: 15px;
-            padding: 25px;
+        .user-item {
+            background: var(--message-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
             cursor: pointer;
-            transition: all 0.4s ease;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
-            min-width: 250px;
-            height: 380px;
-            flex-shrink: 0;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
         
-        .user-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .user-item:hover {
+            background: var(--hover-bg);
         }
         
-        .user-card:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25), 0 0 20px rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .user-card:hover::before {
-            opacity: 1;
+        .user-item.active {
+            background: var(--active-bg);
         }
         
         .user-avatar {
-            width: 90px;
-            height: 90px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             background: linear-gradient(45deg, #4a5568, #718096);
             display: flex;
@@ -125,63 +136,80 @@
             align-items: center;
             color: white;
             font-weight: bold;
-            font-size: 36px;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-            position: relative;
-            z-index: 2;
+            font-size: 22px;
+            margin-right: 15px;
+            flex-shrink: 0;
             font-family: 'Orbitron', sans-serif;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
             border: 2px solid rgba(255, 255, 255, 0.2);
         }
         
-        .user-card:hover .user-avatar {
-            transform: scale(1.15) rotate(5deg);
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .user-name-time {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
         }
         
         .user-name {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 600;
             color: white;
-            margin: 10px 0 5px 0;
-            position: relative;
-            z-index: 2;
+            margin: 0;
             font-family: 'Orbitron', sans-serif;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-        }
-        
-        .user-email {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 2;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 100%;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        
+        .user-message {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .message-preview {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
         }
         
         .notification-badge {
             background: #e53e3e;
             color: white;
             border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: inline-flex;
+            width: 24px;
+            height: 24px;
+            display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 14px;
-            margin-top: 10px;
-            position: relative;
-            z-index: 2;
-            box-shadow: 0 0 15px rgba(229, 62, 62, 0.7);
+            font-size: 12px;
+            margin-left: 10px;
+            box-shadow: 0 0 10px rgba(229, 62, 62, 0.7);
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
         }
         
         .empty-state {
@@ -207,9 +235,9 @@
             border-radius: 50%;
         }
         
-        /* Scrollbar styling for horizontal layout */
+        /* Scrollbar styling */
         .user-list::-webkit-scrollbar {
-            height: 8px;
+            width: 8px;
         }
         
         .user-list::-webkit-scrollbar-track {
@@ -225,6 +253,43 @@
         .user-list::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #48bb78;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            border: 2px solid var(--secondary);
+        }
+        
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        @media (max-width: 768px) {
+            .glass-container {
+                height: 95vh;
+                width: 100%;
+                border-radius: 0;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-container {
+                width: 100%;
+            }
+            
+            body {
+                padding: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -232,19 +297,33 @@
     
     <div class="glass-container">
         <div class="header">
-            <h2>User Messages</h2>
+            <h2><i class="fas fa-comments"></i> User Messages</h2>
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search messages...">
+            </div>
         </div>
         
         <div class="user-list" id="userList">
             {% if users %}
                 {% for user in users %}
-                <div class="user-card" data-userid="{{ user.id }}" onclick="location.href='{{ url_for('chat', user_id=user.id) }}'">
-                    <div class="user-avatar">{{ user.name[0] }}</div>
-                    <div class="user-name">{{ user.name }}</div>
-                    <div class="user-email">{{ user.email }}</div>
-                    {% if user.unread_count > 0 %}
-                    <div class="notification-badge">{{ user.unread_count }}</div>
-                    {% endif %}
+                <div class="user-item" data-userid="{{ user.id }}" onclick="location.href='{{ url_for('chat', user_id=user.id) }}'">
+                    <div class="avatar-container">
+                        <div class="user-avatar">{{ user.name[0] }}</div>
+                        <div class="status-indicator"></div>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name-time">
+                            <div class="user-name">{{ user.name }}</div>
+                            <div class="message-time">2:45 PM</div>
+                        </div>
+                        <div class="message-preview">
+                            <div class="user-message">Last message preview goes here...</div>
+                            {% if user.unread_count > 0 %}
+                            <div class="notification-badge">{{ user.unread_count }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}
@@ -264,8 +343,11 @@
             // Initialize mouse move effect
             initMouseMoveEffect();
             
-            // Add subtle shuffle animation to user cards
-            shuffleUserCards();
+            // Add click effect to user items
+            initUserItems();
+            
+            // Add search functionality
+            initSearch();
         });
         
         function createParticles() {
@@ -290,19 +372,12 @@
         }
         
         function initMouseMoveEffect() {
-            const userCards = document.querySelectorAll('.user-card');
             const container = document.querySelector('.glass-container');
             
             container.addEventListener('mousemove', function(e) {
                 const { left, top, width, height } = container.getBoundingClientRect();
                 const x = (e.clientX - left) / width - 0.5;
                 const y = (e.clientY - top) / height - 0.5;
-                
-                // Apply subtle parallax effect to user cards
-                userCards.forEach(card => {
-                    const speed = 5;
-                    card.style.transform = `translateY(-8px) scale(1.03) translateX(${x * speed}px) translateY(${y * speed}px)`;
-                });
                 
                 // Move particles in opposite direction for depth effect
                 const particles = document.querySelectorAll('.particle');
@@ -314,10 +389,6 @@
             
             // Reset transformations when mouse leaves
             container.addEventListener('mouseleave', function() {
-                userCards.forEach(card => {
-                    card.style.transform = 'translateY(-8px) scale(1.03)';
-                });
-                
                 const particles = document.querySelectorAll('.particle');
                 particles.forEach(particle => {
                     particle.style.transform = 'translate(0, 0)';
@@ -325,37 +396,44 @@
             });
         }
         
-        function shuffleUserCards() {
-            const userList = document.getElementById('userList');
-            if (!userList) return;
+        function initUserItems() {
+            const userItems = document.querySelectorAll('.user-item');
             
-            const userCards = Array.from(document.querySelectorAll('.user-card'));
-            if (userCards.length === 0) return;
-            
-            // Clear the container
-            userList.innerHTML = '';
-            
-            // Fisher-Yates shuffle algorithm
-            for (let i = userCards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [userCards[i], userCards[j]] = [userCards[j], userCards[i]];
-            }
-            
-            // Add shuffled cards back to container
-            userCards.forEach(card => {
-                userList.appendChild(card);
+            userItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all items
+                    userItems.forEach(i => i.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Navigate to chat after a slight delay for visual feedback
+                    setTimeout(() => {
+                        window.location.href = this.dataset.userid ? 
+                            `{{ url_for('chat', user_id='') }}${this.dataset.userid}` : 
+                            '#';
+                    }, 200);
+                });
             });
+        }
+        
+        function initSearch() {
+            const searchInput = document.querySelector('.search-container input');
+            const userItems = document.querySelectorAll('.user-item');
             
-            // Add subtle staggered appearance animation
-            userCards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
                 
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
+                userItems.forEach(item => {
+                    const userName = item.querySelector('.user-name').textContent.toLowerCase();
+                    const userMessage = item.querySelector('.user-message').textContent.toLowerCase();
+                    
+                    if (userName.includes(searchTerm) || userMessage.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
             });
         }
     </script>

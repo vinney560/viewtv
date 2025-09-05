@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Admin Messages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #4a5568;
@@ -19,7 +20,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 0.7rem;
             padding: 20px;
             margin: 0;
@@ -52,15 +53,20 @@
             margin: 0;
             color: white;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
         .user-list {
             height: calc(100% - 80px);
-            overflow-y: auto;
+            overflow-x: auto;
+            overflow-y: hidden;
             padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: flex;
+            flex-direction: row;
             gap: 20px;
             position: relative;
             z-index: 2;
@@ -74,13 +80,17 @@
             transition: all 0.4s ease;
             text-align: center;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
             overflow: hidden;
+            min-width: 200px;
+            height: 280px;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
         
         .user-card::before {
@@ -96,9 +106,10 @@
         }
         
         .user-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25), 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .user-card:hover::before {
@@ -106,8 +117,8 @@
         }
         
         .user-avatar {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: linear-gradient(45deg, #4a5568, #718096);
             display: flex;
@@ -115,40 +126,52 @@
             align-items: center;
             color: white;
             font-weight: bold;
-            font-size: 32px;
-            margin-bottom: 15px;
+            font-size: 36px;
+            margin-bottom: 20px;
             transition: transform 0.3s ease;
             position: relative;
             z-index: 2;
+            font-family: 'Orbitron', sans-serif;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
         
         .user-card:hover .user-avatar {
-            transform: scale(1.1);
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
         }
         
         .user-name {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             color: white;
-            margin: 5px 0;
+            margin: 10px 0 5px 0;
             position: relative;
             z-index: 2;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
         }
         
         .user-email {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 10px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
             position: relative;
             z-index: 2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .notification-badge {
             background: #e53e3e;
             color: white;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -156,14 +179,18 @@
             margin-top: 10px;
             position: relative;
             z-index: 2;
-            box-shadow: 0 0 10px rgba(229, 62, 62, 0.5);
+            box-shadow: 0 0 15px rgba(229, 62, 62, 0.7);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .empty-state {
-            grid-column: 1 / -1;
+            width: 100%;
             text-align: center;
             padding: 40px;
             color: white;
+            font-family: 'Orbitron', sans-serif;
         }
         
         .particles {
@@ -179,6 +206,25 @@
             position: absolute;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 50%;
+        }
+        
+        /* Scrollbar styling for horizontal layout */
+        .user-list::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .user-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .user-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .user-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
@@ -256,7 +302,7 @@
                 // Apply subtle parallax effect to user cards
                 userCards.forEach(card => {
                     const speed = 5;
-                    card.style.transform = `translateY(-5px) translateX(${x * speed}px) translateY(${y * speed}px)`;
+                    card.style.transform = `translateY(-8px) scale(1.03) translateX(${x * speed}px) translateY(${y * speed}px)`;
                 });
                 
                 // Move particles in opposite direction for depth effect
@@ -270,7 +316,7 @@
             // Reset transformations when mouse leaves
             container.addEventListener('mouseleave', function() {
                 userCards.forEach(card => {
-                    card.style.transform = 'translateY(-5px)';
+                    card.style.transform = 'translateY(-8px) scale(1.03)';
                 });
                 
                 const particles = document.querySelectorAll('.particle');

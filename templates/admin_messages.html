@@ -4,46 +4,54 @@
     <title>Admin Messages</title>
     <style>
         :root {
-            --primary: #3498db;
-            --secondary: #2c3e50;
-            --accent: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #34495e;
+            --primary: #4a5568;
+            --secondary: #2d3748;
+            --accent: #718096;
+            --light: #e2e8f0;
+            --dark: #1a202c;
+            --card-bg: rgba(255, 255, 255, 0.12);
         }
         
         body {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%234a5568" width="100" height="100"/><path fill="%232d3748" d="M0 0L100 100" stroke-width="0"/><path fill="%23374151" d="M100 0L0 100" stroke-width="0"/></svg>');
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding: 20px;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
         }
         
         .glass-container {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(12px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             width: 100%;
             max-width: 1000px;
             height: 85vh;
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
         }
         
         .header {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .header h2 {
             margin: 0;
             color: white;
             font-weight: 600;
+            letter-spacing: 1px;
         }
         
         .user-list {
@@ -53,34 +61,54 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
+            position: relative;
+            z-index: 2;
         }
         
         .user-card {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--card-bg);
             border-radius: 15px;
             padding: 25px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             text-align: center;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .user-card:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .user-card:hover::before {
+            opacity: 1;
         }
         
         .user-avatar {
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ff7e5f, #feb47b);
+            background: linear-gradient(45deg, #4a5568, #718096);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -88,6 +116,13 @@
             font-weight: bold;
             font-size: 32px;
             margin-bottom: 15px;
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .user-card:hover .user-avatar {
+            transform: scale(1.1);
         }
         
         .user-name {
@@ -95,16 +130,20 @@
             font-weight: 600;
             color: white;
             margin: 5px 0;
+            position: relative;
+            z-index: 2;
         }
         
         .user-email {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.7);
             margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
         }
         
         .notification-badge {
-            background: var(--accent);
+            background: #e53e3e;
             color: white;
             border-radius: 50%;
             width: 28px;
@@ -114,6 +153,9 @@
             align-items: center;
             font-size: 14px;
             margin-top: 10px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(229, 62, 62, 0.5);
         }
         
         .empty-state {
@@ -122,18 +164,35 @@
             padding: 40px;
             color: white;
         }
+        
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
+    <div class="particles" id="particles"></div>
+    
     <div class="glass-container">
         <div class="header">
             <h2>User Messages</h2>
         </div>
         
-        <div class="user-list">
+        <div class="user-list" id="userList">
             {% if users %}
                 {% for user in users %}
-                <div class="user-card" onclick="location.href='{{ url_for('chat', user_id=user.id) }}'">
+                <div class="user-card" data-userid="{{ user.id }}" onclick="location.href='{{ url_for('chat', user_id=user.id) }}'">
                     <div class="user-avatar">{{ user.name[0] }}</div>
                     <div class="user-name">{{ user.name }}</div>
                     <div class="user-email">{{ user.email }}</div>
@@ -150,5 +209,109 @@
             {% endif %}
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create background particles
+            createParticles();
+            
+            // Initialize mouse move effect
+            initMouseMoveEffect();
+            
+            // Add subtle shuffle animation to user cards
+            shuffleUserCards();
+        });
+        
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size between 50-200px
+                const size = Math.random() * 150 + 50;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        function initMouseMoveEffect() {
+            const userCards = document.querySelectorAll('.user-card');
+            const container = document.querySelector('.glass-container');
+            
+            container.addEventListener('mousemove', function(e) {
+                const { left, top, width, height } = container.getBoundingClientRect();
+                const x = (e.clientX - left) / width - 0.5;
+                const y = (e.clientY - top) / height - 0.5;
+                
+                // Apply subtle parallax effect to user cards
+                userCards.forEach(card => {
+                    const speed = 5;
+                    card.style.transform = `translateY(-5px) translateX(${x * speed}px) translateY(${y * speed}px)`;
+                });
+                
+                // Move particles in opposite direction for depth effect
+                const particles = document.querySelectorAll('.particle');
+                particles.forEach(particle => {
+                    const speed = parseInt(particle.style.width) / 30;
+                    particle.style.transform = `translateX(${-x * speed}px) translateY(${-y * speed}px)`;
+                });
+            });
+            
+            // Reset transformations when mouse leaves
+            container.addEventListener('mouseleave', function() {
+                userCards.forEach(card => {
+                    card.style.transform = 'translateY(-5px)';
+                });
+                
+                const particles = document.querySelectorAll('.particle');
+                particles.forEach(particle => {
+                    particle.style.transform = 'translate(0, 0)';
+                });
+            });
+        }
+        
+        function shuffleUserCards() {
+            const userList = document.getElementById('userList');
+            if (!userList) return;
+            
+            const userCards = Array.from(document.querySelectorAll('.user-card'));
+            if (userCards.length === 0) return;
+            
+            // Clear the container
+            userList.innerHTML = '';
+            
+            // Fisher-Yates shuffle algorithm
+            for (let i = userCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [userCards[i], userCards[j]] = [userCards[j], userCards[i]];
+            }
+            
+            // Add shuffled cards back to container
+            userCards.forEach(card => {
+                userList.appendChild(card);
+            });
+            
+            // Add subtle staggered appearance animation
+            userCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+    </script>
 </body>
 </html>

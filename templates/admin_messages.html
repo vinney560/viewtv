@@ -307,7 +307,7 @@
         <div class="user-list" id="userList">
             {% if users %}
                 {% for user in users %}
-                <div class="user-item" data-userid="{{ user.id }}" onclick="location.href='{{ url_for('chat', user_id=user.id) }}'">
+                <div class="user-item" data-userid="{{ user.id }}">
                     <div class="avatar-container">
                         <div class="user-avatar">{{ user.name[0] }}</div>
                         <div class="status-indicator"></div>
@@ -407,12 +407,16 @@
                     // Add active class to clicked item
                     this.classList.add('active');
                     
-                    // Navigate to chat after a slight delay for visual feedback
-                    setTimeout(() => {
-                        window.location.href = this.dataset.userid ? 
-                            `{{ url_for('chat', user_id='') }}${this.dataset.userid}` : 
-                            '#';
-                    }, 200);
+                    // Get the user ID safely
+                    const userId = this.dataset.userid;
+                    if (userId && userId !== '') {
+                        // Navigate to chat after a slight delay for visual feedback
+                        setTimeout(() => {
+                            window.location.href = `/chat/${userId}`;
+                        }, 200);
+                    } else {
+                        console.error('Invalid user ID');
+                    }
                 });
             });
         }

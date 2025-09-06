@@ -1,94 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Messages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #4a5568;
-            --secondary: #2d3748;
-            --accent: #718096;
-            --light: #e2e8f0;
-            --dark: #1a202c;
-            --card-bg: rgba(255, 255, 255, 0.12);
-            --message-bg: rgba(255, 255, 255, 0.08);
-            --hover-bg: rgba(255, 255, 255, 0.15);
-            --active-bg: rgba(255, 255, 255, 0.2);
+            --primary-bg: #111b21;
+            --secondary-bg: #202c33;
+            --message-bg: rgba(255, 255, 255, 0.05);
+            --hover-bg: rgba(255, 255, 255, 0.08);
+            --active-bg: rgba(255, 255, 255, 0.12);
+            --accent-color: #3a70d5;
+            --text-primary: #e9edef;
+            --text-secondary: #8696a0;
+            --text-muted: #667781;
+            --online-status: #3fb950;
+            --unread-badge: #f85149;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%234a5568" width="100" height="100"/><path fill="%232d3748" d="M0 0L100 100" stroke-width="0"/><path fill="%23374151" d="M100 0L0 100" stroke-width="0"/></svg>');
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.9rem;
-            padding: 20px;
-            margin: 0;
-            overflow: hidden;
-        }
-        
-        .glass-container {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 98%;
-            max-width: 1000px;
-            height: 85vh;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 2;
+            background: var(--primary-bg);
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-primary);
+            height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            font-size: 18px;
+            padding: 0;
+            margin: 0;
         }
         
         .header {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--secondary-bg);
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid var(--border-color);
         }
         
-        .header h2 {
-            margin: 0;
-            color: white;
-            font-weight: 600;
-            letter-spacing: 2px;
+        .header-title {
             font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 22px;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            font-size: 1.8rem;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
         .search-container {
             display: flex;
             align-items: center;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--message-bg);
             border-radius: 20px;
-            padding: 8px 15px;
-            width: 30%;
+            padding: 12px 18px;
+            margin: 15px 20px;
         }
         
         .search-container i {
-            color: rgba(255, 255, 255, 0.7);
-            margin-right: 10px;
+            color: var(--text-muted);
+            margin-right: 12px;
+            font-size: 20px;
         }
         
         .search-container input {
             background: transparent;
             border: none;
-            color: white;
+            color: var(--text-primary);
             width: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.9rem;
+            font-size: 18px;
+            font-family: 'Roboto', sans-serif;
         }
         
         .search-container input:focus {
@@ -96,21 +87,20 @@
         }
         
         .search-container input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-muted);
         }
         
         .user-list {
-            height: 100%;
+            flex: 1;
             overflow-y: auto;
-            padding: 0;
-            position: relative;
-            z-index: 2;
+            padding: 0 15px 15px 15px;
         }
         
         .user-item {
             background: var(--message-bg);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 15px 20px;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
@@ -127,8 +117,8 @@
         }
         
         .user-avatar {
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: linear-gradient(45deg, #4a5568, #718096);
             display: flex;
@@ -136,12 +126,24 @@
             align-items: center;
             color: white;
             font-weight: bold;
-            font-size: 22px;
-            margin-right: 15px;
+            font-size: 24px;
+            margin-right: 18px;
             flex-shrink: 0;
             font-family: 'Orbitron', sans-serif;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
             border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        .status-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--online-status);
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            border: 2px solid var(--secondary-bg);
         }
         
         .user-details {
@@ -153,38 +155,33 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         
         .user-name {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 600;
-            color: white;
+            color: var(--text-primary);
             margin: 0;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         
         .message-time {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            color: var(--text-muted);
             flex-shrink: 0;
             margin-left: 10px;
         }
         
         .user-message {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 18px;
+            color: var(--text-secondary);
             margin: 0;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .message-preview {
@@ -195,153 +192,164 @@
         }
         
         .notification-badge {
-            background: #e53e3e;
+            background: var(--unread-badge);
             color: white;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 12px;
+            font-size: 16px;
             margin-left: 10px;
-            box-shadow: 0 0 10px rgba(229, 62, 62, 0.7);
-            font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            border: 1px solid rgba(255, 255, 255, 0.3);
             flex-shrink: 0;
         }
         
         .empty-state {
             width: 100%;
             text-align: center;
-            padding: 40px;
-            color: white;
-            font-family: 'Orbitron', sans-serif;
+            padding: 60px 40px;
+            color: var(--text-muted);
         }
         
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 20px;
+            opacity: 0.5;
         }
         
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .empty-state p {
+            font-size: 18px;
         }
         
         /* Scrollbar styling */
-        .user-list::-webkit-scrollbar {
+        ::-webkit-scrollbar {
             width: 8px;
         }
         
-        .user-list::-webkit-scrollbar-track {
+        ::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
         }
         
-        .user-list::-webkit-scrollbar-thumb {
+        ::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
         }
         
-        .user-list::-webkit-scrollbar-thumb:hover {
+        ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.3);
         }
         
-        .status-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #48bb78;
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            border: 2px solid var(--secondary);
-        }
-        
-        .avatar-container {
-            position: relative;
-            display: inline-block;
-        }
-        
+        /* Responsive design */
         @media (max-width: 768px) {
-            .glass-container {
-                height: 95vh;
-                width: 100%;
-                border-radius: 0;
+            body {
+                font-size: 16px;
             }
             
             .header {
-                flex-direction: column;
-                gap: 15px;
+                padding: 12px 15px;
+            }
+            
+            .header-title {
+                font-size: 20px;
             }
             
             .search-container {
-                width: 100%;
+                margin: 10px 15px;
+                padding: 10px 15px;
             }
             
-            body {
-                padding: 0;
+            .user-item {
+                padding: 15px;
             }
+            
+            .user-avatar {
+                width: 55px;
+                height: 55px;
+                font-size: 22px;
+                margin-right: 15px;
+            }
+            
+            .user-name {
+                font-size: 18px;
+            }
+            
+            .user-message {
+                font-size: 16px;
+            }
+        }
+        
+        /* Particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
         }
     </style>
 </head>
 <body>
     <div class="particles" id="particles"></div>
     
-    <div class="glass-container">
-        <div class="header">
-            <h2><i class="fas fa-comments"></i> User Messages</h2>
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search messages...">
+    <div class="header">
+        <h1 class="header-title"><i class="fas fa-comments"></i> User Messages</h1>
+    </div>
+    
+    <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search messages...">
+    </div>
+    
+    <div class="user-list" id="userList">
+        {% if users %}
+            {% for user in users %}
+            <div class="user-item" data-userid="{{ user.id }}">
+                <div class="user-avatar">{{ user.name[0] }}
+                    <div class="status-indicator"></div>
+                </div>
+                <div class="user-details">
+                    <div class="user-name-time">
+                        <div class="user-name">{{ user.name }}</div>
+                        <div class="message-time">2:45 PM</div>
+                    </div>
+                    <div class="message-preview">
+                        <div class="user-message">Last message preview goes here...</div>
+                        {% if user.unread_count > 0 %}
+                        <div class="notification-badge">{{ user.unread_count }}</div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="user-list" id="userList">
-            {% if users %}
-                {% for user in users %}
-                <div class="user-item" data-userid="{{ user.id }}">
-                    <div class="avatar-container">
-                        <div class="user-avatar">{{ user.name[0] }}</div>
-                        <div class="status-indicator"></div>
-                    </div>
-                    <div class="user-details">
-                        <div class="user-name-time">
-                            <div class="user-name">{{ user.name }}</div>
-                            <div class="message-time">2:45 PM</div>
-                        </div>
-                        <div class="message-preview">
-                            <div class="user-message">Last message preview goes here...</div>
-                            {% if user.unread_count > 0 %}
-                            <div class="notification-badge">{{ user.unread_count }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-state">
-                    <h3>No messages yet</h3>
-                    <p>Users will appear here when they message you</p>
-                </div>
-            {% endif %}
-        </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-comment-slash"></i>
+                <h3>No messages yet</h3>
+                <p>Users will appear here when they message you</p>
+            </div>
+        {% endif %}
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Create background particles
             createParticles();
-            
-            // Initialize mouse move effect
-            initMouseMoveEffect();
             
             // Add click effect to user items
             initUserItems();
@@ -352,7 +360,7 @@
         
         function createParticles() {
             const container = document.getElementById('particles');
-            const particleCount = 30;
+            const particleCount = 15;
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -367,33 +375,11 @@
                 particle.style.left = `${Math.random() * 100}%`;
                 particle.style.top = `${Math.random() * 100}%`;
                 
+                // Random opacity
+                particle.style.opacity = Math.random() * 0.1;
+                
                 container.appendChild(particle);
             }
-        }
-        
-        function initMouseMoveEffect() {
-            const container = document.querySelector('.glass-container');
-            
-            container.addEventListener('mousemove', function(e) {
-                const { left, top, width, height } = container.getBoundingClientRect();
-                const x = (e.clientX - left) / width - 0.5;
-                const y = (e.clientY - top) / height - 0.5;
-                
-                // Move particles in opposite direction for depth effect
-                const particles = document.querySelectorAll('.particle');
-                particles.forEach(particle => {
-                    const speed = parseInt(particle.style.width) / 30;
-                    particle.style.transform = `translateX(${-x * speed}px) translateY(${-y * speed}px)`;
-                });
-            });
-            
-            // Reset transformations when mouse leaves
-            container.addEventListener('mouseleave', function() {
-                const particles = document.querySelectorAll('.particle');
-                particles.forEach(particle => {
-                    particle.style.transform = 'translate(0, 0)';
-                });
-            });
         }
         
         function initUserItems() {

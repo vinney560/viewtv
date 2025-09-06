@@ -1192,17 +1192,17 @@
         
         <div class="detail-item">
             <label>Member Since</label>
-            <p>January 15, 2023</p>
+            <p>{{ other_user.created_at.strftime("%B %d, %Y at %I:%M %p") }}</p>
         </div>
         
         <div class="detail-item">
             <label>Last Active</label>
-            <p>Just now</p>
+<p>{{ "Active" if other_user.status == "True" else "Last since Morning" }}</p>
         </div>
         
         <div class="detail-item">
             <label>Status</label>
-            <p>Premium User</p>
+            <p>{{ other_user.plus_type }}</p>
         </div>
         
         <div class="user-actions">

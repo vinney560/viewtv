@@ -619,55 +619,56 @@ def admin1_required(f):
 def superadmin_required(f):
     return role_required(4)(f)  # only superadmin
 #=====================================
-import requests
 import random
 import string
 
 @app.route("/simulate_register", methods=["GET"])
-def simulate_register():
+def simulate_register_internal():
     total_users = 1000
     created = 0
     failed = 0
 
-    # Target your live register endpoint
-    register_url = "https://viewtv.viewtv.gt.tc/register"
-
-    # Optional: Admin code for special role or leave empty for 'user'
-    secret_code = ""  # e.g. "479admin1" if you want admin users
-
     for i in range(total_users):
-        # Generate random but valid user info
-        name = ''.join(random.choices(string.ascii_letters, k=8))
-        email = f"{name.lower()}_{i}@gmail.com"  # valid email
-        password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
-
-        payload = {
-            "name": name,
-            "email": email,
-            "password": password,
-            "confirm_password": password,
-            "secret_code": secret_code
-        }
-
         try:
-            # Send POST request to your /register endpoint
-            resp = requests.post(register_url, data=payload, timeout=10)
+            # Generate random user data
+            name = ''.join(random.choices(string.ascii_letters, k=8))
+            email = f"{name.lower()}_{i}@gmail.com"
+            password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
 
-            if resp.status_code == 200 or resp.status_code == 302:
-                created += 1
-                # ✅ Directly verify the email in DB if needed
-                user = User.query.filter_by(email=email).first()
-                if user:
-                    user.email_verified = True  # mark as verified
-                    db.session.commit()
-            else:
-                failed += 1
-                print(f"❌ Failed for {email}: {resp.status_code}")
+            # Skip if email already exists
+            if User.query.filter_by(email=email).first():
+                continue
+
+            new_user = User(
+                name=name,
+                email=email,
+                password=generate_password_hash(password),
+                role="user",
+                status="active",
+                email_verified=True,  # ✅ Mark email as verified
+                agreed=True,
+                plus_expires_at=datetime.utcnow() + timedelta(days=7),
+                plus_type="free",
+                last_free_plus=None
+            )
+
+            db.session.add(new_user)
+            created += 1
+
         except Exception as e:
-            print(f"❌ Error registering {email}: {e}")
+            print(f"❌ Error on user {i}: {e}")
             failed += 1
+            db.session.rollback()
 
-    return f"✅ Simulation complete: {created} registered successfully, {failed} failed."
+    # Commit once at the end for speed
+    try:
+        db.session.commit()
+    except Exception as e:
+        print("❌ Commit error:", e)
+        failed += 1
+        db.session.rollback()
+
+    return f"✅ {created} users created successfully, {failed} failed."
 
 #=====================================
 #        >>>>ACCESS GRANTERS<<<<

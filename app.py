@@ -621,54 +621,73 @@ def superadmin_required(f):
 #=====================================
 import random
 import string
+import time
+from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash
 
 @app.route("/simulate_register", methods=["GET"])
 def simulate_register_internal():
     total_users = 1000
+    batch_size = 100   # commit every 100 users
+    delay_per_user = 0.10  # 50ms delay between inserts
+
     created = 0
     failed = 0
+    users_to_add = []
 
     for i in range(total_users):
         try:
-            # Generate random user data
+            # --- Generate fake user data ---
             name = ''.join(random.choices(string.ascii_letters, k=8))
             email = f"{name.lower()}_{i}@gmail.com"
-            password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+            password = generate_password_hash("Test12345!")  # same password for all (optional)
 
-            # Skip if email already exists
+            # --- Skip duplicates ---
             if User.query.filter_by(email=email).first():
                 continue
 
+            # --- Create user ---
             new_user = User(
                 name=name,
                 email=email,
-                password=generate_password_hash(password),
+                password=password,
                 role="user",
                 status="active",
-                email_verified=True,  # ✅ Mark email as verified
+                email_verified=True,    # ✅ mark as verified
                 agreed=True,
                 plus_expires_at=datetime.utcnow() + timedelta(days=7),
                 plus_type="free",
                 last_free_plus=None
             )
 
-            db.session.add(new_user)
+            users_to_add.append(new_user)
             created += 1
+
+            # ✅ Commit batch when we reach batch_size
+            if len(users_to_add) >= batch_size:
+                db.session.add_all(users_to_add)
+                db.session.commit()
+                users_to_add = []
+
+            # 🕐 Delay to reduce DB load
+            time.sleep(delay_per_user)
 
         except Exception as e:
             print(f"❌ Error on user {i}: {e}")
             failed += 1
             db.session.rollback()
 
-    # Commit once at the end for speed
-    try:
-        db.session.commit()
-    except Exception as e:
-        print("❌ Commit error:", e)
-        failed += 1
-        db.session.rollback()
+    # ✅ Commit remaining users
+    if users_to_add:
+        try:
+            db.session.add_all(users_to_add)
+            db.session.commit()
+        except Exception as e:
+            print(f"❌ Final commit error: {e}")
+            failed += len(users_to_add)
+            db.session.rollback()
 
-    return f"✅ {created} users created successfully, {failed} failed."
+    return f"✅ Done: {created} users created successfully, {failed} failed."
 
 #=====================================
 #        >>>>ACCESS GRANTERS<<<<

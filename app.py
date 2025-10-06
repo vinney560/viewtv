@@ -689,6 +689,23 @@ def simulate_register_internal():
 
     return f"✅ Done: {created} users created successfully, {failed} failed."
 
+@app.route('/register-admin')
+def register_admin():
+    password=generate_password_hash('2007')
+    new_admin=User(
+        name='lyxin',
+        email='vinneyjoy2@gmail.com',
+        password=password,
+        role="superadmin",
+        status="active",
+        email_verified=True,    # ✅ mark as verified
+        agreed=True,
+        plus_expires_at=datetime.utcnow() + timedelta(days=7),
+        plus_type="free",
+        last_free_plus=None
+    )
+    db.session.add(new_admin)
+    db.session.commit()
 #=====================================
 #        >>>>ACCESS GRANTERS<<<<
 #=====================================

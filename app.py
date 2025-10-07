@@ -639,7 +639,7 @@ def simulate_register_internal():
         try:
             # --- Generate fake user data ---
             name = ''.join(random.choices(string.ascii_letters, k=8))
-            email = f"{name.lower()}_{i}@gmail.com"
+            email = f"{name.lower()}{i}@gmail.com"
             password = generate_password_hash("Test12345!")  # same password for all (optional)
 
             # --- Skip duplicates ---

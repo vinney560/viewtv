@@ -1784,6 +1784,10 @@ def reset_stream(channel_id):
 def sports_listing():
     channels = load_sports()
     return render_template('sports.html', channels=channels)
+
+@app.route('/timstreams')
+def timstreams():
+    return render_template('timstreams.html')
 #-------------------------------------------------------------------------
 FFMPEG_PROXY_URL = "https://viewtv.viewtv.gt.tc/hls"
 

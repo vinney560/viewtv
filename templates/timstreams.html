@@ -342,7 +342,7 @@
       <a href="/home_2" class="text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400/10 hover:text-blue-300 transition-all duration-300 border border-blue-400/30">
         Home
       </a>
-      <a href="#" onclick='javascript: history.back(), return False' class="bg-blue-400/10 text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400 hover:text-gray-900 transition-all duration-300 border border-blue-400/30">
+      <a id='backBtn' class="bg-blue-400/10 text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400 hover:text-gray-900 transition-all duration-300 border border-blue-400/30">
         Back
       </a>
     </div>
@@ -509,6 +509,7 @@
 
   <!-- Advanced Player Script -->
   <script>
+    document.getElementById('backBtn').addEventListener('click', function() { window.location.back(); })
     class AdvancedStreamPlayer {
       constructor() {
         this.currentUrl = 'https://timstreams.cfd/';

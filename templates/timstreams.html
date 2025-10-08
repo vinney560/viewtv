@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TimStreams | StreamTV</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'float': 'float 3s ease-in-out infinite',
+            'slide-in': 'slideIn 0.3s ease-out',
+            'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-5px)' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(0)' },
+            },
+            pulse: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '.5' },
+            }
+          },
+          colors: {
+            premium: {
+              DEFAULT: '#4CAF50',
+              dark: '#388E3C',
+            },
+            primary: {
+              DEFAULT: '#3B82F6',
+              dark: '#2563EB',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
+      color: #e2e8f0;
+      overflow: hidden;
+    }
+    
+    .glow-hover:hover {
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .glass-morph {
+      background: rgba(30, 30, 40, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 31, 135, 0.2);
+    }
+    
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(59, 130, 246, 0.15);
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    
+    /* Player specific styles */
+    .player-container {
+      height: calc(100vh - 120px);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .iframe-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+    
+    .iframe-container.active {
+      z-index: 10;
+      opacity: 1;
+    }
+    
+    .iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 0;
+    }
+    
+    .sidebar {
+      width: 300px;
+      height: 100%;
+      position: absolute;
+      left: -300px;
+      top: 0;
+      transition: left 0.3s ease;
+      z-index: 20;
+      overflow-y: auto;
+    }
+    
+    .sidebar.open {
+      left: 0;
+    }
+    
+    .sidebar-toggle {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 30;
+    }
+    
+    .url-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 15;
+      background: rgba(30, 30, 40, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.875rem;
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 25;
+      transition: opacity 0.3s ease;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(59, 130, 246, 0.3);
+      border-radius: 50%;
+      border-top-color: #3B82F6;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .opacity-0 {
+      opacity: 0;
+    }
+    
+    .pointer-events-none {
+      pointer-events: none;
+    }
+    
+    .connection-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    
+    .connection-dot.connected {
+      background-color: #10B981;
+      box-shadow: 0 0 6px #10B981;
+    }
+    
+    .connection-dot.disconnected {
+      background-color: #EF4444;
+      box-shadow: 0 0 6px #EF4444;
+    }
+    
+    .connection-dot.loading {
+      background-color: #F59E0B;
+      box-shadow: 0 0 6px #F59E0B;
+      animation: pulse-fast 1s infinite;
+    }
+    
+    /* Progress bar */
+    .progress-bar {
+      height: 4px;
+      background: rgba(59, 130, 246, 0.2);
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 40;
+      overflow: hidden;
+    }
+    
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    /* Error state */
+    .error-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 35;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .error-icon {
+      width: 64px;
+      height: 64px;
+      color: #EF4444;
+      margin-bottom: 16px;
+    }
+    
+    /* Enhanced sidebar styles */
+    .sidebar-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 19;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-backdrop.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        left: -100%;
+      }
+    }
+  </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+  <!-- Security Badge -->
+  <div class="w-full bg-blue-900/30 text-blue-300 text-center py-2 text-sm border-b border-blue-800/50">
+    <div class="max-w-6xl mx-auto flex justify-center items-center gap-4 flex-wrap">
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        Secure HTTPS Connection
+      </span>
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+        Privacy Protected
+      </span>
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
+        </svg>
+        DMCA Compliant
+      </span>
+      <span class="security-badge">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
+        </svg>
+        CSP Protected
+      </span>
+    </div>
+  </div>
+  
+  <!-- Navigation -->
+  <header class="w-full sticky top-0 z-30 bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 shadow-lg p-4 flex justify-between items-center">
+    <div class="flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+      <span class="text-2xl font-bold text-gray-100">Stream<span class="text-blue-400">Tv</span></span>
+    </div>
+    <div class="flex space-x-4">
+      <a href="/" class="text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400/10 hover:text-blue-300 transition-all duration-300 border border-blue-400/30">
+        Home
+      </a>
+      <a href="/login" class="bg-blue-400/10 text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400 hover:text-gray-900 transition-all duration-300 border border-blue-400/30">
+        Login
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Player Content -->
+  <main class="flex-1 w-full">
+    <div class="player-container relative">
+      <!-- Sidebar Backdrop -->
+      <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+      
+      <!-- Progress Bar -->
+      <div id="progressBar" class="progress-bar hidden">
+        <div id="progressBarInner" class="progress-bar-inner"></div>
+      </div>
+      
+      <!-- Sidebar Toggle Button -->
+      <button id="sidebarToggle" class="sidebar-toggle glass-morph p-3 rounded-full text-blue-400 hover:bg-blue-400/10 hover:text-blue-300 transition-all duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      
+      <!-- URL Indicator -->
+      <div id="urlIndicator" class="url-indicator glass-morph">
+        <span id="currentUrl">Loading...</span>
+      </div>
+      
+      <!-- Loading Overlay -->
+      <div id="loadingOverlay" class="loading-overlay">
+        <div class="text-center">
+          <div class="loading-spinner mb-4"></div>
+          <p class="text-gray-300">Loading stream...</p>
+        </div>
+      </div>
+      
+      <!-- Error Overlay -->
+      <div id="errorOverlay" class="error-overlay hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="error-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="text-xl font-bold text-gray-100 mb-2">Stream Error</h3>
+        <p class="text-gray-400 mb-4" id="errorMessage">Unable to load the stream. Please try again.</p>
+        <button id="retryBtn" class="bg-blue-500 text-white font-medium py-2 px-6 rounded-lg hover:bg-blue-600 transition">
+          Retry
+        </button>
+      </div>
+      
+      <!-- Iframe Containers -->
+      <div id="iframeContainer1" class="iframe-container">
+        <iframe id="playerFrame1" src="about:blank" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation" allowfullscreen></iframe>
+      </div>
+      
+      <div id="iframeContainer2" class="iframe-container">
+        <iframe id="playerFrame2" src="about:blank" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation" allowfullscreen></iframe>
+      </div>
+      
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar glass-morph p-6">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-gray-100">Stream Sources</h2>
+          <button id="closeSidebar" class="text-gray-400 hover:text-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="url-option">
+            <input type="radio" id="url1" name="streamUrl" value="https://timstreams.cfd/" checked class="hidden">
+            <label for="url1" class="flex items-center p-4 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/10 transition">
+              <div class="w-4 h-4 rounded-full border-2 border-blue-500 mr-3 flex items-center justify-center">
+                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-center">
+                  <h3 class="font-medium text-gray-100">TimStreams CFD</h3>
+                  <span id="stream1Status" class="connection-dot loading"></span>
+                </div>
+                <p class="text-sm text-gray-400">https://timstreams.cfd/</p>
+              </div>
+            </label>
+          </div>
+          
+          <div class="url-option">
+            <input type="radio" id="url2" name="streamUrl" value="https://timstreams.xyz/" class="hidden">
+            <label for="url2" class="flex items-center p-4 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/10 transition">
+              <div class="w-4 h-4 rounded-full border-2 border-blue-500 mr-3 flex items-center justify-center">
+                <div class="w-2 h-2 rounded-full bg-blue-500 hidden"></div>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-center">
+                  <h3 class="font-medium text-gray-100">TimStreams XYZ</h3>
+                  <span id="stream2Status" class="connection-dot loading"></span>
+                </div>
+                <p class="text-sm text-gray-400">https://timstreams.xyz/</p>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <h3 class="text-lg font-bold text-gray-100 mb-4">Player Controls</h3>
+          <div class="space-y-3">
+            <button id="refreshBtn" class="w-full bg-blue-500/10 text-blue-400 font-medium py-2 px-4 rounded-lg border border-blue-500/30 hover:bg-blue-500 hover:text-gray-900 transition-all duration-300">
+              Refresh Current Stream
+            </button>
+            <button id="fullscreenBtn" class="w-full bg-blue-500/10 text-blue-400 font-medium py-2 px-4 rounded-lg border border-blue-500/30 hover:bg-blue-500 hover:text-gray-900 transition-all duration-300">
+              Toggle Fullscreen
+            </button>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <h3 class="text-lg font-bold text-gray-100 mb-4">Performance</h3>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-400">Stream 1 Load Time:</span>
+              <span id="stream1LoadTime" class="text-gray-300">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Stream 2 Load Time:</span>
+              <span id="stream2LoadTime" class="text-gray-300">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Active Stream:</span>
+              <span id="activeStreamName" class="text-blue-400">TimStreams CFD</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <h3 class="text-lg font-bold text-gray-100 mb-4">Redirect Protection</h3>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-400">Redirects Blocked:</span>
+              <span id="redirectsBlocked" class="text-green-400">0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Last Redirect:</span>
+              <span id="lastRedirect" class="text-gray-300">None</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 text-gray-500 text-center border-t border-slate-800/50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span class="text-lg font-bold text-gray-100">Stream<span class="text-blue-400">Tv</span></span>
+        </div>
+        <p class="text-sm">&copy; 2025 • StreamTv • Watch the Game.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Advanced Player Script -->
+  <script>
+    class AdvancedStreamPlayer {
+      constructor() {
+        this.currentUrl = 'https://timstreams.cfd/';
+        this.activeFrame = 'playerFrame1';
+        this.isSidebarOpen = false;
+        this.isFullscreen = false;
+        this.iframeStates = {
+          'playerFrame1': {
+            url: 'https://timstreams.cfd/',
+            loaded: false,
+            loadStartTime: null,
+            loadTime: null,
+            error: false,
+            redirectCount: 0
+          },
+          'playerFrame2': {
+            url: 'https://timstreams.xyz/',
+            loaded: false,
+            loadStartTime: null,
+            loadTime: null,
+            error: false,
+            redirectCount: 0
+          }
+        };
+        
+        this.loadingTimeout = null;
+        this.maxLoadTime = 15000; // 15 seconds max load time
+        this.redirectsBlocked = 0;
+        this.lastRedirect = null;
+        
+        this.initializeElements();
+        this.setupEventListeners();
+        this.setupIframeHandlers();
+        this.preloadStreams();
+        this.updateUrlIndicator();
+        this.updateRedirectStats();
+      }
+      
+      initializeElements() {
+        // Sidebar and toggle elements
+        this.sidebar = document.getElementById('sidebar');
+        this.sidebarToggle = document.getElementById('sidebarToggle');
+        this.closeSidebar = document.getElementById('closeSidebar');
+        this.sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        
+        // Iframe containers and frames
+        this.iframeContainer1 = document.getElementById('iframeContainer1');
+        this.iframeContainer2 = document.getElementById('iframeContainer2');
+        this.playerFrame1 = document.getElementById('playerFrame1');
+        this.playerFrame2 = document.getElementById('playerFrame2');
+        
+        // URL selection elements
+        this.url1Radio = document.getElementById('url1');
+        this.url2Radio = document.getElementById('url2');
+        
+        // Control buttons
+        this.refreshBtn = document.getElementById('refreshBtn');
+        this.fullscreenBtn = document.getElementById('fullscreenBtn');
+        this.retryBtn = document.getElementById('retryBtn');
+        
+        // Status elements
+        this.urlIndicator = document.getElementById('urlIndicator');
+        this.currentUrlSpan = document.getElementById('currentUrl');
+        this.loadingOverlay = document.getElementById('loadingOverlay');
+        this.errorOverlay = document.getElementById('errorOverlay');
+        this.errorMessage = document.getElementById('errorMessage');
+        
+        // Progress bar
+        this.progressBar = document.getElementById('progressBar');
+        this.progressBarInner = document.getElementById('progressBarInner');
+        
+        // Status indicators
+        this.stream1Status = document.getElementById('stream1Status');
+        this.stream2Status = document.getElementById('stream2Status');
+        this.stream1LoadTime = document.getElementById('stream1LoadTime');
+        this.stream2LoadTime = document.getElementById('stream2LoadTime');
+        this.activeStreamName = document.getElementById('activeStreamName');
+        this.redirectsBlockedSpan = document.getElementById('redirectsBlocked');
+        this.lastRedirectSpan = document.getElementById('lastRedirect');
+      }
+      
+      setupEventListeners() {
+        // Sidebar controls
+        this.sidebarToggle.addEventListener('click', () => this.toggleSidebar());
+        this.closeSidebar.addEventListener('click', () => this.closeSidebarMenu());
+        this.sidebarBackdrop.addEventListener('click', () => this.closeSidebarMenu());
+        
+        // URL selection
+        this.url1Radio.addEventListener('change', () => this.switchStream('https://timstreams.cfd/', 'playerFrame1'));
+        this.url2Radio.addEventListener('change', () => this.switchStream('https://timstreams.xyz/', 'playerFrame2'));
+        
+        // Player controls
+        this.refreshBtn.addEventListener('click', () => this.refreshCurrentStream());
+        this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
+        this.retryBtn.addEventListener('click', () => this.retryCurrentStream());
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+        
+        // Handle window resizing
+        window.addEventListener('resize', () => this.handleResize());
+        
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
+        
+        // Handle fullscreen changes
+        document.addEventListener('fullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('webkitfullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('mozfullscreenchange', () => this.handleFullscreenChange());
+        document.addEventListener('MSFullscreenChange', () => this.handleFullscreenChange());
+        
+        // Prevent context menu on iframes
+        document.addEventListener('contextmenu', (e) => {
+          if (e.target.tagName === 'IFRAME') {
+            e.preventDefault();
+          }
+        });
+      }
+      
+      setupIframeHandlers() {
+        // Set up load and error handlers for iframes
+        this.setupIframeHandler(this.playerFrame1, 'playerFrame1');
+        this.setupIframeHandler(this.playerFrame2, 'playerFrame2');
+        
+        // Set up periodic connection checks
+        setInterval(() => this.checkConnectionStatus(), 10000);
+        
+        // Set up mutation observer for iframe content changes
+        this.setupMutationObservers();
+      }
+      
+      setupIframeHandler(iframe, frameId) {
+        iframe.addEventListener('load', () => this.handleIframeLoad(frameId));
+        iframe.addEventListener('error', () => this.handleIframeError(frameId));
+        
+        // Enhanced redirect handling
+        const originalContentWindow = iframe.contentWindow;
+        if (originalContentWindow) {
+          this.overrideNavigationMethods(iframe, frameId);
+        }
+        
+        // Set up message handlers for iframe communication
+        window.addEventListener('message', (event) => {
+          this.handleIframeMessage(event, frameId);
+        });
+      }
+      
+      setupMutationObservers() {
+        // Observe iframe attributes for changes that might indicate redirects
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+              const iframe = mutation.target;
+              const frameId = iframe.id;
+              const newSrc = iframe.getAttribute('src');
+              
+              // Check if this is an external redirect attempt
+              if (newSrc && !newSrc.includes('timstreams')) {
+                this.handleRedirectAttempt(frameId, newSrc);
+              }
+            }
+          });
+        });
+        
+        // Observe both iframes
+        observer.observe(this.playerFrame1, { attributes: true });
+        observer.observe(this.playerFrame2, { attributes: true });
+      }
+      
+      overrideNavigationMethods(iframe, frameId) {
+        try {
+          const contentWindow = iframe.contentWindow;
+          if (!contentWindow) return;
+          
+          // Override window.open
+          const originalOpen = contentWindow.open;
+          contentWindow.open = (url, target, features) => {
+            this.handleRedirectAttempt(frameId, url);
+            return null; // Block the popup
+          };
+          
+          // Override location.replace
+          const originalReplace = contentWindow.location.replace;
+          contentWindow.location.replace = (url) => {
+            this.handleRedirectAttempt(frameId, url);
+          };
+          
+          // Override location.assign
+          const originalAssign = contentWindow.location.assign;
+          contentWindow.location.assign = (url) => {
+            this.handleRedirectAttempt(frameId, url);
+          };
+          
+          // Trap direct location.href changes
+          let currentHref = contentWindow.location.href;
+          Object.defineProperty(contentWindow.location, 'href', {
+            get: () => currentHref,
+            set: (value) => {
+              this.handleRedirectAttempt(frameId, value);
+              currentHref = value;
+            }
+          });
+          
+        } catch (e) {
+          console.warn(`Could not override methods for ${frameId}:`, e);
+        }
+      }
+      
+      handleIframeMessage(event, frameId) {
+        // Handle messages from iframes
+        if (event.data && event.data.type === 'NAVIGATION') {
+          this.handleIframeNavigation(event.data.url, event.source);
+        }
+        
+        // Check for redirect attempts in postMessage
+        if (event.data && typeof event.data === 'string') {
+          if (event.data.startsWith('http') && !event.data.includes('timstreams')) {
+            this.handleRedirectAttempt(frameId, event.data);
+          }
+        }
+      }
+      
+      handleRedirectAttempt(frameId, attemptedUrl) {
+        this.redirectsBlocked++;
+        this.lastRedirect = attemptedUrl;
+        this.iframeStates[frameId].redirectCount++;
+        
+        console.log(`Redirect blocked from ${frameId} to: ${attemptedUrl}`);
+        this.updateRedirectStats();
+        
+        // Refresh the iframe to its original URL
+        this.refreshIframe(frameId);
+      }
+      
+      refreshIframe(frameId) {
+        const state = this.iframeStates[frameId];
+        const iframe = document.getElementById(frameId);
+        
+        if (iframe && state.url) {
+          iframe.src = 'about:blank';
+          setTimeout(() => {
+            iframe.src = state.url;
+          }, 100);
+        }
+      }
+      
+      updateRedirectStats() {
+        this.redirectsBlockedSpan.textContent = this.redirectsBlocked;
+        this.lastRedirectSpan.textContent = this.lastRedirect || 'None';
+      }
+      
+      preloadStreams() {
+        // Start loading both streams in the background
+        this.startLoadingStream('playerFrame1', 'https://timstreams.cfd/');
+        this.startLoadingStream('playerFrame2', 'https://timstreams.xyz/');
+        
+        // Activate the first stream
+        this.activateStream('playerFrame1');
+      }
+      
+      startLoadingStream(frameId, url) {
+        const frame = document.getElementById(frameId);
+        const state = this.iframeStates[frameId];
+        
+        state.loadStartTime = Date.now();
+        state.loaded = false;
+        state.error = false;
+        
+        this.updateConnectionStatus(frameId, 'loading');
+        
+        // Set a timeout to handle slow loading
+        setTimeout(() => {
+          if (!state.loaded && !state.error) {
+            this.handleIframeTimeout(frameId);
+          }
+        }, this.maxLoadTime);
+        
+        // Load the iframe
+        frame.src = url;
+      }
+      
+      activateStream(frameId) {
+        // Hide all iframe containers
+        this.iframeContainer1.classList.remove('active');
+        this.iframeContainer2.classList.remove('active');
+        
+        // Show the active iframe container
+        const activeContainer = document.getElementById(`iframeContainer${frameId.slice(-1)}`);
+        activeContainer.classList.add('active');
+        
+        this.activeFrame = frameId;
+        this.currentUrl = this.iframeStates[frameId].url;
+        
+        // Show loading if the iframe hasn't loaded yet
+        if (!this.iframeStates[frameId].loaded) {
+          this.showLoading();
+        } else {
+          this.hideLoading();
+        }
+        
+        this.updateUrlIndicator();
+        this.updateActiveStreamName();
+      }
+      
+      handleIframeLoad(frameId) {
+        const state = this.iframeStates[frameId];
+        state.loaded = true;
+        state.error = false;
+        
+        if (state.loadStartTime) {
+          state.loadTime = Date.now() - state.loadStartTime;
+          this.updateLoadTimeDisplay(frameId, state.loadTime);
+        }
+        
+        this.updateConnectionStatus(frameId, 'connected');
+        
+        // If this is the active frame, hide loading
+        if (frameId === this.activeFrame) {
+          this.hideLoading();
+        }
+        
+        console.log(`Iframe ${frameId} loaded successfully`);
+        
+        // Enhanced security: Check for redirects after load
+        this.checkForRedirects(frameId);
+      }
+      
+      checkForRedirects(frameId) {
+        try {
+          const iframe = document.getElementById(frameId);
+          const currentUrl = iframe.contentWindow.location.href;
+          
+          if (currentUrl && !currentUrl.includes('timstreams')) {
+            this.handleRedirectAttempt(frameId, currentUrl);
+          }
+        } catch (e) {
+          // Cross-origin restriction, but that's expected
+        }
+      }
+      
+      handleIframeError(frameId) {
+        const state = this.iframeStates[frameId];
+        state.loaded = false;
+        state.error = true;
+        
+        this.updateConnectionStatus(frameId, 'disconnected');
+        
+        // If this is the active frame, show error
+        if (frameId === this.activeFrame) {
+          this.showError('Failed to load the stream. The server may be down or unreachable.');
+        }
+        
+        console.error(`Iframe ${frameId} failed to load`);
+      }
+      
+      handleIframeTimeout(frameId) {
+        const state = this.iframeStates[frameId];
+        
+        if (!state.loaded && !state.error) {
+          state.error = true;
+          this.updateConnectionStatus(frameId, 'disconnected');
+          
+          // If this is the active frame, show error
+          if (frameId === this.activeFrame) {
+            this.showError('The stream is taking too long to load. Please try again.');
+          }
+          
+          console.warn(`Iframe ${frameId} timed out`);
+        }
+      }
+      
+      toggleSidebar() {
+        this.isSidebarOpen = !this.isSidebarOpen;
+        if (this.isSidebarOpen) {
+          this.sidebar.classList.add('open');
+          this.sidebarBackdrop.classList.add('active');
+          this.sidebarToggle.classList.add('opacity-0', 'pointer-events-none');
+        } else {
+          this.sidebar.classList.remove('open');
+          this.sidebarBackdrop.classList.remove('active');
+          this.sidebarToggle.classList.remove('opacity-0', 'pointer-events-none');
+        }
+      }
+      
+      closeSidebarMenu() {
+        this.isSidebarOpen = false;
+        this.sidebar.classList.remove('open');
+        this.sidebarBackdrop.classList.remove('active');
+        this.sidebarToggle.classList.remove('opacity-0', 'pointer-events-none');
+      }
+      
+      switchStream(url, frameId) {
+        this.activateStream(frameId);
+        this.closeSidebarMenu();
+      }
+      
+      refreshCurrentStream() {
+        const state = this.iframeStates[this.activeFrame];
+        this.startLoadingStream(this.activeFrame, state.url);
+        this.showLoading();
+      }
+      
+      retryCurrentStream() {
+        this.hideError();
+        this.refreshCurrentStream();
+      }
+      
+      toggleFullscreen() {
+        if (!this.isFullscreen) {
+          this.enterFullscreen();
+        } else {
+          this.exitFullscreen();
+        }
+      }
+      
+      enterFullscreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      }
+      
+      exitFullscreen() {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
+      
+      handleFullscreenChange() {
+        this.isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || 
+                              document.mozFullScreenElement || document.msFullscreenElement);
+      }
+      
+      handleIframeNavigation(url, sourceFrame) {
+        // Determine which iframe sent the message
+        let frameId;
+        if (sourceFrame === this.playerFrame1.contentWindow) {
+          frameId = 'playerFrame1';
+        } else if (sourceFrame === this.playerFrame2.contentWindow) {
+          frameId = 'playerFrame2';
+        } else {
+          return; // Unknown source
+        }
+        
+        // Update URL for the frame
+        this.iframeStates[frameId].url = url;
+        
+        // If this is the active frame, update the URL indicator
+        if (frameId === this.activeFrame) {
+          this.currentUrl = url;
+          this.updateUrlIndicator();
+        }
+      }
+      
+      updateUrlIndicator() {
+        this.currentUrlSpan.textContent = this.currentUrl;
+      }
+      
+      updateActiveStreamName() {
+        const name = this.activeFrame === 'playerFrame1' ? 'TimStreams CFD' : 'TimStreams XYZ';
+        this.activeStreamName.textContent = name;
+      }
+      
+      updateConnectionStatus(frameId, status) {
+        const statusElement = document.getElementById(`${frameId}Status`);
+        if (statusElement) {
+          statusElement.className = `connection-dot ${status}`;
+        }
+      }
+      
+      updateLoadTimeDisplay(frameId, loadTime) {
+        const loadTimeElement = document.getElementById(`${frameId}LoadTime`);
+        if (loadTimeElement) {
+          loadTimeElement.textContent = `${loadTime}ms`;
+        }
+      }
+      
+      showLoading() {
+        this.loadingOverlay.classList.remove('hidden');
+        this.progressBar.classList.remove('hidden');
+        
+        // Simulate progress for better UX
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += Math.random() * 10;
+          if (progress > 90) progress = 90; // Don't complete until actually loaded
+          this.progressBarInner.style.width = `${progress}%`;
+        }, 200);
+        
+        // Store interval ID to clear later
+        this.progressInterval = interval;
+      }
+      
+      hideLoading() {
+        this.loadingOverlay.classList.add('hidden');
+        this.progressBar.classList.add('hidden');
+        
+        // Complete progress animation
+        this.progressBarInner.style.width = '100%';
+        
+        // Clear progress interval
+        if (this.progressInterval) {
+          clearInterval(this.progressInterval);
+        }
+        
+        // Reset progress after a delay
+        setTimeout(() => {
+          this.progressBarInner.style.width = '0%';
+        }, 300);
+      }
+      
+      showError(message) {
+        this.errorMessage.textContent = message;
+        this.errorOverlay.classList.remove('hidden');
+        this.hideLoading();
+      }
+      
+      hideError() {
+        this.errorOverlay.classList.add('hidden');
+      }
+      
+      checkConnectionStatus() {
+        // This is a simplified connection check
+        // In a real implementation, you would make actual network requests
+        Object.keys(this.iframeStates).forEach(frameId => {
+          const state = this.iframeStates[frameId];
+          if (state.loaded && !state.error) {
+            this.updateConnectionStatus(frameId, 'connected');
+          } else if (state.error) {
+            this.updateConnectionStatus(frameId, 'disconnected');
+          } else {
+            this.updateConnectionStatus(frameId, 'loading');
+          }
+        });
+      }
+      
+      handleKeyboardShortcuts(e) {
+        // Close sidebar with Escape key
+        if (e.key === 'Escape' && this.isSidebarOpen) {
+          this.closeSidebarMenu();
+        }
+        
+        // Toggle fullscreen with F key
+        if (e.key === 'f' || e.key === 'F') {
+          e.preventDefault();
+          this.toggleFullscreen();
+        }
+        
+        // Refresh with R key
+        if (e.key === 'r' || e.key === 'R') {
+          if (!e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            this.refreshCurrentStream();
+          }
+        }
+        
+        // Switch between streams with number keys
+        if (e.key === '1') {
+          this.url1Radio.checked = true;
+          this.switchStream('https://timstreams.cfd/', 'playerFrame1');
+        } else if (e.key === '2') {
+          this.url2Radio.checked = true;
+          this.switchStream('https://timstreams.xyz/', 'playerFrame2');
+        }
+      }
+      
+      handleResize() {
+        // Adjust UI elements based on screen size
+        if (window.innerWidth < 768) {
+          this.sidebar.style.width = '100%';
+          this.sidebar.style.left = this.isSidebarOpen ? '0' : '-100%';
+        } else {
+          this.sidebar.style.width = '300px';
+          this.sidebar.style.left = this.isSidebarOpen ? '0' : '-300px';
+        }
+      }
+      
+      handleVisibilityChange() {
+        // Pause/resume streams when tab visibility changes
+        if (document.hidden) {
+          // Tab is not visible - could pause streams here
+        } else {
+          // Tab is visible - resume streams
+        }
+      }
+    }
+    
+    // Initialize the player when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      const player = new AdvancedStreamPlayer();
+      
+      // Update radio button visuals
+      document.querySelectorAll('input[name="streamUrl"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          document.querySelectorAll('.url-option label .w-2.h-2').forEach(dot => {
+            dot.classList.add('hidden');
+          });
+          
+          const selectedLabel = document.querySelector(`label[for="${this.id}"]`);
+          const selectedDot = selectedLabel.querySelector('.w-2.h-2');
+          selectedDot.classList.remove('hidden');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

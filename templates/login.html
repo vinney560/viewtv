@@ -486,6 +486,7 @@
         <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
         <button
           type="submit"
+          id="loginBtn"
           class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-xl glow-hover transition-all duration-300 shadow-lg"
         >
           Sign In
@@ -505,6 +506,20 @@
   </div>
 
   <script>
+    const loginBtn = document.getElementById('loginBtn');
+    loginBtn.addEventListener('click', () => {
+      loginBtn.textContent = 'logging in...';
+      loginBtn.style.background = 'linear-gradient(135deg, #a8edea, #fed6e3)';
+      loginBtn.style.color = '#333';
+      loginBtn.style.transition = 'all o.6s ease';
+      loginBtn.style.transformer = 'scale(0.98)';
+      setTimeout(() => {
+        loginBtn.textContent = 'Almost there...';
+        loginBtn.style.color = 'white';
+        loginBtn.style.background = 'linear-gradient(135deg, #4facfe, #00f2fe)';
+        loginBtn.style.transform = 'scale(1)';
+      }, 5000);
+    });
     // Toggle password visibility
     function togglePassword() {
       const password = document.getElementById("password");

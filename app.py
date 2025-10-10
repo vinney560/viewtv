@@ -3142,7 +3142,6 @@ def delete_user(user_id):
 #------------------------------------------------------------------------
 @app.route('/toggle_verified/<int:user_id>', methods=['GET', 'POST'])
 @login_required
-@admin2_required
 def toggle_verified(user_id):
     user = User.query.get_or_404(user_id)
 
@@ -3152,7 +3151,8 @@ def toggle_verified(user_id):
 
     status = "verified" if user.email_verified else "unverified"
     flash(f"User {user.id} is now {status}.", "success")
-    return redirect(url_for('manage_users'))
+    return jsonify({'message': 'Verified'}), 200
+    return redirect(url_for('manage_users') if user.role in ['superadmin', 'admin1', 'admin2', 'admin3'] else url_for('dashboard'))
 #------------------------------------------------------------------------
 @app.route("/admin/update_email/<int:user_id>", methods=["POST"])
 @login_required

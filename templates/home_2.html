@@ -92,6 +92,12 @@
         transform: translateX(100%);
       }
     }
+    #lyxspace {
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      transition: all 0.8s ease;
+  }
+
     .footer-wave {
       background-image: url("data:image/svg+xml,%3Csvg width='1200' height='60' viewBox='0 0 1200 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,30 C150,60 450,0 600,30 C750,60 1050,0 1200,30 L1200,60 L0,60 Z' fill='rgba(31, 41, 55, 0.6)'/%3E%3C/svg%3E");
       background-size: 1200px 60px;
@@ -636,8 +642,9 @@
       <span class="relative">View TV Channels</span>
     </a>
 
-    <a id="lyxspace" href="#" class="w-full group relative overflow-hidden py-5 flex items-center justify-center space-x-3 text-xl md:text-2xl font-bold rounded-xl bg-gradient-to-r from-cyan-700 to-emerald-500 text-gray-900 glow-hover transition-all transform hover:-translate-y-1 hover:shadow-lg">
-      <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/20 via-cyan-300/25 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-all duration-300 blur-md mix-blend-screen"></div>
+    <!-- Link to lixspace -->
+    <a id="lyxspace" href="#" class="w-full group relative overflow-hidden py-5 flex items-center justify-center space-x-3 text-xl md:text-2xl font-bold rounded-xl bg-gradient-to-r from-cyan-700 to-emerald-700 text-gray-900 glow-hover transition-all transform hover:-translate-y-1 hover:shadow-lg">
+      <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/20 via-cyan-400/25 to-emerald-700/20 opacity-0 group-hover:opacity-100 transition-all duration-300 blur-md mix-blend-screen"></div>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17l6-5-6-5M13 17h7" />
       </svg>
@@ -755,15 +762,38 @@
       }
     });
     const lyxSpace = document.getElementById('lyxspace');
+
     lyxSpace.addEventListener('click', (e) => {
       e.preventDefault();
+
       lyxSpace.textContent = 'Opening...';
+      lyxSpace.style.transition = 'all 0.8s cubic-bezier(0.65, 0, 0.35, 1)';
+      lyxSpace.style.transformOrigin = 'center';
+      lyxSpace.style.borderRadius = '0.75rem';
       lyxSpace.style.background = 'linear-gradient(135deg, #0891b2, #1e3a8a, #047857)';
-      lyxSpace.style.transition = 'all 0.6s ease';
+
+      // Phase 1: slight shrink for feedback
+      lyxSpace.style.transform = 'scale(0.95)';
+
+      setTimeout(() => {
+        // Phase 2: "open up" like a box expanding
+        lyxSpace.style.transform = 'scale(1.1) perspective(600px) rotateX(15deg)';
+        lyxSpace.style.borderRadius = '0.5rem';
+        lyxSpace.style.boxShadow = '0 0 40px rgba(0, 255, 200, 0.5)';
+        lyxSpace.style.background = 'linear-gradient(175deg, #00e5ff, #0070f3, #00ffb3)';
+      }, 300);
+
+      setTimeout(() => {
+        // Phase 3: flatten out & redirect
+        lyxSpace.style.transform = 'scale(1) perspective(600px) rotateX(0deg)';
+        lyxSpace.textContent = 'Opened';
+      }, 800);
+
       setTimeout(() => {
         window.location.href = 'https://lyxspace.onrender.com/';
-      }, 1000);
+      }, 1300);
     });
+
     // ================== Toast System ==================
     class ToastSystem {
       constructor(containerId) {

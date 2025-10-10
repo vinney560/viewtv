@@ -333,6 +333,7 @@ class AdminStats(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 #-----------------------------------------------------------------------
 with app.app_context():
+    db.drop_all()
     db.create_all()
 #======================================
 @app.route('/robots.txt')

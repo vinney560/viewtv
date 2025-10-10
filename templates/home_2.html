@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home | ViewTv</title>
+  <title>Home | View Tv</title>
   <!-- PWA Configuration -->
   <meta name="theme-color" content="#111827">
   <link rel="manifest" href="/manifest.json">
@@ -639,7 +639,7 @@
     <!-- Movies Row -->
     <div class="flex w-full space-x-4 responsive-flex">
       <!-- Plus Movies Button -->
-      <a href="{{ url_for('movieflix') }}" class="w-1/2 responsive-width py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
+      <a id='movie' href="{{ url_for('movieflix') }}" class="w-1/2 responsive-width py-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl glow-hover transition-all transform hover:-translate-y-0.5 hover:shadow-lg">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
         </svg>
@@ -714,6 +714,18 @@
 
   <!-- JavaScript -->
   <script>
+    const movieLink = document.getElementById('movie');
+    movieLink.addEventListener('click', () => {
+      movieLink.style.background = 'linear-gradient(135deg, #00c9ff, #92fe9d, #f72585)';
+      movieLink.style.transform = 'scale(0.98)';
+      movieLink.style.transition = 'all 0.6s ease';
+      movieLink.textContent = 'Setting up...';
+      setTimeout(() => {
+        movieLink.style.background = 'linear-gradient(135deg, #4facfe, #00f2fe)';
+        movieLink.style.transform = 'scale(1)';
+        movieLink.textContent = 'Finishing...';
+      }, 2000);
+    });
     // ================== Toast System ==================
     class ToastSystem {
       constructor(containerId) {

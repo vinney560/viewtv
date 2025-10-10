@@ -715,16 +715,36 @@
   <!-- JavaScript -->
   <script>
     const movieLink = document.getElementById('movie');
-    movieLink.addEventListener('click', () => {
-      movieLink.style.background = 'linear-gradient(135deg, #00c9ff, #92fe9d, #f72585)';
+    movieLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      movieLink.style.background = 'linear-gradient(135deg, #4facfe, #00f2fe, #f72585)';
       movieLink.style.transform = 'scale(0.98)';
       movieLink.style.transition = 'all 0.6s ease';
       movieLink.textContent = 'Setting up...';
-      setTimeout(() => {
-        movieLink.style.background = 'linear-gradient(135deg, #4facfe, #00f2fe)';
-        movieLink.style.transform = 'scale(1)';
-        movieLink.textContent = 'Finishing...';
-      }, 2000);
+      try {
+        const ping = await fetch('/movieflix', { method: 'GET' });
+
+        if (ping.ok) {
+          movieLink.textContent = 'Redirecting...';
+          setTimeout(() => {
+            window.location.href = '/movieflix';
+          }, 1000);
+        } else {
+          movieLink.textContent = 'Manually indexing...';
+          setTimeout(() => {
+            window.location.href = '/movieflix';
+          }, 1500);
+        }
+      } catch (error) {
+        window.location.reload();
+      } finally {
+        setTimeout(() => {
+          movieLink.style.background = 'linear-gradient(135deg, #4facfe, #00f2fe)';
+          movieLink.style.transform = 'scale(1)';
+          movieLink.textContent = 'Finishing...';
+        }, 3000);
+      }
     });
     // ================== Toast System ==================
     class ToastSystem {

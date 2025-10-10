@@ -826,6 +826,10 @@ def login():
 
         user = User.query.filter_by(email=email_addr).first()
 
+        if not user:
+            flash('Email not registered with us. Please register!', 'error')
+            return render_template('login.html', email=email_addr, password=password)
+
         if user:
             # ⏳ Lock account after 5 failed attempts
             if user.failed_login_attempts >= 5:
@@ -868,7 +872,7 @@ def login():
                 user.last_failed_login = datetime.utcnow()
                 db.session.commit()
 
-        flash('Invalid Credentials', "error")
+        flash('Invalid Credentials! Check password', "error")
         return render_template('login.html', email=email_addr, password=password)
 
     return render_template('login.html')

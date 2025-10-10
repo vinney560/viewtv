@@ -1379,7 +1379,7 @@ def update_movies_if_needed():
         MovieCache.save(new_movies)
         app.logger.info(f"Manual scrape completed. {len(new_movies)} movies cached.")
 
-@app.route("/movieflix")
+@app.route("/movieflix", methods=['GET'])
 def movieflix():
     update_movies_if_needed()
     movies = MovieCache.load()

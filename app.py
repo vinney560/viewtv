@@ -841,10 +841,6 @@ def login():
                     user.failed_login_attempts = 0
                     db.session.commit()
 
-            if not user.email_verified:
-                flash("Please verify your email before logging in.", "warning")
-                return redirect(url_for('login'))
-
             if check_password_hash(user.password, password):
                 if user.status.lower() == "banned":
                     flash("Account Banned! Contact Support.", "danger")

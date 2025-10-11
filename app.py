@@ -3050,6 +3050,7 @@ def delete_plus(user_id):
 #               user management
 #------------------------------------------------------------------------
 # simple in-memory cache (resets when server restarts)
+# simple in-memory cache (resets when server restarts)
 cached_users = []
 is_loading = False
 
@@ -3079,11 +3080,20 @@ def batch_load_users(current_user_id):
             if not users:
                 break
 
-            cached_users.extend(users)
-            offset += batch_size
+            # ✅ Convert SQLAlchemy models into plain lightweight dicts
+            cached_users.extend([
+                {
+                    "id": u.id,
+                    "username": u.username,
+                    "email": u.email,
+                    "created_at": u.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                }
+                for u in users
+            ])
 
+            offset += batch_size
             print(f"Loaded {len(cached_users)}/{total} users so far...")
-            time.sleep(2)  # wait 2 seconds before fetching next batch
+            time.sleep(2)
 
         print("✅ All users loaded successfully.")
     except Exception as e:
@@ -3096,15 +3106,19 @@ def batch_load_users(current_user_id):
 @login_required
 @admin2_required
 def manage_users():
-    """Renders the admin page and starts background loading if not already running."""
     global is_loading
 
     if not is_loading:
         Thread(target=batch_load_users, args=(current_user.id,), daemon=True).start()
         print("Started background thread for user loading")
 
-    # send currently available users (whatever is loaded so far)
-    users = list(cached_users)
+    # Wait briefly for first batch
+    wait_time = 0
+    while len(cached_users) == 0 and is_loading and wait_time < 5:
+        time.sleep(0.5)
+        wait_time += 0.5
+
+    users = list(cached_users)  # snapshot of currently loaded users
     return render_template("manage_users.html", users=users)
 
 
@@ -3120,6 +3134,7 @@ def check_users():
         "total": total_users,
         "loading": is_loading
     })
+
 #--------------------------------------------------------------------------
 @app.route('/manage_role/<int:user_id>')
 @login_required

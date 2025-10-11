@@ -246,18 +246,34 @@
     let lastCount = {{ users|length }};
     let userRows = [];
     let searchTimeout;
+    let totalCount = 0;
 
     document.addEventListener('DOMContentLoaded', () => {
       userRows = Array.from(document.querySelectorAll("#userTable tbody tr"));
     });
-    
+
+    // 🧠 Auto-check for new users every 5 seconds
     setInterval(async () => {
-      const res = await fetch('/check-users');
-      const data = await res.json();
-      if (data.loaded > lastCount) {
-        location.reload();
+      try {
+        const res = await fetch('/check-users', { cache: "no-store" });
+        const data = await res.json();
+
+        console.log(`Loaded: ${data.loaded}/${data.total} | Loading: ${data.loading}`);
+
+        if (totalCount === 0) totalCount = data.total;
+
+        // ✅ Reload if:
+        // 1. new users were added to cache
+        // 2. background loading finished but you don’t have all yet
+        if (data.loaded > lastCount || (!data.loading && data.loaded < totalCount)) {
+          location.reload();
+        }
+
+      } catch (err) {
+        console.error("Error checking users:", err);
       }
     }, 5000);
+
     function filterUsers() {
       const input = document.getElementById('searchInput').value.toLowerCase();
       

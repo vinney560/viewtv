@@ -3054,53 +3054,44 @@ def delete_plus(user_id):
 cached_users = []
 is_loading = False
 
-
 def batch_load_users(current_user_id):
     global cached_users, is_loading
     try:
         is_loading = True
         cached_users.clear()
 
-        batch_size = 100
-        offset = 0
-        total = User.query.filter(User.id != current_user_id).count()
+        # ✅ Activate Flask app context inside the thread
+        with app.app_context():
+            batch_size = 100
+            offset = 0
+            total = User.query.filter(User.id != current_user_id).count()
 
-        print(f"Starting background loading for {total} users")
+            print(f"Starting background loading for {total} users")
 
-        while True:
-            users = (
-                User.query
-                .filter(User.id != current_user_id)
-                .order_by(User.created_at.desc())
-                .limit(batch_size)
-                .offset(offset)
-                .all()
-            )
+            while True:
+                users = (
+                    User.query
+                    .filter(User.id != current_user_id)
+                    .order_by(User.created_at.desc())
+                    .limit(batch_size)
+                    .offset(offset)
+                    .all()
+                )
 
-            if not users:
-                break
+                if not users:
+                    break
 
-            # ✅ Convert SQLAlchemy models into plain lightweight dicts
-            cached_users.extend([
-                {
-                    "id": u.id,
-                    "username": u.username,
-                    "email": u.email,
-                    "created_at": u.created_at.strftime("%Y-%m-%d %H:%M:%S")
-                }
-                for u in users
-            ])
+                cached_users.extend(users)
+                offset += batch_size
 
-            offset += batch_size
-            print(f"Loaded {len(cached_users)}/{total} users so far...")
-            time.sleep(2)
+                print(f"Loaded {len(cached_users)}/{total} users so far...")
+                time.sleep(2)
 
-        print("✅ All users loaded successfully.")
+            print("✅ All users loaded successfully.")
     except Exception as e:
         print(f"❌ Error while loading users: {e}")
     finally:
         is_loading = False
-
 
 @app.route("/manage-users")
 @login_required

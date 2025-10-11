@@ -17,7 +17,7 @@ import traceback
 import subprocess
 from datetime import datetime, timedelta
 from functools import wraps
-from threading import Timer
+from threading import Timer, Thread
 from collections import defaultdict
 from typing import Dict, List, Optional, Union
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -333,7 +333,6 @@ class AdminStats(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 #-----------------------------------------------------------------------
 with app.app_context():
-    db.drop_all()
     db.create_all()
 #======================================
 @app.route('/robots.txt')

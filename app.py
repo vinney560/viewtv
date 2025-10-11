@@ -706,6 +706,35 @@ def register_admin():
     )
     db.session.add(new_admin)
     db.session.commit()
+
+# ✅ Allow-list of *safe* browser keywords in the User-Agent
+ALLOWED_KEYWORDS = [
+    "mozilla",      # Chrome, Firefox, Edge, Safari all contain this
+    "applewebkit",  # Chrome, Safari
+    "chrome",       
+    "safari",
+    "firefox",
+    "edge",
+]
+
+@app.before_request
+def allow_only_known_browsers():
+    ua = request.headers.get("User-Agent", "").lower()
+
+    # No User-Agent? Probably a script or bot
+    if not ua:
+        abort(403)
+
+    # If none of the allowed patterns appear → block
+    if not any(kw in ua for kw in ALLOWED_KEYWORDS):
+        abort(403)
+
+    # Optionally: require some common browser headers
+    required_headers = ["accept", "accept-language"]
+    for h in required_headers:
+        if h not in {k.lower() for k in request.headers.keys()}:
+            abort(403)
+
 #=====================================
 #        >>>>ACCESS GRANTERS<<<<
 #=====================================

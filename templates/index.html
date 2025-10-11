@@ -634,7 +634,15 @@
   </footer>  
 
   <!-- Security Scripts -->  
-  <script nonce="2726c7f5c9">  
+  <script nonce="2726c7f5c9">
+    
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey && e.key === 's') || (e.ctrlKey && e.key === 'u')) {
+        e.preventDefault();
+      }
+    });
     // Toast notification system  
     function showToast(message, type) {  
       const container = document.getElementById('toastContainer');  

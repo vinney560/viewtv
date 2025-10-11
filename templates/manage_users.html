@@ -243,14 +243,37 @@
 
   <!-- JS: Search Filter -->
   <script>
-    function filterUsers() {
-      const input = document.getElementById("searchInput").value.toLowerCase();
-      const rows = document.querySelectorAll("#userTable tbody tr");
+    let lastCount = {{ users|length }};
+    let userRows = [];
+    let searchTimeout;
 
-      rows.forEach(row => {
-        const email = row.querySelector(".user-email .font-medium").textContent.toLowerCase();
-        row.style.display = email.includes(input) ? "" : "none";
-      });
+    document.addEventListener('DOMContentLoaded', () => {
+      userRows = Array.from(document.querySelectorAll("#userTable tbody tr"));
+    });
+    
+    setInterval(async () => {
+      const res = await fetch('/check-users');
+      const data = await res.json();
+      if (data.loaded > lastCount) {
+        location.reload();
+      }
+    }, 5000);
+    function filterUsers() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      
+      clearTimeout(searchTimeout);
+
+      searchTimeout = setTimeout(() => {
+        let visible = 0;
+        for (const row of userRows) {
+          const email = row.querySelector('.user-email .font-medium').textContent.toLowerCase();
+          const match = email.includes(input);
+          row.style.display = match ? "" : "none";
+
+          if (match) visible++;
+          if (visible > 200 && input === "") break;
+        }
+      }, 200);
     }
 
     function editEmail(button) {

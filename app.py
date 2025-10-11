@@ -3050,13 +3050,77 @@ def delete_plus(user_id):
 #-------------------------------------------------------------------------
 #               user management
 #------------------------------------------------------------------------
+# simple in-memory cache (resets when server restarts)
+cached_users = []
+is_loading = False
+
+
+def batch_load_users(current_user_id):
+    global cached_users, is_loading
+    try:
+        is_loading = True
+        cached_users.clear()
+
+        batch_size = 100
+        offset = 0
+        total = User.query.filter(User.id != current_user_id).count()
+
+        print(f"Starting background loading for {total} users")
+
+        while True:
+            users = (
+                User.query
+                .filter(User.id != current_user_id)
+                .order_by(User.created_at.desc())
+                .limit(batch_size)
+                .offset(offset)
+                .all()
+            )
+
+            if not users:
+                break
+
+            cached_users.extend(users)
+            offset += batch_size
+
+            print(f"Loaded {len(cached_users)}/{total} users so far...")
+            time.sleep(2)  # wait 2 seconds before fetching next batch
+
+        print("✅ All users loaded successfully.")
+    except Exception as e:
+        print(f"❌ Error while loading users: {e}")
+    finally:
+        is_loading = False
+
+
 @app.route("/manage-users")
 @login_required
 @admin2_required
 def manage_users():
+    """Renders the admin page and starts background loading if not already running."""
+    global is_loading
 
-    users = User.query.filter(User.id != current_user.id).order_by(User.created_at.desc()).all()
+    if not is_loading:
+        Thread(target=batch_load_users, args=(current_user.id,), daemon=True).start()
+        print("Started background thread for user loading")
+
+    # send currently available users (whatever is loaded so far)
+    users = list(cached_users)
     return render_template("manage_users.html", users=users)
+
+
+@app.route("/check-users")
+@login_required
+@admin2_required
+def check_users():
+    """API endpoint to check how many users are loaded so far."""
+    total_users = User.query.filter(User.id != current_user.id).count()
+    loaded_users = len(cached_users)
+    return jsonify({
+        "loaded": loaded_users,
+        "total": total_users,
+        "loading": is_loading
+    })
 #--------------------------------------------------------------------------
 @app.route('/manage_role/<int:user_id>')
 @login_required

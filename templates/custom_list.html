@@ -21,20 +21,6 @@
             --card-border: rgba(255, 255, 255, 0.08);
         }
         
-        .light-mode {
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --secondary: #059669;
-            --dark: #f3f4f6;
-            --darker: #e5e7eb;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-            --bg-primary: #f9fafb;
-            --bg-secondary: #f3f4f6;
-            --card-bg: rgba(255, 255, 255, 0.8);
-            --card-border: rgba(0, 0, 0, 0.1);
-        }
-        
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-primary);
@@ -56,10 +42,6 @@
             backdrop-filter: blur(8px);
             position: relative;
             overflow: hidden;
-        }
-        
-        .light-mode .channel-card {
-            background: rgba(255, 255, 255, 0.7);
         }
         
         .channel-card:hover {
@@ -123,12 +105,6 @@
             display: none;
         }
         
-        .light-mode .search-suggestions {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            color: #111827;
-        }
-        
         .search-suggestion {
             padding: 10px 15px;
             cursor: pointer;
@@ -137,10 +113,6 @@
         
         .search-suggestion:hover {
             background: rgba(6, 182, 212, 0.2);
-        }
-        
-        .light-mode .search-suggestion:hover {
-            background: rgba(6, 182, 212, 0.1);
         }
         
         .toast-entry {
@@ -195,7 +167,6 @@
             filter: grayscale(80%);
         }
         
-        /* New styles */
         .recommended-section {
             margin-bottom: 2rem;
         }
@@ -243,11 +214,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0;
             transition: opacity 0.3s;
-        }
-        
-        .light-mode .scroll-btn {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         .scroll-btn.left {
@@ -306,16 +272,10 @@
             animation: spin 1s ease-in-out infinite;
         }
         
-        .light-mode .loading-spinner {
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            border-top-color: var(--primary);
-        }
-        
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
-        /* Modal styles */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -344,11 +304,6 @@
             position: relative;
         }
         
-        .light-mode .modal-content {
-            background: rgba(255, 255, 255, 0.95);
-            color: #111827;
-        }
-        
         @keyframes modalFadeIn {
             from { opacity: 0; transform: scale(0.9) translateY(-20px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
@@ -364,10 +319,6 @@
             border-radius: 20px 20px 0 0;
         }
         
-        .light-mode .modal-header {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
         .modal-body {
             padding: 1.5rem;
         }
@@ -378,10 +329,6 @@
             display: flex;
             justify-content: flex-end;
             gap: 0.75rem;
-        }
-        
-        .light-mode .modal-footer {
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         .status-badge {
@@ -420,18 +367,10 @@
             font-size: 0.9rem;
         }
         
-        .light-mode .info-label {
-            color: #4b5563;
-        }
-        
         .info-value {
             color: #f3f4f6;
             word-break: break-word;
             font-size: 0.95rem;
-        }
-        
-        .light-mode .info-value {
-            color: #111827;
         }
         
         .channel-logo-modal {
@@ -473,7 +412,6 @@
             transform: scale(1.1);
         }
         
-        /* Favorite button */
         .favorite-btn {
             position: absolute;
             top: 16px;
@@ -506,7 +444,6 @@
             opacity: 1;
         }
         
-        /* Filter section */
         .filter-section {
             background: rgba(31, 41, 55, 0.3);
             border-radius: 12px;
@@ -514,11 +451,6 @@
             margin-bottom: 1.5rem;
         }
         
-        .light-mode .filter-section {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -527,10 +459,6 @@
         ::-webkit-scrollbar-track {
             background: rgba(31, 41, 55, 0.3);
             border-radius: 10px;
-        }
-        
-        .light-mode ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
         }
         
         ::-webkit-scrollbar-thumb {
@@ -542,7 +470,6 @@
             background: rgba(6, 182, 212, 0.7);
         }
         
-        /* Animation for cards */
         @keyframes cardAppear {
             from {
                 opacity: 0;
@@ -559,7 +486,6 @@
             animation-fill-mode: both;
         }
         
-        /* Delay for staggered animation */
         .channel-card:nth-child(1) { animation-delay: 0.05s; }
         .channel-card:nth-child(2) { animation-delay: 0.1s; }
         .channel-card:nth-child(3) { animation-delay: 0.15s; }
@@ -571,17 +497,12 @@
         .channel-card:nth-child(9) { animation-delay: 0.45s; }
         .channel-card:nth-child(10) { animation-delay: 0.5s; }
         
-        /* Ripple effect */
         .ripple {
             position: absolute;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.4);
             transform: scale(0);
             animation: ripple 0.6s linear;
-        }
-        
-        .light-mode .ripple {
-            background: rgba(0, 0, 0, 0.1);
         }
         
         @keyframes ripple {
@@ -591,16 +512,11 @@
             }
         }
         
-        /* Skeleton loading */
         .skeleton {
             background: linear-gradient(90deg, rgba(31, 41, 55, 0.5) 25%, rgba(55, 65, 81, 0.5) 50%, rgba(31, 41, 55, 0.5) 75%);
             background-size: 200% 100%;
             animation: skeletonLoading 1.5s infinite;
             border-radius: 8px;
-        }
-        
-        .light-mode .skeleton {
-            background: linear-gradient(90deg, rgba(0, 0, 0, 0.05) 25%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.05) 75%);
         }
         
         @keyframes skeletonLoading {
@@ -612,7 +528,6 @@
             }
         }
         
-        /* Custom checkbox */
         .custom-checkbox {
             position: relative;
             display: inline-block;
@@ -622,11 +537,6 @@
             border: 1px solid rgba(6, 182, 212, 0.3);
             border-radius: 4px;
             transition: all 0.3s;
-        }
-        
-        .light-mode .custom-checkbox {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(6, 182, 212, 0.5);
         }
         
         .custom-checkbox.checked {
@@ -646,7 +556,6 @@
             transform: rotate(45deg);
         }
         
-        /* Tooltip */
         .tooltip {
             position: relative;
         }
@@ -669,18 +578,11 @@
             z-index: 100;
         }
         
-        .light-mode .tooltip::before {
-            background: rgba(255, 255, 255, 0.9);
-            color: #111827;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
         .tooltip:hover::before {
             opacity: 1;
             visibility: visible;
         }
         
-        /* Back button in modal */
         .modal-back-btn {
             position: absolute;
             top: 1.3rem;
@@ -698,17 +600,11 @@
             z-index: 5;
         }
         
-        .light-mode .modal-back-btn {
-            background: rgba(255, 255, 255, 0.7);
-            color: #111827;
-        }
-        
         .modal-back-btn:hover {
             background: rgba(6, 182, 212, 0.7);
             transform: scale(1.1);
         }
         
-        /* Performance optimizations */
         .will-change {
             will-change: transform, opacity;
         }
@@ -717,7 +613,6 @@
             content-visibility: auto;
         }
         
-        /* Lazy loading styles */
         .lazy-load {
             opacity: 0;
             transition: opacity 0.3s;
@@ -727,7 +622,6 @@
             opacity: 1;
         }
         
-        /* Mobile responsive adjustments */
         @media (max-width: 768px) {
             .search-container {
                 max-width: 100%;
@@ -765,7 +659,6 @@
                 margin: 10px;
             }
             
-            /* Improved mobile layout for category dropdown and filter button */
             .header-controls {
                 gap: 0.5rem;
             }
@@ -783,32 +676,23 @@
             }
         }
         
-        /* Improved search suggestions */
         .search-suggestion.highlight {
             background: rgba(6, 182, 212, 0.3);
         }
         
-        .light-mode .search-suggestion.highlight {
-            background: rgba(6, 182, 212, 0.1);
-        }
-        
-        /* View transition for smoother changes */
         .view-transition {
             transition: all 0.3s ease;
         }
         
-        /* Focus effect for channel cards */
         .channel-card:focus {
             outline: 2px solid var(--primary);
             outline-offset: 2px;
         }
         
-        /* New: Recently Viewed Section */
         .recently-viewed-section {
             margin-bottom: 2rem;
         }
         
-        /* New: Channel Count Badge */
         .channel-count {
             background: rgba(6, 182, 212, 0.2);
             color: var(--primary);
@@ -818,11 +702,6 @@
             font-weight: 600;
         }
         
-        .light-mode .channel-count {
-            background: rgba(6, 182, 212, 0.1);
-        }
-        
-        /* New: Quick Actions */
         .quick-actions {
             position: fixed;
             bottom: 80px;
@@ -847,17 +726,11 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .light-mode .quick-action-btn {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-        
         .quick-action-btn:hover {
             transform: scale(1.1);
             background: rgba(6, 182, 212, 0.8);
         }
         
-        /* New: View Toggle */
         .view-toggle {
             display: flex;
             align-items: center;
@@ -865,10 +738,6 @@
             border-radius: 12px;
             padding: 0.25rem;
             margin-left: auto;
-        }
-        
-        .light-mode .view-toggle {
-            background: rgba(255, 255, 255, 0.5);
         }
         
         .view-toggle-btn {
@@ -882,7 +751,6 @@
             background: rgba(6, 182, 212, 0.3);
         }
         
-        /* New: List View Styles */
         .list-view .channel-group {
             margin-bottom: 2rem;
         }
@@ -906,36 +774,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-        }
-        
-        /* New: Dark Mode Toggle */
-        .theme-toggle {
-            position: relative;
-            width: 50px;
-            height: 24px;
-            background: rgba(31, 41, 55, 0.7);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .light-mode .theme-toggle {
-            background: rgba(255, 255, 255, 0.7);
-        }
-        
-        .theme-toggle-handle {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background: var(--primary);
-            border-radius: 50%;
-            transition: all 0.3s;
-        }
-        
-        .theme-toggle.dark .theme-toggle-handle {
-            left: calc(100% - 22px);
         }
     </style>
 </head>
@@ -1084,11 +922,6 @@
                     <button class="view-toggle-btn list-view-btn" data-view="list" title="List View">
                         <i class="fas fa-list"></i>
                     </button>
-                </div>
-                
-                <!-- Dark/Light Mode Toggle -->
-                <div class="theme-toggle" id="themeToggle">
-                    <div class="theme-toggle-handle"></div>
                 </div>
                 
                 <!-- Search Box -->
@@ -1357,9 +1190,6 @@
         <button class="quick-action-btn" title="Scroll to Bottom" id="quickToBottom">
             <i class="fas fa-arrow-down text-white"></i>
         </button>
-        <button class="quick-action-btn" title="Toggle Dark Mode" id="toggleDarkMode">
-            <i class="fas fa-moon text-white"></i>
-        </button>
     </div>
 
     <!-- JavaScript -->
@@ -1376,7 +1206,6 @@
             },
             allChannels: [],
             currentView: 'grid', // 'grid' or 'list'
-            darkMode: localStorage.getItem('darkMode') === 'true',
             statusCheckQueue: [],
             isProcessingStatusQueue: false,
             statusCheckInterval: null,
@@ -1398,9 +1227,7 @@
             gridViewBtn: document.querySelector('.grid-view-btn'),
             listViewBtn: document.querySelector('.list-view-btn'),
             quickToTop: document.getElementById('quickToTop'),
-            quickToBottom: document.getElementById('quickToBottom'),
-            toggleDarkMode: document.getElementById('toggleDarkMode'),
-            themeToggle: document.getElementById('themeToggle')
+            quickToBottom: document.getElementById('quickToBottom')
         };
 
         // Initialize the page
@@ -1419,9 +1246,6 @@
             
             // Initialize view mode
             updateViewMode();
-            
-            // Initialize dark mode
-            updateDarkMode();
             
             // Set up back to top button
             setupBackToTop();
@@ -1714,15 +1538,6 @@
                     });
                 });
             }
-            
-            // Set up theme toggle
-            if (domCache.themeToggle) {
-                domCache.themeToggle.addEventListener('click', function() {
-                    state.darkMode = !state.darkMode;
-                    localStorage.setItem('darkMode', state.darkMode);
-                    updateDarkMode();
-                });
-            }
 
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
@@ -1761,21 +1576,6 @@
                     }
                 }
             });
-        }
-
-        // Update dark mode
-        function updateDarkMode() {
-            if (state.darkMode) {
-                document.documentElement.classList.remove('light-mode');
-                domCache.themeToggle.classList.add('dark');
-                domCache.toggleDarkMode.innerHTML = '<i class="fas fa-sun text-white"></i>';
-                domCache.toggleDarkMode.setAttribute('title', 'Switch to Light Mode');
-            } else {
-                document.documentElement.classList.add('light-mode');
-                domCache.themeToggle.classList.remove('dark');
-                domCache.toggleDarkMode.innerHTML = '<i class="fas fa-moon text-white"></i>';
-                domCache.toggleDarkMode.setAttribute('title', 'Switch to Dark Mode');
-            }
         }
 
         // Pre-cache all channel data for search

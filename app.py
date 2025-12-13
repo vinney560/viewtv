@@ -714,7 +714,10 @@ ALLOWED_KEYWORDS = [
     "chrome",       
     "safari",
     "firefox",
-    "edge",
+    "edge",         # For modern Edge (Chromium-based)
+    "edg",          # For newer Edge versions (note: 'edg' not 'edge')
+    "msie",         # For Internet Explorer (legacy)
+    "trident",      # For Internet Explorer (legacy)
 ]
 
 @app.before_request

@@ -800,9 +800,6 @@ def register():
             flash("An error occurred while creating your account.", "error")
             return render_template("register.html", name=name, email=email_addr)
 
-        # --- Send verification email ---
-        send_verification_email(new_user)
-
         flash(f"Account created as {new_user.role}. Check your email to verify.", "success")
         return redirect(url_for('notice_register', user_id=new_user.id))
 

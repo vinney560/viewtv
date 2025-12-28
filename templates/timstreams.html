@@ -336,44 +336,17 @@
       .security-badge-scroll-content {
         padding: 0 12px;
       }
+      
+      .url-indicator {
+        max-width: 200px;
+        font-size: 0.75rem;
+      }
     }
 
   </style>
 </head>
 
-<body class="flex flex-col min-h-screen">
-  <!-- Security Badge -->
-  <div class="w-full bg-blue-900/30 text-blue-300 text-center py-3 text-sm border-b border-blue-800/50">
-    <div class="security-badge-scroll">
-      <div class="security-badge-scroll-content">
-        <span class="security-badge whitespace-nowrap">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-          </svg>
-          Secure HTTPS Connection
-        </span>
-        <span class="security-badge whitespace-nowrap">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-          </svg>
-          Privacy Protected
-        </span>
-        <span class="security-badge whitespace-nowrap">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
-          </svg>
-          DMCA Compliant
-        </span>
-        <span class="security-badge whitespace-nowrap">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
-          </svg>
-          CSP Protected
-        </span>
-      </div>
-    </div>
-  </div>
-  
+<body class="flex flex-col min-h-screen">  
   <!-- Navigation -->
   <header class="w-full sticky top-0 z-30 bg-slate-900/80 backdrop-blur-sm border-b border-slate-800 shadow-lg p-4 flex justify-between items-center">
     <div class="flex items-center">
@@ -386,9 +359,9 @@
       <a href="/home_2" class="text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400/10 hover:text-blue-300 transition-all duration-300 border border-blue-400/30">
         Home
       </a>
-      <a id='backBtn' class="bg-blue-400/10 text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400 hover:text-gray-900 transition-all duration-300 border border-blue-400/30">
+      <button id='backBtn' class="bg-blue-400/10 text-blue-400 font-medium px-5 py-2 rounded-full hover:bg-blue-400 hover:text-gray-900 transition-all duration-300 border border-blue-400/30">
         Back
-      </a>
+      </button>
     </div>
   </header>
 
@@ -433,15 +406,18 @@
         <button id="retryBtn" class="bg-blue-500 text-white font-medium py-2 px-6 rounded-lg hover:bg-blue-600 transition">
           Retry
         </button>
+        <button id="switchProxyBtn" class="bg-green-500 text-white font-medium py-2 px-6 rounded-lg hover:bg-green-600 transition mt-3">
+          Try Different Proxy
+        </button>
       </div>
       
       <!-- Iframe Containers -->
-      <div id="iframeContainer1" class="iframe-container">
-        <iframe id="playerFrame1" src="about:blank" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation" allowfullscreen></iframe>
+      <div id="iframeContainer1" class="iframe-container active">
+        <iframe id="playerFrame1" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
       </div>
       
       <div id="iframeContainer2" class="iframe-container">
-        <iframe id="playerFrame2" src="about:blank" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation-by-user-activation" allowfullscreen></iframe>
+        <iframe id="playerFrame2" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
       </div>
       
       <!-- Sidebar -->
@@ -456,8 +432,9 @@
         </div>
         
         <div class="space-y-4">
+          <!-- Direct Streams with CORSProxy -->
           <div class="url-option">
-            <input type="radio" id="url1" name="streamUrl" value="https://wearechecking.online/" checked class="hidden">
+            <input type="radio" id="url1" name="streamUrl" value="https://wearechecking.online/" data-proxy="true" checked class="hidden">
             <label for="url1" class="flex items-center p-4 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-blue-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-blue-500"></div>
@@ -467,12 +444,13 @@
                   <h3 class="font-medium text-gray-100">Live Sports HD 1</h3>
                   <span id="stream1Status" class="connection-dot loading"></span>
                 </div>
+                <p class="text-xs text-gray-500 mt-1">via CORSProxy</p>
               </div>
             </label>
           </div>
           
           <div class="url-option">
-            <input type="radio" id="url2" name="streamUrl" value="https://streamed.su/" class="hidden">
+            <input type="radio" id="url2" name="streamUrl" value="https://streamed.su/" data-proxy="true" class="hidden">
             <label for="url2" class="flex items-center p-4 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-blue-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-blue-500 hidden"></div>
@@ -482,6 +460,57 @@
                   <h3 class="font-medium text-gray-100">Live Sports HD 2</h3>
                   <span id="stream2Status" class="connection-dot loading"></span>
                 </div>
+                <p class="text-xs text-gray-500 mt-1">via CORSProxy</p>
+              </div>
+            </label>
+          </div>
+          
+          <!-- Alternative Proxy Options -->
+          <div class="url-option">
+            <input type="radio" id="url3" name="streamUrl" value="https://wearechecking.online/" data-proxy="cors-anywhere" class="hidden">
+            <label for="url3" class="flex items-center p-4 rounded-lg border border-green-500/30 cursor-pointer hover:bg-green-500/10 transition">
+              <div class="w-4 h-4 rounded-full border-2 border-green-500 mr-3 flex items-center justify-center">
+                <div class="w-2 h-2 rounded-full bg-green-500 hidden"></div>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-center">
+                  <h3 class="font-medium text-gray-100">Alternative Proxy 1</h3>
+                  <span id="stream3Status" class="connection-dot loading"></span>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">via CORS Anywhere</p>
+              </div>
+            </label>
+          </div>
+          
+          <div class="url-option">
+            <input type="radio" id="url4" name="streamUrl" value="https://streamed.su/" data-proxy="allorigins" class="hidden">
+            <label for="url4" class="flex items-center p-4 rounded-lg border border-purple-500/30 cursor-pointer hover:bg-purple-500/10 transition">
+              <div class="w-4 h-4 rounded-full border-2 border-purple-500 mr-3 flex items-center justify-center">
+                <div class="w-2 h-2 rounded-full bg-purple-500 hidden"></div>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-center">
+                  <h3 class="font-medium text-gray-100">Alternative Proxy 2</h3>
+                  <span id="stream4Status" class="connection-dot loading"></span>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">via AllOrigins</p>
+              </div>
+            </label>
+          </div>
+          
+          <!-- Direct without proxy (fallback) -->
+          <div class="url-option">
+            <input type="radio" id="url5" name="streamUrl" value="https://wearechecking.online/" data-proxy="false" class="hidden">
+            <label for="url5" class="flex items-center p-4 rounded-lg border border-yellow-500/30 cursor-pointer hover:bg-yellow-500/10 transition">
+              <div class="w-4 h-4 rounded-full border-2 border-yellow-500 mr-3 flex items-center justify-center">
+                <div class="w-2 h-2 rounded-full bg-yellow-500 hidden"></div>
+              </div>
+              <div class="flex-1">
+                <div class="flex justify-between items-center">
+                  <h3 class="font-medium text-gray-100">Direct Connection 1</h3>
+                  <span id="stream5Status" class="connection-dot loading"></span>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">No proxy (if supported)</p>
               </div>
             </label>
           </div>
@@ -496,6 +525,9 @@
             <button id="fullscreenBtn" class="w-full bg-blue-500/10 text-blue-400 font-medium py-2 px-4 rounded-lg border border-blue-500/30 hover:bg-blue-500 hover:text-gray-900 transition-all duration-300">
               Toggle Fullscreen
             </button>
+            <button id="testAllProxiesBtn" class="w-full bg-green-500/10 text-green-400 font-medium py-2 px-4 rounded-lg border border-green-500/30 hover:bg-green-500 hover:text-gray-900 transition-all duration-300">
+              Test All Connections
+            </button>
           </div>
         </div>
         
@@ -503,12 +535,12 @@
           <h3 class="text-lg font-bold text-gray-100 mb-4">Performance</h3>
           <div class="space-y-2">
             <div class="flex justify-between">
-              <span class="text-gray-400">Stream 1 Load Time:</span>
-              <span id="stream1LoadTime" class="text-gray-300">-</span>
+              <span class="text-gray-400">Active Proxy:</span>
+              <span id="activeProxy" class="text-blue-400">CORSProxy.io</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400">Stream 2 Load Time:</span>
-              <span id="stream2LoadTime" class="text-gray-300">-</span>
+              <span class="text-gray-400">Load Time:</span>
+              <span id="currentLoadTime" class="text-gray-300">-</span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Active Stream:</span>
@@ -518,15 +550,19 @@
         </div>
         
         <div class="mt-8">
-          <h3 class="text-lg font-bold text-gray-100 mb-4">Redirect Protection</h3>
+          <h3 class="text-lg font-bold text-gray-100 mb-4">Connection Status</h3>
           <div class="space-y-2">
             <div class="flex justify-between">
-              <span class="text-gray-400">Redirects Blocked:</span>
-              <span id="redirectsBlocked" class="text-green-400">0</span>
+              <span class="text-gray-400">CORSProxy.io:</span>
+              <span id="corsproxyStatus" class="text-yellow-400">Checking...</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400">Last Redirect:</span>
-              <span id="lastRedirect" class="text-gray-300">None</span>
+              <span class="text-gray-400">CORS Anywhere:</span>
+              <span id="corsanywhereStatus" class="text-yellow-400">Checking...</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">AllOrigins:</span>
+              <span id="alloriginsStatus" class="text-yellow-400">Checking...</span>
             </div>
           </div>
         </div>
@@ -551,43 +587,77 @@
 
   <!-- Advanced Player Script -->
   <script>
-    document.getElementById('backBtn').addEventListener('click', function() { window.location.back(); })
+    // Initialize back button
+    document.addEventListener('DOMContentLoaded', function() {
+      const backBtn = document.getElementById('backBtn');
+      if (backBtn) {
+        backBtn.addEventListener('click', function() { 
+          window.history.back(); 
+        });
+      }
+    });
+
     class AdvancedStreamPlayer {
       constructor() {
-        this.currentUrl = 'https://wearechecking.online/';
-        this.activeFrame = 'playerFrame1';
-        this.isSidebarOpen = false;
-        this.isFullscreen = false;
-        this.iframeStates = {
-          'playerFrame1': {
-            url: 'https://wearechecking.online/',
-            loaded: false,
-            loadStartTime: null,
-            loadTime: null,
-            error: false,
-            redirectCount: 0
+        // Proxy configurations
+        this.proxyConfigs = {
+          'corsproxy': {
+            name: 'CORSProxy.io',
+            url: 'https://corsproxy.io/?',
+            format: (targetUrl) => `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+            testUrl: 'https://corsproxy.io/?https://httpbin.org/get'
           },
-          'playerFrame2': {
-            url: 'https://streamed.su/',
-            loaded: false,
-            loadStartTime: null,
-            loadTime: null,
-            error: false,
-            redirectCount: 0
+          'cors-anywhere': {
+            name: 'CORS Anywhere',
+            url: 'https://cors-anywhere.herokuapp.com/',
+            format: (targetUrl) => `https://cors-anywhere.herokuapp.com/${targetUrl}`,
+            testUrl: 'https://cors-anywhere.herokuapp.com/https://httpbin.org/get'
+          },
+          'allorigins': {
+            name: 'AllOrigins',
+            url: 'https://api.allorigins.win/raw?url=',
+            format: (targetUrl) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+            testUrl: 'https://api.allorigins.win/raw?url=https://httpbin.org/get'
+          },
+          'false': {
+            name: 'Direct',
+            url: '',
+            format: (targetUrl) => targetUrl,
+            testUrl: 'https://httpbin.org/get'
           }
         };
         
+        this.currentUrl = 'https://wearechecking.online/';
+        this.currentProxy = 'corsproxy';
+        this.activeFrame = 'playerFrame1';
+        this.isSidebarOpen = false;
+        this.isFullscreen = false;
+        
+        // Stream configurations
+        this.streamSources = {
+          'url1': { name: 'Live Sports HD 1', url: 'https://wearechecking.online/', proxy: 'corsproxy' },
+          'url2': { name: 'Live Sports HD 2', url: 'https://streamed.su/', proxy: 'corsproxy' },
+          'url3': { name: 'Alternative Proxy 1', url: 'https://wearechecking.online/', proxy: 'cors-anywhere' },
+          'url4': { name: 'Alternative Proxy 2', url: 'https://streamed.su/', proxy: 'allorigins' },
+          'url5': { name: 'Direct Connection 1', url: 'https://wearechecking.online/', proxy: 'false' }
+        };
+        
+        // Frame states
+        this.iframeStates = {
+          'playerFrame1': { loaded: false, loadStartTime: null, loadTime: null, error: false },
+          'playerFrame2': { loaded: false, loadStartTime: null, loadTime: null, error: false }
+        };
+        
         this.loadingTimeout = null;
-        this.maxLoadTime = 15000; // 15 seconds max load time
-        this.redirectsBlocked = 0;
-        this.lastRedirect = null;
+        this.maxLoadTime = 20000; // 20 seconds max load time
+        this.progressInterval = null;
+        this.currentLoadTime = null;
         
         this.initializeElements();
         this.setupEventListeners();
         this.setupIframeHandlers();
-        this.preloadStreams();
-        this.updateUrlIndicator();
-        this.updateRedirectStats();
+        this.testAllProxies();
+        this.loadDefaultStream();
       }
       
       initializeElements() {
@@ -606,11 +676,16 @@
         // URL selection elements
         this.url1Radio = document.getElementById('url1');
         this.url2Radio = document.getElementById('url2');
+        this.url3Radio = document.getElementById('url3');
+        this.url4Radio = document.getElementById('url4');
+        this.url5Radio = document.getElementById('url5');
         
         // Control buttons
         this.refreshBtn = document.getElementById('refreshBtn');
         this.fullscreenBtn = document.getElementById('fullscreenBtn');
         this.retryBtn = document.getElementById('retryBtn');
+        this.switchProxyBtn = document.getElementById('switchProxyBtn');
+        this.testAllProxiesBtn = document.getElementById('testAllProxiesBtn');
         
         // Status elements
         this.urlIndicator = document.getElementById('urlIndicator');
@@ -626,11 +701,15 @@
         // Status indicators
         this.stream1Status = document.getElementById('stream1Status');
         this.stream2Status = document.getElementById('stream2Status');
-        this.stream1LoadTime = document.getElementById('stream1LoadTime');
-        this.stream2LoadTime = document.getElementById('stream2LoadTime');
+        this.stream3Status = document.getElementById('stream3Status');
+        this.stream4Status = document.getElementById('stream4Status');
+        this.stream5Status = document.getElementById('stream5Status');
+        this.activeProxy = document.getElementById('activeProxy');
+        this.currentLoadTime = document.getElementById('currentLoadTime');
         this.activeStreamName = document.getElementById('activeStreamName');
-        this.redirectsBlockedSpan = document.getElementById('redirectsBlocked');
-        this.lastRedirectSpan = document.getElementById('lastRedirect');
+        this.corsproxyStatus = document.getElementById('corsproxyStatus');
+        this.corsanywhereStatus = document.getElementById('corsanywhereStatus');
+        this.alloriginsStatus = document.getElementById('alloriginsStatus');
       }
       
       setupEventListeners() {
@@ -640,13 +719,18 @@
         this.sidebarBackdrop.addEventListener('click', () => this.closeSidebarMenu());
         
         // URL selection
-        this.url1Radio.addEventListener('change', () => this.switchStream('https://wearechecking.online/', 'playerFrame1'));
-        this.url2Radio.addEventListener('change', () => this.switchStream('https://streamed.su/', 'playerFrame2'));
+        this.url1Radio.addEventListener('change', () => this.switchStream('url1'));
+        this.url2Radio.addEventListener('change', () => this.switchStream('url2'));
+        this.url3Radio.addEventListener('change', () => this.switchStream('url3'));
+        this.url4Radio.addEventListener('change', () => this.switchStream('url4'));
+        this.url5Radio.addEventListener('change', () => this.switchStream('url5'));
         
         // Player controls
         this.refreshBtn.addEventListener('click', () => this.refreshCurrentStream());
         this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
         this.retryBtn.addEventListener('click', () => this.retryCurrentStream());
+        this.switchProxyBtn.addEventListener('click', () => this.tryNextProxy());
+        this.testAllProxiesBtn.addEventListener('click', () => this.testAllProxies());
         
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
@@ -662,13 +746,6 @@
         document.addEventListener('webkitfullscreenchange', () => this.handleFullscreenChange());
         document.addEventListener('mozfullscreenchange', () => this.handleFullscreenChange());
         document.addEventListener('MSFullscreenChange', () => this.handleFullscreenChange());
-        
-        // Prevent context menu on iframes
-        document.addEventListener('contextmenu', (e) => {
-          if (e.target.tagName === 'IFRAME') {
-            e.preventDefault();
-          }
-        });
       }
       
       setupIframeHandlers() {
@@ -677,183 +754,127 @@
         this.setupIframeHandler(this.playerFrame2, 'playerFrame2');
         
         // Set up periodic connection checks
-        setInterval(() => this.checkConnectionStatus(), 10000);
-        
-        // Set up mutation observer for iframe content changes
-        this.setupMutationObservers();
+        setInterval(() => this.checkConnectionStatus(), 15000);
       }
       
       setupIframeHandler(iframe, frameId) {
         iframe.addEventListener('load', () => this.handleIframeLoad(frameId));
         iframe.addEventListener('error', () => this.handleIframeError(frameId));
-        
-        // Enhanced redirect handling
-        const originalContentWindow = iframe.contentWindow;
-        if (originalContentWindow) {
-          this.overrideNavigationMethods(iframe, frameId);
-        }
-        
-        // Set up message handlers for iframe communication
-        window.addEventListener('message', (event) => {
-          this.handleIframeMessage(event, frameId);
-        });
       }
       
-      setupMutationObservers() {
-        // Observe iframe attributes for changes that might indicate redirects
-        const observer = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-              const iframe = mutation.target;
-              const frameId = iframe.id;
-              const newSrc = iframe.getAttribute('src');
-              
-              // Check if this is an external redirect attempt
-              if (newSrc && !newSrc.includes('timstreams')) {
-                this.handleRedirectAttempt(frameId, newSrc);
+      async testAllProxies() {
+        const proxies = [
+          { key: 'corsproxy', element: this.corsproxyStatus },
+          { key: 'cors-anywhere', element: this.corsanywhereStatus },
+          { key: 'allorigins', element: this.alloriginsStatus }
+        ];
+        
+        for (const proxy of proxies) {
+          try {
+            proxy.element.textContent = 'Testing...';
+            proxy.element.className = 'text-yellow-400';
+            
+            const config = this.proxyConfigs[proxy.key];
+            const response = await fetch(config.testUrl, {
+              method: 'GET',
+              mode: 'cors',
+              cache: 'no-cache',
+              headers: {
+                'Accept': 'application/json'
               }
+            });
+            
+            if (response.ok) {
+              proxy.element.textContent = 'Available';
+              proxy.element.className = 'text-green-400';
+              console.log(`${config.name} is available`);
+            } else {
+              proxy.element.textContent = 'Unavailable';
+              proxy.element.className = 'text-red-400';
             }
-          });
-        });
-        
-        // Observe both iframes
-        observer.observe(this.playerFrame1, { attributes: true });
-        observer.observe(this.playerFrame2, { attributes: true });
-      }
-      
-      overrideNavigationMethods(iframe, frameId) {
-        try {
-          const contentWindow = iframe.contentWindow;
-          if (!contentWindow) return;
-          
-          // Override window.open
-          const originalOpen = contentWindow.open;
-          contentWindow.open = (url, target, features) => {
-            this.handleRedirectAttempt(frameId, url);
-            return null; // Block the popup
-          };
-          
-          // Override location.replace
-          const originalReplace = contentWindow.location.replace;
-          contentWindow.location.replace = (url) => {
-            this.handleRedirectAttempt(frameId, url);
-          };
-          
-          // Override location.assign
-          const originalAssign = contentWindow.location.assign;
-          contentWindow.location.assign = (url) => {
-            this.handleRedirectAttempt(frameId, url);
-          };
-          
-          // Trap direct location.href changes
-          let currentHref = contentWindow.location.href;
-          Object.defineProperty(contentWindow.location, 'href', {
-            get: () => currentHref,
-            set: (value) => {
-              this.handleRedirectAttempt(frameId, value);
-              currentHref = value;
-            }
-          });
-          
-        } catch (e) {
-          console.warn(`Could not override methods for ${frameId}:`, e);
-        }
-      }
-      
-      handleIframeMessage(event, frameId) {
-        // Handle messages from iframes
-        if (event.data && event.data.type === 'NAVIGATION') {
-          this.handleIframeNavigation(event.data.url, event.source);
-        }
-        
-        // Check for redirect attempts in postMessage
-        if (event.data && typeof event.data === 'string') {
-          if (event.data.startsWith('http') && !event.data.includes('timstreams')) {
-            this.handleRedirectAttempt(frameId, event.data);
+          } catch (error) {
+            proxy.element.textContent = 'Failed';
+            proxy.element.className = 'text-red-400';
+            console.warn(`${proxy.key} test failed:`, error);
           }
+          
+          // Small delay between tests
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
       }
       
-      handleRedirectAttempt(frameId, attemptedUrl) {
-        this.redirectsBlocked++;
-        this.lastRedirect = attemptedUrl;
-        this.iframeStates[frameId].redirectCount++;
+      getProxiedUrl(targetUrl, proxyType) {
+        const config = this.proxyConfigs[proxyType];
+        if (!config) return targetUrl;
         
-        console.log(`Redirect blocked from ${frameId} to: ${attemptedUrl}`);
-        this.updateRedirectStats();
-        
-        // Refresh the iframe to its original URL
-        this.refreshIframe(frameId);
+        return config.format(targetUrl);
       }
       
-      refreshIframe(frameId) {
-        const state = this.iframeStates[frameId];
-        const iframe = document.getElementById(frameId);
+      switchStream(streamKey) {
+        const stream = this.streamSources[streamKey];
+        if (!stream) return;
         
-        if (iframe && state.url) {
-          iframe.src = 'about:blank';
-          setTimeout(() => {
-            iframe.src = state.url;
-          }, 100);
-        }
-      }
-      
-      updateRedirectStats() {
-        this.redirectsBlockedSpan.textContent = this.redirectsBlocked;
-        this.lastRedirectSpan.textContent = this.lastRedirect || 'None';
-      }
-      
-      preloadStreams() {
-        // Start loading both streams in the background
-        this.startLoadingStream('playerFrame1', 'https://wearechecking.online/');
-        this.startLoadingStream('playerFrame2', 'https://streamed.su/');
+        this.currentUrl = stream.url;
+        this.currentProxy = stream.proxy;
+        this.activeFrame = 'playerFrame1'; // Always use frame1 for now
         
-        // Activate the first stream
-        this.activateStream('playerFrame1');
+        const proxiedUrl = this.getProxiedUrl(stream.url, stream.proxy);
+        
+        // Update display
+        this.updateActiveStreamName(stream.name);
+        this.updateActiveProxy(this.proxyConfigs[stream.proxy].name);
+        this.updateUrlIndicator(proxiedUrl);
+        
+        // Load the stream
+        this.loadStream(proxiedUrl);
+        this.closeSidebarMenu();
       }
       
-      startLoadingStream(frameId, url) {
-        const frame = document.getElementById(frameId);
-        const state = this.iframeStates[frameId];
+      loadStream(url) {
+        const frame = this.playerFrame1;
+        const state = this.iframeStates['playerFrame1'];
         
         state.loadStartTime = Date.now();
         state.loaded = false;
         state.error = false;
         
-        this.updateConnectionStatus(frameId, 'loading');
+        this.updateConnectionStatus('playerFrame1', 'loading');
+        this.showLoading();
         
         // Set a timeout to handle slow loading
-        setTimeout(() => {
+        if (this.loadingTimeout) {
+          clearTimeout(this.loadingTimeout);
+        }
+        
+        this.loadingTimeout = setTimeout(() => {
           if (!state.loaded && !state.error) {
-            this.handleIframeTimeout(frameId);
+            this.handleIframeTimeout('playerFrame1');
           }
         }, this.maxLoadTime);
         
         // Load the iframe
-        frame.src = url;
+        try {
+          console.log('Loading URL:', url);
+          frame.src = url;
+        } catch (error) {
+          console.error('Error loading iframe:', error);
+          this.handleIframeError('playerFrame1');
+        }
       }
       
-      activateStream(frameId) {
-        // Hide all iframe containers
-        this.iframeContainer1.classList.remove('active');
-        this.iframeContainer2.classList.remove('active');
+      loadDefaultStream() {
+        // Load the first stream by default
+        this.url1Radio.checked = true;
+        this.switchStream('url1');
         
-        // Show the active iframe container
-        const activeContainer = document.getElementById(`iframeContainer${frameId.slice(-1)}`);
-        activeContainer.classList.add('active');
-        
-        this.activeFrame = frameId;
-        this.currentUrl = this.iframeStates[frameId].url;
-        
-        // Show loading if the iframe hasn't loaded yet
-        if (!this.iframeStates[frameId].loaded) {
-          this.showLoading();
-        } else {
-          this.hideLoading();
+        // Update radio button visual
+        const defaultLabel = document.querySelector('label[for="url1"]');
+        if (defaultLabel) {
+          const defaultDot = defaultLabel.querySelector('.w-2.h-2');
+          if (defaultDot) {
+            defaultDot.classList.remove('hidden');
+          }
         }
-        
-        this.updateUrlIndicator();
-        this.updateActiveStreamName();
       }
       
       handleIframeLoad(frameId) {
@@ -862,34 +883,15 @@
         state.error = false;
         
         if (state.loadStartTime) {
-          state.loadTime = Date.now() - state.loadStartTime;
-          this.updateLoadTimeDisplay(frameId, state.loadTime);
+          const loadTime = Date.now() - state.loadStartTime;
+          state.loadTime = loadTime;
+          this.updateLoadTimeDisplay(loadTime);
         }
         
         this.updateConnectionStatus(frameId, 'connected');
+        this.hideLoading();
         
-        // If this is the active frame, hide loading
-        if (frameId === this.activeFrame) {
-          this.hideLoading();
-        }
-        
-        console.log(`Iframe ${frameId} loaded successfully`);
-        
-        // Enhanced security: Check for redirects after load
-        this.checkForRedirects(frameId);
-      }
-      
-      checkForRedirects(frameId) {
-        try {
-          const iframe = document.getElementById(frameId);
-          const currentUrl = iframe.contentWindow.location.href;
-          
-          if (currentUrl && !currentUrl.includes('timstreams')) {
-            this.handleRedirectAttempt(frameId, currentUrl);
-          }
-        } catch (e) {
-          // Cross-origin restriction, but that's expected
-        }
+        console.log(`Iframe ${frameId} loaded successfully in ${state.loadTime}ms`);
       }
       
       handleIframeError(frameId) {
@@ -898,13 +900,12 @@
         state.error = true;
         
         this.updateConnectionStatus(frameId, 'disconnected');
-        
-        // If this is the active frame, show error
-        if (frameId === this.activeFrame) {
-          this.showError('Failed to load the stream. The server may be down or unreachable.');
-        }
+        this.showError('Failed to load the stream. Trying alternative proxy...');
         
         console.error(`Iframe ${frameId} failed to load`);
+        
+        // Auto-try next proxy after error
+        setTimeout(() => this.tryNextProxy(), 2000);
       }
       
       handleIframeTimeout(frameId) {
@@ -913,13 +914,81 @@
         if (!state.loaded && !state.error) {
           state.error = true;
           this.updateConnectionStatus(frameId, 'disconnected');
-          
-          // If this is the active frame, show error
-          if (frameId === this.activeFrame) {
-            this.showError('The stream is taking too long to load. Please try again.');
-          }
+          this.showError('The stream is taking too long to load. Trying alternative proxy...');
           
           console.warn(`Iframe ${frameId} timed out`);
+          
+          // Auto-try next proxy after timeout
+          setTimeout(() => this.tryNextProxy(), 2000);
+        }
+      }
+      
+      tryNextProxy() {
+        this.hideError();
+        
+        // Get current stream
+        const currentRadio = document.querySelector('input[name="streamUrl"]:checked');
+        if (!currentRadio) return;
+        
+        const currentId = currentRadio.id;
+        const stream = this.streamSources[currentId];
+        if (!stream) return;
+        
+        // Try next proxy in sequence
+        const proxyOrder = ['corsproxy', 'cors-anywhere', 'allorigins', 'false'];
+        const currentIndex = proxyOrder.indexOf(stream.proxy);
+        const nextIndex = (currentIndex + 1) % proxyOrder.length;
+        const nextProxy = proxyOrder[nextIndex];
+        
+        // Update and retry
+        stream.proxy = nextProxy;
+        const proxiedUrl = this.getProxiedUrl(stream.url, nextProxy);
+        
+        this.updateActiveProxy(this.proxyConfigs[nextProxy].name);
+        this.updateUrlIndicator(proxiedUrl);
+        this.loadStream(proxiedUrl);
+      }
+      
+      updateConnectionStatus(frameId, status) {
+        // Update status dot for active streams
+        if (frameId === 'playerFrame1') {
+          const currentRadio = document.querySelector('input[name="streamUrl"]:checked');
+          if (currentRadio) {
+            const statusId = currentRadio.id.replace('url', 'stream') + 'Status';
+            const statusElement = document.getElementById(statusId);
+            if (statusElement) {
+              statusElement.className = `connection-dot ${status}`;
+            }
+          }
+        }
+      }
+      
+      updateLoadTimeDisplay(loadTime) {
+        if (this.currentLoadTime) {
+          this.currentLoadTime.textContent = `${loadTime}ms`;
+        }
+      }
+      
+      updateActiveProxy(proxyName) {
+        if (this.activeProxy) {
+          this.activeProxy.textContent = proxyName;
+        }
+      }
+      
+      updateActiveStreamName(name) {
+        if (this.activeStreamName) {
+          this.activeStreamName.textContent = name;
+        }
+      }
+      
+      updateUrlIndicator(url) {
+        if (this.currentUrlSpan && url) {
+          // Shorten the URL for display
+          let displayUrl = url;
+          if (displayUrl.length > 40) {
+            displayUrl = displayUrl.substring(0, 40) + '...';
+          }
+          this.currentUrlSpan.textContent = displayUrl;
         }
       }
       
@@ -943,15 +1012,11 @@
         this.sidebarToggle.classList.remove('opacity-0', 'pointer-events-none');
       }
       
-      switchStream(url, frameId) {
-        this.activateStream(frameId);
-        this.closeSidebarMenu();
-      }
-      
       refreshCurrentStream() {
-        const state = this.iframeStates[this.activeFrame];
-        this.startLoadingStream(this.activeFrame, state.url);
-        this.showLoading();
+        const currentRadio = document.querySelector('input[name="streamUrl"]:checked');
+        if (currentRadio) {
+          this.switchStream(currentRadio.id);
+        }
       }
       
       retryCurrentStream() {
@@ -993,103 +1058,81 @@
                               document.mozFullScreenElement || document.msFullscreenElement);
       }
       
-      handleIframeNavigation(url, sourceFrame) {
-        // Determine which iframe sent the message
-        let frameId;
-        if (sourceFrame === this.playerFrame1.contentWindow) {
-          frameId = 'playerFrame1';
-        } else if (sourceFrame === this.playerFrame2.contentWindow) {
-          frameId = 'playerFrame2';
-        } else {
-          return; // Unknown source
-        }
-        
-        // Update URL for the frame
-        this.iframeStates[frameId].url = url;
-        
-        // If this is the active frame, update the URL indicator
-        if (frameId === this.activeFrame) {
-          this.currentUrl = url;
-          this.updateUrlIndicator();
-        }
-      }
-      
-      updateUrlIndicator() {
-        this.currentUrlSpan.textContent = this.currentUrl;
-      }
-      
-      updateActiveStreamName() {
-        const name = this.activeFrame === 'playerFrame1' ? 'Live Sports HD 1' : 'Live Sports HD 2';
-        this.activeStreamName.textContent = name;
-      }
-      
-      updateConnectionStatus(frameId, status) {
-        const statusElement = document.getElementById(`${frameId}Status`);
-        if (statusElement) {
-          statusElement.className = `connection-dot ${status}`;
-        }
-      }
-      
-      updateLoadTimeDisplay(frameId, loadTime) {
-        const loadTimeElement = document.getElementById(`${frameId}LoadTime`);
-        if (loadTimeElement) {
-          loadTimeElement.textContent = `${loadTime}ms`;
-        }
-      }
-      
       showLoading() {
-        this.loadingOverlay.classList.remove('hidden');
-        this.progressBar.classList.remove('hidden');
+        if (this.loadingOverlay) {
+          this.loadingOverlay.classList.remove('hidden');
+        }
+        if (this.progressBar) {
+          this.progressBar.classList.remove('hidden');
+        }
         
-        // Simulate progress for better UX
-        let progress = 0;
-        const interval = setInterval(() => {
-          progress += Math.random() * 10;
-          if (progress > 90) progress = 90; // Don't complete until actually loaded
-          this.progressBarInner.style.width = `${progress}%`;
-        }, 200);
-        
-        // Store interval ID to clear later
-        this.progressInterval = interval;
-      }
-      
-      hideLoading() {
-        this.loadingOverlay.classList.add('hidden');
-        this.progressBar.classList.add('hidden');
-        
-        // Complete progress animation
-        this.progressBarInner.style.width = '100%';
-        
-        // Clear progress interval
+        // Clear any existing interval
         if (this.progressInterval) {
           clearInterval(this.progressInterval);
         }
         
+        // Simulate progress for better UX
+        let progress = 0;
+        this.progressInterval = setInterval(() => {
+          progress += Math.random() * 10;
+          if (progress > 90) progress = 90; // Don't complete until actually loaded
+          if (this.progressBarInner) {
+            this.progressBarInner.style.width = `${progress}%`;
+          }
+        }, 200);
+      }
+      
+      hideLoading() {
+        if (this.loadingOverlay) {
+          this.loadingOverlay.classList.add('hidden');
+        }
+        if (this.progressBar) {
+          this.progressBar.classList.add('hidden');
+        }
+        
+        // Complete progress animation
+        if (this.progressBarInner) {
+          this.progressBarInner.style.width = '100%';
+        }
+        
+        // Clear progress interval
+        if (this.progressInterval) {
+          clearInterval(this.progressInterval);
+          this.progressInterval = null;
+        }
+        
         // Reset progress after a delay
         setTimeout(() => {
-          this.progressBarInner.style.width = '0%';
+          if (this.progressBarInner) {
+            this.progressBarInner.style.width = '0%';
+          }
         }, 300);
       }
       
       showError(message) {
-        this.errorMessage.textContent = message;
-        this.errorOverlay.classList.remove('hidden');
+        if (this.errorMessage) {
+          this.errorMessage.textContent = message;
+        }
+        if (this.errorOverlay) {
+          this.errorOverlay.classList.remove('hidden');
+        }
         this.hideLoading();
       }
       
       hideError() {
-        this.errorOverlay.classList.add('hidden');
+        if (this.errorOverlay) {
+          this.errorOverlay.classList.add('hidden');
+        }
       }
       
       checkConnectionStatus() {
+        // Update connection status for all streams
         Object.keys(this.iframeStates).forEach(frameId => {
           const state = this.iframeStates[frameId];
           if (state.loaded && !state.error) {
             this.updateConnectionStatus(frameId, 'connected');
           } else if (state.error) {
             this.updateConnectionStatus(frameId, 'disconnected');
-          } else {
-            this.updateConnectionStatus(frameId, 'loading');
           }
         });
       }
@@ -1116,29 +1159,54 @@
         
         // Switch between streams with number keys
         if (e.key === '1') {
-          this.url1Radio.checked = true;
-          this.switchStream('https://wearechecking.online/', 'playerFrame1');
+          if (this.url1Radio) {
+            this.url1Radio.checked = true;
+            this.switchStream('url1');
+          }
         } else if (e.key === '2') {
-          this.url2Radio.checked = true;
-          this.switchStream('https://streamed.su/', 'playerFrame2');
+          if (this.url2Radio) {
+            this.url2Radio.checked = true;
+            this.switchStream('url2');
+          }
+        } else if (e.key === '3') {
+          if (this.url3Radio) {
+            this.url3Radio.checked = true;
+            this.switchStream('url3');
+          }
+        } else if (e.key === '4') {
+          if (this.url4Radio) {
+            this.url4Radio.checked = true;
+            this.switchStream('url4');
+          }
+        } else if (e.key === '5') {
+          if (this.url5Radio) {
+            this.url5Radio.checked = true;
+            this.switchStream('url5');
+          }
         }
       }
       
       handleResize() {
         // Adjust UI elements based on screen size
         if (window.innerWidth < 768) {
-          this.sidebar.style.width = '100%';
-          this.sidebar.style.left = this.isSidebarOpen ? '0' : '-100%';
+          if (this.sidebar) {
+            this.sidebar.style.width = '100%';
+            this.sidebar.style.left = this.isSidebarOpen ? '0' : '-100%';
+          }
         } else {
-          this.sidebar.style.width = '300px';
-          this.sidebar.style.left = this.isSidebarOpen ? '0' : '-300px';
+          if (this.sidebar) {
+            this.sidebar.style.width = '300px';
+            this.sidebar.style.left = this.isSidebarOpen ? '0' : '-300px';
+          }
         }
       }
       
       handleVisibilityChange() {
         // Pause/resume streams when tab visibility changes
         if (document.hidden) {
+          // Tab is hidden
         } else {
+          // Tab is visible
         }
       }
     }
@@ -1150,13 +1218,19 @@
       // Update radio button visuals
       document.querySelectorAll('input[name="streamUrl"]').forEach(radio => {
         radio.addEventListener('change', function() {
+          // Hide all selection dots
           document.querySelectorAll('.url-option label .w-2.h-2').forEach(dot => {
             dot.classList.add('hidden');
           });
           
+          // Show selected dot
           const selectedLabel = document.querySelector(`label[for="${this.id}"]`);
-          const selectedDot = selectedLabel.querySelector('.w-2.h-2');
-          selectedDot.classList.remove('hidden');
+          if (selectedLabel) {
+            const selectedDot = selectedLabel.querySelector('.w-2.h-2');
+            if (selectedDot) {
+              selectedDot.classList.remove('hidden');
+            }
+          }
         });
       });
     });

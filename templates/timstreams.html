@@ -105,7 +105,7 @@
       overflow: hidden;
     }
     
-    .iframe-container {
+    .content-container {
       position: absolute;
       top: 0;
       left: 0;
@@ -113,14 +113,15 @@
       height: 100%;
       transition: all 0.3s ease;
       opacity: 0;
+      overflow: auto;
     }
     
-    .iframe-container.active {
+    .content-container.active {
       z-index: 10;
       opacity: 1;
     }
     
-    .iframe-container iframe {
+    .content-frame {
       width: 100%;
       height: 100%;
       border: none;
@@ -327,6 +328,26 @@
       min-width: min-content;
     }
     
+    /* Content viewer styles */
+    .content-viewer {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: white;
+      color: black;
+    }
+    
+    .content-viewer img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .content-viewer iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
     @media (max-width: 768px) {
       .sidebar {
         width: 100%;
@@ -406,18 +427,18 @@
         <button id="retryBtn" class="bg-blue-500 text-white font-medium py-2 px-6 rounded-lg hover:bg-blue-600 transition">
           Retry
         </button>
-        <button id="switchProxyBtn" class="bg-green-500 text-white font-medium py-2 px-6 rounded-lg hover:bg-green-600 transition mt-3">
-          Try Different Proxy
+        <button id="switchMethodBtn" class="bg-green-500 text-white font-medium py-2 px-6 rounded-lg hover:bg-green-600 transition mt-3">
+          Try Alternative Method
         </button>
       </div>
       
-      <!-- Iframe Containers -->
-      <div id="iframeContainer1" class="iframe-container active">
-        <iframe id="playerFrame1" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <!-- Content Containers -->
+      <div id="contentContainer1" class="content-container active">
+        <div id="contentViewer1" class="content-viewer"></div>
       </div>
       
-      <div id="iframeContainer2" class="iframe-container">
-        <iframe id="playerFrame2" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div id="contentContainer2" class="content-container">
+        <div id="contentViewer2" class="content-viewer"></div>
       </div>
       
       <!-- Sidebar -->
@@ -432,9 +453,9 @@
         </div>
         
         <div class="space-y-4">
-          <!-- Direct Streams with CORSProxy -->
+          <!-- Direct Stream Options -->
           <div class="url-option">
-            <input type="radio" id="url1" name="streamUrl" value="https://wearechecking.online/" data-proxy="true" checked class="hidden">
+            <input type="radio" id="url1" name="streamUrl" value="https://wearechecking.online/" data-method="fetch" checked class="hidden">
             <label for="url1" class="flex items-center p-4 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-blue-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-blue-500"></div>
@@ -444,13 +465,13 @@
                   <h3 class="font-medium text-gray-100">Live Sports HD 1</h3>
                   <span id="stream1Status" class="connection-dot loading"></span>
                 </div>
-                <p class="text-xs text-gray-500 mt-1">via CORSProxy</p>
+                <p class="text-xs text-gray-500 mt-1">Direct fetch method</p>
               </div>
             </label>
           </div>
           
           <div class="url-option">
-            <input type="radio" id="url2" name="streamUrl" value="https://streamed.su/" data-proxy="true" class="hidden">
+            <input type="radio" id="url2" name="streamUrl" value="https://streamed.su/" data-method="fetch" class="hidden">
             <label for="url2" class="flex items-center p-4 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-blue-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-blue-500 hidden"></div>
@@ -460,57 +481,57 @@
                   <h3 class="font-medium text-gray-100">Live Sports HD 2</h3>
                   <span id="stream2Status" class="connection-dot loading"></span>
                 </div>
-                <p class="text-xs text-gray-500 mt-1">via CORSProxy</p>
+                <p class="text-xs text-gray-500 mt-1">Direct fetch method</p>
               </div>
             </label>
           </div>
           
-          <!-- Alternative Proxy Options -->
+          <!-- Proxy Options -->
           <div class="url-option">
-            <input type="radio" id="url3" name="streamUrl" value="https://wearechecking.online/" data-proxy="cors-anywhere" class="hidden">
+            <input type="radio" id="url3" name="streamUrl" value="https://wearechecking.online/" data-method="proxy" class="hidden">
             <label for="url3" class="flex items-center p-4 rounded-lg border border-green-500/30 cursor-pointer hover:bg-green-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-green-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-green-500 hidden"></div>
               </div>
               <div class="flex-1">
                 <div class="flex justify-between items-center">
-                  <h3 class="font-medium text-gray-100">Alternative Proxy 1</h3>
+                  <h3 class="font-medium text-gray-100">Proxy Method 1</h3>
                   <span id="stream3Status" class="connection-dot loading"></span>
                 </div>
-                <p class="text-xs text-gray-500 mt-1">via CORS Anywhere</p>
+                <p class="text-xs text-gray-500 mt-1">Using proxy server</p>
               </div>
             </label>
           </div>
           
           <div class="url-option">
-            <input type="radio" id="url4" name="streamUrl" value="https://streamed.su/" data-proxy="allorigins" class="hidden">
+            <input type="radio" id="url4" name="streamUrl" value="https://streamed.su/" data-method="proxy" class="hidden">
             <label for="url4" class="flex items-center p-4 rounded-lg border border-purple-500/30 cursor-pointer hover:bg-purple-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-purple-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-purple-500 hidden"></div>
               </div>
               <div class="flex-1">
                 <div class="flex justify-between items-center">
-                  <h3 class="font-medium text-gray-100">Alternative Proxy 2</h3>
+                  <h3 class="font-medium text-gray-100">Proxy Method 2</h3>
                   <span id="stream4Status" class="connection-dot loading"></span>
                 </div>
-                <p class="text-xs text-gray-500 mt-1">via AllOrigins</p>
+                <p class="text-xs text-gray-500 mt-1">Using proxy server</p>
               </div>
             </label>
           </div>
           
-          <!-- Direct without proxy (fallback) -->
+          <!-- Iframe fallback -->
           <div class="url-option">
-            <input type="radio" id="url5" name="streamUrl" value="https://wearechecking.online/" data-proxy="false" class="hidden">
+            <input type="radio" id="url5" name="streamUrl" value="https://wearechecking.online/" data-method="iframe" class="hidden">
             <label for="url5" class="flex items-center p-4 rounded-lg border border-yellow-500/30 cursor-pointer hover:bg-yellow-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-yellow-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-yellow-500 hidden"></div>
               </div>
               <div class="flex-1">
                 <div class="flex justify-between items-center">
-                  <h3 class="font-medium text-gray-100">Direct Connection 1</h3>
+                  <h3 class="font-medium text-gray-100">Iframe Method</h3>
                   <span id="stream5Status" class="connection-dot loading"></span>
                 </div>
-                <p class="text-xs text-gray-500 mt-1">No proxy (if supported)</p>
+                <p class="text-xs text-gray-500 mt-1">Direct iframe (if allowed)</p>
               </div>
             </label>
           </div>
@@ -525,8 +546,8 @@
             <button id="fullscreenBtn" class="w-full bg-blue-500/10 text-blue-400 font-medium py-2 px-4 rounded-lg border border-blue-500/30 hover:bg-blue-500 hover:text-gray-900 transition-all duration-300">
               Toggle Fullscreen
             </button>
-            <button id="testAllProxiesBtn" class="w-full bg-green-500/10 text-green-400 font-medium py-2 px-4 rounded-lg border border-green-500/30 hover:bg-green-500 hover:text-gray-900 transition-all duration-300">
-              Test All Connections
+            <button id="testConnectionsBtn" class="w-full bg-green-500/10 text-green-400 font-medium py-2 px-4 rounded-lg border border-green-500/30 hover:bg-green-500 hover:text-gray-900 transition-all duration-300">
+              Test All Methods
             </button>
           </div>
         </div>
@@ -535,8 +556,8 @@
           <h3 class="text-lg font-bold text-gray-100 mb-4">Performance</h3>
           <div class="space-y-2">
             <div class="flex justify-between">
-              <span class="text-gray-400">Active Proxy:</span>
-              <span id="activeProxy" class="text-blue-400">CORSProxy.io</span>
+              <span class="text-gray-400">Active Method:</span>
+              <span id="activeMethod" class="text-blue-400">Fetch</span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Load Time:</span>
@@ -553,16 +574,16 @@
           <h3 class="text-lg font-bold text-gray-100 mb-4">Connection Status</h3>
           <div class="space-y-2">
             <div class="flex justify-between">
-              <span class="text-gray-400">CORSProxy.io:</span>
-              <span id="corsproxyStatus" class="text-yellow-400">Checking...</span>
+              <span class="text-gray-400">Direct Fetch:</span>
+              <span id="fetchStatus" class="text-yellow-400">Testing...</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400">CORS Anywhere:</span>
-              <span id="corsanywhereStatus" class="text-yellow-400">Checking...</span>
+              <span class="text-gray-400">Proxy Method:</span>
+              <span id="proxyStatus" class="text-yellow-400">Testing...</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400">AllOrigins:</span>
-              <span id="alloriginsStatus" class="text-yellow-400">Checking...</span>
+              <span class="text-gray-400">Iframe Method:</span>
+              <span id="iframeStatus" class="text-yellow-400">Testing...</span>
             </div>
           </div>
         </div>
@@ -599,64 +620,46 @@
 
     class AdvancedStreamPlayer {
       constructor() {
-        // Proxy configurations
-        this.proxyConfigs = {
-          'corsproxy': {
-            name: 'CORSProxy.io',
-            url: 'https://corsproxy.io/?',
-            format: (targetUrl) => `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
-            testUrl: 'https://corsproxy.io/?https://httpbin.org/get'
-          },
-          'cors-anywhere': {
+        // Proxy server configuration
+        this.proxyServers = [
+          {
             name: 'CORS Anywhere',
             url: 'https://cors-anywhere.herokuapp.com/',
             format: (targetUrl) => `https://cors-anywhere.herokuapp.com/${targetUrl}`,
             testUrl: 'https://cors-anywhere.herokuapp.com/https://httpbin.org/get'
           },
-          'allorigins': {
-            name: 'AllOrigins',
+          {
+            name: 'All Origins',
             url: 'https://api.allorigins.win/raw?url=',
             format: (targetUrl) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
             testUrl: 'https://api.allorigins.win/raw?url=https://httpbin.org/get'
-          },
-          'false': {
-            name: 'Direct',
-            url: '',
-            format: (targetUrl) => targetUrl,
-            testUrl: 'https://httpbin.org/get'
           }
-        };
+        ];
         
         this.currentUrl = 'https://wearechecking.online/';
-        this.currentProxy = 'corsproxy';
-        this.activeFrame = 'playerFrame1';
+        this.currentMethod = 'fetch';
+        this.activeProxyIndex = 0;
         this.isSidebarOpen = false;
         this.isFullscreen = false;
         
         // Stream configurations
         this.streamSources = {
-          'url1': { name: 'Live Sports HD 1', url: 'https://wearechecking.online/', proxy: 'corsproxy' },
-          'url2': { name: 'Live Sports HD 2', url: 'https://streamed.su/', proxy: 'corsproxy' },
-          'url3': { name: 'Alternative Proxy 1', url: 'https://wearechecking.online/', proxy: 'cors-anywhere' },
-          'url4': { name: 'Alternative Proxy 2', url: 'https://streamed.su/', proxy: 'allorigins' },
-          'url5': { name: 'Direct Connection 1', url: 'https://wearechecking.online/', proxy: 'false' }
+          'url1': { name: 'Live Sports HD 1', url: 'https://wearechecking.online/', method: 'fetch' },
+          'url2': { name: 'Live Sports HD 2', url: 'https://streamed.su/', method: 'fetch' },
+          'url3': { name: 'Proxy Method 1', url: 'https://wearechecking.online/', method: 'proxy' },
+          'url4': { name: 'Proxy Method 2', url: 'https://streamed.su/', method: 'proxy' },
+          'url5': { name: 'Iframe Method', url: 'https://wearechecking.online/', method: 'iframe' }
         };
         
-        // Frame states
-        this.iframeStates = {
-          'playerFrame1': { loaded: false, loadStartTime: null, loadTime: null, error: false },
-          'playerFrame2': { loaded: false, loadStartTime: null, loadTime: null, error: false }
-        };
-        
-        this.loadingTimeout = null;
-        this.maxLoadTime = 20000; // 20 seconds max load time
-        this.progressInterval = null;
+        // State tracking
         this.currentLoadTime = null;
+        this.loadingTimeout = null;
+        this.maxLoadTime = 25000; // 25 seconds max load time
+        this.progressInterval = null;
         
         this.initializeElements();
         this.setupEventListeners();
-        this.setupIframeHandlers();
-        this.testAllProxies();
+        this.testAllMethods();
         this.loadDefaultStream();
       }
       
@@ -667,11 +670,11 @@
         this.closeSidebar = document.getElementById('closeSidebar');
         this.sidebarBackdrop = document.getElementById('sidebarBackdrop');
         
-        // Iframe containers and frames
-        this.iframeContainer1 = document.getElementById('iframeContainer1');
-        this.iframeContainer2 = document.getElementById('iframeContainer2');
-        this.playerFrame1 = document.getElementById('playerFrame1');
-        this.playerFrame2 = document.getElementById('playerFrame2');
+        // Content containers
+        this.contentContainer1 = document.getElementById('contentContainer1');
+        this.contentContainer2 = document.getElementById('contentContainer2');
+        this.contentViewer1 = document.getElementById('contentViewer1');
+        this.contentViewer2 = document.getElementById('contentViewer2');
         
         // URL selection elements
         this.url1Radio = document.getElementById('url1');
@@ -684,8 +687,8 @@
         this.refreshBtn = document.getElementById('refreshBtn');
         this.fullscreenBtn = document.getElementById('fullscreenBtn');
         this.retryBtn = document.getElementById('retryBtn');
-        this.switchProxyBtn = document.getElementById('switchProxyBtn');
-        this.testAllProxiesBtn = document.getElementById('testAllProxiesBtn');
+        this.switchMethodBtn = document.getElementById('switchMethodBtn');
+        this.testConnectionsBtn = document.getElementById('testConnectionsBtn');
         
         // Status elements
         this.urlIndicator = document.getElementById('urlIndicator');
@@ -704,12 +707,12 @@
         this.stream3Status = document.getElementById('stream3Status');
         this.stream4Status = document.getElementById('stream4Status');
         this.stream5Status = document.getElementById('stream5Status');
-        this.activeProxy = document.getElementById('activeProxy');
+        this.activeMethod = document.getElementById('activeMethod');
         this.currentLoadTime = document.getElementById('currentLoadTime');
         this.activeStreamName = document.getElementById('activeStreamName');
-        this.corsproxyStatus = document.getElementById('corsproxyStatus');
-        this.corsanywhereStatus = document.getElementById('corsanywhereStatus');
-        this.alloriginsStatus = document.getElementById('alloriginsStatus');
+        this.fetchStatus = document.getElementById('fetchStatus');
+        this.proxyStatus = document.getElementById('proxyStatus');
+        this.iframeStatus = document.getElementById('iframeStatus');
       }
       
       setupEventListeners() {
@@ -729,8 +732,8 @@
         this.refreshBtn.addEventListener('click', () => this.refreshCurrentStream());
         this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
         this.retryBtn.addEventListener('click', () => this.retryCurrentStream());
-        this.switchProxyBtn.addEventListener('click', () => this.tryNextProxy());
-        this.testAllProxiesBtn.addEventListener('click', () => this.testAllProxies());
+        this.switchMethodBtn.addEventListener('click', () => this.tryNextMethod());
+        this.testConnectionsBtn.addEventListener('click', () => this.testAllMethods());
         
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
@@ -748,66 +751,86 @@
         document.addEventListener('MSFullscreenChange', () => this.handleFullscreenChange());
       }
       
-      setupIframeHandlers() {
-        // Set up load and error handlers for iframes
-        this.setupIframeHandler(this.playerFrame1, 'playerFrame1');
-        this.setupIframeHandler(this.playerFrame2, 'playerFrame2');
-        
-        // Set up periodic connection checks
-        setInterval(() => this.checkConnectionStatus(), 15000);
-      }
-      
-      setupIframeHandler(iframe, frameId) {
-        iframe.addEventListener('load', () => this.handleIframeLoad(frameId));
-        iframe.addEventListener('error', () => this.handleIframeError(frameId));
-      }
-      
-      async testAllProxies() {
-        const proxies = [
-          { key: 'corsproxy', element: this.corsproxyStatus },
-          { key: 'cors-anywhere', element: this.corsanywhereStatus },
-          { key: 'allorigins', element: this.alloriginsStatus }
-        ];
-        
-        for (const proxy of proxies) {
-          try {
-            proxy.element.textContent = 'Testing...';
-            proxy.element.className = 'text-yellow-400';
-            
-            const config = this.proxyConfigs[proxy.key];
-            const response = await fetch(config.testUrl, {
-              method: 'GET',
-              mode: 'cors',
-              cache: 'no-cache',
-              headers: {
-                'Accept': 'application/json'
-              }
-            });
-            
-            if (response.ok) {
-              proxy.element.textContent = 'Available';
-              proxy.element.className = 'text-green-400';
-              console.log(`${config.name} is available`);
-            } else {
-              proxy.element.textContent = 'Unavailable';
-              proxy.element.className = 'text-red-400';
-            }
-          } catch (error) {
-            proxy.element.textContent = 'Failed';
-            proxy.element.className = 'text-red-400';
-            console.warn(`${proxy.key} test failed:`, error);
-          }
+      async testAllMethods() {
+        // Test fetch method
+        try {
+          this.fetchStatus.textContent = 'Testing...';
+          this.fetchStatus.className = 'text-yellow-400';
           
-          // Small delay between tests
-          await new Promise(resolve => setTimeout(resolve, 500));
+          const response = await fetch('https://httpbin.org/get', {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
+          });
+          
+          if (response.ok) {
+            this.fetchStatus.textContent = 'Available';
+            this.fetchStatus.className = 'text-green-400';
+          } else {
+            this.fetchStatus.textContent = 'Limited';
+            this.fetchStatus.className = 'text-orange-400';
+          }
+        } catch (error) {
+          this.fetchStatus.textContent = 'Blocked';
+          this.fetchStatus.className = 'text-red-400';
         }
-      }
-      
-      getProxiedUrl(targetUrl, proxyType) {
-        const config = this.proxyConfigs[proxyType];
-        if (!config) return targetUrl;
         
-        return config.format(targetUrl);
+        // Test proxy method
+        try {
+          this.proxyStatus.textContent = 'Testing...';
+          this.proxyStatus.className = 'text-yellow-400';
+          
+          const proxy = this.proxyServers[0];
+          const response = await fetch(proxy.testUrl, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
+          });
+          
+          if (response.ok) {
+            this.proxyStatus.textContent = 'Available';
+            this.proxyStatus.className = 'text-green-400';
+          } else {
+            this.proxyStatus.textContent = 'Limited';
+            this.proxyStatus.className = 'text-orange-400';
+          }
+        } catch (error) {
+          this.proxyStatus.textContent = 'Blocked';
+          this.proxyStatus.className = 'text-red-400';
+        }
+        
+        // Test iframe method
+        try {
+          this.iframeStatus.textContent = 'Testing...';
+          this.iframeStatus.className = 'text-yellow-400';
+          
+          // Create test iframe
+          const testIframe = document.createElement('iframe');
+          testIframe.style.display = 'none';
+          testIframe.src = 'https://httpbin.org/html';
+          document.body.appendChild(testIframe);
+          
+          setTimeout(() => {
+            try {
+              // Check if iframe loaded
+              if (testIframe.contentDocument || testIframe.contentWindow) {
+                this.iframeStatus.textContent = 'Available';
+                this.iframeStatus.className = 'text-green-400';
+              } else {
+                this.iframeStatus.textContent = 'Limited';
+                this.iframeStatus.className = 'text-orange-400';
+              }
+            } catch (e) {
+              this.iframeStatus.textContent = 'Blocked';
+              this.iframeStatus.className = 'text-red-400';
+            }
+            document.body.removeChild(testIframe);
+          }, 2000);
+          
+        } catch (error) {
+          this.iframeStatus.textContent = 'Blocked';
+          this.iframeStatus.className = 'text-red-400';
+        }
       }
       
       switchStream(streamKey) {
@@ -815,51 +838,235 @@
         if (!stream) return;
         
         this.currentUrl = stream.url;
-        this.currentProxy = stream.proxy;
-        this.activeFrame = 'playerFrame1'; // Always use frame1 for now
-        
-        const proxiedUrl = this.getProxiedUrl(stream.url, stream.proxy);
+        this.currentMethod = stream.method;
         
         // Update display
         this.updateActiveStreamName(stream.name);
-        this.updateActiveProxy(this.proxyConfigs[stream.proxy].name);
-        this.updateUrlIndicator(proxiedUrl);
+        this.updateActiveMethod(this.getMethodName(stream.method));
+        this.updateUrlIndicator(stream.url);
         
         // Load the stream
-        this.loadStream(proxiedUrl);
+        this.loadStream(stream.url, stream.method);
         this.closeSidebarMenu();
       }
       
-      loadStream(url) {
-        const frame = this.playerFrame1;
-        const state = this.iframeStates['playerFrame1'];
-        
-        state.loadStartTime = Date.now();
-        state.loaded = false;
-        state.error = false;
-        
-        this.updateConnectionStatus('playerFrame1', 'loading');
+      getMethodName(method) {
+        switch(method) {
+          case 'fetch': return 'Fetch';
+          case 'proxy': return 'Proxy';
+          case 'iframe': return 'Iframe';
+          default: return 'Unknown';
+        }
+      }
+      
+      async loadStream(url, method) {
+        const startTime = Date.now();
         this.showLoading();
+        this.updateConnectionStatus('loading');
         
-        // Set a timeout to handle slow loading
+        // Set timeout
         if (this.loadingTimeout) {
           clearTimeout(this.loadingTimeout);
         }
         
         this.loadingTimeout = setTimeout(() => {
-          if (!state.loaded && !state.error) {
-            this.handleIframeTimeout('playerFrame1');
-          }
+          this.handleLoadTimeout();
         }, this.maxLoadTime);
         
-        // Load the iframe
         try {
-          console.log('Loading URL:', url);
-          frame.src = url;
+          switch(method) {
+            case 'fetch':
+              await this.loadWithFetch(url);
+              break;
+            case 'proxy':
+              await this.loadWithProxy(url);
+              break;
+            case 'iframe':
+              await this.loadWithIframe(url);
+              break;
+          }
+          
+          const loadTime = Date.now() - startTime;
+          this.updateLoadTime(loadTime);
+          this.updateConnectionStatus('connected');
+          this.hideLoading();
+          console.log(`Stream loaded in ${loadTime}ms using ${method} method`);
+          
         } catch (error) {
-          console.error('Error loading iframe:', error);
-          this.handleIframeError('playerFrame1');
+          console.error(`Failed to load stream with ${method} method:`, error);
+          this.handleLoadError(error, method);
         }
+      }
+      
+      async loadWithFetch(url) {
+        try {
+          // Try to fetch the HTML content
+          const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          
+          const html = await response.text();
+          this.displayContent(html, url);
+          
+        } catch (error) {
+          // If fetch fails due to CORS, try with proxy
+          if (error.name === 'TypeError' || error.message.includes('CORS')) {
+            await this.loadWithProxy(url);
+          } else {
+            throw error;
+          }
+        }
+      }
+      
+      async loadWithProxy(url) {
+        try {
+          const proxy = this.proxyServers[this.activeProxyIndex];
+          const proxyUrl = proxy.format(url);
+          
+          const response = await fetch(proxyUrl, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            headers: {
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Proxy error: HTTP ${response.status}`);
+          }
+          
+          const html = await response.text();
+          this.displayContent(html, url);
+          
+        } catch (error) {
+          // Try next proxy
+          this.activeProxyIndex = (this.activeProxyIndex + 1) % this.proxyServers.length;
+          if (this.activeProxyIndex === 0) {
+            // Tried all proxies, throw error
+            throw new Error('All proxy servers failed');
+          }
+          // Retry with next proxy
+          await this.loadWithProxy(url);
+        }
+      }
+      
+      async loadWithIframe(url) {
+        return new Promise((resolve, reject) => {
+          // Clear current content
+          this.contentViewer1.innerHTML = '';
+          
+          // Create iframe
+          const iframe = document.createElement('iframe');
+          iframe.className = 'content-frame';
+          iframe.src = url;
+          iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+          iframe.allowfullscreen = true;
+          iframe.referrerpolicy = 'no-referrer';
+          
+          iframe.onload = () => {
+            resolve();
+          };
+          
+          iframe.onerror = (error) => {
+            reject(new Error('Iframe failed to load'));
+          };
+          
+          this.contentViewer1.appendChild(iframe);
+        });
+      }
+      
+      displayContent(html, originalUrl) {
+        // Clear current content
+        this.contentViewer1.innerHTML = '';
+        
+        // Create a new document
+        const doc = document.implementation.createHTMLDocument('Stream Content');
+        
+        // Parse and sanitize HTML
+        const parser = new DOMParser();
+        const parsedDoc = parser.parseFromString(html, 'text/html');
+        
+        // Fix relative URLs
+        this.fixRelativeUrls(parsedDoc, originalUrl);
+        
+        // Remove scripts for security
+        const scripts = parsedDoc.querySelectorAll('script');
+        scripts.forEach(script => script.remove());
+        
+        // Remove unwanted elements
+        const unwantedSelectors = [
+          'iframe[src*="ads"]',
+          'iframe[src*="advertisement"]',
+          'iframe[src*="doubleclick"]',
+          'div[class*="ad"]',
+          'div[id*="ad"]',
+          'ins',
+          '.ads',
+          '.advertisement',
+          '[class*="banner"]'
+        ];
+        
+        unwantedSelectors.forEach(selector => {
+          const elements = parsedDoc.querySelectorAll(selector);
+          elements.forEach(el => el.remove());
+        });
+        
+        // Append styles for better display
+        const style = document.createElement('style');
+        style.textContent = `
+          body { 
+            margin: 0; 
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+          }
+          img { max-width: 100%; height: auto; }
+          video { max-width: 100%; }
+          iframe { width: 100%; min-height: 500px; border: none; }
+          a { color: #3B82F6; text-decoration: none; }
+          a:hover { text-decoration: underline; }
+        `;
+        parsedDoc.head.appendChild(style);
+        
+        // Append to viewer
+        this.contentViewer1.innerHTML = parsedDoc.documentElement.outerHTML;
+      }
+      
+      fixRelativeUrls(doc, baseUrl) {
+        const base = document.createElement('base');
+        base.href = baseUrl;
+        doc.head.appendChild(base);
+        
+        // Fix all URLs
+        const urlAttributes = ['src', 'href', 'data-src', 'poster'];
+        const elements = doc.querySelectorAll('*');
+        
+        elements.forEach(el => {
+          urlAttributes.forEach(attr => {
+            if (el.hasAttribute(attr)) {
+              const value = el.getAttribute(attr);
+              if (value && !value.startsWith('http') && !value.startsWith('//') && !value.startsWith('data:')) {
+                try {
+                  const absoluteUrl = new URL(value, baseUrl).href;
+                  el.setAttribute(attr, absoluteUrl);
+                } catch (e) {
+                  // Skip invalid URLs
+                }
+              }
+            }
+          });
+        });
       }
       
       loadDefaultStream() {
@@ -868,65 +1075,41 @@
         this.switchStream('url1');
         
         // Update radio button visual
-        const defaultLabel = document.querySelector('label[for="url1"]');
-        if (defaultLabel) {
-          const defaultDot = defaultLabel.querySelector('.w-2.h-2');
-          if (defaultDot) {
-            defaultDot.classList.remove('hidden');
+        this.updateRadioVisual('url1');
+      }
+      
+      updateRadioVisual(radioId) {
+        // Hide all selection dots
+        document.querySelectorAll('.url-option label .w-2.h-2').forEach(dot => {
+          dot.classList.add('hidden');
+        });
+        
+        // Show selected dot
+        const selectedLabel = document.querySelector(`label[for="${radioId}"]`);
+        if (selectedLabel) {
+          const selectedDot = selectedLabel.querySelector('.w-2.h-2');
+          if (selectedDot) {
+            selectedDot.classList.remove('hidden');
           }
         }
       }
       
-      handleIframeLoad(frameId) {
-        const state = this.iframeStates[frameId];
-        state.loaded = true;
-        state.error = false;
-        
-        if (state.loadStartTime) {
-          const loadTime = Date.now() - state.loadStartTime;
-          state.loadTime = loadTime;
-          this.updateLoadTimeDisplay(loadTime);
-        }
-        
-        this.updateConnectionStatus(frameId, 'connected');
-        this.hideLoading();
-        
-        console.log(`Iframe ${frameId} loaded successfully in ${state.loadTime}ms`);
+      handleLoadTimeout() {
+        this.updateConnectionStatus('disconnected');
+        this.showError('The stream is taking too long to load. Trying alternative method...');
+        setTimeout(() => this.tryNextMethod(), 2000);
       }
       
-      handleIframeError(frameId) {
-        const state = this.iframeStates[frameId];
-        state.loaded = false;
-        state.error = true;
-        
-        this.updateConnectionStatus(frameId, 'disconnected');
-        this.showError('Failed to load the stream. Trying alternative proxy...');
-        
-        console.error(`Iframe ${frameId} failed to load`);
-        
-        // Auto-try next proxy after error
-        setTimeout(() => this.tryNextProxy(), 2000);
+      handleLoadError(error, method) {
+        console.error(`Load error with ${method}:`, error);
+        this.updateConnectionStatus('disconnected');
+        this.showError(`Failed to load stream using ${method} method. Trying alternative...`);
+        setTimeout(() => this.tryNextMethod(), 2000);
       }
       
-      handleIframeTimeout(frameId) {
-        const state = this.iframeStates[frameId];
-        
-        if (!state.loaded && !state.error) {
-          state.error = true;
-          this.updateConnectionStatus(frameId, 'disconnected');
-          this.showError('The stream is taking too long to load. Trying alternative proxy...');
-          
-          console.warn(`Iframe ${frameId} timed out`);
-          
-          // Auto-try next proxy after timeout
-          setTimeout(() => this.tryNextProxy(), 2000);
-        }
-      }
-      
-      tryNextProxy() {
+      tryNextMethod() {
         this.hideError();
         
-        // Get current stream
         const currentRadio = document.querySelector('input[name="streamUrl"]:checked');
         if (!currentRadio) return;
         
@@ -934,44 +1117,38 @@
         const stream = this.streamSources[currentId];
         if (!stream) return;
         
-        // Try next proxy in sequence
-        const proxyOrder = ['corsproxy', 'cors-anywhere', 'allorigins', 'false'];
-        const currentIndex = proxyOrder.indexOf(stream.proxy);
-        const nextIndex = (currentIndex + 1) % proxyOrder.length;
-        const nextProxy = proxyOrder[nextIndex];
+        // Cycle through methods: fetch -> proxy -> iframe -> fetch
+        const methods = ['fetch', 'proxy', 'iframe'];
+        const currentIndex = methods.indexOf(stream.method);
+        const nextIndex = (currentIndex + 1) % methods.length;
+        const nextMethod = methods[nextIndex];
         
         // Update and retry
-        stream.proxy = nextProxy;
-        const proxiedUrl = this.getProxiedUrl(stream.url, nextProxy);
-        
-        this.updateActiveProxy(this.proxyConfigs[nextProxy].name);
-        this.updateUrlIndicator(proxiedUrl);
-        this.loadStream(proxiedUrl);
+        stream.method = nextMethod;
+        this.updateActiveMethod(this.getMethodName(nextMethod));
+        this.loadStream(stream.url, nextMethod);
       }
       
-      updateConnectionStatus(frameId, status) {
-        // Update status dot for active streams
-        if (frameId === 'playerFrame1') {
-          const currentRadio = document.querySelector('input[name="streamUrl"]:checked');
-          if (currentRadio) {
-            const statusId = currentRadio.id.replace('url', 'stream') + 'Status';
-            const statusElement = document.getElementById(statusId);
-            if (statusElement) {
-              statusElement.className = `connection-dot ${status}`;
-            }
+      updateConnectionStatus(status) {
+        const currentRadio = document.querySelector('input[name="streamUrl"]:checked');
+        if (currentRadio) {
+          const statusId = currentRadio.id.replace('url', 'stream') + 'Status';
+          const statusElement = document.getElementById(statusId);
+          if (statusElement) {
+            statusElement.className = `connection-dot ${status}`;
           }
         }
       }
       
-      updateLoadTimeDisplay(loadTime) {
+      updateLoadTime(loadTime) {
         if (this.currentLoadTime) {
           this.currentLoadTime.textContent = `${loadTime}ms`;
         }
       }
       
-      updateActiveProxy(proxyName) {
-        if (this.activeProxy) {
-          this.activeProxy.textContent = proxyName;
+      updateActiveMethod(methodName) {
+        if (this.activeMethod) {
+          this.activeMethod.textContent = methodName;
         }
       }
       
@@ -983,7 +1160,6 @@
       
       updateUrlIndicator(url) {
         if (this.currentUrlSpan && url) {
-          // Shorten the URL for display
           let displayUrl = url;
           if (displayUrl.length > 40) {
             displayUrl = displayUrl.substring(0, 40) + '...';
@@ -1066,16 +1242,14 @@
           this.progressBar.classList.remove('hidden');
         }
         
-        // Clear any existing interval
         if (this.progressInterval) {
           clearInterval(this.progressInterval);
         }
         
-        // Simulate progress for better UX
         let progress = 0;
         this.progressInterval = setInterval(() => {
           progress += Math.random() * 10;
-          if (progress > 90) progress = 90; // Don't complete until actually loaded
+          if (progress > 90) progress = 90;
           if (this.progressBarInner) {
             this.progressBarInner.style.width = `${progress}%`;
           }
@@ -1090,18 +1264,15 @@
           this.progressBar.classList.add('hidden');
         }
         
-        // Complete progress animation
         if (this.progressBarInner) {
           this.progressBarInner.style.width = '100%';
         }
         
-        // Clear progress interval
         if (this.progressInterval) {
           clearInterval(this.progressInterval);
           this.progressInterval = null;
         }
         
-        // Reset progress after a delay
         setTimeout(() => {
           if (this.progressBarInner) {
             this.progressBarInner.style.width = '0%';
@@ -1125,31 +1296,16 @@
         }
       }
       
-      checkConnectionStatus() {
-        // Update connection status for all streams
-        Object.keys(this.iframeStates).forEach(frameId => {
-          const state = this.iframeStates[frameId];
-          if (state.loaded && !state.error) {
-            this.updateConnectionStatus(frameId, 'connected');
-          } else if (state.error) {
-            this.updateConnectionStatus(frameId, 'disconnected');
-          }
-        });
-      }
-      
       handleKeyboardShortcuts(e) {
-        // Close sidebar with Escape key
         if (e.key === 'Escape' && this.isSidebarOpen) {
           this.closeSidebarMenu();
         }
         
-        // Toggle fullscreen with F key
         if (e.key === 'f' || e.key === 'F') {
           e.preventDefault();
           this.toggleFullscreen();
         }
         
-        // Refresh with R key
         if (e.key === 'r' || e.key === 'R') {
           if (!e.ctrlKey && !e.metaKey) {
             e.preventDefault();
@@ -1157,37 +1313,40 @@
           }
         }
         
-        // Switch between streams with number keys
         if (e.key === '1') {
           if (this.url1Radio) {
             this.url1Radio.checked = true;
             this.switchStream('url1');
+            this.updateRadioVisual('url1');
           }
         } else if (e.key === '2') {
           if (this.url2Radio) {
             this.url2Radio.checked = true;
             this.switchStream('url2');
+            this.updateRadioVisual('url2');
           }
         } else if (e.key === '3') {
           if (this.url3Radio) {
             this.url3Radio.checked = true;
             this.switchStream('url3');
+            this.updateRadioVisual('url3');
           }
         } else if (e.key === '4') {
           if (this.url4Radio) {
             this.url4Radio.checked = true;
             this.switchStream('url4');
+            this.updateRadioVisual('url4');
           }
         } else if (e.key === '5') {
           if (this.url5Radio) {
             this.url5Radio.checked = true;
             this.switchStream('url5');
+            this.updateRadioVisual('url5');
           }
         }
       }
       
       handleResize() {
-        // Adjust UI elements based on screen size
         if (window.innerWidth < 768) {
           if (this.sidebar) {
             this.sidebar.style.width = '100%';
@@ -1202,16 +1361,11 @@
       }
       
       handleVisibilityChange() {
-        // Pause/resume streams when tab visibility changes
-        if (document.hidden) {
-          // Tab is hidden
-        } else {
-          // Tab is visible
-        }
+        // Handle visibility changes if needed
       }
     }
     
-    // Initialize the player when the DOM is loaded
+    // Initialize the player
     document.addEventListener('DOMContentLoaded', () => {
       const player = new AdvancedStreamPlayer();
       

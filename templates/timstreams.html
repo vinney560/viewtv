@@ -296,32 +296,58 @@
         left: -100%;
       }
     }
+
+    .security-badge-container {
+      max-width: 100%;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(59, 130, 246, 0.5) transparent;
+    }
+
+    .security-badge-container::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .security-badge-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .security-badge-container::-webkit-scrollbar-thumb {
+      background: rgba(59, 130, 246, 0.5);
+      border-radius: 2px;
+    }
+
+    .security-badge-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(59, 130, 246, 0.7);
+    }
+
   </style>
 </head>
 
 <body class="flex flex-col min-h-screen">
   <!-- Security Badge -->
   <div class="w-full bg-blue-900/30 text-blue-300 text-center py-2 text-sm border-b border-blue-800/50">
-    <div class="max-w-6xl mx-auto flex justify-center items-center gap-4 flex-wrap">
-      <span class="security-badge">
+    <div class="security-badge-container flex justify-start md:justify-center items-center gap-4 px-4">
+      <span class="security-badge whitespace-nowrap">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
         </svg>
         Secure HTTPS Connection
       </span>
-      <span class="security-badge">
+      <span class="security-badge whitespace-nowrap">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
         </svg>
         Privacy Protected
       </span>
-      <span class="security-badge">
+      <span class="security-badge whitespace-nowrap">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
         </svg>
         DMCA Compliant
       </span>
-      <span class="security-badge">
+      <span class="security-badge whitespace-nowrap">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 13.047 14.01c-.04.27-.24.49-.51.49H7.463c-.27 0-.47-.22-.51-.49L5.854 7.2 7.033 2.744A1 1 0 018 2h4zm-2.25 8a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0V10zm1.5 3.5a.75.75 0 01-1.5 0V10a.75.75 0 011.5 0v3.5z" clip-rule="evenodd" />
         </svg>
@@ -413,33 +439,31 @@
         
         <div class="space-y-4">
           <div class="url-option">
-            <input type="radio" id="url1" name="streamUrl" value="https://timstreams.cfd/" checked class="hidden">
+            <input type="radio" id="url1" name="streamUrl" value="https://wearechecking.online/" checked class="hidden">
             <label for="url1" class="flex items-center p-4 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-blue-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-blue-500"></div>
               </div>
               <div class="flex-1">
                 <div class="flex justify-between items-center">
-                  <h3 class="font-medium text-gray-100">TimStreams CFD</h3>
+                  <h3 class="font-medium text-gray-100">Live Sports HD 1</h3>
                   <span id="stream1Status" class="connection-dot loading"></span>
                 </div>
-                <p class="text-sm text-gray-400">https://timstreams.cfd/</p>
               </div>
             </label>
           </div>
           
           <div class="url-option">
-            <input type="radio" id="url2" name="streamUrl" value="https://timstreams.xyz/" class="hidden">
+            <input type="radio" id="url2" name="streamUrl" value="https://streamed.su/" class="hidden">
             <label for="url2" class="flex items-center p-4 rounded-lg border border-blue-500/30 cursor-pointer hover:bg-blue-500/10 transition">
               <div class="w-4 h-4 rounded-full border-2 border-blue-500 mr-3 flex items-center justify-center">
                 <div class="w-2 h-2 rounded-full bg-blue-500 hidden"></div>
               </div>
               <div class="flex-1">
                 <div class="flex justify-between items-center">
-                  <h3 class="font-medium text-gray-100">TimStreams XYZ</h3>
+                  <h3 class="font-medium text-gray-100">Live Sports HD 2</h3>
                   <span id="stream2Status" class="connection-dot loading"></span>
                 </div>
-                <p class="text-sm text-gray-400">https://timstreams.xyz/</p>
               </div>
             </label>
           </div>
@@ -470,7 +494,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-gray-400">Active Stream:</span>
-              <span id="activeStreamName" class="text-blue-400">TimStreams CFD</span>
+              <span id="activeStreamName" class="text-blue-400">Live Sports HD 1</span>
             </div>
           </div>
         </div>
@@ -512,13 +536,13 @@
     document.getElementById('backBtn').addEventListener('click', function() { window.location.back(); })
     class AdvancedStreamPlayer {
       constructor() {
-        this.currentUrl = 'https://timstreams.cfd/';
+        this.currentUrl = 'https://wearechecking.online/';
         this.activeFrame = 'playerFrame1';
         this.isSidebarOpen = false;
         this.isFullscreen = false;
         this.iframeStates = {
           'playerFrame1': {
-            url: 'https://timstreams.cfd/',
+            url: 'https://wearechecking.online/',
             loaded: false,
             loadStartTime: null,
             loadTime: null,
@@ -526,7 +550,7 @@
             redirectCount: 0
           },
           'playerFrame2': {
-            url: 'https://timstreams.xyz/',
+            url: 'https://streamed.su/',
             loaded: false,
             loadStartTime: null,
             loadTime: null,
@@ -598,8 +622,8 @@
         this.sidebarBackdrop.addEventListener('click', () => this.closeSidebarMenu());
         
         // URL selection
-        this.url1Radio.addEventListener('change', () => this.switchStream('https://timstreams.cfd/', 'playerFrame1'));
-        this.url2Radio.addEventListener('change', () => this.switchStream('https://timstreams.xyz/', 'playerFrame2'));
+        this.url1Radio.addEventListener('change', () => this.switchStream('https://wearechecking.online/', 'playerFrame1'));
+        this.url2Radio.addEventListener('change', () => this.switchStream('https://streamed.su/', 'playerFrame2'));
         
         // Player controls
         this.refreshBtn.addEventListener('click', () => this.refreshCurrentStream());
@@ -763,8 +787,8 @@
       
       preloadStreams() {
         // Start loading both streams in the background
-        this.startLoadingStream('playerFrame1', 'https://timstreams.cfd/');
-        this.startLoadingStream('playerFrame2', 'https://timstreams.xyz/');
+        this.startLoadingStream('playerFrame1', 'https://wearechecking.online/');
+        this.startLoadingStream('playerFrame2', 'https://streamed.su/');
         
         // Activate the first stream
         this.activateStream('playerFrame1');
@@ -977,7 +1001,7 @@
       }
       
       updateActiveStreamName() {
-        const name = this.activeFrame === 'playerFrame1' ? 'TimStreams CFD' : 'TimStreams XYZ';
+        const name = this.activeFrame === 'playerFrame1' ? 'Live Sports HD 1' : 'Live Sports HD 2';
         this.activeStreamName.textContent = name;
       }
       
@@ -1040,8 +1064,6 @@
       }
       
       checkConnectionStatus() {
-        // This is a simplified connection check
-        // In a real implementation, you would make actual network requests
         Object.keys(this.iframeStates).forEach(frameId => {
           const state = this.iframeStates[frameId];
           if (state.loaded && !state.error) {
@@ -1077,10 +1099,10 @@
         // Switch between streams with number keys
         if (e.key === '1') {
           this.url1Radio.checked = true;
-          this.switchStream('https://timstreams.cfd/', 'playerFrame1');
+          this.switchStream('https://wearechecking.online/', 'playerFrame1');
         } else if (e.key === '2') {
           this.url2Radio.checked = true;
-          this.switchStream('https://timstreams.xyz/', 'playerFrame2');
+          this.switchStream('https://streamed.su/', 'playerFrame2');
         }
       }
       
@@ -1098,9 +1120,7 @@
       handleVisibilityChange() {
         // Pause/resume streams when tab visibility changes
         if (document.hidden) {
-          // Tab is not visible - could pause streams here
         } else {
-          // Tab is visible - resume streams
         }
       }
     }

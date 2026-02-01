@@ -291,9 +291,9 @@
 
     <!-- Hero Banner -->
     <div class="hero-banner animate-fade-in">
-      <div class="absolute inset-0 hero-overlay flex items-center p-8">
+      <div class="absolute inset-0 hero-overlay flex items-center p-4">
         <div class="max-w-lg">
-          <div class="flex items-center space-x-2 mb-4">
+          <div class="flex items-center space-x-1 mb-4">
             <span class="live-indicator px-3 py-1 rounded-full text-sm font-bold">LIVE</span>
             <span class="text-emerald-300 font-semibold">10,000+ Channels Streaming</span>
           </div>
@@ -332,7 +332,7 @@
       
       <div class="responsive-grid">
         <!-- Sports Category -->
-        <a href="{{ url_for('return_football') }}" 
+        <a href="https://streamed.su/" 
            class="card-hover group relative overflow-hidden rounded-2xl bg-gradient-sports p-6 min-h-[180px] flex flex-col justify-between">
           <div class="absolute top-4 right-4">
             <i class="fas fa-play-circle text-2xl text-white/50 group-hover:text-white transition-colors"></i>
@@ -386,7 +386,7 @@
             <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
               <i class="fas fa-tv text-xl text-white"></i>
             </div>
-            <h4 class="text-xl font-bold">TV Channels</h4>
+            <h4 class="text-xl font-bold">View TV Channels</h4>
             <p class="text-sm text-white/80">Global • News • Entertainment</p>
           </div>
           <div class="text-sm">
@@ -399,7 +399,7 @@
         </a>
 
         <!-- Series Category -->
-        <a href="#" 
+        <a href="/category/series" 
            class="card-hover group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600 to-pink-600 p-6 min-h-[180px] flex flex-col justify-between">
           <div class="absolute top-4 right-4">
             <i class="fas fa-play text-2xl text-white/50 group-hover:text-white transition-colors"></i>
@@ -419,6 +419,93 @@
                class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity duration-500"
                loading="lazy">
         </a>
+
+        <!-- Comedy Category -->
+        <a href="/category/comedy" 
+           class="card-hover group relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-500 p-6 min-h-[180px] flex flex-col justify-between">
+          <div class="absolute top-4 right-4">
+            <i class="fas fa-laugh text-2xl text-white/50 group-hover:text-white transition-colors"></i>
+          </div>
+          <div class="space-y-2">
+            <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <i class="fas fa-laugh-beam text-xl text-white"></i>
+            </div>
+            <h4 class="text-xl font-bold">Comedy</h4>
+            <p class="text-sm text-white/80">Stand-up • Sitcoms • Funny Shows</p>
+          </div>
+          <div class="text-sm">
+            <span class="text-white/70">800+ shows</span>
+          </div>
+          <img src="https://wallpapers.com/images/file/comedy-pictures-5jcd9wm0nsbpxk5c.jpg" 
+               alt="Comedy" 
+               class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity duration-500"
+               loading="lazy">
+        </a>
+
+        <a href="/category/animation" 
+           class="card-hover group relative overflow-hidden rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 p-6 min-h-[180px] flex flex-col justify-between">
+          <div class="absolute top-4 right-4">
+            <i class="fas fa-film text-2xl text-white/50 group-hover:text-white transition-colors"></i>
+          </div>
+          <div class="space-y-2">
+            <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <i class="fas fa-film text-xl text-white"></i>
+            </div>
+            <h4 class="text-xl font-bold">Animation</h4>
+            <p class="text-sm text-white/80">Cartoons • Anime • Kids Shows</p>
+          </div>
+          <div class="text-sm">
+            <span class="text-white/70">1,500+ shows</span>
+          </div>
+          <img src="https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+               alt="Animation" 
+               class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity duration-500"
+               loading="lazy">
+        </a>
+    
+        <!-- Music Category -->
+        <a href="/category/music" 
+           class="card-hover group relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 p-6 min-h-[180px] flex flex-col justify-between">
+          <div class="absolute top-4 right-4">
+            <i class="fas fa-music text-2xl text-white/50 group-hover:text-white transition-colors"></i>
+          </div>
+          <div class="space-y-2">
+            <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <i class="fas fa-music text-xl text-white"></i>
+            </div>
+            <h4 class="text-xl font-bold">Music</h4>
+            <p class="text-sm text-white/80">Concerts • MTV • Music Videos</p>
+          </div>
+          <div class="text-sm">
+            <span class="text-white/70">Live concerts</span>
+          </div>
+          <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+               alt="Music" 
+               class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity duration-500"
+               loading="lazy">
+        </a>
+    
+        <!-- Cooking Category -->
+        <a href="/category/cooking" 
+           class="card-hover group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 p-6 min-h-[180px] flex flex-col justify-between">
+          <div class="absolute top-4 right-4">
+            <i class="fas fa-utensils text-2xl text-white/50 group-hover:text-white transition-colors"></i>
+          </div>
+          <div class="space-y-2">
+            <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <i class="fas fa-utensils text-xl text-white"></i>
+            </div>
+            <h4 class="text-xl font-bold">Cooking</h4>
+            <p class="text-sm text-white/80">Food Network • Recipes • Shows</p>
+          </div>
+          <div class="text-sm">
+            <span class="text-white/70">300+ shows</span>
+          </div>
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+               alt="Cooking" 
+               class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-30 transition-opacity duration-500"
+               loading="lazy">
+        </a>        
       </div>
     </section>
 
@@ -429,7 +516,7 @@
           <i class="fas fa-broadcast-tower text-cyan-400"></i>
           <span>Live Sports Now</span>
         </h3>
-        <a href="{{ url_for('return_football') }}" class="text-cyan-400 hover:text-cyan-300 transition-colors flex items-center space-x-2">
+        <a href="https://streamed.su/" class="text-cyan-400 hover:text-cyan-300 transition-colors flex items-center space-x-2">
           <span>All Sports</span>
           <i class="fas fa-arrow-right"></i>
         </a>
@@ -726,7 +813,7 @@
         <div>
           <h4 class="font-bold mb-4">Categories</h4>
           <div class="space-y-3">
-            <a href="{{ url_for('return_football') }}" class="block text-slate-400 hover:text-white transition-colors">
+            <a href="https://streamed.su/" class="block text-slate-400 hover:text-white transition-colors">
               <i class="fas fa-futbol mr-2"></i> Sports
             </a>
             <a href="{{ url_for('movieflix') }}" class="block text-slate-400 hover:text-white transition-colors">
@@ -735,6 +822,9 @@
             <a href="{{ url_for('custom_list') }}" class="block text-slate-400 hover:text-white transition-colors">
               <i class="fas fa-tv mr-2"></i> TV Channels
             </a>
+            <a href="{{ url_for('countries') }}" class="block text-slate-400 hover:text-white transition-colors">
+              <i class="fas fa-globe-asia mr-2"></i> By Countries
+            </a>
           </div>
         </div>
 
@@ -742,17 +832,17 @@
         <div>
           <h4 class="font-bold mb-4">Countries</h4>
           <div class="space-y-3">
-            <a href="{{ url_for('countries') }}" class="block text-slate-400 hover:text-white transition-colors">
+            <a href="/country/US" class="block text-slate-400 hover:text-white transition-colors">
               <i class="fas fa-globe-americas mr-2"></i> United States
             </a>
-            <a href="{{ url_for('countries') }}" class="block text-slate-400 hover:text-white transition-colors">
+            <a href="/country/UK" class="block text-slate-400 hover:text-white transition-colors">
               <i class="fas fa-globe-europe mr-2"></i> Europe
             </a>
-            <a href="{{ url_for('countries') }}" class="block text-slate-400 hover:text-white transition-colors">
-              <i class="fas fa-globe-asia mr-2"></i> Asia
+            <a href="/country/CN" class="block text-slate-400 hover:text-white transition-colors">
+              <i class="fas fa-globe-asia mr-2"></i> China
             </a>
             <a href="{{ url_for('countries') }}" class="block text-slate-400 hover:text-white transition-colors">
-              <i class="fas fa-globe-asia mr-2"></i> Africa
+              <i class="fas fa-globe-asia mr-2"></i> All Countries
             </a>
           </div>
         </div>

@@ -411,7 +411,7 @@ def set_headers(response):
 
     # CSP: allow embedding only from allowed domains
     response.headers['Content-Security-Policy'] = (
-        "frame-ancestors https://viewtv.viewtv.gt.tc https://viewtv.viewtv.free.nf;"
+        "frame-ancestors https://viewtv.viewtv.gt.tc https://viewtv.viewtv.free.nf https://viewstream-1.onrender.com;"
     )
 
     # Legacy fallback: block all iframe embedding (gets overridden by CSP in modern browsers)
@@ -2117,10 +2117,6 @@ def plus_play(key):
 
         if not any(browser in user_agent for browser in ALLOWED_BROWSERS):
             logging.info(f"Blocked UA: {user_agent} accessing /plus-channel/{key}")
-            return render_template("plus-player.html", url=FAKE_M3U8, token="", name="Blocked Channel"), 403
-
-        if "https://viewtv.viewtv.gt.tc" not in referer:
-            logging.info(f"Blocked Referer: {referer} accessing /plus-channel/{key}")
             return render_template("plus-player.html", url=FAKE_M3U8, token="", name="Blocked Channel"), 403
 
         # --- Only authenticated users ---

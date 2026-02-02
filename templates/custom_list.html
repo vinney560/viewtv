@@ -351,7 +351,7 @@
             categories: new Set(),
             filters: {
                 access: ['free', 'paid'],
-                status: ['live'],
+                status: [],
                 search: ''
             },
             favorites: JSON.parse(localStorage.getItem('channelFavorites') || '[]'),
@@ -638,12 +638,18 @@
                 if (!state.filters.access.includes(channel.access)) {
                     return false;
                 }
+
+                if (state.filters.status.length > 0) {
+                    if (!state.filters.status.includes(channel.status)) {
+                        return false;
+                    }
+                }
                 
                 // Status filter - IMPORTANT: Default to showing all until status is checked
                 if (!state.filters.status.includes(channel.status)) {
                     return false;
                 }
-                
+                        
                 return true;
             });
             

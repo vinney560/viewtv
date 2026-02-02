@@ -20,8 +20,6 @@
                     animation: {
                         'slide-in': 'slideIn 0.3s ease-out',
                         'fade-in': 'fadeIn 0.4s ease-out',
-                        'pulse-subtle': 'pulse 2s ease-in-out infinite',
-                        'float': 'float 3s ease-in-out infinite',
                     },
                     keyframes: {
                         slideIn: {
@@ -31,10 +29,6 @@
                         fadeIn: {
                             '0%': { opacity: '0' },
                             '100%': { opacity: '1' }
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-5px)' }
                         }
                     }
                 }
@@ -76,18 +70,6 @@
             border-radius: 10px;
         }
         
-        /* Smooth image loading */
-        .channel-img {
-            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        
         /* Card hover effects */
         .channel-card {
             transition: all 0.2s ease;
@@ -95,21 +77,8 @@
         }
         
         .channel-card:hover {
-            transform: translateY(-4px) scale(1.02);
+            transform: translateY(-4px);
             box-shadow: 0 12px 24px -8px rgba(6, 182, 212, 0.3);
-        }
-        
-        /* Live indicator */
-        .live-indicator {
-            position: relative;
-            background: #ef4444;
-            box-shadow: 0 0 10px #ef4444;
-            animation: pulse-live 2s infinite;
-        }
-        
-        @keyframes pulse-live {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
         }
         
         /* Glass effect */
@@ -117,23 +86,6 @@
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Search suggestions */
-        .search-suggestions {
-            max-height: 300px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-        }
-        
-        /* Loading animation */
-        .loading-pulse {
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
         
         /* Gradient text */
@@ -161,15 +113,15 @@
             color: #f59e0b;
         }
         
-        /* Quick scroll to channel animation */
-        .scroll-highlight {
-            animation: highlightScroll 2s ease;
+        /* Smooth animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
         }
         
-        @keyframes highlightScroll {
-            0% { background-color: rgba(6, 182, 212, 0.3); }
-            50% { background-color: rgba(6, 182, 212, 0.1); }
-            100% { background-color: transparent; }
+        /* Search highlight */
+        .search-highlight {
+            background-color: rgba(6, 182, 212, 0.2);
+            transition: background-color 1s ease-out;
         }
     </style>
 </head>
@@ -205,7 +157,7 @@
                     </div>
                     
                     <!-- Search Suggestions -->
-                    <div id="searchSuggestions" class="absolute top-full left-0 right-0 mt-1 glass-panel rounded-xl shadow-xl hidden z-50 search-suggestions">
+                    <div id="searchSuggestions" class="absolute top-full left-0 right-0 mt-1 glass-panel rounded-xl shadow-xl hidden z-50 max-h-64 overflow-y-auto">
                         <!-- Suggestions will be injected here -->
                     </div>
                 </div>
@@ -243,7 +195,7 @@
                         <span class="text-sm text-slate-300">Status:</span>
                         <div class="flex space-x-2">
                             <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" class="filter-checkbox" data-filter="status" value="live" checked>
+                                <input type="checkbox" class="filter-checkbox" data-filter="status" value="live">
                                 <span class="text-sm text-slate-300">Live</span>
                             </label>
                             <label class="flex items-center space-x-2 cursor-pointer">
@@ -297,12 +249,12 @@
         </div>
 
         <!-- Channels Grid -->
-        <div id="channelsContainer">
+        <div id="channelsContainer" class="hidden">
             <!-- Channels will be dynamically loaded here -->
         </div>
 
         <!-- Loading Indicator -->
-        <div id="loadingIndicator" class="text-center py-12 animate-pulse">
+        <div id="loadingIndicator" class="text-center py-12">
             <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p class="text-slate-400">Loading channels...</p>
         </div>
@@ -344,23 +296,23 @@
 
     <!-- JavaScript -->
     <script>
-        // State management
+        // ================== STATE MANAGEMENT ==================
         const state = {
-            channels: [],
-            filteredChannels: [],
-            categories: new Set(),
+            channels: [],           // All channels data
+            filteredChannels: [],   // Currently filtered channels
+            categories: new Set(),  // Unique categories
             filters: {
-                access: ['free', 'paid'],
-                status: [],
+                access: ['free', 'paid'],  // Show both by default
+                status: [],                 // NO STATUS FILTER ON INITIAL LOAD
                 search: ''
             },
             favorites: JSON.parse(localStorage.getItem('channelFavorites') || '[]'),
-            isLoading: false,
-            currentSearchTerm: '',
-            searchDebounceTimer: null
+            searchDebounceTimer: null,
+            statusCheckQueue: [],    // Queue for checking channel status
+            statusCheckRunning: false
         };
 
-        // DOM Elements
+        // ================== DOM ELEMENTS ==================
         const elements = {
             searchInput: document.getElementById('searchInput'),
             searchSuggestions: document.getElementById('searchSuggestions'),
@@ -379,28 +331,34 @@
             collapseAll: document.getElementById('collapseAll')
         };
 
-        // Initialize application
+        // ================== INITIALIZATION ==================
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+        });
+
         async function init() {
-            // Load channels from template data
+            // 1. Load channels from template (SYNC - immediate)
             loadChannelsFromTemplate();
             
-            // Set up event listeners
+            // 2. Update stats immediately
+            updateStats();
+            
+            // 3. Render ALL channels immediately (NO FILTERING)
+            renderAllChannels();
+            
+            // 4. Hide loading, show channels
+            elements.loadingIndicator.classList.add('hidden');
+            elements.channelsContainer.classList.remove('hidden');
+            
+            // 5. Start background status checking
+            setTimeout(startStatusChecking, 500);
+            
+            // 6. Setup event listeners
             setupEventListeners();
-            
-            // Show loading indicator
-            elements.loadingIndicator.classList.remove('hidden');
-            elements.channelsContainer.classList.add('hidden');
-            
-            // Render channels FIRST
-            renderChannels();
-            
-            // Then check statuses in background
-            setTimeout(() => {
-                checkInitialStatuses();
-            }, 100);
-        }        
+        }
 
-        // Load channels from Flask template data
+        // ================== CORE FUNCTIONS ==================
+
         function loadChannelsFromTemplate() {
             const channelGroups = {{ categorized_channels | tojson | safe }};
             state.channels = [];
@@ -420,17 +378,14 @@
                         url: channel.url || '',
                         logo: channel.logo || '',
                         quality: channel.quality || 'HD',
-                        status: 'checking',
-                        isFavorite: state.favorites.includes(channel.key)
+                        status: 'checking',  // Default status
+                        isFavorite: state.favorites.includes(channel.key),
+                        description: channel.description || ''
                     });
                 });
             }
-
-            // Update stats
-            updateStats();
         }
 
-        // Update statistics
         function updateStats() {
             elements.totalChannels.textContent = state.channels.length;
             
@@ -438,196 +393,21 @@
             elements.liveChannels.textContent = liveCount;
         }
 
-        // Set up event listeners
-        function setupEventListeners() {
-            // Search input with debounce
-            elements.searchInput.addEventListener('input', (e) => {
-                clearTimeout(state.searchDebounceTimer);
-                state.searchDebounceTimer = setTimeout(() => {
-                    handleSearch(e.target.value);
-                }, 300);
-                
-                // Show/hide clear button
-                elements.clearSearch.classList.toggle('hidden', !e.target.value);
-            });
+        // ================== RENDER FUNCTIONS ==================
 
-            // Clear search
-            elements.clearSearch.addEventListener('click', () => {
-                elements.searchInput.value = '';
-                elements.clearSearch.classList.add('hidden');
-                handleSearch('');
-                elements.searchInput.focus();
-            });
-
-            // Toggle filter panel
-            elements.filterToggle.addEventListener('click', () => {
-                elements.filterPanel.classList.toggle('hidden');
-            });
-
-            // Filter checkboxes
-            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', updateFilters);
-            });
-
-            // Clear all filters
-            elements.clearFilters.addEventListener('click', () => {
-                document.querySelectorAll('.filter-checkbox').forEach(cb => {
-                    cb.checked = cb.dataset.filter === 'access' || 
-                                (cb.dataset.filter === 'status' && cb.value === 'live');
-                });
-                updateFilters();
-            });
-
-            // Refresh status
-            elements.refreshStatus.addEventListener('click', checkInitialStatuses);
-
-            // Collapse all categories
-            elements.collapseAll.addEventListener('click', () => {
-                document.querySelectorAll('.category-section').forEach(section => {
-                    section.classList.add('hidden');
-                });
-            });
-
-            // Scroll to top button
-            elements.scrollToTop.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            // Show/hide scroll button based on scroll position
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    elements.scrollToTop.classList.remove('opacity-0', 'translate-y-10');
-                    elements.scrollToTop.classList.add('opacity-100', 'translate-y-0');
-                } else {
-                    elements.scrollToTop.classList.remove('opacity-100', 'translate-y-0');
-                    elements.scrollToTop.classList.add('opacity-0', 'translate-y-10');
-                }
-            });
-
-            // Close suggestions when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!elements.searchInput.contains(e.target) && 
-                    !elements.searchSuggestions.contains(e.target)) {
-                    elements.searchSuggestions.classList.add('hidden');
-                }
-            });
-
-            // Keyboard navigation
-            document.addEventListener('keydown', (e) => {
-                // Ctrl/Cmd + K to focus search
-                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                    e.preventDefault();
-                    elements.searchInput.focus();
-                }
-                
-                // Escape to clear search
-                if (e.key === 'Escape' && elements.searchInput.value) {
-                    elements.searchInput.value = '';
-                    handleSearch('');
-                }
-            });
+        function renderAllChannels() {
+            // Group by category
+            const grouped = groupByCategory(state.channels);
+            
+            // Update category navigation
+            updateCategoryNav(Object.keys(grouped));
+            
+            // Render channel groups
+            renderChannelGroups(grouped);
         }
 
-        // Handle search with fuzzy matching
-        function handleSearch(term) {
-            state.filters.search = term.toLowerCase();
-            renderChannels();
-            
-            // Show suggestions if term has at least 2 characters
-            if (term.length >= 2) {
-                showSearchSuggestions(term);
-            } else {
-                elements.searchSuggestions.classList.add('hidden');
-            }
-        }
-
-        // Show search suggestions
-        function showSearchSuggestions(term) {
-            const suggestions = state.channels
-                .filter(channel => 
-                    channel.displayName.toLowerCase().includes(term) ||
-                    channel.category.toLowerCase().includes(term) ||
-                    channel.country.toLowerCase().includes(term)
-                )
-                .slice(0, 8);
-            
-            if (suggestions.length > 0) {
-                elements.searchSuggestions.innerHTML = suggestions.map(channel => `
-                    <div class="p-3 hover:bg-slate-700/50 cursor-pointer border-b border-slate-700/30 last:border-0 search-suggestion-item" 
-                         data-id="${channel.id}">
-                        <div class="flex items-center space-x-3">
-                            ${channel.logo ? `
-                                <img src="${channel.logo}" alt="${channel.displayName}" 
-                                     class="w-8 h-8 rounded object-contain bg-slate-800">
-                            ` : `
-                                <div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center">
-                                    <i class="fas fa-tv text-slate-400"></i>
-                                </div>
-                            `}
-                            <div class="flex-1">
-                                <div class="font-medium">${channel.displayName}</div>
-                                <div class="text-xs text-slate-400">${channel.category} • ${channel.country}</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                
-                elements.searchSuggestions.classList.remove('hidden');
-                
-                // Add click handlers to suggestions
-                document.querySelectorAll('.search-suggestion-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const channelId = item.dataset.id;
-                        navigateToChannel(channelId);
-                        elements.searchSuggestions.classList.add('hidden');
-                    });
-                });
-            } else {
-                elements.searchSuggestions.classList.add('hidden');
-            }
-        }
-
-        // Navigate to specific channel
-        function navigateToChannel(channelId) {
-            const channelElement = document.getElementById(`channel-${channelId}`);
-            if (channelElement) {
-                // Scroll to element
-                channelElement.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-                
-                // Highlight briefly
-                channelElement.classList.add('scroll-highlight');
-                setTimeout(() => {
-                    channelElement.classList.remove('scroll-highlight');
-                }, 2000);
-                
-                // Focus on element for keyboard navigation
-                channelElement.focus();
-            }
-        }
-
-        // Update filters from checkboxes
-        function updateFilters() {
-            state.filters.access = Array.from(
-                document.querySelectorAll('.filter-checkbox[data-filter="access"]:checked')
-            ).map(cb => cb.value);
-            
-            state.filters.status = Array.from(
-                document.querySelectorAll('.filter-checkbox[data-filter="status"]:checked')
-            ).map(cb => cb.value);
-            
-            renderChannels();
-        }
-
-        // Render channels based on current filters
-        function renderChannels() {
-            // Ensure loading indicator is hidden
-            elements.loadingIndicator.classList.add('hidden');
-            elements.channelsContainer.classList.remove('hidden');
-            
-            // Filter channels
+        function renderFilteredChannels() {
+            // Apply filters
             state.filteredChannels = state.channels.filter(channel => {
                 // Search filter
                 if (state.filters.search && !channelMatchesSearch(channel, state.filters.search)) {
@@ -638,31 +418,24 @@
                 if (!state.filters.access.includes(channel.access)) {
                     return false;
                 }
-
+                
+                // Status filter - only apply if user has selected status filters
                 if (state.filters.status.length > 0) {
                     if (!state.filters.status.includes(channel.status)) {
                         return false;
                     }
                 }
                 
-                // Status filter - IMPORTANT: Default to showing all until status is checked
-                if (!state.filters.status.includes(channel.status)) {
-                    return false;
-                }
-                        
                 return true;
             });
-            
-            // Update stats BEFORE rendering
-            updateStats();
             
             // Group by category
             const grouped = groupByCategory(state.filteredChannels);
             
-            // Update categories navigation
+            // Update category navigation
             updateCategoryNav(Object.keys(grouped));
             
-            // Render channels
+            // Show/hide no results message
             if (state.filteredChannels.length === 0) {
                 elements.noResults.classList.remove('hidden');
                 elements.channelsContainer.innerHTML = '';
@@ -670,15 +443,8 @@
                 elements.noResults.classList.add('hidden');
                 renderChannelGroups(grouped);
             }
-        }        
-        // Check if channel matches search term
-        function channelMatchesSearch(channel, term) {
-            return channel.displayName.toLowerCase().includes(term) ||
-                   channel.category.toLowerCase().includes(term) ||
-                   channel.country.toLowerCase().includes(term);
         }
 
-        // Group channels by category
         function groupByCategory(channels) {
             return channels.reduce((groups, channel) => {
                 if (!groups[channel.category]) {
@@ -689,7 +455,6 @@
             }, {});
         }
 
-        // Update category navigation
         function updateCategoryNav(categories) {
             elements.categoryNav.innerHTML = categories.map(category => `
                 <button class="category-nav-btn px-4 py-2 bg-slate-800/50 hover:bg-primary/20 rounded-xl transition border border-slate-700/50 text-sm"
@@ -710,10 +475,9 @@
             });
         }
 
-        // Render channel groups
         function renderChannelGroups(groups) {
             elements.channelsContainer.innerHTML = Object.entries(groups).map(([category, channels]) => `
-                <section class="category-section mb-10" id="category-${category.replace(/\s+/g, '-').toLowerCase()}">
+                <section class="category-section mb-10 fade-in" id="category-${category.replace(/\s+/g, '-').toLowerCase()}">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-2xl font-bold flex items-center">
                             <i class="fas fa-tag mr-3 text-primary"></i>
@@ -729,9 +493,11 @@
                     </div>
                 </section>
             `).join('');
+            
+            // Re-attach event listeners to new elements
+            attachChannelCardListeners();
         }
 
-        // Render individual channel card
         function renderChannelCard(channel) {
             const hasUrl = channel.url && channel.url.trim().length > 0;
             const isIpUrl = hasUrl && /^\d+\.\d+\.\d+\.\d+/.test(channel.url.replace(/https?:\/\//, '').split('/')[0]);
@@ -748,13 +514,13 @@
                     
                     ${hasUrl ? `
                         <a href="${isIpUrl ? channel.url : `/plus-channel/${channel.id}`}" 
-                           class="block h-full"
+                           class="block h-full channel-link"
                            ${isIpUrl ? 'target="_blank"' : ''}
-                           onclick="${isIpUrl ? '' : `event.preventDefault(); playChannel('${channel.id}')`}">
+                           data-id="${channel.id}">
                     ` : '<div class="block h-full bg-slate-800/50">'}
                     
                         <!-- Channel Image -->
-                        <div class="relative pt-[56.25%] channel-img">
+                        <div class="relative pt-[56.25%] bg-slate-800">
                             ${channel.logo ? `
                                 <img src="${channel.logo}" 
                                      alt="${channel.displayName}"
@@ -775,9 +541,9 @@
                             </div>
                             
                             <!-- Favorite Button -->
-                            <button class="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center hover:bg-red-500 transition ${channel.isFavorite ? 'text-red-400' : 'text-white'}"
-                                    onclick="event.preventDefault(); toggleFavorite('${channel.id}', this)">
-                                <i class="fas fa-heart ${channel.isFavorite ? 'fas' : 'far'}"></i>
+                            <button class="favorite-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center hover:bg-red-500 transition ${channel.isFavorite ? 'text-red-400' : 'text-white'}"
+                                    data-id="${channel.id}">
+                                <i class="${channel.isFavorite ? 'fas' : 'far'} fa-heart"></i>
                             </button>
                         </div>
                         
@@ -800,50 +566,298 @@
             `;
         }
 
-        // Toggle favorite
+        function attachChannelCardListeners() {
+            // Favorite buttons
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const channelId = btn.dataset.id;
+                    toggleFavorite(channelId, btn);
+                });
+            });
+            
+            // Non-IP links (prevent default for client-side handling)
+            document.querySelectorAll('.channel-link:not([target="_blank"])').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const channelId = link.dataset.id;
+                    playChannel(channelId);
+                });
+            });
+        }
+
+        // ================== EVENT HANDLERS ==================
+
+        function setupEventListeners() {
+            // Search
+            elements.searchInput.addEventListener('input', handleSearchInput);
+            elements.clearSearch.addEventListener('click', clearSearch);
+            
+            // Filters
+            elements.filterToggle.addEventListener('click', toggleFilterPanel);
+            document.querySelectorAll('.filter-checkbox').forEach(cb => {
+                cb.addEventListener('change', handleFilterChange);
+            });
+            elements.clearFilters.addEventListener('click', clearAllFilters);
+            
+            // Other buttons
+            elements.refreshStatus.addEventListener('click', startStatusChecking);
+            elements.collapseAll.addEventListener('click', collapseAllCategories);
+            elements.scrollToTop.addEventListener('click', scrollToTop);
+            
+            // Window events
+            window.addEventListener('scroll', handleScroll);
+            document.addEventListener('click', handleOutsideClick);
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+        }
+
+        function handleSearchInput(e) {
+            clearTimeout(state.searchDebounceTimer);
+            state.searchDebounceTimer = setTimeout(() => {
+                const term = e.target.value.toLowerCase();
+                state.filters.search = term;
+                renderFilteredChannels();
+                
+                // Show/hide clear button
+                elements.clearSearch.classList.toggle('hidden', !term);
+                
+                // Show suggestions
+                if (term.length >= 2) {
+                    showSearchSuggestions(term);
+                } else {
+                    elements.searchSuggestions.classList.add('hidden');
+                }
+            }, 300);
+        }
+
+        function clearSearch() {
+            elements.searchInput.value = '';
+            state.filters.search = '';
+            elements.clearSearch.classList.add('hidden');
+            elements.searchSuggestions.classList.add('hidden');
+            renderFilteredChannels();
+            elements.searchInput.focus();
+        }
+
+        function toggleFilterPanel() {
+            elements.filterPanel.classList.toggle('hidden');
+        }
+
+        function handleFilterChange() {
+            state.filters.access = Array.from(
+                document.querySelectorAll('.filter-checkbox[data-filter="access"]:checked')
+            ).map(cb => cb.value);
+            
+            state.filters.status = Array.from(
+                document.querySelectorAll('.filter-checkbox[data-filter="status"]:checked')
+            ).map(cb => cb.value);
+            
+            renderFilteredChannels();
+        }
+
+        function clearAllFilters() {
+            // Reset checkboxes
+            document.querySelectorAll('.filter-checkbox').forEach(cb => {
+                if (cb.dataset.filter === 'access') {
+                    cb.checked = true;
+                } else if (cb.dataset.filter === 'status') {
+                    cb.checked = false;
+                }
+            });
+            
+            // Reset state
+            state.filters.access = ['free', 'paid'];
+            state.filters.status = [];
+            state.filters.search = '';
+            
+            // Clear UI
+            elements.searchInput.value = '';
+            elements.clearSearch.classList.add('hidden');
+            elements.searchSuggestions.classList.add('hidden');
+            
+            // Re-render
+            renderFilteredChannels();
+            elements.filterPanel.classList.add('hidden');
+        }
+
+        function showSearchSuggestions(term) {
+            const suggestions = state.channels
+                .filter(channel => 
+                    channel.displayName.toLowerCase().includes(term) ||
+                    channel.category.toLowerCase().includes(term) ||
+                    channel.country.toLowerCase().includes(term)
+                )
+                .slice(0, 8);
+            
+            if (suggestions.length > 0) {
+                elements.searchSuggestions.innerHTML = suggestions.map(channel => `
+                    <div class="p-3 hover:bg-slate-700/50 cursor-pointer border-b border-slate-700/30 last:border-0 search-suggestion"
+                         data-id="${channel.id}">
+                        <div class="flex items-center space-x-3">
+                            ${channel.logo ? `
+                                <img src="${channel.logo}" alt="${channel.displayName}" 
+                                     class="w-8 h-8 rounded object-contain bg-slate-800">
+                            ` : `
+                                <div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center">
+                                    <i class="fas fa-tv text-slate-400"></i>
+                                </div>
+                            `}
+                            <div class="flex-1">
+                                <div class="font-medium">${channel.displayName}</div>
+                                <div class="text-xs text-slate-400">${channel.category} • ${channel.country}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                elements.searchSuggestions.classList.remove('hidden');
+                
+                // Add click handlers
+                document.querySelectorAll('.search-suggestion').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const channelId = item.dataset.id;
+                        navigateToChannel(channelId);
+                        elements.searchSuggestions.classList.add('hidden');
+                    });
+                });
+            } else {
+                elements.searchSuggestions.classList.add('hidden');
+            }
+        }
+
+        function navigateToChannel(channelId) {
+            const channelElement = document.getElementById(`channel-${channelId}`);
+            if (channelElement) {
+                channelElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+                
+                // Highlight
+                channelElement.classList.add('search-highlight');
+                setTimeout(() => {
+                    channelElement.classList.remove('search-highlight');
+                }, 2000);
+            }
+        }
+
+        function channelMatchesSearch(channel, term) {
+            return channel.displayName.toLowerCase().includes(term) ||
+                   channel.category.toLowerCase().includes(term) ||
+                   channel.country.toLowerCase().includes(term);
+        }
+
         function toggleFavorite(channelId, button) {
             const index = state.favorites.indexOf(channelId);
+            const channel = state.channels.find(c => c.id === channelId);
+            
             if (index === -1) {
+                // Add to favorites
                 state.favorites.push(channelId);
                 button.classList.add('text-red-400');
                 button.querySelector('i').classList.replace('far', 'fas');
+                if (channel) channel.isFavorite = true;
             } else {
+                // Remove from favorites
                 state.favorites.splice(index, 1);
                 button.classList.remove('text-red-400');
                 button.querySelector('i').classList.replace('fas', 'far');
+                if (channel) channel.isFavorite = false;
             }
             
-            // Update state
-            const channel = state.channels.find(c => c.id === channelId);
-            if (channel) {
-                channel.isFavorite = !channel.isFavorite;
-            }
-            
-            // Save to localStorage
             localStorage.setItem('channelFavorites', JSON.stringify(state.favorites));
         }
 
-        // Play channel
         function playChannel(channelId) {
-            const channel = state.channels.find(c => c.id === channelId);
-            if (channel && channel.url) {
-                window.location.href = `/plus-channel/${channelId}`;
+            window.location.href = `/plus-channel/${channelId}`;
+        }
+
+        function collapseAllCategories() {
+            document.querySelectorAll('.category-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+        }
+
+        function handleScroll() {
+            // Show/hide scroll to top button
+            if (window.scrollY > 300) {
+                elements.scrollToTop.classList.remove('opacity-0', 'translate-y-10');
+                elements.scrollToTop.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                elements.scrollToTop.classList.remove('opacity-100', 'translate-y-0');
+                elements.scrollToTop.classList.add('opacity-0', 'translate-y-10');
             }
         }
 
-        // Check initial channel statuses
-        async function checkInitialStatuses() {
-            // Only check visible channels
-            const visibleChannels = state.channels.slice(0, 50); // Limit to first 50
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleOutsideClick(e) {
+            // Close search suggestions
+            if (!elements.searchInput.contains(e.target) && 
+                !elements.searchSuggestions.contains(e.target)) {
+                elements.searchSuggestions.classList.add('hidden');
+            }
             
-            for (const channel of visibleChannels) {
-                await checkChannelStatus(channel);
-                updateStats();
+            // Close filter panel
+            if (!elements.filterToggle.contains(e.target) && 
+                !elements.filterPanel.contains(e.target)) {
+                elements.filterPanel.classList.add('hidden');
             }
         }
 
-        // Check single channel status
-        async function checkChannelStatus(channel) {
+        function handleKeyboardShortcuts(e) {
+            // Ctrl/Cmd + K to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                elements.searchInput.focus();
+            }
+            
+            // Escape to clear search
+            if (e.key === 'Escape' && elements.searchInput.value) {
+                clearSearch();
+            }
+        }
+
+        // ================== STATUS CHECKING ==================
+
+        async function startStatusChecking() {
+            if (state.statusCheckRunning) return;
+            
+            state.statusCheckRunning = true;
+            
+            // Create queue of channels to check
+            state.statusCheckQueue = [...state.channels];
+            
+            // Process queue in batches
+            await processStatusQueue();
+            
+            state.statusCheckRunning = false;
+        }
+
+        async function processStatusQueue() {
+            const BATCH_SIZE = 5; // Check 5 channels at a time
+            const DELAY = 500; // 500ms between batches
+            
+            while (state.statusCheckQueue.length > 0) {
+                const batch = state.statusCheckQueue.splice(0, BATCH_SIZE);
+                
+                await Promise.all(batch.map(async (channel) => {
+                    await checkSingleChannelStatus(channel);
+                }));
+                
+                // Update stats after each batch
+                updateStats();
+                
+                // Small delay between batches
+                if (state.statusCheckQueue.length > 0) {
+                    await new Promise(resolve => setTimeout(resolve, DELAY));
+                }
+            }
+        }
+
+        async function checkSingleChannelStatus(channel) {
             if (!channel.url) {
                 channel.status = 'offline';
                 return;
@@ -851,33 +865,28 @@
             
             try {
                 const response = await fetch(`/check-channel-status?url=${encodeURIComponent(channel.url)}`);
+                if (!response.ok) throw new Error('Network error');
+                
                 const data = await response.json();
                 channel.status = data.status === 'live' ? 'live' : 'offline';
             } catch (error) {
                 channel.status = 'offline';
             }
             
-            // Update stats after status check
-            updateStats();
+            // Update the UI for this channel
+            updateChannelStatusUI(channel);
+        }
+
+        function updateChannelStatusUI(channel) {
+            const channelElement = document.getElementById(`channel-${channel.id}`);
+            if (!channelElement) return;
             
-            // Only update UI if channel passes current filters
-            if (state.filters.status.includes(channel.status)) {
-                const channelElement = document.getElementById(`channel-${channel.id}`);
-                if (channelElement) {
-                    const statusElement = channelElement.querySelector('.status-live, .status-offline, .status-checking');
-                    if (statusElement) {
-                        statusElement.className = `status-${channel.status} px-2 py-1 rounded-full text-xs font-medium`;
-                        statusElement.textContent = channel.status === 'live' ? 'LIVE' : 'OFFLINE';
-                    }
-                }
-            } else {
-                // If channel doesn't match filter after status check, remove it
-                renderChannels();
+            const statusElement = channelElement.querySelector('.status-live, .status-offline, .status-checking');
+            if (statusElement) {
+                statusElement.className = `status-${channel.status} px-2 py-1 rounded-full text-xs font-medium`;
+                statusElement.textContent = channel.status === 'live' ? 'LIVE' : 'OFFLINE';
             }
         }
-        
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>

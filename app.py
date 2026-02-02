@@ -711,7 +711,8 @@ def register_admin():
 ALLOWED_KEYWORDS = [
     "mozilla",      # Chrome, Firefox, Edge, Safari all contain this
     "applewebkit",  # Chrome, Safari
-    "chrome",       
+    "chrome", 
+    "WhatsApp",
     "safari",
     "firefox",
     "edge",         # For modern Edge (Chromium-based)

@@ -387,12 +387,18 @@
             // Set up event listeners
             setupEventListeners();
             
-            // Render initial view
+            // Show loading indicator
+            elements.loadingIndicator.classList.remove('hidden');
+            elements.channelsContainer.classList.add('hidden');
+            
+            // Render channels FIRST
             renderChannels();
             
-            // Check initial channel statuses
-            checkInitialStatuses();
-        }
+            // Then check statuses in background
+            setTimeout(() => {
+                checkInitialStatuses();
+            }, 100);
+        }        
 
         // Load channels from Flask template data
         function loadChannelsFromTemplate() {
@@ -617,7 +623,7 @@
 
         // Render channels based on current filters
         function renderChannels() {
-            // Hide loading, show container
+            // Ensure loading indicator is hidden
             elements.loadingIndicator.classList.add('hidden');
             elements.channelsContainer.classList.remove('hidden');
             
@@ -633,13 +639,16 @@
                     return false;
                 }
                 
-                // Status filter
+                // Status filter - IMPORTANT: Default to showing all until status is checked
                 if (!state.filters.status.includes(channel.status)) {
                     return false;
                 }
                 
                 return true;
             });
+            
+            // Update stats BEFORE rendering
+            updateStats();
             
             // Group by category
             const grouped = groupByCategory(state.filteredChannels);
@@ -655,8 +664,7 @@
                 elements.noResults.classList.add('hidden');
                 renderChannelGroups(grouped);
             }
-        }
-
+        }        
         // Check if channel matches search term
         function channelMatchesSearch(channel, term) {
             return channel.displayName.toLowerCase().includes(term) ||
@@ -843,17 +851,25 @@
                 channel.status = 'offline';
             }
             
-            // Update UI if this channel is currently visible
-            const channelElement = document.getElementById(`channel-${channel.id}`);
-            if (channelElement) {
-                const statusElement = channelElement.querySelector('.status-live, .status-offline, .status-checking');
-                if (statusElement) {
-                    statusElement.className = `status-${channel.status} px-2 py-1 rounded-full text-xs font-medium`;
-                    statusElement.textContent = channel.status === 'live' ? 'LIVE' : 'OFFLINE';
+            // Update stats after status check
+            updateStats();
+            
+            // Only update UI if channel passes current filters
+            if (state.filters.status.includes(channel.status)) {
+                const channelElement = document.getElementById(`channel-${channel.id}`);
+                if (channelElement) {
+                    const statusElement = channelElement.querySelector('.status-live, .status-offline, .status-checking');
+                    if (statusElement) {
+                        statusElement.className = `status-${channel.status} px-2 py-1 rounded-full text-xs font-medium`;
+                        statusElement.textContent = channel.status === 'live' ? 'LIVE' : 'OFFLINE';
+                    }
                 }
+            } else {
+                // If channel doesn't match filter after status check, remove it
+                renderChannels();
             }
         }
-
+        
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', init);
     </script>

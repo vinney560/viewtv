@@ -3,343 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curated Playlist | ViewTv</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <title>TV Channels | ViewTV</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#06b6d4',
+                        secondary: '#10b981',
+                        accent: '#8b5cf6',
+                        dark: '#0f172a',
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.4s ease-out',
+                        'pulse-subtle': 'pulse 2s ease-in-out infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    
     <style>
         :root {
             --primary: #06b6d4;
             --primary-dark: #0891b2;
             --secondary: #10b981;
-            --dark: #111827;
-            --darker: #030712;
-            --text-primary: #ffffff;
-            --text-secondary: #9ca3af;
-            --bg-primary: #111827;
-            --bg-secondary: #1f2937;
-            --card-bg: rgba(31, 41, 55, 0.6);
-            --card-border: rgba(255, 255, 255, 0.08);
+            --accent: #8b5cf6;
         }
         
         body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
             font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            transition: background-color 0.3s, color 0.3s;
         }
         
-        .card-glass {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--card-border);
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
         
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+        
+        /* Smooth image loading */
+        .channel-img {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Card hover effects */
         .channel-card {
-            transition: all 0.3s ease;
-            background: rgba(31, 41, 55, 0.5);
-            backdrop-filter: blur(8px);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.2s ease;
+            transform-origin: center;
         }
         
         .channel-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 30px -10px rgba(6, 182, 212, 0.4);
-            border-color: rgba(6, 182, 212, 0.5);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 24px -8px rgba(6, 182, 212, 0.3);
         }
         
-        .channel-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-        
-        .channel-card:hover::before {
-            transform: scaleX(1);
-        }
-        
-        .content-wrapper {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        
-        .channels-container {
-            flex: 1;
-            overflow-y: auto;
-        }
-        
-        .search-container {
+        /* Live indicator */
+        .live-indicator {
             position: relative;
-            min-width: 200px;
-            max-width: 400px;
-            transition: all 0.3s ease;
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+            animation: pulse-live 2s infinite;
         }
         
-        .search-box:focus {
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.3);
-            width: 350px;
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         
-        .search-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: rgba(31, 41, 55, 0.95);
-            border-radius: 0 0 12px 12px;
+        /* Glass effect */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: none;
-            max-height: 200px;
+        }
+        
+        /* Search suggestions */
+        .search-suggestions {
+            max-height: 300px;
             overflow-y: auto;
-            z-index: 100;
-            display: none;
+            scrollbar-width: thin;
         }
         
-        .search-suggestion {
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: background 0.2s;
+        /* Loading animation */
+        .loading-pulse {
+            animation: pulse 1.5s ease-in-out infinite;
         }
         
-        .search-suggestion:hover {
-            background: rgba(6, 182, 212, 0.2);
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
-        .toast-entry {
-            animation: toast-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        
-        .toast-exit {
-            animation: toast-out 0.5s ease forwards;
-        }
-        
-        @keyframes toast-in {
-            from { opacity: 0; transform: translateX(100%); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        @keyframes toast-out {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(100%); }
-        }
-        
-        .dropdown-content {
-            display: none;
-            animation: fadeIn 0.2s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-        
-        .category-pill {
-            transition: all 0.2s ease;
-        }
-        
-        .category-pill:hover {
-            background: rgba(6, 182, 212, 0.2);
-        }
-        
+        /* Gradient text */
         .gradient-text {
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            background-size: 200% auto;
         }
         
-        .invalid-channel {
-            opacity: 0.7;
-            filter: grayscale(80%);
-        }
-        
-        .recommended-section {
-            margin-bottom: 2rem;
-        }
-        
-        .recommended-container {
-            display: flex;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding-bottom: 1rem;
-            gap: 1rem;
-        }
-        
-        .recommended-container::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .recommended-card {
-            flex: 0 0 auto;
-            width: 200px;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .recommended-card:hover {
-            transform: scale(1.03);
-        }
-        
-        .scroll-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background: rgba(31, 41, 55, 0.8);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .scroll-btn.left {
-            left: 10px;
-        }
-        
-        .scroll-btn.right {
-            right: 10px;
-        }
-        
-        .recommended-section:hover .scroll-btn {
-            opacity: 1;
-        }
-        
-        .back-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: rgba(6, 182, 212, 0.8);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 20;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .back-btn:hover {
-            transform: scale(1.1);
-            background: rgba(6, 182, 212, 1);
-        }
-        
-        .highlight-pulse {
-            animation: highlightPulse 2s infinite;
-            outline: 2px solid #3b82f6; 
-            border-radius: 8px;
-        }
-        
-        @keyframes highlightPulse {
-            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background: rgba(31, 41, 55, 0.95);
-            border-radius: 20px;
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px -12px rgba(6, 182, 212, 0.25);
-            animation: modalFadeIn 0.3s ease-out;
-            position: relative;
-        }
-        
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.9) translateY(-20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(6, 182, 212, 0.1);
-            border-radius: 20px 20px 0 0;
-        }
-        
-        .modal-body {
-            padding: 1.5rem;
-        }
-        
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.75rem;
-        }
-        
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
+        /* Status badges */
         .status-live {
             background: rgba(16, 185, 129, 0.2);
             color: #10b981;
@@ -355,1867 +161,701 @@
             color: #f59e0b;
         }
         
-        .info-grid {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 0.75rem 1rem;
+        /* Quick scroll to channel animation */
+        .scroll-highlight {
+            animation: highlightScroll 2s ease;
         }
         
-        .info-label {
-            color: #9ca3af;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        .info-value {
-            color: #f3f4f6;
-            word-break: break-word;
-            font-size: 0.95rem;
-        }
-        
-        .channel-logo-modal {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            margin: 0 auto 1.5rem;
-            display: block;
-            border-radius: 16px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.75rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .detail-btn {
-            position: absolute;
-            top: 16px;
-            right: 1px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            opacity: 1;
-            transition: opacity 0.3s, background 0.3s, transform 0.3s;
-            z-index: 5;
-        }
-        
-        .channel-card:hover .detail-btn {
-            opacity: 1;
-        }
-        
-        .detail-btn:hover {
-            background: rgba(6, 182, 212, 0.9);
-            transform: scale(1.1);
-        }
-        
-        .favorite-btn {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            opacity: 1;
-            transition: opacity 0.3s, background 0.3s, transform 0.3s;
-            z-index: 5;
-        }
-        
-        .channel-card:hover .favorite-btn {
-            opacity: 1;
-        }
-        
-        .favorite-btn:hover {
-            background: rgba(239, 68, 68, 0.8);
-            transform: scale(1.1);
-        }
-        
-        .favorite-btn.active {
-            color: #ef4444;
-            opacity: 1;
-        }
-        
-        .filter-section {
-            background: rgba(31, 41, 55, 0.3);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(31, 41, 55, 0.3);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(6, 182, 212, 0.5);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(6, 182, 212, 0.7);
-        }
-        
-        @keyframes cardAppear {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .channel-card {
-            animation: cardAppear 0.5s ease-out;
-            animation-fill-mode: both;
-        }
-        
-        .channel-card:nth-child(1) { animation-delay: 0.05s; }
-        .channel-card:nth-child(2) { animation-delay: 0.1s; }
-        .channel-card:nth-child(3) { animation-delay: 0.15s; }
-        .channel-card:nth-child(4) { animation-delay: 0.2s; }
-        .channel-card:nth-child(5) { animation-delay: 0.25s; }
-        .channel-card:nth-child(6) { animation-delay: 0.3s; }
-        .channel-card:nth-child(7) { animation-delay: 0.35s; }
-        .channel-card:nth-child(8) { animation-delay: 0.4s; }
-        .channel-card:nth-child(9) { animation-delay: 0.45s; }
-        .channel-card:nth-child(10) { animation-delay: 0.5s; }
-        
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-        }
-        
-        @keyframes ripple {
-            to {
-                transform: scale(2.5);
-                opacity: 0;
-            }
-        }
-        
-        .skeleton {
-            background: linear-gradient(90deg, rgba(31, 41, 55, 0.5) 25%, rgba(55, 65, 81, 0.5) 50%, rgba(31, 41, 55, 0.5) 75%);
-            background-size: 200% 100%;
-            animation: skeletonLoading 1.5s infinite;
-            border-radius: 8px;
-        }
-        
-        @keyframes skeletonLoading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-        
-        .custom-checkbox {
-            position: relative;
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            background: rgba(31, 41, 55, 0.7);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-        
-        .custom-checkbox.checked {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-        
-        .custom-checkbox.checked::after {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 2px;
-            width: 5px;
-            height: 9px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-        
-        .tooltip {
-            position: relative;
-        }
-        
-        .tooltip::before {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 0.5rem;
-            background: rgba(31, 41, 55, 0.9);
-            color: white;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 100;
-        }
-        
-        .tooltip:hover::before {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal-back-btn {
-            position: absolute;
-            top: 1.3rem;
-            left: 1.3rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(31, 41, 55, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 5;
-        }
-        
-        .modal-back-btn:hover {
-            background: rgba(6, 182, 212, 0.7);
-            transform: scale(1.1);
-        }
-        
-        .will-change {
-            will-change: transform, opacity;
-        }
-        
-        .content-visibility {
-            content-visibility: auto;
-        }
-        
-        .lazy-load {
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .lazy-load.loaded {
-            opacity: 1;
-        }
-        
-        @media (max-width: 768px) {
-            .search-container {
-                max-width: 100%;
-                width: 100%;
-                order: 3;
-                margin-top: 1rem;
-            }
-            
-            .search-box:focus {
-                width: 100%;
-            }
-            
-            #filterToggle {
-                order: 4;
-                margin-top: 1rem;
-                margin-left: auto;
-            }
-            
-            .header-controls {
-                display: flex;
-                flex-wrap: wrap;
-                width: 100%;
-            }
-            
-            .header-controls > *:not(.search-container):not(#filterToggle) {
-                order: 1;
-            }
-            
-            .dropdown {
-                order: 2;
-            }
-            
-            .modal-content {
-                width: 95%;
-                margin: 10px;
-            }
-            
-            .header-controls {
-                gap: 0.5rem;
-            }
-            
-            .header-controls > .dropdown,
-            .header-controls > #filterToggle {
-                margin-top: 0;
-                order: 1;
-                flex: 1;
-            }
-            
-            .header-controls > .search-container {
-                order: 2;
-                margin-top: 0.5rem;
-            }
-        }
-        
-        .search-suggestion.highlight {
-            background: rgba(6, 182, 212, 0.3);
-        }
-        
-        .view-transition {
-            transition: all 0.3s ease;
-        }
-        
-        .channel-card:focus {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-        
-        .recently-viewed-section {
-            margin-bottom: 2rem;
-        }
-        
-        .channel-count {
-            background: rgba(6, 182, 212, 0.2);
-            color: var(--primary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .quick-actions {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 20;
-        }
-        
-        .quick-action-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            background: rgba(31, 41, 55, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .quick-action-btn:hover {
-            transform: scale(1.1);
-            background: rgba(6, 182, 212, 0.8);
-        }
-        
-        .view-toggle {
-            display: flex;
-            align-items: center;
-            background: rgba(31, 41, 55, 0.5);
-            border-radius: 12px;
-            padding: 0.25rem;
-            margin-left: auto;
-        }
-        
-        .view-toggle-btn {
-            padding: 0.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .view-toggle-btn.active {
-            background: rgba(6, 182, 212, 0.3);
-        }
-        
-        .list-view .channel-group {
-            margin-bottom: 2rem;
-        }
-        
-        .list-view .channel-card {
-            display: flex;
-            width: 100%;
-            height: auto;
-            margin-bottom: 1rem;
-        }
-        
-        .list-view .channel-card .channel-image {
-            width: 120px;
-            min-width: 120px;
-            height: 80px;
-        }
-        
-        .list-view .channel-card .channel-info {
-            flex: 1;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        @keyframes highlightScroll {
+            0% { background-color: rgba(6, 182, 212, 0.3); }
+            50% { background-color: rgba(6, 182, 212, 0.1); }
+            100% { background-color: transparent; }
         }
     </style>
 </head>
-<body class="text-white flex flex-col min-h-screen">
-
-    <!-- Modern Toast Notifications -->
-    <div id="toast-container" class="fixed top-4 right-4 space-y-3 z-50 w-80">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4
-                        {% if category == 'success' %} bg-gray-800 border-emerald-500
-                        {% elif category == 'error' %} bg-gray-800 border-red-500
-                        {% else %} bg-gray-800 border-cyan-500 {% endif %}">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 pt-0.5">
-                                {% if category == 'success' %}
-                                    <svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                {% elif category == 'error' %}
-                                    <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                {% else %}
-                                    <svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                {% endif %}
-                            </div>
-                            <div class="ml-3 flex-1">
-                                <p class="text-sm">{{ message }}</p>
-                            </div>
-                            <button onclick="this.parentElement.parentElement.classList.add('toast-exit'); setTimeout(() => this.parentElement.parentElement.remove(), 500)" class="absolute top-3 right-3 text-gray-400 hover:text-white">
-                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
-
-    <!-- Channel Details Modal -->
-    <div id="channelModal" class="modal-overlay">
-        <div class="modal-content">
-            
-            <div class="modal-header">
-                <h3 class="text-xl font-bold text-cyan-100" id="modalTitle">Channel Details</h3>
-                <button class="text-gray-400 hover:text-white transition" onclick="closeModal()">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <img id="modalLogo" src="" alt="Channel Logo" class="channel-logo-modal">
-                <div class="info-grid">
-                    <span class="info-label">Name:</span>
-                    <span class="info-value font-medium" id="modalName"></span>
-                    
-                    <span class="info-label">Status:</span>
-                    <span class="status-badge status-checking" id="modalStatus">Checking...</span>
-                    
-                    <span class="info-label">Access:</span>
-                    <span class="info-value" id="modalAccess"></span>
-                    
-                    <span class="info-label">Country:</span>
-                    <span class="info-value" id="modalCountry"></span>
-                    
-                    <span class="info-label">Category:</span>
-                    <span class="info-value" id="modalCategory"></span>
-                    
-                    <span class="info-label">Quality:</span>
-                    <span class="info-value" id="modalQuality">HD</span>
-                    
-                    <span class="info-label">Language:</span>
-                    <span class="info-value" id="modalLanguage">English</span>
-                </div>
-                
-                <div class="mt-6 pt-4 border-t border-gray-700">
-                    <h4 class="text-lg font-semibold text-cyan-300 mb-3">Channel Description</h4>
-                    <p id="modalDescription" class="text-gray-300 text-sm">This is a premium channel offering high-quality content with various programs and shows. Enjoy seamless streaming with our optimized server infrastructure.</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="modalPlayBtn" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg transition flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Play Channel
-                </button>
-                <button id="modalFavoriteBtn" class="px-4 py-2 bg-gray-700 hover:bg-red-600 rounded-lg transition flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    Favorite
-                </button>
-            </div>
-        </div>
-    </div>
+<body class="text-white min-h-screen">
 
     <!-- Header -->
-    <header class="card-glass border-b border-gray-700/30 p-4 sticky top-0 z-40">
-        <div class="container mx-auto flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center space-x-3">
-                <svg class="w-8 h-8 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A1 1 0 0120 13.118v.764a1 1 0 01-.447.842L15 17v-7zM4 6h16M4 10h10M4 14h6" />
-                </svg>
-                <h1 class="text-2xl font-bold gradient-text">Curated Channels | ViewTV</h1>
-            </div>
-            
-            <div class="header-controls flex items-center space-x-4">
-                <!-- Category Dropdown -->
-                <div class="dropdown relative">
-                    <button class="flex items-center space-x-2 px-4 py-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30">
-                        <i class="fas fa-tag text-cyan-300"></i>
-                        <span class="text-sm font-medium text-cyan-200">Categories</span>
-                        <i class="fas fa-chevron-down text-xs text-cyan-300"></i>
-                    </button>
-                    <div class="dropdown-content fixed top-30 right-6 w-56 max-h-72 overflow-y-auto bg-gray-800/90 rounded-xl shadow-lg z-50 border border-gray-700/50 py-2">
-                        {% for group_title, _ in categorized_channels.items() %}
-                        <a href="#{{ group_title | lower | replace(' ', '-') }}" 
-                           class="block px-4 py-2 text-sm text-gray-300 hover:bg-cyan-600/20 transition category-pill">
-                           <i class="fas fa-arrow-right mr-2 text-cyan-400/70"></i>
-                           {{ group_title or 'Uncategorized' }}
-                        </a>
-                        {% endfor %}
+    <header class="glass-panel sticky top-0 z-50 border-b border-slate-700/30">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                        <i class="fas fa-tv text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">ViewTV Channels</h1>
+                        <p class="text-xs text-slate-400">Stream live TV worldwide</p>
                     </div>
                 </div>
-                
-                <!-- Filter Button -->
-                <button id="filterToggle" class="flex items-center space-x-2 px-4 py-2 bg-gray-700/60 hover:bg-cyan-600/50 rounded-xl transition border border-gray-600/30">
-                    <i class="fas fa-filter text-cyan-300"></i>
-                    <span class="text-sm font-medium text-cyan-200">Filters</span>
-                </button>
-                
-                <!-- View Toggle -->
-                <div class="view-toggle">
-                    <button class="view-toggle-btn grid-view-btn active" data-view="grid" title="Grid View">
-                        <i class="fas fa-th"></i>
-                    </button>
-                    <button class="view-toggle-btn list-view-btn" data-view="list" title="List View">
-                        <i class="fas fa-list"></i>
-                    </button>
-                </div>
-                
-                <!-- Search Box -->
-                <div class="search-container">
+
+                <!-- Search Bar -->
+                <div class="relative w-full md:w-96">
                     <div class="relative">
-                        <input type="text" id="searchInput" placeholder="Search channels..."
-                            class="search-box w-full bg-gray-800/80 border border-gray-700/50 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all duration-200">
-                        <i class="fas fa-search absolute left-3 top-2.5 text-gray-500"></i>
+                        <input type="text" 
+                               id="searchInput" 
+                               placeholder="Search channels..." 
+                               class="w-full bg-slate-800/70 border border-slate-700/50 rounded-xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                               autocomplete="off">
+                        <i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i>
+                        <button id="clearSearch" class="absolute right-3 top-3.5 text-slate-400 hover:text-white hidden">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
-                    <div id="searchSuggestions" class="search-suggestions"></div>
+                    
+                    <!-- Search Suggestions -->
+                    <div id="searchSuggestions" class="absolute top-full left-0 right-0 mt-1 glass-panel rounded-xl shadow-xl hidden z-50 search-suggestions">
+                        <!-- Suggestions will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="flex items-center space-x-3">
+                    <button id="filterToggle" class="px-4 py-2 bg-slate-800/70 hover:bg-primary/20 rounded-xl transition border border-slate-700/50 flex items-center space-x-2">
+                        <i class="fas fa-filter text-primary"></i>
+                        <span class="text-sm">Filters</span>
+                    </button>
+                    <a href="{{ url_for('dashboard') }}" class="p-2 hover:bg-slate-800/50 rounded-xl transition" title="Dashboard">
+                        <i class="fas fa-home text-xl text-slate-300"></i>
+                    </a>
                 </div>
             </div>
-        </div>
-        
-        <!-- Filter Section -->
-        <div id="filterSection" class="filter-section mt-4 hidden">
-            <div class="flex flex-wrap items-center gap-4">
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-300">Access:</span>
-                    <div class="flex space-x-2">
-                        <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="access" data-value="free"></div>
-                            <span class="text-sm text-gray-300">Free</span>
-                        </label>
-                        <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="access" data-value="paid"></div>
-                            <span class="text-sm text-gray-300">Paid</span>
-                        </label>
+
+            <!-- Filter Panel -->
+            <div id="filterPanel" class="mt-4 hidden animate-slide-in">
+                <div class="flex flex-wrap items-center gap-4 p-4 bg-slate-800/50 rounded-xl">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm text-slate-300">Access:</span>
+                        <div class="flex space-x-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="filter-checkbox" data-filter="access" value="free" checked>
+                                <span class="text-sm text-slate-300">Free</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="filter-checkbox" data-filter="access" value="paid" checked>
+                                <span class="text-sm text-slate-300">Paid</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm text-slate-300">Status:</span>
+                        <div class="flex space-x-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="filter-checkbox" data-filter="status" value="live" checked>
+                                <span class="text-sm text-slate-300">Live</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" class="filter-checkbox" data-filter="status" value="offline">
+                                <span class="text-sm text-slate-300">Offline</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3 ml-auto">
+                        <button id="clearFilters" class="text-sm text-primary hover:text-primary/80 transition">
+                            Clear Filters
+                        </button>
                     </div>
                 </div>
-                
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-300">Status:</span>
-                    <div class="flex space-x-2">
-                        <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="status" data-value="live"></div>
-                            <span class="text-sm text-gray-300">Live</span>
-                        </label>
-                        <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="status" data-value="Offline"></div>
-                            <span class="text-sm text-gray-300">Offline</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-300">Favorites:</span>
-                    <label class="flex items-center space-x-1 cursor-pointer">
-                        <div class="custom-checkbox" data-filter="favorites" data-value="true"></div>
-                        <span class="text-sm text-gray-300">Show Only</span>
-                    </label>
-                </div>
-                
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-300">Quality:</span>
-                    <div class="flex space-x-2">
-                        <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="quality" data-value="hd"></div>
-                            <span class="text-sm text-gray-300">HD</span>
-                        </label>
-                        <label class="flex items-center space-x-1 cursor-pointer">
-                            <div class="custom-checkbox" data-filter="quality" data-value="sd"></div>
-                            <span class="text-sm text-gray-300">SD</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <button id="clearFilters" class="ml-auto text-sm text-cyan-400 hover:text-cyan-300 transition">
-                    Clear All Filters
-                </button>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="channels-container flex-grow">
-        <div class="container mx-auto px-4 py-6">
-            <!-- Recently Viewed Section -->
-            <section class="recently-viewed-section mb-10 hidden" id="recentlyViewedSection">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
-                        <i class="fas fa-history mr-3 text-purple-400"></i>
-                        Recently Viewed
-                    </h2>
-                    <button id="clear-recent" class="text-xs bg-purple-900/30 text-purple-300 px-3 py-1 rounded-full hover:bg-purple-800/50 transition">
-                        Clear History
-                    </button>
+    <main class="container mx-auto px-4 py-8">
+        <!-- Stats Bar -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center space-x-6">
+                <div class="text-center">
+                    <div class="text-2xl font-bold gradient-text" id="totalChannels">0</div>
+                    <div class="text-sm text-slate-400">Total Channels</div>
                 </div>
-
-                <div class="relative">
-                    <div class="recommended-container" id="recentlyViewedChannels">
-                        <!-- Recently viewed channels will be injected here by JavaScript -->
-                    </div>
-                    <button class="scroll-btn left" onclick="scrollRecent(-300)">
-                        <i class="fas fa-chevron-left text-white"></i>
-                    </button>
-                    <button class="scroll-btn right" onclick="scrollRecent(300)">
-                        <i class="fas fa-chevron-right text-white"></i>
-                    </button>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-emerald-400" id="liveChannels">0</div>
+                    <div class="text-sm text-slate-400">Live Now</div>
                 </div>
-            </section>
-
-            <!-- Recommended Section -->
-            <section class="recommended-section mb-10">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-cyan-100 flex items-center">
-                        <i class="fas fa-star mr-3 text-yellow-400"></i>
-                        Recommended For You
-                    </h2>
-                    <button id="refresh-recommended" class="text-xs bg-cyan-900/30 text-cyan-300 px-3 py-1 rounded-full hover:bg-cyan-800/50 transition flex items-center">
-                        <span id="refresh-text">Refresh</span>
-                        <span id="refresh-icon" class="ml-1"></span>
-                    </button>
-                </div>
-
-                <div class="relative">
-                    <div class="recommended-container" id="recommendedChannels">
-                        <!-- Recommended channels will be injected here by JavaScript -->
-                    </div>
-                    <button class="scroll-btn left" onclick="scrollRecommended(-300)">
-                        <i class="fas fa-chevron-left text-white"></i>
-                    </button>
-                    <button class="scroll-btn right" onclick="scrollRecommended(300)">
-                        <i class="fas fa-chevron-right text-white"></i>
-                    </button>
-                </div>
-            </section>
-
-            <!-- Regular Channel Categories -->
-            <div id="channelsView" class="grid-view view-transition">
-                {% for group_title, group_channels in categorized_channels.items() %}
-                <section class="mb-10 channel-group" id="{{ group_title | lower | replace(' ', '-') }}" data-category="{{ group_title | lower }}">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-bold text-cyan-100 flex items-center">
-                            <i class="fas fa-tag mr-3 text-cyan-400"></i>
-                            {{ group_title or 'Uncategorized' }}
-                        </h2>
-                        <span class="channel-count">
-                            {{ group_channels|length }} channels
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                        {% for channel in group_channels %}
-                        {% set channel_url = channel.get('url', '') %}
-                        {% set channel_name = channel.get('name', '') %}
-                        {% set channel_token = channel.get('token', '') %}
-                        
-                        <div class="channel-card rounded-xl overflow-hidden border border-gray-700/50 hover:border-cyan-400/30
-                            {% if not channel_url %} invalid-channel {% endif %}"
-                             data-name="{{ channel_name | lower }}"
-                             data-access="{{ channel.get('access', 'free') | lower }}"
-                             data-key="{{ channel.key }}"
-                             data-group="{{ group_title }}"
-                             data-country="{{ channel.get('country', '') }}"
-                             data-logo="{{ channel.get('logo', '') }}"
-                             data-url="{{ channel_url }}"
-                             data-quality="{{ channel.get('quality', 'hd') }}"
-                             data-status="live"
-                             id="channel-{{ channel.key }}">
-                            
-                            <!-- Details button -->
-                            <button class="detail-btn tooltip" data-tooltip="View Details" onclick="showChannelDetails(this.closest('.channel-card'))">
-                                <i class="fas fa-info-circle text-sm"></i>
-                            </button>
-                            
-                            <!-- Favorite button -->
-                            <button class="favorite-btn tooltip" data-tooltip="Add to Favorites" onclick="toggleFavorite(this, '{{ channel.key }}')">
-                                <i class="fas fa-heart text-sm"></i>
-                            </button>
-                            
-                            {% if channel_url %}
-                                {% set url_parts = channel_url.split('://') %}
-                                {% if url_parts|length > 1 %}
-                                    {% set domain_port = url_parts[1].split('/')[0] %}
-                                    {% set domain = domain_port.split(':')[0] %}
-                                    {% set is_ip = domain.replace('.', '').isdigit() %}
-                                    {% set has_port = ':' in domain_port %}
-                                    
-                                    {% if is_ip or has_port %}
-                                        <a href="{{ channel_url }}" class="block h-full" onclick="return validateLink(event, '{{ channel_url }}')">
-                                    {% else %}
-                                        <a href="{{ url_for('plus_play', key=channel.key) }}">
-                                    {% endif %}
-                                {% else %}
-                                    <a href="{{ url_for('plus_player') }}?{{ {'url': channel_url, 'token': channel_token}|urlencode }}" class="block h-full">
-                                {% endif %}
-                            {% else %}
-                                <div class="block h-full bg-gray-800/50 p-4 text-center text-gray-400 cursor-not-allowed">
-                                    <i class="fas fa-unlink text-xl mb-2"></i>
-                                    <p class="text-xs">No URL provided</p>
-                                </div>
-                            {% endif %}
-                            
-                                <div class="relative pt-[56.25%] bg-gray-900/20 channel-image">
-                                    {% if channel.get('logo') %}
-                                    <img data-src="{{ channel.logo }}" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" alt="{{ channel_name }}"
-                                         class="lazy-load absolute inset-0 w-full h-full object-contain p-4">
-                                    {% else %}
-                                    <div class="absolute inset-0 flex items-center justify-center text-cyan-400/20">
-                                        <i class="fas fa-tv text-5xl"></i>
-                                    </div>
-                                    {% endif %}
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                                        <span class="text-xs font-medium text-cyan-400">
-                                            {{ channel.get('access', 'Free') }}
-                                        </span>
-                                        <span class="text-xs font-medium text-purple-400 ml-2">
-                                            {{ channel.get('quality', 'HD') }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="p-3 channel-info">
-                                    <h3 class="font-medium text-sm truncate">{{ channel_name }}</h3>
-                                    <p class="text-xs text-gray-400 mt-1 truncate">{{ channel.get('country', '') }}</p>
-                                    <div class="flex items-center mt-2">
-                                        <span class="status-badge status-live text-xs">Live</span>
-                                        <span class="ml-2 text-xs text-gray-500">{{ channel.get('quality', 'HD') }}</span>
-                                    </div>
-                                </div>
-                            
-                            {% if channel_url %}</a>{% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </section>
-                {% endfor %}
             </div>
+            <button id="refreshStatus" class="px-4 py-2 bg-slate-800/70 hover:bg-primary/20 rounded-xl transition border border-slate-700/50 flex items-center space-x-2">
+                <i class="fas fa-sync-alt"></i>
+                <span>Refresh Status</span>
+            </button>
+        </div>
+
+        <!-- Categories Navigation -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold">Categories</h2>
+                <button id="collapseAll" class="text-sm text-primary hover:text-primary/80">
+                    Collapse All
+                </button>
+            </div>
+            <div class="flex flex-wrap gap-2" id="categoryNav">
+                <!-- Categories will be injected here -->
+            </div>
+        </div>
+
+        <!-- Channels Grid -->
+        <div id="channelsContainer">
+            <!-- Channels will be dynamically loaded here -->
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="text-center py-12 animate-pulse">
+            <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-slate-400">Loading channels...</p>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="hidden text-center py-12">
+            <i class="fas fa-search text-4xl text-slate-400 mb-4"></i>
+            <h3 class="text-xl font-bold mb-2">No channels found</h3>
+            <p class="text-slate-400">Try adjusting your search or filters</p>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="card-glass border-t border-gray-700/30 py-4 mt-6">
+    <footer class="glass-panel border-t border-slate-700/30 py-6 mt-12">
         <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="flex items-center space-x-4 mb-4 md:mb-0">
-                    <a href="#" class="text-gray-400 hover:text-cyan-400 transition">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-slate-400 hover:text-white transition">
                         <i class="fab fa-twitter"></i>
                     </a>
-                    <a href="https://m.facebook.com/groups/1133498725276750/" class="text-gray-400 hover:text-blue-400 transition">
+                    <a href="https://m.facebook.com/groups/1133498725276750/" class="text-slate-400 hover:text-blue-400 transition">
                         <i class="fab fa-facebook"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-red-400 transition">
+                    <a href="#" class="text-slate-400 hover:text-red-400 transition">
                         <i class="fab fa-youtube"></i>
                     </a>
                 </div>
-                <p class="text-xs text-gray-400 text-center md:text-right">
-                    © 2025 ViewTV | StreamTV • All channels are provided for streaming <span class="text-red-400">ONLY</span>.
+                <p class="text-sm text-slate-400 text-center">
+                    © 2025 ViewTV • Stream live TV channels worldwide
                 </p>
             </div>
         </div>
     </footer>
 
-    <!-- Back to Top Button -->
-    <div class="back-btn" id="backToTop" title="Back to Top">
-        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-        <button class="quick-action-btn" title="Scroll to Top" id="quickToTop">
-            <i class="fas fa-arrow-up text-white"></i>
-        </button>
-        <button class="quick-action-btn" title="Scroll to Bottom" id="quickToBottom">
-            <i class="fas fa-arrow-down text-white"></i>
-        </button>
-    </div>
+    <!-- Quick Scroll Button -->
+    <button id="scrollToTop" class="fixed bottom-6 right-6 w-12 h-12 bg-primary hover:bg-primary-dark rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 translate-y-10">
+        <i class="fas fa-arrow-up text-white"></i>
+    </button>
 
     <!-- JavaScript -->
     <script>
-        // Initialize state
+        // State management
         const state = {
-            favorites: JSON.parse(localStorage.getItem('channelFavorites')) || [],
-            recentlyViewed: JSON.parse(localStorage.getItem('recentlyViewed')) || [],
+            channels: [],
+            filteredChannels: [],
+            categories: new Set(),
             filters: {
-                access: [],
-                status: [],
-                favorites: false,
-                quality: []
+                access: ['free', 'paid'],
+                status: ['live'],
+                search: ''
             },
-            allChannels: [],
-            currentView: 'grid', // 'grid' or 'list'
-            statusCheckQueue: [],
-            isProcessingStatusQueue: false,
-            statusCheckInterval: null,
-            lazyLoadObserver: null
+            favorites: JSON.parse(localStorage.getItem('channelFavorites') || '[]'),
+            isLoading: false,
+            currentSearchTerm: '',
+            searchDebounceTimer: null
         };
 
-        // Cache DOM elements for performance
-        const domCache = {
+        // DOM Elements
+        const elements = {
             searchInput: document.getElementById('searchInput'),
             searchSuggestions: document.getElementById('searchSuggestions'),
-            filterSection: document.getElementById('filterSection'),
-            channelsView: document.getElementById('channelsView'),
-            clearFilters: document.getElementById('clearFilters'),
-            refreshRecommended: document.getElementById('refresh-recommended'),
-            backToTop: document.getElementById('backToTop'),
+            clearSearch: document.getElementById('clearSearch'),
             filterToggle: document.getElementById('filterToggle'),
-            recentlyViewedSection: document.getElementById('recentlyViewedSection'),
-            clearRecent: document.getElementById('clear-recent'),
-            gridViewBtn: document.querySelector('.grid-view-btn'),
-            listViewBtn: document.querySelector('.list-view-btn'),
-            quickToTop: document.getElementById('quickToTop'),
-            quickToBottom: document.getElementById('quickToBottom')
+            filterPanel: document.getElementById('filterPanel'),
+            clearFilters: document.getElementById('clearFilters'),
+            channelsContainer: document.getElementById('channelsContainer'),
+            loadingIndicator: document.getElementById('loadingIndicator'),
+            noResults: document.getElementById('noResults'),
+            categoryNav: document.getElementById('categoryNav'),
+            totalChannels: document.getElementById('totalChannels'),
+            liveChannels: document.getElementById('liveChannels'),
+            scrollToTop: document.getElementById('scrollToTop'),
+            refreshStatus: document.getElementById('refreshStatus'),
+            collapseAll: document.getElementById('collapseAll')
         };
 
-        // Initialize the page
-        function initPage() {
-            // Cache channels for search
-            cacheChannels();
+        // Initialize application
+        async function init() {
+            // Load channels from template data
+            loadChannelsFromTemplate();
             
             // Set up event listeners
             setupEventListeners();
             
-            // Initialize recommended channels
-            generateRecommendedChannels();
+            // Render initial view
+            renderChannels();
             
-            // Initialize recently viewed channels
-            updateRecentlyViewed();
-            
-            // Initialize view mode
-            updateViewMode();
-            
-            // Set up back to top button
-            setupBackToTop();
-            
-            // Mark favorite channels
-            markFavorites();
-            
-            // Add ripple effect to buttons
-            setupRippleEffect();
-            
-            // Set up auto-dismiss for toasts
-            setupToasts();
-            
-            // Set up lazy loading
-            setupLazyLoading();
-            
-            // Initialize channel status queue system
-            initChannelStatusQueue();
+            // Check initial channel statuses
+            checkInitialStatuses();
         }
 
-        // Set up lazy loading for images
-        function setupLazyLoading() {
-            // Create Intersection Observer for lazy loading
-            state.lazyLoadObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.classList.add('loaded');
-                            observer.unobserve(img);
-                        }
-                    }
-                });
-            }, {
-                rootMargin: '100px 0px',
-                threshold: 0.1
-            });
+        // Load channels from Flask template data
+        function loadChannelsFromTemplate() {
+            const channelGroups = {{ categorized_channels | tojson | safe }};
+            state.channels = [];
+            state.categories.clear();
 
-            // Observe all lazy load images
-            document.querySelectorAll('.lazy-load').forEach(img => {
-                state.lazyLoadObserver.observe(img);
-            });
-        }
-
-        // Initialize channel status queue system
-        function initChannelStatusQueue() {
-            // Add all channel cards to the queue
-            document.querySelectorAll('.channel-card').forEach(card => {
-                const url = card.getAttribute('data-url');
-                if (url) {
-                    state.statusCheckQueue.push({
-                        card: card,
-                        url: url
+            for (const [category, channels] of Object.entries(channelGroups)) {
+                state.categories.add(category || 'Uncategorized');
+                
+                channels.forEach(channel => {
+                    state.channels.push({
+                        id: channel.key,
+                        name: channel.name,
+                        displayName: channel.name,
+                        category: category || 'Uncategorized',
+                        country: channel.country || '',
+                        access: (channel.access || 'free').toLowerCase(),
+                        url: channel.url || '',
+                        logo: channel.logo || '',
+                        quality: channel.quality || 'HD',
+                        status: 'checking',
+                        isFavorite: state.favorites.includes(channel.key)
                     });
-                }
-            });
-
-            // Start processing the queue
-            processStatusCheckQueue();
-
-            // Set up interval to periodically check status
-            state.statusCheckInterval = setInterval(() => {
-                // Re-add all channels to queue for periodic checking
-                document.querySelectorAll('.channel-card').forEach(card => {
-                    const url = card.getAttribute('data-url');
-                    if (url) {
-                        // Check if already in queue
-                        const exists = state.statusCheckQueue.some(item => item.card === card);
-                        if (!exists) {
-                            state.statusCheckQueue.push({
-                                card: card,
-                                url: url
-                            });
-                        }
-                    }
                 });
-            }, 300000); // Check every 5 minutes
+            }
+
+            // Update stats
+            updateStats();
         }
 
-        // Process the status check queue with up to 5 concurrent checks
-        function processStatusCheckQueue() {
-            // Maximum concurrent checks
-            const MAX_CONCURRENT_CHECKS = 8;
-        
-            // Count how many checks are currently running
-            const runningChecks = document.querySelectorAll('.status-checking:not(.checked)').length;
-        
-            // If we're already at max concurrent checks or queue is empty, return
-            if (runningChecks >= MAX_CONCURRENT_CHECKS || state.statusCheckQueue.length === 0) return;
-        
-            // Process up to MAX_CONCURRENT_CHECKS items
-            for (let i = 0; i < MAX_CONCURRENT_CHECKS - runningChecks; i++) {
-                if (state.statusCheckQueue.length === 0) break;
+        // Update statistics
+        function updateStats() {
+            elements.totalChannels.textContent = state.channels.length;
             
-                const item = state.statusCheckQueue.shift();
-                const { card, url } = item;
-            
-                // Only process if the card is visible or near viewport
-                const rect = card.getBoundingClientRect();
-                const isVisible = (
-                    rect.top >= 0 &&
-                    rect.left >= 0 &&
-                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) * 2 &&
-                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-                );
-            
-                if (isVisible) {
-                    const statusElement = card.querySelector('.status-badge');
-                    if (statusElement) {
-                        // Mark as being checked
-                        statusElement.classList.add('checking');
-                    
-                        checkChannelStatus(url, statusElement).then(() => {
-                            // Mark as completed
-                            statusElement.classList.remove('checking');
-                            statusElement.classList.add('checked');
-                        
-                            // Continue processing queue
-                            setTimeout(processStatusCheckQueue, 200); // Reduced delay
-                        });
-                    } else {
-                    // If no status element, just continue
-                        setTimeout(processStatusCheckQueue, 200);
-                    }
-                } else {
-                    // If not visible, put it back at the end of the queue
-                    state.statusCheckQueue.push(item);
-                    setTimeout(processStatusCheckQueue, 200);
-                }
-            }
+            const liveCount = state.channels.filter(c => c.status === 'live').length;
+            elements.liveChannels.textContent = liveCount;
         }
 
         // Set up event listeners
         function setupEventListeners() {
-            // Search functionality with suggestions
-            domCache.searchInput.addEventListener('input', debounce(function () {
-                const searchTerm = this.value.toLowerCase().trim();
-                filterChannels();
+            // Search input with debounce
+            elements.searchInput.addEventListener('input', (e) => {
+                clearTimeout(state.searchDebounceTimer);
+                state.searchDebounceTimer = setTimeout(() => {
+                    handleSearch(e.target.value);
+                }, 300);
                 
-                // Show/hide suggestions
-                if (searchTerm.length > 1) {
-                    showSearchSuggestions(searchTerm);
+                // Show/hide clear button
+                elements.clearSearch.classList.toggle('hidden', !e.target.value);
+            });
+
+            // Clear search
+            elements.clearSearch.addEventListener('click', () => {
+                elements.searchInput.value = '';
+                elements.clearSearch.classList.add('hidden');
+                handleSearch('');
+                elements.searchInput.focus();
+            });
+
+            // Toggle filter panel
+            elements.filterToggle.addEventListener('click', () => {
+                elements.filterPanel.classList.toggle('hidden');
+            });
+
+            // Filter checkboxes
+            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateFilters);
+            });
+
+            // Clear all filters
+            elements.clearFilters.addEventListener('click', () => {
+                document.querySelectorAll('.filter-checkbox').forEach(cb => {
+                    cb.checked = cb.dataset.filter === 'access' || 
+                                (cb.dataset.filter === 'status' && cb.value === 'live');
+                });
+                updateFilters();
+            });
+
+            // Refresh status
+            elements.refreshStatus.addEventListener('click', checkInitialStatuses);
+
+            // Collapse all categories
+            elements.collapseAll.addEventListener('click', () => {
+                document.querySelectorAll('.category-section').forEach(section => {
+                    section.classList.add('hidden');
+                });
+            });
+
+            // Scroll to top button
+            elements.scrollToTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Show/hide scroll button based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    elements.scrollToTop.classList.remove('opacity-0', 'translate-y-10');
+                    elements.scrollToTop.classList.add('opacity-100', 'translate-y-0');
                 } else {
-                    domCache.searchSuggestions.style.display = 'none';
-                }
-            }, 300));
-
-            // Handle search input focus
-            domCache.searchInput.addEventListener('focus', function() {
-                this.style.width = '350px';
-                if (this.value.length > 1) {
-                    domCache.searchSuggestions.style.display = 'block';
+                    elements.scrollToTop.classList.remove('opacity-100', 'translate-y-0');
+                    elements.scrollToTop.classList.add('opacity-0', 'translate-y-10');
                 }
             });
 
-            // Handle search input blur
-            domCache.searchInput.addEventListener('blur', function() {
-                setTimeout(() => {
-                    this.style.width = '';
-                    domCache.searchSuggestions.style.display = 'none';
-                }, 200);
-            });
-
-            // Toggle filter section
-            domCache.filterToggle.addEventListener('click', function() {
-                domCache.filterSection.classList.toggle('hidden');
-                
-                // Add animation for smoother transition
-                if (!domCache.filterSection.classList.contains('hidden')) {
-                    domCache.filterSection.style.display = 'block';
-                    setTimeout(() => {
-                        domCache.filterSection.style.opacity = 1;
-                        domCache.filterSection.style.transform = 'translateY(0)';
-                    }, 10);
-                } else {
-                    domCache.filterSection.style.opacity = 0;
-                    domCache.filterSection.style.transform = 'translateY(-10px)';
-                    setTimeout(() => {
-                        domCache.filterSection.style.display = 'none';
-                    }, 300);
+            // Close suggestions when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!elements.searchInput.contains(e.target) && 
+                    !elements.searchSuggestions.contains(e.target)) {
+                    elements.searchSuggestions.classList.add('hidden');
                 }
             });
 
-            // Setup custom checkboxes
-            document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('click', function() {
-                    this.classList.toggle('checked');
-                    
-                    const filterType = this.dataset.filter;
-                    const value = this.dataset.value;
-                    
-                    if (filterType === 'favorites') {
-                        state.filters.favorites = this.classList.contains('checked');
-                    } else {
-                        if (this.classList.contains('checked')) {
-                            if (!state.filters[filterType].includes(value)) {
-                                state.filters[filterType].push(value);
-                            }
-                        } else {
-                            state.filters[filterType] = state.filters[filterType].filter(v => v !== value);
-                        }
-                    }
-                    
-                    filterChannels();
-                });
-            });
-
-            // Clear filters
-            domCache.clearFilters.addEventListener('click', function() {
-                // Reset UI
-                document.querySelectorAll('.custom-checkbox').forEach(cb => {
-                    cb.classList.remove('checked');
-                });
-                
-                // Reset state
-                state.filters = {
-                    access: [],
-                    status: [],
-                    favorites: false,
-                    quality: []
-                };
-                
-                filterChannels();
-                
-                // Show notification
-                showToast('All filters cleared', 'success');
-            });
-
-            // Set up refresh recommended button
-            domCache.refreshRecommended.addEventListener('click', function() {
-                const icon = document.getElementById('refresh-icon');
-                const text = document.getElementById('refresh-text');
-                
-                // Show loading spinner
-                icon.innerHTML = '<div class="loading-spinner"></div>';
-                text.textContent = 'Refreshing';
-                
-                // Generate new recommendations after a short delay
-                setTimeout(() => {
-                    generateRecommendedChannels();
-                    icon.innerHTML = '';
-                    text.textContent = 'Refreshed!';
-                    
-                    // Reset after 2 seconds
-                    setTimeout(() => {
-                        text.textContent = 'Refresh';
-                    }, 2000);
-                }, 800);
-            });
-
-            // Set up clear recent button
-            if (domCache.clearRecent) {
-                domCache.clearRecent.addEventListener('click', function() {
-                    state.recentlyViewed = [];
-                    localStorage.setItem('recentlyViewed', JSON.stringify(state.recentlyViewed));
-                    updateRecentlyViewed();
-                    showToast('Recently viewed cleared', 'success');
-                });
-            }
-
-            // Set up view toggle buttons
-            if (domCache.gridViewBtn && domCache.listViewBtn) {
-                domCache.gridViewBtn.addEventListener('click', function() {
-                    state.currentView = 'grid';
-                    updateViewMode();
-                });
-                
-                domCache.listViewBtn.addEventListener('click', function() {
-                    state.currentView = 'list';
-                    updateViewMode();
-                });
-            }
-
-            // Set up quick actions
-            if (domCache.quickToTop) {
-                domCache.quickToTop.addEventListener('click', function() {
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                });
-            }
-            
-            if (domCache.quickToBottom) {
-                domCache.quickToBottom.addEventListener('click', function() {
-                    window.scrollTo({
-                        top: document.body.scrollHeight,
-                        behavior: 'smooth'
-                    });
-                });
-            }
-
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e) {
-                // Close category dropdown
-                const dropdown = document.querySelector('.dropdown');
-                if (dropdown && !dropdown.contains(e.target)) {
-                    document.querySelector('.dropdown-content').style.display = 'none';
-                }
-                
-                // Close search suggestions
-                if (domCache.searchSuggestions && !domCache.searchInput.contains(e.target) && !domCache.searchSuggestions.contains(e.target)) {
-                    domCache.searchSuggestions.style.display = 'none';
-                }
-                
-                // Close filter section when clicking outside
-                if (domCache.filterSection && !domCache.filterToggle.contains(e.target) && !domCache.filterSection.contains(e.target)) {
-                    domCache.filterSection.classList.add('hidden');
-                }
-            });
-
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
                 // Ctrl/Cmd + K to focus search
                 if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                     e.preventDefault();
-                    domCache.searchInput.focus();
+                    elements.searchInput.focus();
                 }
                 
-                // Escape to clear search and close modals
-                if (e.key === 'Escape') {
-                    if (domCache.searchInput.value) {
-                        domCache.searchInput.value = '';
-                        filterChannels();
-                    } else {
-                        closeModal();
-                    }
+                // Escape to clear search
+                if (e.key === 'Escape' && elements.searchInput.value) {
+                    elements.searchInput.value = '';
+                    handleSearch('');
                 }
             });
         }
 
-        // Pre-cache all channel data for search
-        function cacheChannels() {
-            const channelElements = document.querySelectorAll('.channel-card');
-            state.allChannels = Array.from(channelElements).map(card => ({
-                name: card.getAttribute('data-name'),
-                displayName: card.querySelector('h3').textContent,
-                access: card.getAttribute('data-access'),
-                key: card.getAttribute('data-key'),
-                group: card.getAttribute('data-group'),
-                country: card.getAttribute('data-country'),
-                quality: card.getAttribute('data-quality'),
-                element: card
-            }));
+        // Handle search with fuzzy matching
+        function handleSearch(term) {
+            state.filters.search = term.toLowerCase();
+            renderChannels();
+            
+            // Show suggestions if term has at least 2 characters
+            if (term.length >= 2) {
+                showSearchSuggestions(term);
+            } else {
+                elements.searchSuggestions.classList.add('hidden');
+            }
         }
 
-        // Show search suggestions with fuzzy matching
-        function showSearchSuggestions(searchTerm) {
-            // Calculate relevance score for each channel
-            const suggestions = state.allChannels.map(channel => {
-                const name = channel.name;
-                const displayName = channel.displayName.toLowerCase();
-                const group = channel.group.toLowerCase();
-                const country = channel.country.toLowerCase();
-                
-                // Calculate relevance score
-                let score = 0;
-                
-                // Exact match in name gets highest score
-                if (name === searchTerm) score += 100;
-                if (displayName === searchTerm) score += 100;
-                
-                // Name contains search term
-                if (name.includes(searchTerm)) score += 50;
-                if (displayName.includes(searchTerm)) score += 50;
-                
-                // Group or country contains search term
-                if (group.includes(searchTerm) || country.includes(searchTerm)) score += 25;
-                
-                // Check for partial matches
-                const searchWords = searchTerm.split(' ');
-                searchWords.forEach(word => {
-                    if (word.length > 2) {
-                        if (name.includes(word)) score += 10;
-                        if (displayName.includes(word)) score += 10;
-                        if (group.includes(word)) score += 5;
-                        if (country.includes(word)) score += 5;
-                    }
-                });
-                
-                return { ...channel, score };
-            })
-            .filter(channel => channel.score > 0)
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 5);
+        // Show search suggestions
+        function showSearchSuggestions(term) {
+            const suggestions = state.channels
+                .filter(channel => 
+                    channel.displayName.toLowerCase().includes(term) ||
+                    channel.category.toLowerCase().includes(term) ||
+                    channel.country.toLowerCase().includes(term)
+                )
+                .slice(0, 8);
             
             if (suggestions.length > 0) {
-                domCache.searchSuggestions.innerHTML = suggestions.map(channel => `
-                    <div class="search-suggestion" data-name="${channel.name}">
-                        <div class="font-medium">${channel.displayName}</div>
-                        <div class="text-xs text-gray-400">${channel.group} • ${channel.country}</div>
+                elements.searchSuggestions.innerHTML = suggestions.map(channel => `
+                    <div class="p-3 hover:bg-slate-700/50 cursor-pointer border-b border-slate-700/30 last:border-0 search-suggestion-item" 
+                         data-id="${channel.id}">
+                        <div class="flex items-center space-x-3">
+                            ${channel.logo ? `
+                                <img src="${channel.logo}" alt="${channel.displayName}" 
+                                     class="w-8 h-8 rounded object-contain bg-slate-800">
+                            ` : `
+                                <div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center">
+                                    <i class="fas fa-tv text-slate-400"></i>
+                                </div>
+                            `}
+                            <div class="flex-1">
+                                <div class="font-medium">${channel.displayName}</div>
+                                <div class="text-xs text-slate-400">${channel.category} • ${channel.country}</div>
+                            </div>
+                        </div>
                     </div>
                 `).join('');
                 
-                domCache.searchSuggestions.style.display = 'block';
+                elements.searchSuggestions.classList.remove('hidden');
                 
                 // Add click handlers to suggestions
-                domCache.searchSuggestions.querySelectorAll('.search-suggestion').forEach(suggestion => {
-                    suggestion.addEventListener('click', function() {
-                        const name = this.getAttribute('data-name');
-                        navigateToChannelByName(name);
-                    });
-                    
-                    // Add hover effect
-                    suggestion.addEventListener('mouseenter', function() {
-                        this.classList.add('highlight');
-                    });
-                    
-                    suggestion.addEventListener('mouseleave', function() {
-                        this.classList.remove('highlight');
+                document.querySelectorAll('.search-suggestion-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const channelId = item.dataset.id;
+                        navigateToChannel(channelId);
+                        elements.searchSuggestions.classList.add('hidden');
                     });
                 });
             } else {
-                domCache.searchSuggestions.innerHTML = '<div class="search-suggestion">No matches found</div>';
-                domCache.searchSuggestions.style.display = 'block';
+                elements.searchSuggestions.classList.add('hidden');
             }
         }
 
-        // Navigate to and focus on a specific channel by name
-        function navigateToChannelByName(name){const el=[...document.querySelectorAll('.channel-card')].find(c=>c.getAttribute('data-name')?.toLowerCase()===name.toLowerCase());if(!el)return;addToRecentlyViewed(el.getAttribute('data-key'));el.closest('.channels-container')?el.closest('.channels-container').scrollTo({top:el.closest('.channels-container').scrollTop+(el.getBoundingClientRect().top-el.closest('.channels-container').getBoundingClientRect().top-(el.closest('.channels-container').getBoundingClientRect().height/2)+(el.getBoundingClientRect().height/2)),behavior:'smooth'}):el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'});el.classList.add('highlight-pulse');setTimeout(()=>el.focus({preventScroll:true}),600);setTimeout(()=>el.classList.remove('highlight-pulse'),5000);domCache.searchInput.value='';domCache.searchSuggestions.style.display='none';filterChannels();}
-
-        // Add channel to recently viewed
-        function addToRecentlyViewed(key) {
-            // Remove if already exists
-            state.recentlyViewed = state.recentlyViewed.filter(k => k !== key);
-            
-            // Add to beginning
-            state.recentlyViewed.unshift(key);
-            
-            // Keep only the last 10
-            if (state.recentlyViewed.length > 10) {
-                state.recentlyViewed = state.recentlyViewed.slice(0, 10);
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('recentlyViewed', JSON.stringify(state.recentlyViewed));
-            
-            // Update UI
-            updateRecentlyViewed();
-        }
-
-        // Update recently viewed section
-        function updateRecentlyViewed() {
-            const container = document.getElementById('recentlyViewedChannels');
-            
-            if (!container) return;
-            
-            if (state.recentlyViewed.length > 0) {
-                domCache.recentlyViewedSection.classList.remove('hidden');
-                container.innerHTML = '';
+        // Navigate to specific channel
+        function navigateToChannel(channelId) {
+            const channelElement = document.getElementById(`channel-${channelId}`);
+            if (channelElement) {
+                // Scroll to element
+                channelElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
                 
-                // Get recently viewed channels
-                const recentChannels = state.recentlyViewed.map(key => {
-                    const element = document.getElementById(`channel-${key}`);
-                    if (element) {
-                        return {
-                            name: element.getAttribute('data-name'),
-                            element: element.cloneNode(true)
-                        };
+                // Highlight briefly
+                channelElement.classList.add('scroll-highlight');
+                setTimeout(() => {
+                    channelElement.classList.remove('scroll-highlight');
+                }, 2000);
+                
+                // Focus on element for keyboard navigation
+                channelElement.focus();
+            }
+        }
+
+        // Update filters from checkboxes
+        function updateFilters() {
+            state.filters.access = Array.from(
+                document.querySelectorAll('.filter-checkbox[data-filter="access"]:checked')
+            ).map(cb => cb.value);
+            
+            state.filters.status = Array.from(
+                document.querySelectorAll('.filter-checkbox[data-filter="status"]:checked')
+            ).map(cb => cb.value);
+            
+            renderChannels();
+        }
+
+        // Render channels based on current filters
+        function renderChannels() {
+            // Hide loading, show container
+            elements.loadingIndicator.classList.add('hidden');
+            elements.channelsContainer.classList.remove('hidden');
+            
+            // Filter channels
+            state.filteredChannels = state.channels.filter(channel => {
+                // Search filter
+                if (state.filters.search && !channelMatchesSearch(channel, state.filters.search)) {
+                    return false;
+                }
+                
+                // Access filter
+                if (!state.filters.access.includes(channel.access)) {
+                    return false;
+                }
+                
+                // Status filter
+                if (!state.filters.status.includes(channel.status)) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Group by category
+            const grouped = groupByCategory(state.filteredChannels);
+            
+            // Update categories navigation
+            updateCategoryNav(Object.keys(grouped));
+            
+            // Render channels
+            if (state.filteredChannels.length === 0) {
+                elements.noResults.classList.remove('hidden');
+                elements.channelsContainer.innerHTML = '';
+            } else {
+                elements.noResults.classList.add('hidden');
+                renderChannelGroups(grouped);
+            }
+        }
+
+        // Check if channel matches search term
+        function channelMatchesSearch(channel, term) {
+            return channel.displayName.toLowerCase().includes(term) ||
+                   channel.category.toLowerCase().includes(term) ||
+                   channel.country.toLowerCase().includes(term);
+        }
+
+        // Group channels by category
+        function groupByCategory(channels) {
+            return channels.reduce((groups, channel) => {
+                if (!groups[channel.category]) {
+                    groups[channel.category] = [];
+                }
+                groups[channel.category].push(channel);
+                return groups;
+            }, {});
+        }
+
+        // Update category navigation
+        function updateCategoryNav(categories) {
+            elements.categoryNav.innerHTML = categories.map(category => `
+                <button class="category-nav-btn px-4 py-2 bg-slate-800/50 hover:bg-primary/20 rounded-xl transition border border-slate-700/50 text-sm"
+                        data-category="${category}">
+                    ${category}
+                </button>
+            `).join('');
+            
+            // Add click handlers
+            document.querySelectorAll('.category-nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const category = btn.dataset.category;
+                    const section = document.getElementById(`category-${category.replace(/\s+/g, '-').toLowerCase()}`);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
-                    return null;
-                }).filter(channel => channel !== null);
-                
-                // Add to container
-                recentChannels.forEach((channel, index) => {
-                    const card = channel.element;
-                    card.classList.add('recommended-card');
-                    card.classList.add('highlight-pulse');
-                    card.style.animationDelay = `${index * 0.1}s`;
-                    
-                    // Remove highlight after animation completes
-                    setTimeout(() => {
-                        card.classList.remove('highlight-pulse');
-                    }, 2000 + (index * 100));
-                    
-                    container.appendChild(card);
                 });
-            } else {
-                domCache.recentlyViewedSection.classList.add('hidden');
-            }
-        }
-
-        // Scroll recently viewed channels horizontally
-        function scrollRecent(amount) {
-            const container = document.getElementById('recentlyViewedChannels');
-            if (container) {
-                container.scrollBy({
-                    left: amount,
-                    behavior: 'smooth'
-                });
-            }
-        }
-
-        // Debounce function for performance
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func.apply(this, args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Filter channels based on search and filters
-        function filterChannels() {
-            const searchTerm = domCache.searchInput.value.toLowerCase();
-            const channelGroups = document.querySelectorAll('.channel-group');
-
-            channelGroups.forEach(group => {
-                const category = group.getAttribute('data-category');
-                let matchFoundInGroup = false;
-
-                const cards = group.querySelectorAll('.channel-card');
-                cards.forEach(card => {
-                    const name = card.getAttribute('data-name');
-                    const access = card.getAttribute('data-access');
-                    const status = card.getAttribute('data-status');
-                    const quality = card.getAttribute('data-quality');
-                    const key = card.getAttribute('data-key');
-                    const isFavorite = state.favorites.includes(key);
-                    
-                    // Check search term
-                    const searchMatch = name.includes(searchTerm) || 
-                                       access.includes(searchTerm) || 
-                                       category.includes(searchTerm) ||
-                                       quality.includes(searchTerm);
-                    
-                    // Check filters
-                    const accessMatch = state.filters.access.length === 0 || state.filters.access.includes(access);
-                    const statusMatch = state.filters.status.length === 0 || state.filters.status.includes(status);
-                    const qualityMatch = state.filters.quality.length === 0 || state.filters.quality.includes(quality);
-                    const favoriteMatch = !state.filters.favorites || isFavorite;
-                    
-                    const match = searchMatch && accessMatch && statusMatch && favoriteMatch && qualityMatch;
-                    card.style.display = match ? 'block' : 'none';
-
-                    if (match) matchFoundInGroup = true;
-                });
-
-                group.style.display = matchFoundInGroup ? 'block' : 'none';
             });
         }
 
-        // Toggle favorite
-        function toggleFavorite(button, key) {
-            button.classList.toggle('active');
+        // Render channel groups
+        function renderChannelGroups(groups) {
+            elements.channelsContainer.innerHTML = Object.entries(groups).map(([category, channels]) => `
+                <section class="category-section mb-10" id="category-${category.replace(/\s+/g, '-').toLowerCase()}">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold flex items-center">
+                            <i class="fas fa-tag mr-3 text-primary"></i>
+                            ${category}
+                        </h2>
+                        <span class="text-sm text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full">
+                            ${channels.length} channels
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                        ${channels.map(channel => renderChannelCard(channel)).join('')}
+                    </div>
+                </section>
+            `).join('');
+        }
+
+        // Render individual channel card
+        function renderChannelCard(channel) {
+            const hasUrl = channel.url && channel.url.trim().length > 0;
+            const isIpUrl = hasUrl && /^\d+\.\d+\.\d+\.\d+/.test(channel.url.replace(/https?:\/\//, '').split('/')[0]);
             
-            if (state.favorites.includes(key)) {
-                state.favorites = state.favorites.filter(k => k !== key);
-                showToast('Removed from favorites');
+            return `
+                <div class="channel-card glass-panel rounded-xl overflow-hidden border border-slate-700/50"
+                     id="channel-${channel.id}"
+                     data-id="${channel.id}"
+                     data-name="${channel.displayName.toLowerCase()}"
+                     data-category="${channel.category.toLowerCase()}"
+                     data-country="${channel.country.toLowerCase()}"
+                     data-access="${channel.access}"
+                     data-status="${channel.status}">
+                    
+                    ${hasUrl ? `
+                        <a href="${isIpUrl ? channel.url : `/plus-channel/${channel.id}`}" 
+                           class="block h-full"
+                           ${isIpUrl ? 'target="_blank"' : ''}
+                           onclick="${isIpUrl ? '' : `event.preventDefault(); playChannel('${channel.id}')`}">
+                    ` : '<div class="block h-full bg-slate-800/50">'}
+                    
+                        <!-- Channel Image -->
+                        <div class="relative pt-[56.25%] channel-img">
+                            ${channel.logo ? `
+                                <img src="${channel.logo}" 
+                                     alt="${channel.displayName}"
+                                     class="absolute inset-0 w-full h-full object-contain p-4"
+                                     loading="lazy"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            ` : ''}
+                            <div class="absolute inset-0 flex items-center justify-center ${channel.logo ? 'hidden' : ''}">
+                                <i class="fas fa-tv text-4xl text-slate-600"></i>
+                            </div>
+                            
+                            <!-- Status Badge -->
+                            <div class="absolute top-2 left-2">
+                                <span class="status-${channel.status} px-2 py-1 rounded-full text-xs font-medium">
+                                    ${channel.status === 'live' ? 'LIVE' : 
+                                      channel.status === 'offline' ? 'OFFLINE' : 'CHECKING'}
+                                </span>
+                            </div>
+                            
+                            <!-- Favorite Button -->
+                            <button class="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center hover:bg-red-500 transition ${channel.isFavorite ? 'text-red-400' : 'text-white'}"
+                                    onclick="event.preventDefault(); toggleFavorite('${channel.id}', this)">
+                                <i class="fas fa-heart ${channel.isFavorite ? 'fas' : 'far'}"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Channel Info -->
+                        <div class="p-4">
+                            <h3 class="font-bold truncate mb-1" title="${channel.displayName}">
+                                ${channel.displayName}
+                            </h3>
+                            <div class="flex items-center justify-between text-sm text-slate-400">
+                                <span>${channel.country || 'N/A'}</span>
+                                <span class="text-primary">${channel.quality}</span>
+                            </div>
+                            <div class="mt-2 text-xs text-slate-500">
+                                ${channel.access === 'paid' ? 'Premium' : 'Free'}
+                            </div>
+                        </div>
+                    
+                    ${hasUrl ? '</a>' : '</div>'}
+                </div>
+            `;
+        }
+
+        // Toggle favorite
+        function toggleFavorite(channelId, button) {
+            const index = state.favorites.indexOf(channelId);
+            if (index === -1) {
+                state.favorites.push(channelId);
+                button.classList.add('text-red-400');
+                button.querySelector('i').classList.replace('far', 'fas');
             } else {
-                state.favorites.push(key);
-                showToast('Added to favorites');
+                state.favorites.splice(index, 1);
+                button.classList.remove('text-red-400');
+                button.querySelector('i').classList.replace('fas', 'far');
+            }
+            
+            // Update state
+            const channel = state.channels.find(c => c.id === channelId);
+            if (channel) {
+                channel.isFavorite = !channel.isFavorite;
             }
             
             // Save to localStorage
             localStorage.setItem('channelFavorites', JSON.stringify(state.favorites));
-            
-            // If favorites filter is active, update view
-            if (state.filters.favorites) {
-                filterChannels();
+        }
+
+        // Play channel
+        function playChannel(channelId) {
+            const channel = state.channels.find(c => c.id === channelId);
+            if (channel && channel.url) {
+                window.location.href = `/plus-channel/${channelId}`;
             }
         }
 
-        // Mark favorite channels
-        function markFavorites() {
-            document.querySelectorAll('.channel-card').forEach(card => {
-                const key = card.getAttribute('data-key');
-                if (state.favorites.includes(key)) {
-                    const favoriteBtn = card.querySelector('.favorite-btn');
-                    if (favoriteBtn) {
-                        favoriteBtn.classList.add('active');
-                    }
-                }
-            });
+        // Check initial channel statuses
+        async function checkInitialStatuses() {
+            // Only check visible channels
+            const visibleChannels = state.channels.slice(0, 50); // Limit to first 50
+            
+            for (const channel of visibleChannels) {
+                await checkChannelStatus(channel);
+                updateStats();
+            }
         }
 
-        // Update view mode (grid/list)
-        function updateViewMode() {
-            if (state.currentView === 'grid') {
-                domCache.channelsView.classList.remove('list-view');
-                domCache.channelsView.classList.add('grid-view');
-                domCache.gridViewBtn.classList.add('active');
-                domCache.listViewBtn.classList.remove('active');
-            } else {
-                domCache.channelsView.classList.remove('grid-view');
-                domCache.channelsView.classList.add('list-view');
-                domCache.gridViewBtn.classList.remove('active');
-                domCache.listViewBtn.classList.add('active');
+        // Check single channel status
+        async function checkChannelStatus(channel) {
+            if (!channel.url) {
+                channel.status = 'offline';
+                return;
             }
             
-            // Save to localStorage
-            localStorage.setItem('viewMode', state.currentView);
-        }
-
-        // Set up back to top button
-        function setupBackToTop() {
-            // Show/hide back button based on scroll position
-            window.addEventListener('scroll', () => {
-                if (window.pageYOffset > 300) {
-                    domCache.backToTop.style.display = 'flex';
-                } else {
-                    domCache.backToTop.style.display = 'none';
-                }
-            });
-
-            domCache.backToTop.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-        }
-
-        // Set up ripple effect
-        function setupRippleEffect() {
-            document.querySelectorAll('button, a').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    const x = e.clientX - e.target.getBoundingClientRect().left;
-                    const y = e.clientY - e.target.getBoundingClientRect().top;
-                    
-                    const ripple = document.createElement('span');
-                    ripple.classList.add('ripple');
-                    ripple.style.left = `${x}px`;
-                    ripple.style.top = `${y}px`;
-                    
-                    this.appendChild(ripple);
-                    
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
-                });
-            });
-        }
-
-        // Set up auto-dismiss for toasts
-        function setupToasts() {
-            const toasts = document.querySelectorAll('.toast-entry');
-            toasts.forEach(toast => {
-                setTimeout(() => {
-                    toast.classList.add('toast-exit');
-                    setTimeout(() => toast.remove(), 500);
-                }, 5000);
-                
-                // Add click handler to close button if not already present
-                const closeBtn = toast.querySelector('button');
-                if (closeBtn && !closeBtn.getAttribute('data-has-listener')) {
-                    closeBtn.setAttribute('data-has-listener', 'true');
-                    closeBtn.addEventListener('click', () => {
-                        toast.classList.add('toast-exit');
-                        setTimeout(() => toast.remove(), 500);
-                    });
-                }
-            });
-        }
-
-        // Function to show new toasts
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            const colors = {
-                success: 'bg-gray-800 border-emerald-500',
-                error: 'bg-gray-800 border-red-500',
-                info: 'bg-gray-800 border-cyan-500'
-            };
-            const icons = {
-                success: `<svg class="h-5 w-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>`,
-                error: `<svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin='round' stroke-width='2' d='M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' />
-                </svg>`,
-                info: `<svg class="h-5 w-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>`
-            };
-
-            const toast = document.createElement('div');
-            toast.className = `toast-entry relative p-4 pr-10 rounded-xl shadow-lg font-medium text-white border-l-4 ${colors[type]}`;
-            toast.innerHTML = `
-                <div class="flex items-start">
-                    <div class="flex-shrink-0 pt-0.5">
-                        ${icons[type]}
-                    </div>
-                    <div class="ml-3 flex-1">
-                        <p class="text-sm">${message}</p>
-                    </div>
-                    <button class="absolute top-3 right-3 text-gray-400 hover:text-white">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            `;
-
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.classList.add('toast-exit');
-                setTimeout(() => toast.remove(), 500);
-            }, 5000);
-
-            // Add click handler to close button
-            toast.querySelector('button').addEventListener('click', () => {
-                toast.classList.add('toast-exit');
-                setTimeout(() => toast.remove(), 500);
-            });
-        }
-
-        // Validate direct IP links before opening
-        function validateLink(event, url) {
             try {
-                // Basic URL validation
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    showToast('Invalid URL format', 'error');
-                    event.preventDefault();
-                    return false;
+                const response = await fetch(`/check-channel-status?url=${encodeURIComponent(channel.url)}`);
+                const data = await response.json();
+                channel.status = data.status === 'live' ? 'live' : 'offline';
+            } catch (error) {
+                channel.status = 'offline';
+            }
+            
+            // Update UI if this channel is currently visible
+            const channelElement = document.getElementById(`channel-${channel.id}`);
+            if (channelElement) {
+                const statusElement = channelElement.querySelector('.status-live, .status-offline, .status-checking');
+                if (statusElement) {
+                    statusElement.className = `status-${channel.status} px-2 py-1 rounded-full text-xs font-medium`;
+                    statusElement.textContent = channel.status === 'live' ? 'LIVE' : 'OFFLINE';
                 }
-
-                // Additional checks can be added here if needed
-                return true;
-            } catch (e) {
-                showToast('Error opening channel', 'error');
-                event.preventDefault();
-                return false;
             }
         }
 
-        // Generate recommended channels
-        function generateRecommendedChannels() {
-            const container = document.getElementById('recommendedChannels');
-            container.innerHTML = '';
-            
-            // Get all channels
-            const allChannels = [];
-            document.querySelectorAll('.channel-card').forEach(card => {
-                if (!card.classList.contains('invalid-channel')) {
-                    allChannels.push({
-                        name: card.dataset.name,
-                        element: card.cloneNode(true)
-                    });
-                }
-            });
-            
-            // Shuffle array and pick 10 random channels
-            const shuffled = allChannels.sort(() => 0.5 - Math.random());
-            const recommended = shuffled.slice(0, 10);
-            
-            // Add to container with highlight effect
-            recommended.forEach((channel, index) => {
-                const card = channel.element;
-                card.classList.add('recommended-card');
-                card.classList.add('highlight-pulse');
-                card.style.animationDelay = `${index * 0.1}s`;
-                
-                // Remove highlight after animation completes
-                setTimeout(() => {
-                    card.classList.remove('highlight-pulse');
-                }, 2000 + (index * 100));
-                
-                container.appendChild(card);
-            });
-        }
-
-        // Scroll recommended channels horizontally
-        function scrollRecommended(amount) {
-            const container = document.getElementById('recommendedChannels');
-            container.scrollBy({
-                left: amount,
-                behavior: 'smooth'
-            });
-        }
-
-        // Show channel details modal
-        function showChannelDetails(card) {
-            const modal = document.getElementById('channelModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalName = document.getElementById('modalName');
-            const modalAccess = document.getElementById('modalAccess');
-            const modalCountry = document.getElementById('modalCountry');
-            const modalCategory = document.getElementById('modalCategory');
-            const modalLogo = document.getElementById('modalLogo');
-            const modalStatus = document.getElementById('modalStatus');
-            const modalPlayBtn = document.getElementById('modalPlayBtn');
-            const modalFavoriteBtn = document.getElementById('modalFavoriteBtn');
-            const modalQuality = document.getElementById('modalQuality');
-            
-            // Get channel data from card attributes
-            const name = card.getAttribute('data-name');
-            const access = card.getAttribute('data-access');
-            const country = card.getAttribute('data-country');
-            const category = card.getAttribute('data-group');
-            const logo = card.getAttribute('data-logo');
-            const url = card.getAttribute('data-url');
-            const key = card.getAttribute('data-key');
-            const quality = card.getAttribute('data-quality');
-            const isFavorite = state.favorites.includes(key);
-            
-            // Add to recently viewed
-            addToRecentlyViewed(key);
-            
-            // Set modal content
-            modalTitle.textContent = name;
-            modalName.textContent = name;
-            modalAccess.textContent = access.charAt(0).toUpperCase() + access.slice(1);
-            modalCountry.textContent = country || 'Not specified';
-            modalCategory.textContent = category;
-            modalQuality.textContent = quality.toUpperCase();
-            
-            if (logo) {
-                modalLogo.src = logo;
-                modalLogo.style.display = 'block';
-            } else {
-                modalLogo.style.display = 'none';
-            }
-            
-            // Set favorite button state
-            if (isFavorite) {
-                modalFavoriteBtn.innerHTML = `
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    Favorited
-                `;
-                modalFavoriteBtn.classList.add('bg-red-600');
-            } else {
-                modalFavoriteBtn.innerHTML = `
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    Favorite
-                `;
-                modalFavoriteBtn.classList.remove('bg-red-600');
-            }
-            
-            // Set favorite button action
-            modalFavoriteBtn.onclick = function() {
-                if (isFavorite) {
-                    state.favorites = state.favorites.filter(k => k !== key);
-                    showToast('Removed from favorites');
-                    modalFavoriteBtn.innerHTML = `
-                        <svg class="w-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 1 00-6.364 0z" />
-                        </svg>
-                        Favorite
-                    `;
-                    modalFavoriteBtn.classList.remove('bg-red-600');
-                } else {
-                    state.favorites.push(key);
-                    showToast('Added to favorites');
-                    modalFavoriteBtn.innerHTML = `
-                        <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-0.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                        Favorited
-                    `;
-                    modalFavoriteBtn.classList.add('bg-red-600');
-                }
-                
-                // Update the card's favorite button
-                const cardFavoriteBtn = card.querySelector('.favorite-btn');
-                if (cardFavoriteBtn) {
-                    cardFavoriteBtn.classList.toggle('active');
-                }
-                
-                // Save to localStorage
-                localStorage.setItem('channelFavorites', JSON.stringify(state.favorites));
-            };
-            
-            // Set play button action
-            if (url) {
-                modalPlayBtn.style.display = 'flex';
-                modalPlayBtn.onclick = function() {
-                    // Determine the correct URL format
-                    const urlParts = url.split('://');
-                    if (urlParts.length > 1) {
-                        const domainPort = urlParts[1].split('/')[0];
-                        const domain = domainPort.split(':')[0];
-                        const isIp = /^\d+\.\d+\.\d+\.\d+$/.test(domain);
-                        const hasPort = domainPort.includes(':');
-                        
-                        if (isIp || hasPort) {
-                            window.open(url, '_blank');
-                        } else {
-                            window.location.href = `/plus-channel/${key}`;
-                        }
-                    } else {
-                        window.location.href = `/plus-player?${new URLSearchParams({url: url, token: card.getAttribute('data-token') || ''})}`;
-                    }
-                    closeModal();
-                };
-            } else {
-                modalPlayBtn.style.display = 'none';
-            }
-            
-            // Check channel status using the Flask endpoint
-            checkChannelStatus(url, modalStatus);
-            
-            // Show modal
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        // Close modal
-        function closeModal() {
-            const modal = document.getElementById('channelModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        // Check channel status using the Flask endpoint
-        function checkChannelStatus(url, statusElement) {
-            return new Promise((resolve) => {
-                if (!url) {
-                    statusElement.textContent = 'No URL';
-                    statusElement.className = 'status-badge status-offline';
-                    resolve();
-                    return;
-                }
-                
-                statusElement.textContent = 'Checking...';
-                statusElement.className = 'status-badge status-checking';
-                
-                // Use the Flask endpoint to check channel status
-                fetch(`/check-channel-status?url=${encodeURIComponent(url)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'live') {
-                            statusElement.textContent = 'Live';
-                            statusElement.className = 'status-badge status-live';
-                        } else if (data.status === 'offline') {
-                            statusElement.textContent = 'Offline';
-                            statusElement.className = 'status-badge status-offline';
-                        } else if (data.status === 'error') {
-                            statusElement.textContent = 'Error';
-                            statusElement.className = 'status-badge status-offline';
-                        } else {
-                            statusElement.textContent = 'Unknown';
-                            statusElement.className = 'status-badge status-checking';
-                        }
-                        resolve();
-                    })
-                    .catch(error => {
-                        console.error('Error checking channel status:', error);
-                        statusElement.textContent = 'Error';
-                        statusElement.className = 'status-badge status-offline';
-                        resolve();
-                    });
-            });
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('channelModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        // Initialize the page when DOM is loaded
-        document.addEventListener('DOMContentLoaded', initPage);
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>

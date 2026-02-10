@@ -2228,6 +2228,11 @@ def live_match():
     matches = FootballMatch.query.filter_by(is_active=True).order_by(FootballMatch.match_date.asc()).all()
     return render_template('live_match.html', matches=matches)
 
+@app.route("/viewstream")
+@plus_required
+def viewstream():
+    return render_template("viewstream-1.html")
+    
 @app.route('/admin/match-dashboard')
 @login_required
 @admin1_required

@@ -1,171 +1,366 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Premium Sports | Stream TV</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STADIUM | premium sports flow</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
+    * { font-family: 'Outfit', sans-serif; }
     body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(ellipse at center, #111827 0%, #030712 100%);
+      background: #0b0f17;
+      background-image: radial-gradient(circle at 20% 30%, rgba(0, 180, 255, 0.08) 0%, transparent 30%),
+                        radial-gradient(circle at 80% 70%, rgba(0, 230, 150, 0.06) 0%, transparent 35%);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-      padding: 1rem;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1.5rem 1.5rem 2rem;
+      margin: 0;
     }
-    .gradient-text {
-      background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+
+    .top-bar {
+      width: 100%;
+      max-width: 1300px;
+      margin-bottom: 2.2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .back-sleek {
+      background: rgba(10, 20, 30, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(72, 255, 200, 0.2);
+      border-radius: 60px;
+      padding: 0.7rem 2rem;
+      color: white;
+      font-weight: 500;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      box-shadow: 0 15px 35px -5px #00000080;
+      transition: 0.2s;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(0,255,200,0.15);
+    }
+
+    .back-sleek i { font-size: 1.2rem; color: #0ff; }
+    .back-sleek:hover {
+      background: #0f212e;
+      border-color: #0ff;
+      box-shadow: 0 0 25px #00ffee40;
+      transform: scale(1.02);
+    }
+
+    .hero-description {
+      background: rgba(0, 15, 25, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 1rem;
+      padding: 0.9rem 2rem;
+      border: 1px solid rgba(0, 255, 200, 0.15);
+      color: #eef9ff;
+      font-weight: 300;
+      font-size: 1rem;
+      max-width: 600px;
+      line-height: 1.6;
+      box-shadow: 0 10px 25px -10px #000000aa;
+    }
+    .hero-description i {
+      color: #2affb2;
+      margin-right: 0.4rem;
+    }
+    .hero-description strong {
+      font-weight: 600;
+      color: white;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .sport-card {
+      position: relative;
+      border-radius: 1.4rem;
+      background: #1a1f2e;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.85);
+      transition: all 0.25s cubic-bezier(0.2,0,0,1);
+      isolation: isolate;
+      cursor: pointer;
+      aspect-ratio: 3/4;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(2px);
+    }
+
+    .sport-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: 70% 30%;
+      filter: saturate(1.2) contrast(1.1);
+      transition: transform 0.4s ease, filter 0.4s ease;
+      z-index: 0;
+    }
+
+    .sport-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(15deg, rgba(0,0,0,0.9) 20%, rgba(0,40,60,0.65) 80%);
+      z-index: 1;
+    }
+
+    .sport-card:hover::before {
+      transform: scale(1.08);
+      filter: saturate(1.6) brightness(1.1);
+    }
+    .sport-card:hover {
+      box-shadow: 0 35px 55px -8px #00cc9925, 0 0 0 2px rgba(0, 230, 180, 0.3);
+      border-color: rgba(0,255,200,0.2);
+    }
+
+    .card-playlist::before { 
+      background-image: url('https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=600&auto=format&fit=crop'); 
+      background-position: 50% 30%;
+    }
+    .card-football1::before { 
+      background-image: url('https://images.unsplash.com/photo-1577223625816-7546f13df25d?w=600&auto=format&fit=crop'); 
+      background-position: 50% 30%;
+    }
+    .card-football2::before { 
+      background-image: url('https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=600&auto=format&fit=crop'); 
+      background-position: 50% 40%;
+    }
+    .card-football3::before { 
+      background-image: url('https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=600&auto=format&fit=crop'); 
+      background-position: 50% 30%;
+    }
+
+    .card-livehd1::before { 
+      background-image: url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=600&auto=format&fit=crop'); 
+      background-position: 50% 40%;
+    }
+    
+    .card-streamtv::before { 
+      background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&auto=format&fit=crop'); 
+      background-position: 50% 30%;
+    }
+    
+    .card-livematches::before { 
+      background-image: url('https://images.unsplash.com/photo-1517462964-21fdcec3f25b?w=600&auto=format&fit=crop'); 
+      background-position: 50% 25%;
+    }
+    
+    .card-timstreams::before { 
+      background-image: url('https://images.unsplash.com/photo-1543322748-33c02f12b0cf?w=600&auto=format&fit=crop'); 
+      background-position: 50% 40%;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 5;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transform: translateY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .sport-card:hover .card-content {
+      transform: translateY(-5px);
+    }
+
+    .card-icon {
+      font-size: 2.4rem;
+      margin-bottom: 0.6rem;
+      filter: drop-shadow(0 8px 12px #00000060);
+      background: linear-gradient(145deg, #ccf7ff, #b5ffd8);
       -webkit-background-clip: text;
       background-clip: text;
-      color: transparent;
+      -webkit-text-fill-color: transparent;
     }
-    .card-glass {
-      background: rgba(31, 41, 55, 0.6);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      margin: auto;
-      width: 100%;
-      max-width: 900px;
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1.6rem;
+      line-height: 1.2;
+      text-shadow: 0 2px 15px black;
+      letter-spacing: -0.02em;
     }
-    .glow-hover {
-      transition: all 0.3s ease;
+
+    .card-desc {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.7);
+      text-shadow: 0 1px 8px black;
+      max-width: 90%;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
-    .glow-hover:hover {
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+
+    .badge-glow {
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      border: 1px solid rgba(255,215,0,0.25);
+      width: fit-content;
+      margin-top: 0.5rem;
+      color: #ffe69b;
     }
-    .btn-glass {
-      background: rgba(31, 41, 55, 0.7);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-    .btn-glass:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      background: rgba(31, 41, 55, 0.8);
-    }
-    .pulse-text {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { opacity: 0.7; }
-      50% { opacity: 1; }
-      100% { opacity: 0.7; }
-    }
+
+    .fas, .far, .fab { transition: all 0.1s; }
+    .sport-card:active { transform: scale(0.98); }
+    a { text-decoration: none; }
   </style>
 </head>
-<body class="text-white">
-
-  <div class="card-glass rounded-2xl shadow-xl p-6 text-center my-8">
-    <!-- Header -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold mb-2 gradient-text">Premium Sports Streaming</h1>
-      <p class="text-sm text-gray-300">Experience the game like never before</p>
+<body>
+  <div class="top-bar">
+    <div class="back-sleek" id="backBtn">
+      <i class="fas fa-arrow-left"></i> <span>back</span>
     </div>
 
-    <!-- Button Grid - Updated to 4 columns -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <!-- Sports Playlist Button -->
-      <a href="/sports_playlist" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-          <circle cx="12" cy="8" r="1" fill="currentColor"></circle>
-          <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
-          <circle cx="12" cy="16" r="1" fill="currentColor"></circle>
-        </svg>
-        <span class="text-lg font-medium">Sports Playlist</span>
-        <p class="text-xs text-gray-400 mt-1">Curated sports content</p>
-      </a>
+    <div class="hero-description">
+      <i class="fas fa-bolt"></i> <strong>Zero buffer · 4K ready</strong> — live football, replays & originals. <br class="hidden sm:block"> 
+      <i class="fas fa-shield-halved"></i> ad‑blocker friendly · 20+ channels.
+    </div>
+  </div>
 
-      <!-- Live Football Button -->
-      <a href="http://server1.bdixsports.live/all/appevent_football.php" target="_blank" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
-          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
-        </svg>
-        <span class="text-lg font-medium">Live Football 1</span>
-        <p class="text-xs text-gray-400 mt-1">Real-time matches</p>
-      </a>
+  <div class="card-grid">
 
-      <a href="/viewstream" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
-          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
-        </svg>
-        <span class="text-lg font-medium">Live HD Football 1</span>
-        <p class="text-xs text-gray-400 mt-1">Full Live HD Football</p>
-      </a>
+    <a href="/sports_playlist" class="sport-card card-playlist">
+      <div class="card-content">
+        <i class="fas fa-layer-group card-icon"></i>
+        <span class="card-title">Sports<br>Playlist</span>
+        <span class="card-desc"><i class="fas fa-list-ul"></i> 40+ curated mixes</span>
+        <div class="badge-glow"><i class="fas fa-fire-flame"></i> editor's pick</div>
+      </div>
+    </a>
 
-      <a href="https://strmd.link/" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
-          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
-        </svg>
-        <span class="text-lg font-medium">Live HD Football 2</span>
-        <p class="text-xs text-gray-400 mt-1">[STRMD NET] Full Live HD Football</p>
-      </a>
+    <a href="http://server1.bdixsports.live/all/appevent_football.php" target="_blank" class="sport-card card-football1">
+      <div class="card-content">
+        <i class="fas fa-futbol card-icon"></i>
+        <span class="card-title">Live<br>Football 1</span>
+        <span class="card-desc"><i class="fas fa-bolt"></i> BDIX server · real time</span>
+        <div class="badge-glow"><i class="fas fa-circle mr-1" style="color:#ff4444;"></i> LIVE</div>
+      </div>
+    </a>
 
-      <a href="/timstreams" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
-          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon>
-        </svg>
-        <span class="text-lg font-medium">Live HD Football 2</span>
-        <p class="text-xs text-gray-400 mt-1">Timstreams real-time matches</p>
-      </a>
-
-      <!-- Our StreamTVHD Button -->
-      <a href="/live-match" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <a href="/viewstream" class="sport-card card-livehd1">
+      <div class="card-content">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-1 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
         </svg>
-        <span class="text-lg font-medium">Stream Tv HD</span>
-        <p class="text-xs text-gray-400 mt-1">Real-time HD matches</p>
-      </a>
+        <span class="card-title">Stream Tv<br>Live HD</span>
+        <span class="card-desc"><i class="fas fa-hd"></i> 1080p · low latency</span>
+        <div class="badge-glow"><i class="fas fa-star mr-1"></i> Recommended</div>
+      </div>
+    </a>
 
-      <!-- NEW: Live Football Matches Button -->
-      <a href="https://livetv860.me/enx/allupcomingsports/1/" target="_blank" class="btn-glass rounded-xl p-4 flex flex-col items-center justify-center glow-hover h-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        <span class="text-lg font-medium">Live Football Matches</span>
-        <p class="text-xs text-gray-400 mt-1">Upcoming & Live</p>
-      </a>
-    </div>
+    <a href="https://strmd.link/" target="_blank" class="sport-card card-football2">
+      <div class="card-content">
+        <i class="fas fa-satellite-dish card-icon"></i>
+        <span class="card-title">STRMD<br>HD 2</span>
+        <span class="card-desc"><i class="fas fa-globe"></i> global relay</span>
+        <div class="badge-glow"><i class="fas fa-shield mr-1"></i> ad-block advised</div>
+      </div>
+    </a>
 
-    <!-- Back Button -->
-    <button id="backBtn" class="inline-flex items-center px-5 py-2 border border-transparent text-base font-medium rounded-xl shadow-sm text-white bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 transition transform hover:-translate-y-0.5 hover:shadow-lg mb-4 mx-auto">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-      </svg>
-      Back
-    </button>
+    <a href="/timstreams" class="sport-card card-timstreams">
+      <div class="card-content">
+        <i class="fas fa-clock card-icon"></i>
+        <span class="card-title">Timstreams<br>HD</span>
+        <span class="card-desc"><i class="fas fa-wave-square"></i> ultra sync</span>
+        <div class="badge-glow"><i class="fas fa-infinity mr-1"></i> 24/7</div>
+      </div>
+    </a>
 
-    <!-- Promise Text -->
-    <p class="text-xs md:text-sm text-gray-400 mt-3 pulse-text" id="promiseText">We're building the future of sports streaming — delivering crystal-clear, real-time feeds with unmatched reliability. Our mission is simple: to become your most trusted destination for live football coverage, replays, and upcoming matches — all in one place. **With this Version, you are advised to use an Ad Blocker</p>
+    <a href="/live-match" class="sport-card card-streamtv">
+      <div class="card-content">
+        <i class="fas fa-diamond card-icon"></i>
+        <span class="card-title">Stadium+<br>HD</span>
+        <span class="card-desc"><i class="fas fa-crown"></i> flagship channel</span>
+        <div class="badge-glow"><i class="fas fa-crown mr-1"></i> premium</div>
+      </div>
+    </a>
+
+    <a href="https://livetv860.me/enx/allupcomingsports/1/" target="_blank" class="sport-card card-livematches">
+      <div class="card-content">
+        <i class="fas fa-calendar-check card-icon"></i>
+        <span class="card-title">Football<br>Matches</span>
+        <span class="card-desc"><i class="fas fa-list"></i> live & upcoming</span>
+        <div class="badge-glow"><i class="fas fa-arrow-trend-up mr-1"></i> 180+ events</div>
+      </div>
+    </a>
+
+    <a href="http://server1.bdixsports.live/all/appevent_football.php" target="_blank" class="sport-card card-football3">
+      <div class="card-content">
+        <i class="fas fa-circle-play card-icon"></i>
+        <span class="card-title">Stadium<br>Live 2</span>
+        <span class="card-desc"><i class="fas fa-user"></i> alt feed · 4K HDR</span>
+        <div class="badge-glow"><i class="fas fa-video mr-1"></i> multi cam</div>
+      </div>
+    </a>
   </div>
 
   <script>
-    // Back button functionality
-    document.getElementById('backBtn').addEventListener('click', function() {
-      window.history.back();
-    });
+    (function() {
+      document.getElementById('backBtn').addEventListener('click', function() {
+        window.history.back();
+      });
 
-    // Enhanced promise text animation
-    const promiseText = document.getElementById('promiseText');
-    let colors = ['text-cyan-400', 'text-emerald-400', 'text-purple-400', 'text-yellow-400'];
-    let currentColor = 0;
-    
-    setInterval(() => {
-      promiseText.classList.remove(colors[currentColor]);
-      currentColor = (currentColor + 1) % colors.length;
-      promiseText.classList.add(colors[currentColor]);
-    }, 2000);
+      // subtle tilt effect
+      const cards = document.querySelectorAll('.sport-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', function(e) {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const deltaX = (x - centerX) / 15;
+          const deltaY = (y - centerY) / 20;
+          card.style.transform = `perspective(800px) rotateY(${deltaX * 0.5}deg) rotateX(${-deltaY * 0.5}deg) scale(1.02)`;
+          card.style.transition = `transform 0.1s ease`;
+        });
+        card.addEventListener('mouseleave', function() {
+          card.style.transform = `perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)`;
+          card.style.transition = `transform 0.4s ease`;
+        });
+      });
+
+      const backIcon = document.querySelector('.back-sleek i');
+      if(backIcon) {
+        setInterval(() => {
+          backIcon.style.color = backIcon.style.color === 'cyan' ? '#b794f4' : 'cyan';
+        }, 2000);
+      }
+    })();
   </script>
+
 </body>
 </html>
